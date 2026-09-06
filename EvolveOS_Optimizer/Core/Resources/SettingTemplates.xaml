@@ -480,11 +480,11 @@
                                                             </Grid>
                                                         </Button>
                                                         <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center">
-                                                            <TextBlock FontFamily="Consolas" FontSize="11"
+                                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" FontSize="11"
                                                                        IsTextSelectionEnabled="True" TextWrapping="Wrap">
                                                                 <Run FontWeight="SemiBold" Text="{x:Bind PathLabel}"/><Run FontWeight="SemiBold" Text=": "/><Run Text="{x:Bind RegistryPath}"/>
                                                             </TextBlock>
-                                                            <TextBlock FontFamily="Consolas" FontSize="11"
+                                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" FontSize="11"
                                                                        IsTextSelectionEnabled="True">
                                                                 <Run FontWeight="SemiBold" Text="{x:Bind ValueLabel}"/><Run FontWeight="SemiBold" Text=": "/><Run Text="{x:Bind ValueName}"/>
                                                                 <Run Text=" ("/><Run Text="{x:Bind ValueType}"/><Run Text=")"/>
@@ -492,15 +492,15 @@
                                                         </StackPanel>
                                                         <StackPanel Grid.Column="2" Spacing="2" VerticalAlignment="Center"
                                                                     HorizontalAlignment="Right" Margin="12,0,0,0" MinWidth="175">
-                                                            <TextBlock FontFamily="Consolas" FontSize="11"
+                                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" FontSize="11"
                                                                        IsTextSelectionEnabled="True">
                                                                 <Run FontWeight="SemiBold" Text="{x:Bind CurrentLabel}"/><Run FontWeight="SemiBold" Text=": "/><Run Text="{x:Bind CurrentValue}"/>
                                                             </TextBlock>
-                                                            <TextBlock FontFamily="Consolas" FontSize="11"
+                                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" FontSize="11"
                                                                        IsTextSelectionEnabled="True">
                                                                 <Run FontWeight="SemiBold" Text="{x:Bind RecommendedLabel}"/><Run FontWeight="SemiBold" Text=": "/><Run Text="{x:Bind RecommendedValue}"/>
                                                             </TextBlock>
-                                                            <TextBlock FontFamily="Consolas" FontSize="11"
+                                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" FontSize="11"
                                                                        IsTextSelectionEnabled="True">
                                                                 <Run FontWeight="SemiBold" Text="{x:Bind DefaultLabel}"/><Run FontWeight="SemiBold" Text=": "/><Run Text="{x:Bind DefaultValue}"/>
                                                             </TextBlock>
@@ -510,20 +510,20 @@
                                                     <Grid Visibility="{x:Bind IsScheduledTask}"
                                                           ColumnDefinitions="*,Auto" Padding="4,4">
                                                         <StackPanel Grid.Column="0" Spacing="2" VerticalAlignment="Center">
-                                                            <TextBlock FontFamily="Consolas" FontSize="11"
+                                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" FontSize="11"
                                                                        IsTextSelectionEnabled="True" TextWrapping="Wrap">
                                                                 <Run FontWeight="SemiBold" Text="{x:Bind PathLabel}"/><Run FontWeight="SemiBold" Text=": "/><Run Text="{x:Bind TaskPath}"/>
                                                             </TextBlock>
                                                         </StackPanel>
                                                         <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center"
                                                                     HorizontalAlignment="Right" Margin="12,0,0,0" MinWidth="175">
-                                                            <TextBlock FontFamily="Consolas" FontSize="11" IsTextSelectionEnabled="True">
+                                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" FontSize="11" IsTextSelectionEnabled="True">
                                                                 <Run FontWeight="SemiBold" Text="{x:Bind CurrentLabel}"/><Run FontWeight="SemiBold" Text=": "/><Run Text="{x:Bind CurrentState}"/>
                                                             </TextBlock>
-                                                            <TextBlock FontFamily="Consolas" FontSize="11" IsTextSelectionEnabled="True">
+                                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" FontSize="11" IsTextSelectionEnabled="True">
                                                                 <Run FontWeight="SemiBold" Text="{x:Bind RecommendedLabel}"/><Run FontWeight="SemiBold" Text=": "/><Run Text="{x:Bind RecommendedState}"/>
                                                             </TextBlock>
-                                                            <TextBlock FontFamily="Consolas" FontSize="11" IsTextSelectionEnabled="True">
+                                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" FontSize="11" IsTextSelectionEnabled="True">
                                                                 <Run FontWeight="SemiBold" Text="{x:Bind DefaultLabel}"/><Run FontWeight="SemiBold" Text=": "/><Run Text="{x:Bind DefaultState}"/>
                                                             </TextBlock>
                                                         </StackPanel>
@@ -532,24 +532,24 @@
                                                     <Grid Visibility="{x:Bind IsPowerConfig}"
                                                           ColumnDefinitions="*,Auto" Padding="4,4">
                                                         <StackPanel Grid.Column="0" Spacing="2" VerticalAlignment="Center">
-                                                            <TextBlock FontFamily="Consolas" FontSize="11"
+                                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" FontSize="11"
                                                                        IsTextSelectionEnabled="True" TextWrapping="Wrap">
                                                                 <Run FontWeight="SemiBold" Text="{x:Bind SubgroupLabel}"/><Run FontWeight="SemiBold" Text=": "/><Run Text="{x:Bind SubgroupAlias}"/><Run Text=" ("/><Run Text="{x:Bind SubgroupGuid}" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/><Run Text=")"/>
                                                             </TextBlock>
-                                                            <TextBlock FontFamily="Consolas" FontSize="11"
+                                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" FontSize="11"
                                                                        IsTextSelectionEnabled="True" TextWrapping="Wrap">
                                                                 <Run FontWeight="SemiBold" Text="{x:Bind SettingLabel}"/><Run FontWeight="SemiBold" Text=": "/><Run Text="{x:Bind SettingAlias}"/><Run Text=" ("/><Run Text="{x:Bind SettingGuid}" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/><Run Text=")"/>
                                                             </TextBlock>
                                                         </StackPanel>
                                                         <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center"
                                                                     HorizontalAlignment="Right" Margin="12,0,0,0" MinWidth="175">
-                                                            <TextBlock FontFamily="Consolas" FontSize="11" IsTextSelectionEnabled="True">
+                                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" FontSize="11" IsTextSelectionEnabled="True">
                                                                 <Run FontWeight="SemiBold" Text="{x:Bind CurrentLabel}"/><Run FontWeight="SemiBold" Text=": "/><Run Text="AC:"/><Run Text="{x:Bind CurrentAC}"/><Run Text=" DC:"/><Run Text="{x:Bind CurrentDC}"/>
                                                             </TextBlock>
-                                                            <TextBlock FontFamily="Consolas" FontSize="11" IsTextSelectionEnabled="True">
+                                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" FontSize="11" IsTextSelectionEnabled="True">
                                                                 <Run FontWeight="SemiBold" Text="{x:Bind RecommendedLabel}"/><Run FontWeight="SemiBold" Text=": "/><Run Text="AC:"/><Run Text="{x:Bind RecommendedAC}"/><Run Text=" DC:"/><Run Text="{x:Bind RecommendedDC}"/>
                                                             </TextBlock>
-                                                            <TextBlock FontFamily="Consolas" FontSize="11" IsTextSelectionEnabled="True">
+                                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" FontSize="11" IsTextSelectionEnabled="True">
                                                                 <Run FontWeight="SemiBold" Text="{x:Bind DefaultLabel}"/><Run FontWeight="SemiBold" Text=": "/><Run Text="AC:"/><Run Text="{x:Bind DefaultAC}"/><Run Text=" DC:"/><Run Text="{x:Bind DefaultDC}"/>
                                                             </TextBlock>
                                                         </StackPanel>
@@ -833,11 +833,11 @@
                                                             </Grid>
                                                         </Button>
                                                         <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center">
-                                                            <TextBlock FontFamily="Consolas" FontSize="11"
+                                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" FontSize="11"
                                                                        IsTextSelectionEnabled="True" TextWrapping="Wrap">
                                                                 <Run FontWeight="SemiBold" Text="{x:Bind PathLabel}"/><Run FontWeight="SemiBold" Text=": "/><Run Text="{x:Bind RegistryPath}"/>
                                                             </TextBlock>
-                                                            <TextBlock FontFamily="Consolas" FontSize="11"
+                                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" FontSize="11"
                                                                        IsTextSelectionEnabled="True">
                                                                 <Run FontWeight="SemiBold" Text="{x:Bind ValueLabel}"/><Run FontWeight="SemiBold" Text=": "/><Run Text="{x:Bind ValueName}"/>
                                                                 <Run Text=" ("/><Run Text="{x:Bind ValueType}"/><Run Text=")"/>
@@ -845,15 +845,15 @@
                                                         </StackPanel>
                                                         <StackPanel Grid.Column="2" Spacing="2" VerticalAlignment="Center"
                                                                     HorizontalAlignment="Right" Margin="12,0,0,0" MinWidth="175">
-                                                            <TextBlock FontFamily="Consolas" FontSize="11"
+                                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" FontSize="11"
                                                                        IsTextSelectionEnabled="True">
                                                                 <Run FontWeight="SemiBold" Text="{x:Bind CurrentLabel}"/><Run FontWeight="SemiBold" Text=": "/><Run Text="{x:Bind CurrentValue}"/>
                                                             </TextBlock>
-                                                            <TextBlock FontFamily="Consolas" FontSize="11"
+                                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" FontSize="11"
                                                                        IsTextSelectionEnabled="True">
                                                                 <Run FontWeight="SemiBold" Text="{x:Bind RecommendedLabel}"/><Run FontWeight="SemiBold" Text=": "/><Run Text="{x:Bind RecommendedValue}"/>
                                                             </TextBlock>
-                                                            <TextBlock FontFamily="Consolas" FontSize="11"
+                                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" FontSize="11"
                                                                        IsTextSelectionEnabled="True">
                                                                 <Run FontWeight="SemiBold" Text="{x:Bind DefaultLabel}"/><Run FontWeight="SemiBold" Text=": "/><Run Text="{x:Bind DefaultValue}"/>
                                                             </TextBlock>
@@ -863,20 +863,20 @@
                                                     <Grid Visibility="{x:Bind IsScheduledTask}"
                                                           ColumnDefinitions="*,Auto" Padding="4,4">
                                                         <StackPanel Grid.Column="0" Spacing="2" VerticalAlignment="Center">
-                                                            <TextBlock FontFamily="Consolas" FontSize="11"
+                                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" FontSize="11"
                                                                        IsTextSelectionEnabled="True" TextWrapping="Wrap">
                                                                 <Run FontWeight="SemiBold" Text="{x:Bind PathLabel}"/><Run FontWeight="SemiBold" Text=": "/><Run Text="{x:Bind TaskPath}"/>
                                                             </TextBlock>
                                                         </StackPanel>
                                                         <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center"
                                                                     HorizontalAlignment="Right" Margin="12,0,0,0" MinWidth="175">
-                                                            <TextBlock FontFamily="Consolas" FontSize="11" IsTextSelectionEnabled="True">
+                                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" FontSize="11" IsTextSelectionEnabled="True">
                                                                 <Run FontWeight="SemiBold" Text="{x:Bind CurrentLabel}"/><Run FontWeight="SemiBold" Text=": "/><Run Text="{x:Bind CurrentState}"/>
                                                             </TextBlock>
-                                                            <TextBlock FontFamily="Consolas" FontSize="11" IsTextSelectionEnabled="True">
+                                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" FontSize="11" IsTextSelectionEnabled="True">
                                                                 <Run FontWeight="SemiBold" Text="{x:Bind RecommendedLabel}"/><Run FontWeight="SemiBold" Text=": "/><Run Text="{x:Bind RecommendedState}"/>
                                                             </TextBlock>
-                                                            <TextBlock FontFamily="Consolas" FontSize="11" IsTextSelectionEnabled="True">
+                                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" FontSize="11" IsTextSelectionEnabled="True">
                                                                 <Run FontWeight="SemiBold" Text="{x:Bind DefaultLabel}"/><Run FontWeight="SemiBold" Text=": "/><Run Text="{x:Bind DefaultState}"/>
                                                             </TextBlock>
                                                         </StackPanel>
@@ -885,24 +885,24 @@
                                                     <Grid Visibility="{x:Bind IsPowerConfig}"
                                                           ColumnDefinitions="*,Auto" Padding="4,4">
                                                         <StackPanel Grid.Column="0" Spacing="2" VerticalAlignment="Center">
-                                                            <TextBlock FontFamily="Consolas" FontSize="11"
+                                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" FontSize="11"
                                                                        IsTextSelectionEnabled="True" TextWrapping="Wrap">
                                                                 <Run FontWeight="SemiBold" Text="{x:Bind SubgroupLabel}"/><Run FontWeight="SemiBold" Text=": "/><Run Text="{x:Bind SubgroupAlias}"/><Run Text=" ("/><Run Text="{x:Bind SubgroupGuid}" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/><Run Text=")"/>
                                                             </TextBlock>
-                                                            <TextBlock FontFamily="Consolas" FontSize="11"
+                                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" FontSize="11"
                                                                        IsTextSelectionEnabled="True" TextWrapping="Wrap">
                                                                 <Run FontWeight="SemiBold" Text="{x:Bind SettingLabel}"/><Run FontWeight="SemiBold" Text=": "/><Run Text="{x:Bind SettingAlias}"/><Run Text=" ("/><Run Text="{x:Bind SettingGuid}" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/><Run Text=")"/>
                                                             </TextBlock>
                                                         </StackPanel>
                                                         <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center"
                                                                     HorizontalAlignment="Right" Margin="12,0,0,0" MinWidth="175">
-                                                            <TextBlock FontFamily="Consolas" FontSize="11" IsTextSelectionEnabled="True">
+                                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" FontSize="11" IsTextSelectionEnabled="True">
                                                                 <Run FontWeight="SemiBold" Text="{x:Bind CurrentLabel}"/><Run FontWeight="SemiBold" Text=": "/><Run Text="AC:"/><Run Text="{x:Bind CurrentAC}"/><Run Text=" DC:"/><Run Text="{x:Bind CurrentDC}"/>
                                                             </TextBlock>
-                                                            <TextBlock FontFamily="Consolas" FontSize="11" IsTextSelectionEnabled="True">
+                                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" FontSize="11" IsTextSelectionEnabled="True">
                                                                 <Run FontWeight="SemiBold" Text="{x:Bind RecommendedLabel}"/><Run FontWeight="SemiBold" Text=": "/><Run Text="AC:"/><Run Text="{x:Bind RecommendedAC}"/><Run Text=" DC:"/><Run Text="{x:Bind RecommendedDC}"/>
                                                             </TextBlock>
-                                                            <TextBlock FontFamily="Consolas" FontSize="11" IsTextSelectionEnabled="True">
+                                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" FontSize="11" IsTextSelectionEnabled="True">
                                                                 <Run FontWeight="SemiBold" Text="{x:Bind DefaultLabel}"/><Run FontWeight="SemiBold" Text=": "/><Run Text="AC:"/><Run Text="{x:Bind DefaultAC}"/><Run Text=" DC:"/><Run Text="{x:Bind DefaultDC}"/>
                                                             </TextBlock>
                                                         </StackPanel>
@@ -1502,11 +1502,11 @@
                                                                             </Grid>
                                                                         </Button>
                                                                         <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center">
-                                                                            <TextBlock FontFamily="Consolas" FontSize="11"
+                                                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" FontSize="11"
                                                                                        IsTextSelectionEnabled="True" TextWrapping="Wrap">
                                                                                 <Run FontWeight="SemiBold" Text="{x:Bind PathLabel}"/><Run FontWeight="SemiBold" Text=": "/><Run Text="{x:Bind RegistryPath}"/>
                                                                             </TextBlock>
-                                                                            <TextBlock FontFamily="Consolas" FontSize="11"
+                                                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" FontSize="11"
                                                                                        IsTextSelectionEnabled="True">
                                                                                 <Run FontWeight="SemiBold" Text="{x:Bind ValueLabel}"/><Run FontWeight="SemiBold" Text=": "/><Run Text="{x:Bind ValueName}"/>
                                                                                 <Run Text=" ("/><Run Text="{x:Bind ValueType}"/><Run Text=")"/>
@@ -1514,15 +1514,15 @@
                                                                         </StackPanel>
                                                                         <StackPanel Grid.Column="2" Spacing="2" VerticalAlignment="Center"
                                                                                     HorizontalAlignment="Right" Margin="12,0,0,0" MinWidth="175">
-                                                                            <TextBlock FontFamily="Consolas" FontSize="11"
+                                                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" FontSize="11"
                                                                                        IsTextSelectionEnabled="True">
                                                                                 <Run FontWeight="SemiBold" Text="{x:Bind CurrentLabel}"/><Run FontWeight="SemiBold" Text=": "/><Run Text="{x:Bind CurrentValue}"/>
                                                                             </TextBlock>
-                                                                            <TextBlock FontFamily="Consolas" FontSize="11"
+                                                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" FontSize="11"
                                                                                        IsTextSelectionEnabled="True">
                                                                                 <Run FontWeight="SemiBold" Text="{x:Bind RecommendedLabel}"/><Run FontWeight="SemiBold" Text=": "/><Run Text="{x:Bind RecommendedValue}"/>
                                                                             </TextBlock>
-                                                                            <TextBlock FontFamily="Consolas" FontSize="11"
+                                                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" FontSize="11"
                                                                                        IsTextSelectionEnabled="True">
                                                                                 <Run FontWeight="SemiBold" Text="{x:Bind DefaultLabel}"/><Run FontWeight="SemiBold" Text=": "/><Run Text="{x:Bind DefaultValue}"/>
                                                                             </TextBlock>
@@ -1532,20 +1532,20 @@
                                                                     <Grid Visibility="{x:Bind IsScheduledTask}"
                                                                           ColumnDefinitions="*,Auto" Padding="4,4">
                                                                         <StackPanel Grid.Column="0" Spacing="2" VerticalAlignment="Center">
-                                                                            <TextBlock FontFamily="Consolas" FontSize="11"
+                                                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" FontSize="11"
                                                                                        IsTextSelectionEnabled="True" TextWrapping="Wrap">
                                                                                 <Run FontWeight="SemiBold" Text="{x:Bind PathLabel}"/><Run FontWeight="SemiBold" Text=": "/><Run Text="{x:Bind TaskPath}"/>
                                                                             </TextBlock>
                                                                         </StackPanel>
                                                                         <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center"
                                                                                     HorizontalAlignment="Right" Margin="12,0,0,0" MinWidth="175">
-                                                                            <TextBlock FontFamily="Consolas" FontSize="11" IsTextSelectionEnabled="True">
+                                                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" FontSize="11" IsTextSelectionEnabled="True">
                                                                                 <Run FontWeight="SemiBold" Text="{x:Bind CurrentLabel}"/><Run FontWeight="SemiBold" Text=": "/><Run Text="{x:Bind CurrentState}"/>
                                                                             </TextBlock>
-                                                                            <TextBlock FontFamily="Consolas" FontSize="11" IsTextSelectionEnabled="True">
+                                                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" FontSize="11" IsTextSelectionEnabled="True">
                                                                                 <Run FontWeight="SemiBold" Text="{x:Bind RecommendedLabel}"/><Run FontWeight="SemiBold" Text=": "/><Run Text="{x:Bind RecommendedState}"/>
                                                                             </TextBlock>
-                                                                            <TextBlock FontFamily="Consolas" FontSize="11" IsTextSelectionEnabled="True">
+                                                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" FontSize="11" IsTextSelectionEnabled="True">
                                                                                 <Run FontWeight="SemiBold" Text="{x:Bind DefaultLabel}"/><Run FontWeight="SemiBold" Text=": "/><Run Text="{x:Bind DefaultState}"/>
                                                                             </TextBlock>
                                                                         </StackPanel>
@@ -1554,24 +1554,24 @@
                                                                     <Grid Visibility="{x:Bind IsPowerConfig}"
                                                                           ColumnDefinitions="*,Auto" Padding="4,4">
                                                                         <StackPanel Grid.Column="0" Spacing="2" VerticalAlignment="Center">
-                                                                            <TextBlock FontFamily="Consolas" FontSize="11"
+                                                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" FontSize="11"
                                                                                        IsTextSelectionEnabled="True" TextWrapping="Wrap">
                                                                                 <Run FontWeight="SemiBold" Text="{x:Bind SubgroupLabel}"/><Run FontWeight="SemiBold" Text=": "/><Run Text="{x:Bind SubgroupAlias}"/><Run Text=" ("/><Run Text="{x:Bind SubgroupGuid}" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/><Run Text=")"/>
                                                                             </TextBlock>
-                                                                            <TextBlock FontFamily="Consolas" FontSize="11"
+                                                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" FontSize="11"
                                                                                        IsTextSelectionEnabled="True" TextWrapping="Wrap">
                                                                                 <Run FontWeight="SemiBold" Text="{x:Bind SettingLabel}"/><Run FontWeight="SemiBold" Text=": "/><Run Text="{x:Bind SettingAlias}"/><Run Text=" ("/><Run Text="{x:Bind SettingGuid}" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/><Run Text=")"/>
                                                                             </TextBlock>
                                                                         </StackPanel>
                                                                         <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center"
                                                                                     HorizontalAlignment="Right" Margin="12,0,0,0" MinWidth="175">
-                                                                            <TextBlock FontFamily="Consolas" FontSize="11" IsTextSelectionEnabled="True">
+                                                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" FontSize="11" IsTextSelectionEnabled="True">
                                                                                 <Run FontWeight="SemiBold" Text="{x:Bind CurrentLabel}"/><Run FontWeight="SemiBold" Text=": "/><Run Text="AC:"/><Run Text="{x:Bind CurrentAC}"/><Run Text=" DC:"/><Run Text="{x:Bind CurrentDC}"/>
                                                                             </TextBlock>
-                                                                            <TextBlock FontFamily="Consolas" FontSize="11" IsTextSelectionEnabled="True">
+                                                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" FontSize="11" IsTextSelectionEnabled="True">
                                                                                 <Run FontWeight="SemiBold" Text="{x:Bind RecommendedLabel}"/><Run FontWeight="SemiBold" Text=": "/><Run Text="AC:"/><Run Text="{x:Bind RecommendedAC}"/><Run Text=" DC:"/><Run Text="{x:Bind RecommendedDC}"/>
                                                                             </TextBlock>
-                                                                            <TextBlock FontFamily="Consolas" FontSize="11" IsTextSelectionEnabled="True">
+                                                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" FontSize="11" IsTextSelectionEnabled="True">
                                                                                 <Run FontWeight="SemiBold" Text="{x:Bind DefaultLabel}"/><Run FontWeight="SemiBold" Text=": "/><Run Text="AC:"/><Run Text="{x:Bind DefaultAC}"/><Run Text=" DC:"/><Run Text="{x:Bind DefaultDC}"/>
                                                                             </TextBlock>
                                                                         </StackPanel>

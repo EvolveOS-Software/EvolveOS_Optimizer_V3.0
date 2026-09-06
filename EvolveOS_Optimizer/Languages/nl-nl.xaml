@@ -183,6 +183,9 @@
     <sys:String x:Key="Settings_CustomColor_Header">Aangepaste kleur</sys:String>
     <sys:String x:Key="Settings_ApplyColor_Button">Kleur toepassen</sys:String>
 
+    <sys:String x:Key="Settings_Font_Title">Applicatie lettertype</sys:String>
+    <sys:String x:Key="Settings_Font_Subtitle">Kies het standaard lettertype voor de applicatie interface.</sys:String>
+
     <sys:String x:Key="Settings_Language_Title">Taal</sys:String>
     <sys:String x:Key="Settings_Language_Subtitle">Selecteer uw voorkeurstaal</sys:String>
 

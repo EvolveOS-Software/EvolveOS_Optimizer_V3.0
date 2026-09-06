@@ -46,17 +46,17 @@
                     <StackPanel VerticalAlignment="Center">
                         <TextBlock Text="{x:Bind ViewModel.StatusText, Mode=OneWay}" 
                                    FontSize="15" 
-                                   FontFamily="{ThemeResource Jura-SemiBold}" 
+                                   FontFamily="{ThemeResource AppCustomFont}" 
                                    TextTrimming="CharacterEllipsis" 
                                    MaxWidth="600"
                                    Visibility="{x:Bind ViewModel.IsAnalyzerViewActive, Mode=OneWay, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
                         <TextBlock Text="{x:Bind ViewModel.AnalyzerStatusText, Mode=OneWay}" 
                                    FontSize="15" 
-                                   FontFamily="{ThemeResource Jura-SemiBold}" 
+                                   FontFamily="{ThemeResource AppCustomFont}" 
                                    TextTrimming="CharacterEllipsis" 
                                    MaxWidth="600"
                                    Visibility="{x:Bind ViewModel.IsAnalyzerViewActive, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                        <TextBlock helpers:Loc.Key="cleanup_status_label" FontFamily="{ThemeResource Jura}" FontSize="12" Opacity="0.7"/>
+                        <TextBlock helpers:Loc.Key="cleanup_status_label" FontFamily="{ThemeResource AppCustomFont}" FontSize="12" Opacity="0.7"/>
                     </StackPanel>
                 </StackPanel>
             </Border>
@@ -73,8 +73,8 @@
                     <StackPanel VerticalAlignment="Center">
                         <TextBlock Text="{x:Bind ViewModel.TotalSize, Mode=OneWay, FallbackValue='0 B'}" 
                                    FontSize="18" 
-                                   FontFamily="{ThemeResource Jura-SemiBold}"/>
-                        <TextBlock helpers:Loc.Key="cleanup_space_label" FontFamily="{ThemeResource Jura}" FontSize="12" Opacity="0.7"/>
+                                   FontFamily="{ThemeResource AppCustomFont}"/>
+                        <TextBlock helpers:Loc.Key="cleanup_space_label" FontFamily="{ThemeResource AppCustomFont}" FontSize="12" Opacity="0.7"/>
                     </StackPanel>
                 </StackPanel>
             </Border>
@@ -95,7 +95,7 @@
                 <AutoSuggestBox x:Name="SearchBox"
                                 Grid.Column="0"
                                 PlaceholderText="{helpers:ResourceString Key=cleanup_search_placeholder}"
-                                FontFamily="{ThemeResource Jura}"
+                                FontFamily="{ThemeResource AppCustomFont}"
                                 QueryIcon="Find"
                                 HorizontalAlignment="Stretch"
                                 Margin="0,0,8,0"
@@ -126,7 +126,7 @@
                     Background="Transparent" BorderThickness="0">
                 <StackPanel Orientation="Horizontal" Spacing="8">
                     <FontIcon Glyph="&#xE72B;" FontSize="14"/>
-                    <TextBlock Text="{helpers:ResourceString Key=analyzer_btn_back}" FontFamily="{ThemeResource Jura}"/>
+                    <TextBlock Text="{helpers:ResourceString Key=analyzer_btn_back}" FontFamily="{ThemeResource AppCustomFont}"/>
                 </StackPanel>
             </Button>
 
@@ -152,14 +152,14 @@
                         <Button Content="{helpers:ResourceString Key=cleanup_btn_analyze}"
                                 Command="{x:Bind ViewModel.AnalyzeCommand}"
                                 Visibility="{x:Bind ViewModel.IsAnalyzing, Mode=OneWay, Converter={StaticResource InverseBoolToVisibilityConverter}}"
-                                FontFamily="{ThemeResource Jura}"
+                                FontFamily="{ThemeResource AppCustomFont}"
                                 MinWidth="110" Height="32" />
 
                         <Button Content="{helpers:ResourceString Key=cleanup_btn_cancel}"
                                 ToolTipService.ToolTip="{helpers:ResourceString Key=cleanup_btn_cancel_tooltip}"
                                 Command="{x:Bind ViewModel.CancelCommand}"
                                 Visibility="{x:Bind ViewModel.IsAnalyzing, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
-                                FontFamily="{ThemeResource Jura}"
+                                FontFamily="{ThemeResource AppCustomFont}"
                                 MinWidth="110" Height="32" />
                     </Grid>
 
@@ -168,14 +168,14 @@
                                 Click="PerformCleanup_Click"
                                 IsEnabled="{x:Bind ViewModel.CanRunCleaner, Mode=OneWay}"
                                 Visibility="{x:Bind ViewModel.IsCleaning, Mode=OneWay, Converter={StaticResource InverseBoolToVisibilityConverter}}"
-                                FontFamily="{ThemeResource Jura}"
+                                FontFamily="{ThemeResource AppCustomFont}"
                                 MinWidth="120" Height="32" />
 
                         <Button Content="{helpers:ResourceString Key=cleanup_btn_cancel}"
                                 ToolTipService.ToolTip="{helpers:ResourceString Key=cleanup_btn_cancel_tooltip}"
                                 Command="{x:Bind ViewModel.CancelCommand}"
                                 Visibility="{x:Bind ViewModel.IsCleaning, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
-                                FontFamily="{ThemeResource Jura}"
+                                FontFamily="{ThemeResource AppCustomFont}"
                                 MinWidth="120" Height="32" />
                     </Grid>
 
@@ -258,7 +258,7 @@
 
                                 <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="16" Background="{ThemeResource SolidBackgroundFillColorBaseBrush}">
                                     <StackPanel Spacing="16" Width="380">
-                                        <TextBlock helpers:Loc.Key="cleanup_settings_title" FontFamily="{ThemeResource Jura}" FontSize="16" />
+                                        <TextBlock helpers:Loc.Key="cleanup_settings_title" FontFamily="{ThemeResource AppCustomFont}" FontSize="16" />
 
                                         <Border Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}" 
                                                 BorderThickness="1" 
@@ -273,19 +273,19 @@
                                                 </Grid.ColumnDefinitions>
                                                 <FontIcon Grid.Column="0" Glyph="&#xEA99;" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" FontSize="20" VerticalAlignment="Center"/>
                                                 <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                                    <TextBlock Text="Winapp2" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="14"/>
-                                                    <TextBlock Text="{x:Bind ViewModel.Winapp2Info, Mode=OneWay}" FontSize="11" FontFamily="{ThemeResource Jura}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap"/>
+                                                    <TextBlock Text="Winapp2" FontFamily="{ThemeResource AppCustomFont}" FontSize="14"/>
+                                                    <TextBlock Text="{x:Bind ViewModel.Winapp2Info, Mode=OneWay}" FontSize="11" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap"/>
                                                 </StackPanel>
                                                 <Button Grid.Column="2" 
                                                         Content="{helpers:ResourceString Key=cleanup_settings_update_btn}" 
                                                         Command="{x:Bind ViewModel.DownloadLatestCommand}" 
-                                                        FontFamily="{ThemeResource Jura}" 
+                                                        FontFamily="{ThemeResource AppCustomFont}" 
                                                         VerticalAlignment="Center"/>
                                             </Grid>
                                         </Border>
 
                                         <StackPanel Spacing="8">
-                                            <TextBlock helpers:Loc.Key="cleanup_settings_custom_path" FontFamily="{ThemeResource Jura}" FontSize="14" />
+                                            <TextBlock helpers:Loc.Key="cleanup_settings_custom_path" FontFamily="{ThemeResource AppCustomFont}" FontSize="14" />
                                             <Grid ColumnSpacing="8">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="*"/>
@@ -294,7 +294,7 @@
                                                 <TextBox Grid.Column="0" 
                                                          Text="{x:Bind ViewModel.CustomPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                                                          PlaceholderText="{helpers:ResourceString Key=cleanup_settings_path_placeholder}" 
-                                                         FontFamily="{ThemeResource Jura}" 
+                                                         FontFamily="{ThemeResource AppCustomFont}" 
                                                          FontSize="12"/>
                                                 <Button Grid.Column="1" 
                                                         FontFamily="Segoe MDL2 Assets" 
@@ -305,7 +305,7 @@
                                             <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
                                                 <Button Content="{helpers:ResourceString Key=cleanup_settings_apply_btn}" 
                                                         Command="{x:Bind ViewModel.ApplyCustomPathCommand}" 
-                                                        FontFamily="{ThemeResource Jura}"/>
+                                                        FontFamily="{ThemeResource AppCustomFont}"/>
                                                 <Button FontFamily="Segoe MDL2 Assets" 
                                                         Content="&#xE711;" 
                                                         Command="{x:Bind ViewModel.RemoveCustomPathCommand}" 
@@ -318,7 +318,7 @@
 
                                         <StackPanel Spacing="8">
                                             <Grid>
-                                                <TextBlock helpers:Loc.Key="cleanup_settings_schedule_title" Margin="0,0,0,25" FontFamily="{ThemeResource Jura}" FontSize="14" VerticalAlignment="Center" />
+                                                <TextBlock helpers:Loc.Key="cleanup_settings_schedule_title" Margin="0,0,0,25" FontFamily="{ThemeResource AppCustomFont}" FontSize="14" VerticalAlignment="Center" />
                                                 <ToggleSwitch IsOn="{x:Bind ViewModel.IsScheduledCleanEnabled, Mode=TwoWay}" 
                                                               HorizontalAlignment="Right" VerticalAlignment="Center"
                                                               OnContent="" OffContent="" MinWidth="0" Margin="0">
@@ -342,16 +342,16 @@
                                                           ItemsSource="{x:Bind ViewModel.ScheduleDayOptions, Mode=OneWay}" 
                                                           SelectedIndex="{x:Bind ViewModel.ScheduledCleanDayIndex, Mode=TwoWay}" 
                                                           IsEnabled="{x:Bind ViewModel.IsScheduledCleanEnabled, Mode=OneWay}"
-                                                          FontFamily="{ThemeResource Jura}" FontSize="12" />
+                                                          FontFamily="{ThemeResource AppCustomFont}" FontSize="12" />
                                                 <TimePicker Grid.Column="1" HorizontalAlignment="Right" 
                                                             SelectedTime="{x:Bind ViewModel.ScheduledCleanTime, Mode=TwoWay}" 
                                                             IsEnabled="{x:Bind ViewModel.IsScheduledCleanEnabled, Mode=OneWay}"
                                                             MinuteIncrement="15"
-                                                            FontFamily="{ThemeResource Jura}" FontSize="12" />
+                                                            FontFamily="{ThemeResource AppCustomFont}" FontSize="12" />
                                             </Grid>
 
                                             <TextBlock helpers:Loc.Key="cleanup_settings_schedule_desc" 
-                                                       FontFamily="{ThemeResource Jura}" FontSize="11" 
+                                                       FontFamily="{ThemeResource AppCustomFont}" FontSize="11" 
                                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}" 
                                                        TextWrapping="WrapWholeWords" Margin="0,2,0,0" />
                                         </StackPanel>
@@ -361,15 +361,15 @@
                                         <!-- Retained duplicate ComboBox in global settings (Optional, safe to keep here too) -->
                                         <StackPanel Spacing="8">
                                             <StackPanel VerticalAlignment="Center">
-                                                <TextBlock Text="Developer Cache Retention" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="14" />
+                                                <TextBlock Text="Developer Cache Retention" FontFamily="{ThemeResource AppCustomFont}" FontSize="14" />
                                                 <TextBlock Text="Caches younger than this will be preserved to speed up recent builds." MaxWidth="300"
-                                                           FontFamily="{ThemeResource Jura}" HorizontalAlignment="Left" FontSize="11" Opacity="0.7" Margin="0,2,0,0" TextWrapping="Wrap" />
+                                                           FontFamily="{ThemeResource AppCustomFont}" HorizontalAlignment="Left" FontSize="11" Opacity="0.7" Margin="0,2,0,0" TextWrapping="Wrap" />
                                             </StackPanel>
 
                                             <ComboBox HorizontalAlignment="Stretch" 
                                                       ItemsSource="{x:Bind ViewModel.RetentionOptions, Mode=OneWay}" 
                                                       SelectedIndex="{x:Bind ViewModel.SelectedRetentionIndex, Mode=TwoWay}"
-                                                      FontFamily="{ThemeResource Jura}" FontSize="12" />
+                                                      FontFamily="{ThemeResource AppCustomFont}" FontSize="12" />
                                         </StackPanel>
 
                                         <Border Height="1" Background="{ThemeResource CardStrokeColorDefaultBrush}" Margin="0,0"/>
@@ -377,9 +377,9 @@
                                         <StackPanel Spacing="8">
                                             <Grid>
                                                 <StackPanel VerticalAlignment="Center">
-                                                    <TextBlock helpers:Loc.Key="cleanup_settings_postclean_title" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="14" />
+                                                    <TextBlock helpers:Loc.Key="cleanup_settings_postclean_title" FontFamily="{ThemeResource AppCustomFont}" FontSize="14" />
                                                     <TextBlock helpers:Loc.Key="cleanup_settings_postclean_desc" MaxWidth="300"
-                                                               FontFamily="{ThemeResource Jura}" HorizontalAlignment="Left" FontSize="11" Opacity="0.7" Margin="0,2,0,0" TextWrapping="Wrap" />
+                                                               FontFamily="{ThemeResource AppCustomFont}" HorizontalAlignment="Left" FontSize="11" Opacity="0.7" Margin="0,2,0,0" TextWrapping="Wrap" />
                                                 </StackPanel>
                                                 <ToggleSwitch IsOn="{x:Bind ViewModel.IsPostCleanEnabled, Mode=TwoWay}" 
                                                               HorizontalAlignment="Right" VerticalAlignment="Top"
@@ -401,7 +401,7 @@
                                                     CornerRadius="6">
                                                 <TextBox Text="{x:Bind ViewModel.PostCleanCommands, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                                                          AcceptsReturn="True" 
-                                                         FontFamily="Consolas" 
+                                                         FontFamily="{ThemeResource AppCustomFont}" 
                                                          FontSize="12" 
                                                          MinHeight="90" 
                                                          IsEnabled="{x:Bind ViewModel.IsPostCleanEnabled, Mode=OneWay}" 
@@ -425,7 +425,7 @@
                                 Height="32"
                                 QueryIcon="Find"
                                 VerticalAlignment="Center"
-                                FontFamily="{ThemeResource Jura}"
+                                FontFamily="{ThemeResource AppCustomFont}"
                                 Visibility="{x:Bind ViewModel.IsAnalyzerViewActive, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
 
                 <ToggleButton IsChecked="{x:Bind ViewModel.IsCategoryPaneOpen, Mode=TwoWay}"
@@ -440,7 +440,7 @@
                 <Button Content="{helpers:ResourceString Key=analyzer_btn_cancel_scan}"
                         Command="{x:Bind ViewModel.CancelStorageAnalysisCommand}"
                         Visibility="{x:Bind ViewModel.IsAnalyzerViewActive, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
-                        FontFamily="{ThemeResource Jura}"
+                        FontFamily="{ThemeResource AppCustomFont}"
                         IsEnabled="{x:Bind ViewModel.IsBusy, Mode=OneWay}"
                         MinWidth="110" Height="32" />
             </StackPanel>
@@ -470,7 +470,7 @@
                                     <FontIcon Glyph="&#xE8A5;" FontSize="36" Foreground="{ThemeResource TextFillColorTertiaryBrush}" />
                                     <TextBlock helpers:Loc.Key="cleanup_empty_state_text"
                                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                               FontFamily="{ThemeResource Jura}"
+                                               FontFamily="{ThemeResource AppCustomFont}"
                                                FontSize="12"
                                                TextAlignment="Center" />
                                 </StackPanel>
@@ -517,7 +517,7 @@
                                                                 <TextBlock Grid.Column="1"
                                                                            Text="{x:Bind Name}"
                                                                            FontSize="13"
-                                                                           FontFamily="{ThemeResource Jura-SemiBold}"
+                                                                           FontFamily="{ThemeResource AppCustomFont}"
                                                                            TextTrimming="CharacterEllipsis"
                                                                            ToolTipService.ToolTip="{x:Bind Name}"
                                                                            VerticalAlignment="Center"
@@ -530,7 +530,7 @@
                                                                         Margin="0,0,8,0">
                                                                     <TextBlock Text="{x:Bind SelectionStateLabel, Mode=OneWay}"
                                                                                Style="{StaticResource DiskCleanupBadgeTextStyle}" 
-                                                                               FontFamily="{ThemeResource Jura-SemiBold}"
+                                                                               FontFamily="{ThemeResource AppCustomFont}"
                                                                                Foreground="{x:Bind BadgeForeground, Mode=OneWay}"/>
                                                                 </Border>
 
@@ -579,11 +579,11 @@
                                                                         <CheckBox Grid.Column="0" IsChecked="{x:Bind IsSelected, Mode=TwoWay}" ToolTipService.ToolTip="{x:Bind Warning}" MinWidth="0" Padding="6,3">
                                                                             <StackPanel Orientation="Horizontal" Spacing="6">
                                                                                 <FontIcon Glyph="&#xE7BA;" FontSize="11" Foreground="OrangeRed" VerticalAlignment="Center" Visibility="{x:Bind HasWarning, Converter={StaticResource BoolToVisibilityConverter}}" />
-                                                                                <TextBlock Text="{x:Bind Name}" FontSize="12" FontFamily="{ThemeResource Jura}" TextTrimming="CharacterEllipsis" ToolTipService.ToolTip="{x:Bind Name}" Margin="0,5,0,0" />
+                                                                                <TextBlock Text="{x:Bind Name}" FontSize="12" FontFamily="{ThemeResource AppCustomFont}" TextTrimming="CharacterEllipsis" ToolTipService.ToolTip="{x:Bind Name}" Margin="0,5,0,0" />
                                                                             </StackPanel>
                                                                         </CheckBox>
 
-                                                                        <TextBlock Grid.Column="1" Text="{x:Bind SizeText, Mode=OneWay}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="{ThemeResource Jura}" FontSize="11" VerticalAlignment="Center" Margin="2,0,12,0" />
+                                                                        <TextBlock Grid.Column="1" Text="{x:Bind SizeText, Mode=OneWay}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="{ThemeResource AppCustomFont}" FontSize="11" VerticalAlignment="Center" Margin="2,0,12,0" />
 
                                                                         <Button Grid.Column="2" Width="26" Height="26" Padding="0" Margin="0,0,4,0" Background="Transparent" BorderThickness="0"
                                                                                 ToolTipService.ToolTip="{helpers:ResourceString Key=ai_explainer_btn_text}"
@@ -641,8 +641,8 @@
                                                     </Grid.ColumnDefinitions>
 
                                                     <FontIcon Grid.Row="0" Grid.RowSpan="3" Grid.Column="0" Glyph="&#xE943;" FontSize="18" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{helpers:ResourceString Key=cleanup_dev_title}" FontSize="13" FontFamily="{ThemeResource Jura-SemiBold}" VerticalAlignment="Center" Margin="0,0,8,4"/>
-                                                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{helpers:ResourceString Key=cleanup_dev_desc}" FontSize="11" FontFamily="{ThemeResource Jura}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" Margin="0,0,12,8" ToolTipService.ToolTip="{helpers:ResourceString Key=cleanup_dev_desc}"/>
+                                                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{helpers:ResourceString Key=cleanup_dev_title}" FontSize="13" FontFamily="{ThemeResource AppCustomFont}" VerticalAlignment="Center" Margin="0,0,8,4"/>
+                                                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{helpers:ResourceString Key=cleanup_dev_desc}" FontSize="11" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" Margin="0,0,12,8" ToolTipService.ToolTip="{helpers:ResourceString Key=cleanup_dev_desc}"/>
 
                                                     <Grid Grid.Row="2" Grid.Column="1" Margin="0,0,8,0">
                                                         <Grid.ColumnDefinitions>
@@ -658,7 +658,7 @@
                                                                 VerticalAlignment="Center">
                                                             <TextBlock Text="{x:Bind ViewModel.DevSelectionStateLabel, Mode=OneWay}"
                                                                        Style="{StaticResource DiskCleanupBadgeTextStyle}" 
-                                                                       FontFamily="{ThemeResource Jura-SemiBold}"
+                                                                       FontFamily="{ThemeResource AppCustomFont}"
                                                                        FontSize="11"
                                                                        Foreground="{x:Bind ViewModel.DevBadgeForeground, Mode=OneWay}"/>
                                                         </Border>
@@ -694,11 +694,11 @@
                                                         <ColumnDefinition Width="*" />
                                                         <ColumnDefinition Width="Auto" />
                                                     </Grid.ColumnDefinitions>
-                                                    <TextBlock Grid.Column="0" Text="Safe Retention Period:" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" VerticalAlignment="Center" />
+                                                    <TextBlock Grid.Column="0" Text="Safe Retention Period:" FontFamily="{ThemeResource AppCustomFont}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" VerticalAlignment="Center" />
                                                     <ComboBox Grid.Column="1" 
                                                               ItemsSource="{x:Bind ViewModel.RetentionOptions, Mode=OneWay}" 
                                                               SelectedIndex="{x:Bind ViewModel.SelectedRetentionIndex, Mode=TwoWay}" 
-                                                              FontFamily="{ThemeResource Jura}" FontSize="11" 
+                                                              FontFamily="{ThemeResource AppCustomFont}" FontSize="11" 
                                                               Width="150" MinHeight="28" Padding="8,4" />
                                                 </Grid>
 
@@ -712,7 +712,7 @@
                                                         <DataTemplate x:DataType="m:StorageInsight">
                                                             <Border Width="{x:Bind DynamicWidth, Mode=OneWay}" Background="{x:Bind ColorHex}" Margin="1,0" CornerRadius="2" Height="20">
                                                                 <ToolTipService.ToolTip>
-                                                                    <ToolTip Content="{x:Bind TooltipText}" FontFamily="{ThemeResource Jura}" />
+                                                                    <ToolTip Content="{x:Bind TooltipText}" FontFamily="{ThemeResource AppCustomFont}" />
                                                                 </ToolTipService.ToolTip>
                                                             </Border>
                                                         </DataTemplate>
@@ -731,11 +731,11 @@
 
                                                                 <CheckBox Grid.Column="0" IsChecked="{x:Bind IsSelected, Mode=TwoWay}" ToolTipService.ToolTip="{x:Bind Description}" MinWidth="0" Padding="6,3">
                                                                     <StackPanel Orientation="Horizontal" Spacing="6">
-                                                                        <TextBlock Text="{x:Bind Name}" FontSize="12" FontFamily="{ThemeResource Jura}" TextTrimming="CharacterEllipsis" Margin="0,5,0,0"/>
+                                                                        <TextBlock Text="{x:Bind Name}" FontSize="12" FontFamily="{ThemeResource AppCustomFont}" TextTrimming="CharacterEllipsis" Margin="0,5,0,0"/>
                                                                     </StackPanel>
                                                                 </CheckBox>
 
-                                                                <TextBlock Grid.Column="1" Text="{x:Bind SizeText, Mode=OneWay}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="{ThemeResource Jura}" FontSize="11" VerticalAlignment="Center" Margin="2,0,12,0" />
+                                                                <TextBlock Grid.Column="1" Text="{x:Bind SizeText, Mode=OneWay}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="{ThemeResource AppCustomFont}" FontSize="11" VerticalAlignment="Center" Margin="2,0,12,0" />
 
                                                                 <Button Grid.Column="2" Width="26" Height="26" Padding="0" Margin="0,0,4,0" Background="Transparent" BorderThickness="0"
                                                                         ToolTipService.ToolTip="{helpers:ResourceString Key=ai_explainer_btn_text}"
@@ -775,11 +775,11 @@
                                 <Pivot Grid.Row="1" Margin="12,0,12,10" Visibility="{x:Bind ViewModel.IsShowingList, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
                                     <PivotItem Margin="0">
                                         <PivotItem.Header>
-                                            <TextBlock helpers:Loc.Key="cleanup_tab_current" FontFamily="{ThemeResource Jura}" FontSize="12" />
+                                            <TextBlock helpers:Loc.Key="cleanup_tab_current" FontFamily="{ThemeResource AppCustomFont}" FontSize="12" />
                                         </PivotItem.Header>
                                         <Border Padding="15" Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}" CornerRadius="6" Margin="0,8,0,0">
                                             <StackPanel Spacing="5">
-                                                <TextBlock helpers:Loc.Key="cleanup_heatmap_title" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" />
+                                                <TextBlock helpers:Loc.Key="cleanup_heatmap_title" FontFamily="{ThemeResource AppCustomFont}" FontSize="11" Opacity="0.7" />
                                                 <ItemsControl ItemsSource="{x:Bind ViewModel.CategoryInsights, Mode=OneWay}">
                                                     <ItemsControl.ItemsPanel>
                                                         <ItemsPanelTemplate>
@@ -790,7 +790,7 @@
                                                         <DataTemplate x:DataType="m:StorageInsight">
                                                             <Border Width="{x:Bind DynamicWidth, Mode=OneWay}" Background="{x:Bind ColorHex}" Margin="1,0" CornerRadius="2">
                                                                 <ToolTipService.ToolTip>
-                                                                    <ToolTip Content="{x:Bind TooltipText}" FontFamily="{ThemeResource Jura}" />
+                                                                    <ToolTip Content="{x:Bind TooltipText}" FontFamily="{ThemeResource AppCustomFont}" />
                                                                 </ToolTipService.ToolTip>
                                                             </Border>
                                                         </DataTemplate>
@@ -802,7 +802,7 @@
 
                                     <PivotItem Margin="0">
                                         <PivotItem.Header>
-                                            <TextBlock helpers:Loc.Key="cleanup_tab_history" FontFamily="{ThemeResource Jura}" FontSize="12" />
+                                            <TextBlock helpers:Loc.Key="cleanup_tab_history" FontFamily="{ThemeResource AppCustomFont}" FontSize="12" />
                                         </PivotItem.Header>
                                         <Border Padding="16" Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}" CornerRadius="6" Margin="0,8,0,0">
                                             <Grid>
@@ -813,11 +813,11 @@
 
                                                 <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,32,0">
                                                     <TextBlock helpers:Loc.Key="cleanup_history_total_label" 
-                                                               FontFamily="{ThemeResource Jura-SemiBold}" FontSize="12" Opacity="0.7" Margin="0,0,0,4" />
+                                                               FontFamily="{ThemeResource AppCustomFont}" FontSize="12" Opacity="0.7" Margin="0,0,0,4" />
                                                     <TextBlock Text="{x:Bind ViewModel.TotalSpaceSaved, Mode=OneWay, FallbackValue='0 B'}" 
-                                                               FontFamily="{ThemeResource Jura-Bold}" FontSize="28" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" />
+                                                               FontFamily="{ThemeResource AppCustomFont}" FontSize="28" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" />
                                                     <TextBlock helpers:Loc.Key="cleanup_history_30days" 
-                                                               FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.5" Margin="0,4,0,0" />
+                                                               FontFamily="{ThemeResource AppCustomFont}" FontSize="11" Opacity="0.5" Margin="0,4,0,0" />
                                                 </StackPanel>
 
                                                 <ItemsControl Grid.Column="1" ItemsSource="{x:Bind ViewModel.HistoryChart, Mode=OneWay}" HorizontalAlignment="Right" VerticalAlignment="Bottom">
@@ -831,7 +831,7 @@
                                                             <StackPanel VerticalAlignment="Bottom">
                                                                 <Border Width="8" Height="{x:Bind BarHeight, Mode=OneWay}" Background="{x:Bind ColorHex, Mode=OneWay}" Opacity="{x:Bind Opacity, Mode=OneWay}" CornerRadius="2,2,0,0">
                                                                     <ToolTipService.ToolTip>
-                                                                        <ToolTip Content="{x:Bind TooltipText, Mode=OneWay}" FontFamily="{ThemeResource Jura}" />
+                                                                        <ToolTip Content="{x:Bind TooltipText, Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}" />
                                                                     </ToolTipService.ToolTip>
                                                                 </Border>
                                                             </StackPanel>
@@ -845,7 +845,7 @@
 
                                 <Grid Grid.Row="2" Padding="16,12" Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}" CornerRadius="0,0,0,0"
                                       Visibility="{x:Bind ViewModel.IsShowingList, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
-                                    <TextBlock helpers:Loc.Key="cleanup_results_header" FontFamily="{ThemeResource Jura}" FontSize="14" VerticalAlignment="Center" />
+                                    <TextBlock helpers:Loc.Key="cleanup_results_header" FontFamily="{ThemeResource AppCustomFont}" FontSize="14" VerticalAlignment="Center" />
                                 </Grid>
 
                                 <Grid Grid.Row="2" Padding="12,8" Margin="0,-10,0,0" Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}" CornerRadius="6,6,0,0"
@@ -860,7 +860,7 @@
                                         <FontIcon Glyph="&#xE72B;" FontSize="13" />
                                     </Button>
 
-                                    <TextBlock Grid.Column="1" Text="{x:Bind ViewModel.SelectedAppName, Mode=OneWay}" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="14" VerticalAlignment="Center" Margin="12,0" TextTrimming="CharacterEllipsis" />
+                                    <TextBlock Grid.Column="1" Text="{x:Bind ViewModel.SelectedAppName, Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}" FontSize="14" VerticalAlignment="Center" Margin="12,0" TextTrimming="CharacterEllipsis" />
 
                                     <Button Grid.Column="2" Command="{x:Bind ViewModel.CleanSelectedCommand}" Width="28" Height="28" Padding="0" ToolTipService.ToolTip="{helpers:ResourceString Key=cleanup_btn_delete_now_tooltip}">
                                         <FontIcon Glyph="&#xE74D;" FontSize="13" Foreground="OrangeRed" />
@@ -902,11 +902,11 @@
                                                     <RowDefinition Height="Auto" />
                                                 </Grid.RowDefinitions>
 
-                                                <TextBlock Grid.Row="0" Grid.Column="0" Text="{x:Bind AppName}" FontSize="13" FontFamily="{ThemeResource Jura-SemiBold}" TextTrimming="CharacterEllipsis" />
-                                                <TextBlock Grid.Row="1" Grid.Column="0" Text="{x:Bind CountSummary}" FontSize="11" FontFamily="{ThemeResource Jura}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Margin="0,2,0,0" />
+                                                <TextBlock Grid.Row="0" Grid.Column="0" Text="{x:Bind AppName}" FontSize="13" FontFamily="{ThemeResource AppCustomFont}" TextTrimming="CharacterEllipsis" />
+                                                <TextBlock Grid.Row="1" Grid.Column="0" Text="{x:Bind CountSummary}" FontSize="11" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Margin="0,2,0,0" />
 
                                                 <StackPanel Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center" Margin="12,0,0,0">
-                                                    <TextBlock Text="{x:Bind Size}" FontSize="14" FontFamily="{ThemeResource Jura-SemiBold}" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" VerticalAlignment="Center" />
+                                                    <TextBlock Text="{x:Bind Size}" FontSize="14" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" VerticalAlignment="Center" />
                                                     <FontIcon Glyph="&#xE76C;" FontSize="10" Foreground="{ThemeResource TextFillColorTertiaryBrush}" VerticalAlignment="Center" />
                                                 </StackPanel>
                                             </Grid>
@@ -933,9 +933,9 @@
                                                     </MenuFlyout>
                                                 </Grid.ContextFlyout>
 
-                                                <TextBlock Text="{x:Bind Text}" FontSize="12" FontFamily="{ThemeResource Jura-SemiBold}" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" Margin="0,8,0,4"
+                                                <TextBlock Text="{x:Bind Text}" FontSize="12" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" Margin="0,8,0,4"
                                                            Visibility="{x:Bind IsHeader, Converter={StaticResource BoolToVisibilityConverter}}" />
-                                                <TextBlock Text="{x:Bind Text}" FontSize="11" FontFamily="{ThemeResource Jura}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextTrimming="CharacterEllipsis"
+                                                <TextBlock Text="{x:Bind Text}" FontSize="11" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextTrimming="CharacterEllipsis"
                                                            Visibility="{x:Bind IsNotHeader, Converter={StaticResource BoolToVisibilityConverter}}" />
                                             </Grid>
                                         </DataTemplate>
@@ -986,7 +986,7 @@
                                         Tag="{x:Bind}" 
                                         Click="AnalyzerBarSegment_Click">
                                     <ToolTipService.ToolTip>
-                                        <ToolTip Content="{x:Bind TooltipText}" FontFamily="{ThemeResource Jura}" />
+                                        <ToolTip Content="{x:Bind TooltipText}" FontFamily="{ThemeResource AppCustomFont}" />
                                     </ToolTipService.ToolTip>
                                 </Button>
                             </DataTemplate>
@@ -1018,14 +1018,14 @@
                                         <ColumnDefinition Width="70" />
                                     </Grid.ColumnDefinitions>
 
-                                    <TextBlock Grid.Column="0" Text="{helpers:ResourceString Key=analyzer_header_name}" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="13" VerticalAlignment="Center" Margin="10,0,0,0"/>
-                                    <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=analyzer_header_size}" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="13" VerticalAlignment="Center"/>
-                                    <TextBlock Grid.Column="2" Text="{helpers:ResourceString Key=analyzer_header_allocated}" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="13" VerticalAlignment="Center"/>
-                                    <TextBlock Grid.Column="3" Text="{helpers:ResourceString Key=analyzer_header_files}" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="13" VerticalAlignment="Center"/>
-                                    <TextBlock Grid.Column="4" Text="{helpers:ResourceString Key=analyzer_header_folders}" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="13" VerticalAlignment="Center"/>
-                                    <TextBlock Grid.Column="5" Text="{helpers:ResourceString Key=analyzer_header_percent}" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="13" VerticalAlignment="Center"/>
-                                    <TextBlock Grid.Column="6" Text="{helpers:ResourceString Key=analyzer_header_modified}" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="13" VerticalAlignment="Center"/>
-                                    <TextBlock Grid.Column="7" Text="{helpers:ResourceString Key=analyzer_header_actions}" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="13" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                    <TextBlock Grid.Column="0" Text="{helpers:ResourceString Key=analyzer_header_name}" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                                    <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=analyzer_header_size}" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="2" Text="{helpers:ResourceString Key=analyzer_header_allocated}" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="3" Text="{helpers:ResourceString Key=analyzer_header_files}" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="4" Text="{helpers:ResourceString Key=analyzer_header_folders}" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="5" Text="{helpers:ResourceString Key=analyzer_header_percent}" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="6" Text="{helpers:ResourceString Key=analyzer_header_modified}" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="7" Text="{helpers:ResourceString Key=analyzer_header_actions}" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                 </Grid>
 
                                 <TreeView x:Name="StorageTreeView"
@@ -1112,16 +1112,16 @@
                                                                           VerticalAlignment="Center"/>
 
                                                                 <TextBlock Text="{x:Bind Name}"
-                                                                           FontFamily="{ThemeResource Jura}"
+                                                                           FontFamily="{ThemeResource AppCustomFont}"
                                                                            VerticalAlignment="Center"
                                                                            TextTrimming="CharacterEllipsis"/>
                                                             </StackPanel>
                                                         </Grid>
 
-                                                        <TextBlock Grid.Column="1" Text="{x:Bind FormattedSize}" FontFamily="{ThemeResource Jura}" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" VerticalAlignment="Center"/>
-                                                        <TextBlock Grid.Column="2" Text="{Binding AllocatedSizeFormatted, FallbackValue='--'}" FontFamily="{ThemeResource Jura}" VerticalAlignment="Center" Opacity="0.8"/>
-                                                        <TextBlock Grid.Column="3" Text="{Binding FilesCount, FallbackValue='--'}" FontFamily="{ThemeResource Jura}" VerticalAlignment="Center" Opacity="0.8"/>
-                                                        <TextBlock Grid.Column="4" Text="{Binding FoldersCount, FallbackValue='--'}" FontFamily="{ThemeResource Jura}" VerticalAlignment="Center" Opacity="0.8"/>
+                                                        <TextBlock Grid.Column="1" Text="{x:Bind FormattedSize}" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" VerticalAlignment="Center"/>
+                                                        <TextBlock Grid.Column="2" Text="{Binding AllocatedSizeFormatted, FallbackValue='--'}" FontFamily="{ThemeResource AppCustomFont}" VerticalAlignment="Center" Opacity="0.8"/>
+                                                        <TextBlock Grid.Column="3" Text="{Binding FilesCount, FallbackValue='--'}" FontFamily="{ThemeResource AppCustomFont}" VerticalAlignment="Center" Opacity="0.8"/>
+                                                        <TextBlock Grid.Column="4" Text="{Binding FoldersCount, FallbackValue='--'}" FontFamily="{ThemeResource AppCustomFont}" VerticalAlignment="Center" Opacity="0.8"/>
 
                                                         <Grid Grid.Column="5" VerticalAlignment="Center" Margin="0,0,40,0">
                                                             <Grid.ColumnDefinitions>
@@ -1139,13 +1139,13 @@
 
                                                             <TextBlock Grid.Column="1"
                                                                        Text="{Binding PercentageString, FallbackValue='--'}"
-                                                                       FontFamily="{ThemeResource Jura}"
+                                                                       FontFamily="{ThemeResource AppCustomFont}"
                                                                        VerticalAlignment="Center"
                                                                        HorizontalAlignment="Right"
                                                                        Opacity="0.8"/>
                                                         </Grid>
 
-                                                        <TextBlock Grid.Column="6" Text="{Binding LastModifiedString, FallbackValue='--'}" FontFamily="{ThemeResource Jura}" VerticalAlignment="Center" Opacity="0.8"/>
+                                                        <TextBlock Grid.Column="6" Text="{Binding LastModifiedString, FallbackValue='--'}" FontFamily="{ThemeResource AppCustomFont}" VerticalAlignment="Center" Opacity="0.8"/>
 
                                                         <Button Grid.Column="7" Width="30" Height="30" Padding="0" Background="Transparent" BorderThickness="0" HorizontalAlignment="Center">
                                                             <FontIcon Glyph="&#xE712;" FontSize="12" />
@@ -1191,7 +1191,7 @@
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
 
-                                    <TextBlock helpers:Loc.Key="analyzer_header_filetypes" FontFamily="{ThemeResource Jura}" FontSize="14" Margin="4,0,0,12"/>
+                                    <TextBlock helpers:Loc.Key="analyzer_header_filetypes" FontFamily="{ThemeResource AppCustomFont}" FontSize="14" Margin="4,0,0,12"/>
 
                                     <ListView Grid.Row="1"
                                               ItemsSource="{x:Bind ViewModel.FileCategories, Mode=OneWay}"
@@ -1218,13 +1218,13 @@
                                                               VerticalAlignment="Center"/>
                                                     <TextBlock Grid.Row="0" Grid.Column="1"
                                                                Text="{x:Bind CategoryName}"
-                                                               FontFamily="{ThemeResource Jura}"
+                                                               FontFamily="{ThemeResource AppCustomFont}"
                                                                FontSize="13"
                                                                TextTrimming="CharacterEllipsis"
                                                                VerticalAlignment="Center"/>
                                                     <TextBlock Grid.Row="0" Grid.Column="2"
                                                                Text="{x:Bind FormattedSize}"
-                                                               FontFamily="{ThemeResource Jura}"
+                                                               FontFamily="{ThemeResource AppCustomFont}"
                                                                FontSize="12"
                                                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                                                VerticalAlignment="Center"

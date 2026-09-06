@@ -183,6 +183,9 @@
     <sys:String x:Key="Settings_CustomColor_Header">Colore personalizzato</sys:String>
     <sys:String x:Key="Settings_ApplyColor_Button">Applica colore personalizzato</sys:String>
 
+    <sys:String x:Key="Settings_Font_Title">Carattere dell'applicazione</sys:String>
+    <sys:String x:Key="Settings_Font_Subtitle">Scegli la famiglia di caratteri predefinita per l'interfaccia dell'applicazione.</sys:String>
+
     <sys:String x:Key="Settings_Language_Title">Lingua</sys:String>
     <sys:String x:Key="Settings_Language_Subtitle">Seleziona la tua lingua preferita</sys:String>
 

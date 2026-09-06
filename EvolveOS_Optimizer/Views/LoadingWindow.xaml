@@ -99,7 +99,7 @@
             </StackPanel>
 
             <StackPanel Grid.Row="0" VerticalAlignment="Bottom" Margin="0,0,0,-8">
-                <TextBlock Foreground="{ThemeResource Brush_Inactive}" FontFamily="{StaticResource Jura}" TextWrapping="Wrap" FontSize="14">
+                <TextBlock Foreground="{ThemeResource Brush_Inactive}" FontFamily="{ThemeResource AppCustomFont}" TextWrapping="Wrap" FontSize="14">
                     <Run x:Name="LoadingTextRun" Text="{helpers:ResourceString Key=loading_message}" />
                     <Run x:Name="DotRun" Text="..." />
                 </TextBlock>
@@ -107,7 +107,7 @@
 
             <StackPanel Grid.Row="1" VerticalAlignment="Top" Margin="0,13,0,0">
                 <TextBlock x:Name="StatusLoading"
-                           FontFamily="{StaticResource Jura}"
+                           FontFamily="{ThemeResource AppCustomFont}"
                            FontSize="12" 
                            Foreground="{ThemeResource Brush_TextBlock_Inactivity}" 
                            TextWrapping="Wrap"
@@ -134,14 +134,14 @@
                           VerticalAlignment="Center"/>
 
                 <TextBlock Text="Auto-Login:"
-                           FontFamily="{StaticResource Jura}"
+                           FontFamily="{ThemeResource AppCustomFont}"
                            Foreground="{StaticResource Brush_Inactive}"
                            FontSize="12"
                            Margin="8,0,4,0"
                            VerticalAlignment="Center"/>
 
                 <TextBlock x:Name="RunUsername"
-                           FontFamily="{StaticResource Jura-Bold}"
+                           FontFamily="{ThemeResource AppCustomFont}"
                            FontWeight="Bold"
                            Foreground="{ThemeResource Brush_Accent}"
                            FontSize="12"

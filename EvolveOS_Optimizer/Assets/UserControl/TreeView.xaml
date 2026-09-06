@@ -243,9 +243,9 @@
                                     <StackPanel Width="350" Spacing="8">
                                         <StackPanel Orientation="Horizontal" Spacing="8">
                                             <FontIcon Glyph="&#xe9d9;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="16"/>
-                                            <TextBlock helpers:Loc.Key="treeview_ai_explainer" FontFamily="{StaticResource Jura-SemiBold}" FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                            <TextBlock helpers:Loc.Key="treeview_ai_explainer" FontFamily="{ThemeResource AppCustomFont}" FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                         </StackPanel>
-                                        <TextBlock x:Name="AiExplanationText" helpers:Loc.Key="treeview_ai_loading" TextWrapping="Wrap" FontFamily="{StaticResource Jura}" FontSize="13" Opacity="0.9"/>
+                                        <TextBlock x:Name="AiExplanationText" helpers:Loc.Key="treeview_ai_loading" TextWrapping="Wrap" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" Opacity="0.9"/>
                                         <ProgressBar x:Name="AiLoadingBar" IsIndeterminate="True" Height="2" Margin="0,4,0,0"/>
                                     </StackPanel>
                                 </Flyout>

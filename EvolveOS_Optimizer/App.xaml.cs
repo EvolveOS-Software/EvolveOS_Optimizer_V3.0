@@ -123,6 +123,21 @@ namespace EvolveOS_Optimizer
             App.Current.UpdateGlobalAccentColor(SettingsEngine.AccentColor);
             SettingsEngine.UpdateTheme(SettingsEngine.AppTheme);
 
+            string savedFont = SettingsEngine.AppFont;
+            FontFamily targetFont;
+
+            if (Application.Current.Resources.TryGetValue(savedFont, out var resource) && resource is FontFamily customFont)
+            {
+                targetFont = customFont;
+            }
+            else
+            {
+                targetFont = new FontFamily(savedFont);
+            }
+
+            Application.Current.Resources["AppCustomFont"] = targetFont;
+            Application.Current.Resources["ContentControlThemeFontFamily"] = targetFont;
+
             MainWindow = new LoadingWindow();
 
             if (IsStartedHidden)

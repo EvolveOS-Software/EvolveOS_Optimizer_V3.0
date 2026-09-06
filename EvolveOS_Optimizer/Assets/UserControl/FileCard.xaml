@@ -85,7 +85,7 @@
 
                 <TextBlock Grid.Row="1" Margin="0,15,0,0" 
                            FontSize="13" 
-                           FontFamily="Jura" 
+                           FontFamily="{ThemeResource AppCustomFont}" 
                            Text="{x:Bind FileName, Mode=OneWay}"
                            TextWrapping="Wrap" 
                            TextAlignment="Center" 

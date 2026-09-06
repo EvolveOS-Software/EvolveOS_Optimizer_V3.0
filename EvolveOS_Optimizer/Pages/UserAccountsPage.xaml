@@ -281,18 +281,18 @@
                                                     <ToolTipService.ToolTip>
                                                         <ToolTip>
                                                             <StackPanel Spacing="5" MaxWidth="250">
-                                                                <TextBlock Text="{helpers:ResourceString Key=txt_password_req_title}" FontFamily="{StaticResource Jura-Bold}" FontSize="13" Margin="0,0,0,5" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                                                <TextBlock Text="{helpers:ResourceString Key=txt_password_req_title}" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" Margin="0,0,0,5" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                                 <ItemsControl ItemsSource="{x:Bind ViewModel.PasswordValidation.ValidationRules, Mode=OneWay}">
                                                                     <ItemsControl.ItemTemplate>
                                                                         <DataTemplate>
                                                                             <Grid Margin="0,2,0,2">
                                                                                 <StackPanel Orientation="Horizontal" Visibility="{Binding IsMet, Converter={StaticResource BooleanToVisibilityConverter}}">
                                                                                     <Ellipse Width="8" Height="8" Fill="#4CAF50" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                                                                    <TextBlock Text="{Binding Name}" Foreground="#4CAF50" FontSize="12" FontFamily="{StaticResource Jura}" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                                                                                    <TextBlock Text="{Binding Name}" Foreground="#4CAF50" FontSize="12" FontFamily="{ThemeResource AppCustomFont}" TextWrapping="Wrap" VerticalAlignment="Center"/>
                                                                                 </StackPanel>
                                                                                 <StackPanel Orientation="Horizontal" Visibility="{Binding IsMet, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=invert}">
                                                                                     <Ellipse Width="8" Height="8" Fill="Red" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                                                                    <TextBlock Text="{Binding ErrorMessage}" Foreground="Red" FontWeight="SemiBold" FontSize="12" FontFamily="{StaticResource Jura}" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                                                                                    <TextBlock Text="{Binding ErrorMessage}" Foreground="Red" FontWeight="SemiBold" FontSize="12" FontFamily="{ThemeResource AppCustomFont}" TextWrapping="Wrap" VerticalAlignment="Center"/>
                                                                                 </StackPanel>
                                                                             </Grid>
                                                                         </DataTemplate>

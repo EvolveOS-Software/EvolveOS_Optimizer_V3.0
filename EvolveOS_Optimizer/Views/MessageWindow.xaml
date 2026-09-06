@@ -34,7 +34,7 @@
             </Grid>
 
             <Grid Grid.Row="1" VerticalAlignment="Center">
-                <TextBlock Foreground="{StaticResource Brush_TextBlock_Inactivity}" MaxWidth="390" FontFamily="{StaticResource Jura}" FontSize="14" TextWrapping="Wrap" HorizontalAlignment="Left" TextAlignment="Left" Margin="15,0,15,0">
+                <TextBlock Foreground="{StaticResource Brush_TextBlock_Inactivity}" MaxWidth="390" FontFamily="{ThemeResource AppCustomFont}" FontSize="14" TextWrapping="Wrap" HorizontalAlignment="Left" TextAlignment="Left" Margin="15,0,15,0">
                     <Run Text="{helpers:ResourceString Key=part1_message}"/>
                     <Run Text="{helpers:ResourceString Key=part2_message}" Foreground="{StaticResource MyDynamicAccentBrush}"/>
                     <Run Text="{helpers:ResourceString Key=part3_message}"/>
@@ -62,7 +62,7 @@
             </Grid>
 
             <Grid Grid.Row="1" VerticalAlignment="Center">
-                <TextBlock Foreground="{StaticResource Brush_TextBlock_Inactivity}" MaxWidth="390" FontFamily="{StaticResource Jura}" FontSize="14" TextWrapping="Wrap" HorizontalAlignment="Left" TextAlignment="Left" Margin="15,0,15,0">
+                <TextBlock Foreground="{StaticResource Brush_TextBlock_Inactivity}" MaxWidth="390" FontFamily="{ThemeResource AppCustomFont}" FontSize="14" TextWrapping="Wrap" HorizontalAlignment="Left" TextAlignment="Left" Margin="15,0,15,0">
                     <Run Text="{helpers:ResourceString Key=part1_nosupport_message}"/>
                     <Run Text="{helpers:ResourceString Key=part2_nosupport_message}" Foreground="{StaticResource MyDynamicAccentBrush}"/>
                     <Run Text="{helpers:ResourceString Key=part3_nosupport_message}"/>
@@ -90,7 +90,7 @@
             </Grid>
 
             <Grid Grid.Row="1" VerticalAlignment="Center">
-                <TextBlock Foreground="{StaticResource Brush_TextBlock_Inactivity}" MaxWidth="390" FontFamily="{StaticResource Jura}" FontSize="14" TextWrapping="Wrap" HorizontalAlignment="Left" TextAlignment="Left" Margin="15,0,15,0">
+                <TextBlock Foreground="{StaticResource Brush_TextBlock_Inactivity}" MaxWidth="390" FontFamily="{ThemeResource AppCustomFont}" FontSize="14" TextWrapping="Wrap" HorizontalAlignment="Left" TextAlignment="Left" Margin="15,0,15,0">
                     <Run Text="{helpers:ResourceString Key=part1_alreadyrunning_message}"/>
                     <Run Text="{helpers:ResourceString Key=part2_alreadyrunning_message}" Foreground="{StaticResource MyDynamicAccentBrush}"/>
                     <Run Text="{helpers:ResourceString Key=part3_alreadyrunning_message}"/>
@@ -103,7 +103,7 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" helpers:Loc.Key="noty_message" Foreground="{StaticResource Brush_Inactive}" Height="Auto" FontFamily="{StaticResource Jura}" FontSize="12" HorizontalAlignment="Left" TextAlignment="Left" Margin="15,15,0,10"/>
+            <TextBlock Grid.Column="0" helpers:Loc.Key="noty_message" Foreground="{StaticResource Brush_Inactive}" Height="Auto" FontFamily="{ThemeResource AppCustomFont}" FontSize="12" HorizontalAlignment="Left" TextAlignment="Left" Margin="15,15,0,10"/>
             <Button x:Name="BtnAccept" Grid.Column="1" Content="{helpers:ResourceString Key=button_message}" HorizontalAlignment="Right" VerticalAlignment="Top" Click="BtnAccept_Click" Margin="0,10,15,0"/>
         </Grid>
     </Grid>

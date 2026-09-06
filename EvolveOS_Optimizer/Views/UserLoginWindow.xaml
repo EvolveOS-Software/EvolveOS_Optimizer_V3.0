@@ -43,8 +43,8 @@
                 </Grid.Background>
                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="16">
                     <Image Source="ms-appx:///Resources/EvolveOSLogo.png" Width="120" Height="120" HorizontalAlignment="Center"/>
-                    <TextBlock Text="EvolveOS Optimizer" FontSize="32" FontFamily="{ThemeResource Jura}" Foreground="{ThemeResource MyDynamicAccentBrush}" HorizontalAlignment="Center"/>
-                    <TextBlock Text="{helpers:ResourceString Key=login_awaiting_auth}" FontFamily="{ThemeResource Jura}" TextWrapping="Wrap" TextAlignment="Center" MaxWidth="250" FontSize="14" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Center"/>
+                    <TextBlock Text="EvolveOS Optimizer" FontSize="32" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource MyDynamicAccentBrush}" HorizontalAlignment="Center"/>
+                    <TextBlock Text="{helpers:ResourceString Key=login_awaiting_auth}" FontFamily="{ThemeResource AppCustomFont}" TextWrapping="Wrap" TextAlignment="Center" MaxWidth="250" FontSize="14" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Center"/>
                     <ProgressBar x:Name="StartUpProgress" Value="{x:Bind ViewModel.ProgressValue, Mode=OneWay}" Width="200" Height="4" Margin="0,20,0,0" CornerRadius="2" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                 </StackPanel>
             </Grid>
@@ -56,7 +56,7 @@
 
                         <Grid x:Name="LoginView" VerticalAlignment="Center" Visibility="Visible">
                             <StackPanel Spacing="12">
-                                <TextBlock Text="{helpers:ResourceString Key=login_title}" FontSize="24" FontWeight="Bold" FontFamily="Jura" Margin="0,0,0,4" HorizontalAlignment="Center"/>
+                                <TextBlock Text="{helpers:ResourceString Key=login_title}" FontSize="24" FontWeight="Bold" FontFamily="{ThemeResource AppCustomFont}" Margin="0,0,0,4" HorizontalAlignment="Center"/>
 
                                 <Border x:Name="StatusBorder" Background="#20FF5555" CornerRadius="4" Padding="12" Visibility="Collapsed" Margin="0,0,0,4">
                                     <TextBlock x:Name="TxtStatusMessage" Foreground="#FF5555" TextWrapping="WrapWholeWords" FontSize="12"/>
@@ -73,7 +73,7 @@
                                         HorizontalAlignment="Stretch" Height="38" CornerRadius="6" Margin="0,12,0,0"/>
 
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,8,0,0" Spacing="4">
-                                    <TextBlock Text="{helpers:ResourceString Key=login_no_account}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{helpers:ResourceString Key=login_no_account}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" VerticalAlignment="Center" FontFamily="{ThemeResource AppCustomFont}"/>
                                     <HyperlinkButton Content="{helpers:ResourceString Key=signup_btn_create}" Margin="0,3,0,0" Foreground="{ThemeResource MyDynamicAccentBrush}" Click="BtnGoToCreateAccount_Click"/>
                                 </StackPanel>
                             </StackPanel>
@@ -82,7 +82,7 @@
                         <Grid x:Name="CreateAccountView" VerticalAlignment="Center" Visibility="Collapsed">
                             <StackPanel Spacing="8">
 
-                                <TextBlock Text="{helpers:ResourceString Key=signup_btn_create}" FontSize="20" FontWeight="Bold" FontFamily="Jura" HorizontalAlignment="Center" Margin="0,0,0,4"/>
+                                <TextBlock Text="{helpers:ResourceString Key=signup_btn_create}" FontSize="20" FontWeight="Bold" FontFamily="{ThemeResource AppCustomFont}" HorizontalAlignment="Center" Margin="0,0,0,4"/>
 
                                 <Border Background="{Binding AssignedUserType, Converter={StaticResource UserTypeToColorConverter}}"
                                         Padding="10,2"
@@ -165,7 +165,7 @@
                                         HorizontalAlignment="Stretch" Height="38" CornerRadius="6" Margin="0,8,0,0"/>
 
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,4,0,0" Spacing="4">
-                                    <TextBlock Text="{helpers:ResourceString Key=signup_existing_account}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{helpers:ResourceString Key=signup_existing_account}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" VerticalAlignment="Center" FontFamily="{ThemeResource AppCustomFont}"/>
                                     <HyperlinkButton Content="{helpers:ResourceString Key=signup_text_login}" Margin="0,3,0,0" Foreground="{ThemeResource MyDynamicAccentBrush}" Click="BtnGoToLogin_Click"/>
                                 </StackPanel>
                             </StackPanel>

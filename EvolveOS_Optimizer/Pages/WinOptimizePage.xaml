@@ -35,12 +35,12 @@
                 <TextBlock
                     Text="{x:Bind ViewModel.PageTitle}"
                     Style="{StaticResource TitleTextBlockStyle}"
-                    FontFamily="{ThemeResource Jura-SemiBold}"
+                    FontFamily="{ThemeResource AppCustomFont}"
                     FontSize="24"
                     AutomationProperties.HeadingLevel="Level1"/>
                 <TextBlock
                     Text="{x:Bind ViewModel.PageDescription}"
-                    FontFamily="{ThemeResource Jura}"
+                    FontFamily="{ThemeResource AppCustomFont}"
                     FontSize="13"
                     Style="{StaticResource BodyTextBlockStyle}"
                     Foreground="{ThemeResource TextFillColorSecondaryBrush}"
@@ -71,7 +71,7 @@
                             <Viewbox Width="16" Height="16" VerticalAlignment="Center" Margin="0,-2,0,0">
                                 <PathIcon Data="{StaticResource OptimizeIconPath}" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
                             </Viewbox>
-                            <TextBlock Text="{x:Bind ViewModel.BreadcrumbRootText}" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind ViewModel.BreadcrumbRootText}" VerticalAlignment="Center" FontWeight="SemiBold"/>
                         </StackPanel>
                     </Button>
 
@@ -95,7 +95,7 @@
                                     <PathIcon x:Name="BreadcrumbSectionIcon" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
                                 </Viewbox>
                                 <fluentIcons:FluentIcon x:Name="BreadcrumbSectionSymbol" IconVariant="Regular" FontSize="16" VerticalAlignment="Center" Foreground="{ThemeResource TextFillColorPrimaryBrush}" Visibility="Collapsed"/>
-                                <TextBlock x:Name="BreadcrumbSectionText" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                                <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="BreadcrumbSectionText" VerticalAlignment="Center" FontWeight="SemiBold"/>
                             </StackPanel>
                         </DropDownButton.Content>
                         <DropDownButton.Flyout>
@@ -112,7 +112,7 @@
                                             <Viewbox Grid.Column="0" Width="16" Height="16" Margin="0,0,8,0" VerticalAlignment="Center">
                                                 <PathIcon Data="{StaticResource PrivacyIconPath}"/>
                                             </Viewbox>
-                                            <TextBlock x:Name="FlyoutTextPrivacy" Grid.Column="1" VerticalAlignment="Center"/>
+                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="FlyoutTextPrivacy" Grid.Column="1" VerticalAlignment="Center"/>
                                         </Grid>
                                     </Button>
                                     <Button x:Name="FlyoutButtonPower" Click="NavigatePower_Click" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Background="Transparent" BorderThickness="0" Padding="8,6">
@@ -120,7 +120,7 @@
                                             <Viewbox Grid.Column="0" Width="16" Height="16" Margin="0,0,8,0" VerticalAlignment="Center">
                                                 <PathIcon Data="{StaticResource PowerIconPath}"/>
                                             </Viewbox>
-                                            <TextBlock x:Name="FlyoutTextPower" Grid.Column="1" VerticalAlignment="Center"/>
+                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="FlyoutTextPower" Grid.Column="1" VerticalAlignment="Center"/>
                                         </Grid>
                                     </Button>
                                     <Button x:Name="FlyoutButtonGaming" Click="NavigateGaming_Click" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Background="Transparent" BorderThickness="0" Padding="8,6">
@@ -128,13 +128,13 @@
                                             <Viewbox Grid.Column="0" Width="16" Height="16" Margin="0,0,8,0" VerticalAlignment="Center">
                                                 <PathIcon Data="{StaticResource GamingIconPath}"/>
                                             </Viewbox>
-                                            <TextBlock x:Name="FlyoutTextGaming" Grid.Column="1" VerticalAlignment="Center"/>
+                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="FlyoutTextGaming" Grid.Column="1" VerticalAlignment="Center"/>
                                         </Grid>
                                     </Button>
                                     <Button x:Name="FlyoutButtonUpdate" Click="NavigateUpdate_Click" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Background="Transparent" BorderThickness="0" Padding="8,6">
                                         <Grid ColumnDefinitions="Auto,*">
                                             <fluentIcons:FluentIcon Grid.Column="0" Icon="ArrowSync" IconVariant="Regular" FontSize="16" Margin="0,0,8,0" VerticalAlignment="Center"/>
-                                            <TextBlock x:Name="FlyoutTextUpdate" Grid.Column="1" VerticalAlignment="Center"/>
+                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="FlyoutTextUpdate" Grid.Column="1" VerticalAlignment="Center"/>
                                         </Grid>
                                     </Button>
                                     <Button x:Name="FlyoutButtonNotification" Click="NavigateNotification_Click" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Background="Transparent" BorderThickness="0" Padding="8,6">
@@ -142,19 +142,19 @@
                                             <Viewbox Grid.Column="0" Width="16" Height="16" Margin="0,0,8,0" VerticalAlignment="Center">
                                                 <PathIcon Data="{StaticResource NotificationIconPath}"/>
                                             </Viewbox>
-                                            <TextBlock x:Name="FlyoutTextNotification" Grid.Column="1" VerticalAlignment="Center"/>
+                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="FlyoutTextNotification" Grid.Column="1" VerticalAlignment="Center"/>
                                         </Grid>
                                     </Button>
                                     <Button x:Name="FlyoutButtonSound" Click="NavigateSound_Click" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Background="Transparent" BorderThickness="0" Padding="8,6">
                                         <Grid ColumnDefinitions="Auto,*">
                                             <fluentIcons:FluentIcon Grid.Column="0" Icon="Speaker2" IconVariant="Regular" FontSize="16" Margin="0,0,8,0" VerticalAlignment="Center"/>
-                                            <TextBlock x:Name="FlyoutTextSound" Grid.Column="1" VerticalAlignment="Center"/>
+                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="FlyoutTextSound" Grid.Column="1" VerticalAlignment="Center"/>
                                         </Grid>
                                     </Button>
                                     <Button x:Name="FlyoutButtonAdvanced" Click="NavigateAdvanced_Click" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Background="Transparent" BorderThickness="0" Padding="8,6">
                                         <Grid ColumnDefinitions="Auto,*">
                                             <fluentIcons:FluentIcon Grid.Column="0" Icon="Wrench" IconVariant="Regular" FontSize="16" Margin="0,0,8,0" VerticalAlignment="Center"/>
-                                            <TextBlock x:Name="FlyoutTextAdvanced" Grid.Column="1" VerticalAlignment="Center"/>
+                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="FlyoutTextAdvanced" Grid.Column="1" VerticalAlignment="Center"/>
                                         </Grid>
                                     </Button>
                                 </StackPanel>
@@ -217,6 +217,7 @@
 
                     <AutoSuggestBox
                         x:Name="SearchBox" Width="220" VerticalAlignment="Center"
+                        FontFamily="{ThemeResource AppCustomFont}"
                         PlaceholderText="{x:Bind ViewModel.SearchPlaceholder}"
                         QueryIcon="Find"
                         Text="{x:Bind ViewModel.SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -231,8 +232,8 @@
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
                                     <StackPanel Grid.Column="1">
-                                        <TextBlock Text="{x:Bind SettingName, Mode=OneTime}" Style="{StaticResource BodyTextBlockStyle}"/>
-                                        <TextBlock Text="{x:Bind SectionDisplayName, Mode=OneTime}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind SettingName, Mode=OneTime}" Style="{StaticResource BodyTextBlockStyle}"/>
+                                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind SectionDisplayName, Mode=OneTime}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                                     </StackPanel>
                                 </Grid>
                             </DataTemplate>
@@ -261,10 +262,10 @@
                                 Click="PrivacyCard_Click">
                                     <controls:SettingsCard.Header>
                                         <StackPanel Orientation="Horizontal" Spacing="8">
-                                            <TextBlock Text="{x:Bind ViewModel.PrivacyViewModel.DisplayName}" VerticalAlignment="Center"/>
+                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind ViewModel.PrivacyViewModel.DisplayName}" VerticalAlignment="Center"/>
                                             <Border x:Name="PrivacyNewBadge" Visibility="Collapsed"
                                                 Style="{StaticResource NewBadgeBorderStyle}">
-                                                <TextBlock x:Name="PrivacyNewText" Style="{StaticResource NewBadgeTextStyle}"/>
+                                                <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="PrivacyNewText" Style="{StaticResource NewBadgeTextStyle}"/>
                                             </Border>
                                         </StackPanel>
                                     </controls:SettingsCard.Header>
@@ -277,7 +278,7 @@
                                                 <StackPanel Orientation="Horizontal" Spacing="4">
                                                     <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,1,0,0"
                                                           Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                                    <TextBlock x:Name="PrivacyRecommendedText" Style="{StaticResource BadgeTextStyle}"
+                                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="PrivacyRecommendedText" Style="{StaticResource BadgeTextStyle}"
                                                            Foreground="{ThemeResource BadgeRecommendedForeground}"/>
                                                 </StackPanel>
                                             </Border>
@@ -285,13 +286,13 @@
                                                 <StackPanel Orientation="Horizontal" Spacing="4">
                                                     <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12"
                                                           VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                                    <TextBlock x:Name="PrivacyDefaultText" Style="{StaticResource BadgeTextStyle}"
+                                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="PrivacyDefaultText" Style="{StaticResource BadgeTextStyle}"
                                                            Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                                 </StackPanel>
                                             </Border>
                                             <Border x:Name="PrivacyCustomPill" Style="{StaticResource BadgeCustomStyle}" Visibility="Collapsed">
                                                 <StackPanel Orientation="Horizontal" Spacing="4">
-                                                    <TextBlock x:Name="PrivacyCustomText" Style="{StaticResource BadgeTextStyle}"
+                                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="PrivacyCustomText" Style="{StaticResource BadgeTextStyle}"
                                                            Foreground="{ThemeResource BadgeCustomForeground}"/>
                                                 </StackPanel>
                                             </Border>
@@ -305,10 +306,10 @@
                                 Click="PowerCard_Click">
                                     <controls:SettingsCard.Header>
                                         <StackPanel Orientation="Horizontal" Spacing="8">
-                                            <TextBlock Text="{x:Bind ViewModel.PowerViewModel.DisplayName}" VerticalAlignment="Center"/>
+                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind ViewModel.PowerViewModel.DisplayName}" VerticalAlignment="Center"/>
                                             <Border x:Name="PowerNewBadge" Visibility="Collapsed"
                                                 Style="{StaticResource NewBadgeBorderStyle}">
-                                                <TextBlock x:Name="PowerNewText" Style="{StaticResource NewBadgeTextStyle}"/>
+                                                <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="PowerNewText" Style="{StaticResource NewBadgeTextStyle}"/>
                                             </Border>
                                         </StackPanel>
                                     </controls:SettingsCard.Header>
@@ -321,7 +322,7 @@
                                                 <StackPanel Orientation="Horizontal" Spacing="4">
                                                     <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,1,0,0"
                                                           Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                                    <TextBlock x:Name="PowerRecommendedText" Style="{StaticResource BadgeTextStyle}"
+                                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="PowerRecommendedText" Style="{StaticResource BadgeTextStyle}"
                                                            Foreground="{ThemeResource BadgeRecommendedForeground}"/>
                                                 </StackPanel>
                                             </Border>
@@ -329,13 +330,13 @@
                                                 <StackPanel Orientation="Horizontal" Spacing="4">
                                                     <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12"
                                                           VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                                    <TextBlock x:Name="PowerDefaultText" Style="{StaticResource BadgeTextStyle}"
+                                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="PowerDefaultText" Style="{StaticResource BadgeTextStyle}"
                                                            Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                                 </StackPanel>
                                             </Border>
                                             <Border x:Name="PowerCustomPill" Style="{StaticResource BadgeCustomStyle}" Visibility="Collapsed">
                                                 <StackPanel Orientation="Horizontal" Spacing="4">
-                                                    <TextBlock x:Name="PowerCustomText" Style="{StaticResource BadgeTextStyle}"
+                                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="PowerCustomText" Style="{StaticResource BadgeTextStyle}"
                                                            Foreground="{ThemeResource BadgeCustomForeground}"/>
                                                 </StackPanel>
                                             </Border>
@@ -349,10 +350,10 @@
                                 Click="GamingCard_Click">
                                     <controls:SettingsCard.Header>
                                         <StackPanel Orientation="Horizontal" Spacing="8">
-                                            <TextBlock Text="{x:Bind ViewModel.GamingViewModel.DisplayName}" VerticalAlignment="Center"/>
+                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind ViewModel.GamingViewModel.DisplayName}" VerticalAlignment="Center"/>
                                             <Border x:Name="GamingNewBadge" Visibility="Collapsed"
                                                 Style="{StaticResource NewBadgeBorderStyle}">
-                                                <TextBlock x:Name="GamingNewText" Style="{StaticResource NewBadgeTextStyle}"/>
+                                                <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="GamingNewText" Style="{StaticResource NewBadgeTextStyle}"/>
                                             </Border>
                                         </StackPanel>
                                     </controls:SettingsCard.Header>
@@ -365,7 +366,7 @@
                                                 <StackPanel Orientation="Horizontal" Spacing="4">
                                                     <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,1,0,0"
                                                           Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                                    <TextBlock x:Name="GamingRecommendedText" Style="{StaticResource BadgeTextStyle}"
+                                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="GamingRecommendedText" Style="{StaticResource BadgeTextStyle}"
                                                            Foreground="{ThemeResource BadgeRecommendedForeground}"/>
                                                 </StackPanel>
                                             </Border>
@@ -373,13 +374,13 @@
                                                 <StackPanel Orientation="Horizontal" Spacing="4">
                                                     <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12"
                                                           VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                                    <TextBlock x:Name="GamingDefaultText" Style="{StaticResource BadgeTextStyle}"
+                                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="GamingDefaultText" Style="{StaticResource BadgeTextStyle}"
                                                            Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                                 </StackPanel>
                                             </Border>
                                             <Border x:Name="GamingCustomPill" Style="{StaticResource BadgeCustomStyle}" Visibility="Collapsed">
                                                 <StackPanel Orientation="Horizontal" Spacing="4">
-                                                    <TextBlock x:Name="GamingCustomText" Style="{StaticResource BadgeTextStyle}"
+                                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="GamingCustomText" Style="{StaticResource BadgeTextStyle}"
                                                            Foreground="{ThemeResource BadgeCustomForeground}"/>
                                                 </StackPanel>
                                             </Border>
@@ -393,10 +394,10 @@
                                 Click="UpdateCard_Click">
                                     <controls:SettingsCard.Header>
                                         <StackPanel Orientation="Horizontal" Spacing="8">
-                                            <TextBlock Text="{x:Bind ViewModel.UpdateViewModel.DisplayName}" VerticalAlignment="Center"/>
+                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind ViewModel.UpdateViewModel.DisplayName}" VerticalAlignment="Center"/>
                                             <Border x:Name="UpdateNewBadge" Visibility="Collapsed"
                                                 Style="{StaticResource NewBadgeBorderStyle}">
-                                                <TextBlock x:Name="UpdateNewText" Style="{StaticResource NewBadgeTextStyle}"/>
+                                                <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="UpdateNewText" Style="{StaticResource NewBadgeTextStyle}"/>
                                             </Border>
                                         </StackPanel>
                                     </controls:SettingsCard.Header>
@@ -409,7 +410,7 @@
                                                 <StackPanel Orientation="Horizontal" Spacing="4">
                                                     <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,1,0,0"
                                                           Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                                    <TextBlock x:Name="UpdateRecommendedText" Style="{StaticResource BadgeTextStyle}"
+                                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="UpdateRecommendedText" Style="{StaticResource BadgeTextStyle}"
                                                            Foreground="{ThemeResource BadgeRecommendedForeground}"/>
                                                 </StackPanel>
                                             </Border>
@@ -417,13 +418,13 @@
                                                 <StackPanel Orientation="Horizontal" Spacing="4">
                                                     <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12"
                                                           VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                                    <TextBlock x:Name="UpdateDefaultText" Style="{StaticResource BadgeTextStyle}"
+                                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="UpdateDefaultText" Style="{StaticResource BadgeTextStyle}"
                                                            Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                                 </StackPanel>
                                             </Border>
                                             <Border x:Name="UpdateCustomPill" Style="{StaticResource BadgeCustomStyle}" Visibility="Collapsed">
                                                 <StackPanel Orientation="Horizontal" Spacing="4">
-                                                    <TextBlock x:Name="UpdateCustomText" Style="{StaticResource BadgeTextStyle}"
+                                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="UpdateCustomText" Style="{StaticResource BadgeTextStyle}"
                                                            Foreground="{ThemeResource BadgeCustomForeground}"/>
                                                 </StackPanel>
                                             </Border>
@@ -437,10 +438,10 @@
                                 Click="NotificationCard_Click">
                                     <controls:SettingsCard.Header>
                                         <StackPanel Orientation="Horizontal" Spacing="8">
-                                            <TextBlock Text="{x:Bind ViewModel.NotificationViewModel.DisplayName}" VerticalAlignment="Center"/>
+                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind ViewModel.NotificationViewModel.DisplayName}" VerticalAlignment="Center"/>
                                             <Border x:Name="NotificationNewBadge" Visibility="Collapsed"
                                                 Style="{StaticResource NewBadgeBorderStyle}">
-                                                <TextBlock x:Name="NotificationNewText" Style="{StaticResource NewBadgeTextStyle}"/>
+                                                <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="NotificationNewText" Style="{StaticResource NewBadgeTextStyle}"/>
                                             </Border>
                                         </StackPanel>
                                     </controls:SettingsCard.Header>
@@ -453,7 +454,7 @@
                                                 <StackPanel Orientation="Horizontal" Spacing="4">
                                                     <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,1,0,0"
                                                           Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                                    <TextBlock x:Name="NotificationRecommendedText" Style="{StaticResource BadgeTextStyle}"
+                                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="NotificationRecommendedText" Style="{StaticResource BadgeTextStyle}"
                                                            Foreground="{ThemeResource BadgeRecommendedForeground}"/>
                                                 </StackPanel>
                                             </Border>
@@ -461,13 +462,13 @@
                                                 <StackPanel Orientation="Horizontal" Spacing="4">
                                                     <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12"
                                                           VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                                    <TextBlock x:Name="NotificationDefaultText" Style="{StaticResource BadgeTextStyle}"
+                                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="NotificationDefaultText" Style="{StaticResource BadgeTextStyle}"
                                                            Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                                 </StackPanel>
                                             </Border>
                                             <Border x:Name="NotificationCustomPill" Style="{StaticResource BadgeCustomStyle}" Visibility="Collapsed">
                                                 <StackPanel Orientation="Horizontal" Spacing="4">
-                                                    <TextBlock x:Name="NotificationCustomText" Style="{StaticResource BadgeTextStyle}"
+                                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="NotificationCustomText" Style="{StaticResource BadgeTextStyle}"
                                                            Foreground="{ThemeResource BadgeCustomForeground}"/>
                                                 </StackPanel>
                                             </Border>
@@ -481,10 +482,10 @@
                                 Click="SoundCard_Click">
                                     <controls:SettingsCard.Header>
                                         <StackPanel Orientation="Horizontal" Spacing="8">
-                                            <TextBlock Text="{x:Bind ViewModel.SoundViewModel.DisplayName}" VerticalAlignment="Center"/>
+                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind ViewModel.SoundViewModel.DisplayName}" VerticalAlignment="Center"/>
                                             <Border x:Name="SoundNewBadge" Visibility="Collapsed"
                                                 Style="{StaticResource NewBadgeBorderStyle}">
-                                                <TextBlock x:Name="SoundNewText" Style="{StaticResource NewBadgeTextStyle}"/>
+                                                <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="SoundNewText" Style="{StaticResource NewBadgeTextStyle}"/>
                                             </Border>
                                         </StackPanel>
                                     </controls:SettingsCard.Header>
@@ -497,7 +498,7 @@
                                                 <StackPanel Orientation="Horizontal" Spacing="4">
                                                     <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,1,0,0"
                                                           Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                                    <TextBlock x:Name="SoundRecommendedText" Style="{StaticResource BadgeTextStyle}"
+                                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="SoundRecommendedText" Style="{StaticResource BadgeTextStyle}"
                                                            Foreground="{ThemeResource BadgeRecommendedForeground}"/>
                                                 </StackPanel>
                                             </Border>
@@ -505,13 +506,13 @@
                                                 <StackPanel Orientation="Horizontal" Spacing="4">
                                                     <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12"
                                                           VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                                    <TextBlock x:Name="SoundDefaultText" Style="{StaticResource BadgeTextStyle}"
+                                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="SoundDefaultText" Style="{StaticResource BadgeTextStyle}"
                                                            Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                                 </StackPanel>
                                             </Border>
                                             <Border x:Name="SoundCustomPill" Style="{StaticResource BadgeCustomStyle}" Visibility="Collapsed">
                                                 <StackPanel Orientation="Horizontal" Spacing="4">
-                                                    <TextBlock x:Name="SoundCustomText" Style="{StaticResource BadgeTextStyle}"
+                                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="SoundCustomText" Style="{StaticResource BadgeTextStyle}"
                                                            Foreground="{ThemeResource BadgeCustomForeground}"/>
                                                 </StackPanel>
                                             </Border>
@@ -525,10 +526,10 @@
                                 Click="AdvancedCard_Click">
                                     <controls:SettingsCard.Header>
                                         <StackPanel Orientation="Horizontal" Spacing="8">
-                                            <TextBlock Text="{x:Bind ViewModel.AdvancedViewModel.DisplayName}" VerticalAlignment="Center"/>
+                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind ViewModel.AdvancedViewModel.DisplayName}" VerticalAlignment="Center"/>
                                             <Border x:Name="AdvancedNewBadge" Visibility="Collapsed"
                                                 Style="{StaticResource NewBadgeBorderStyle}">
-                                                <TextBlock x:Name="AdvancedNewText" Style="{StaticResource NewBadgeTextStyle}"/>
+                                                <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="AdvancedNewText" Style="{StaticResource NewBadgeTextStyle}"/>
                                             </Border>
                                         </StackPanel>
                                     </controls:SettingsCard.Header>
@@ -541,7 +542,7 @@
                                                 <StackPanel Orientation="Horizontal" Spacing="4">
                                                     <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,1,0,0"
                                                           Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                                    <TextBlock x:Name="AdvancedRecommendedText" Style="{StaticResource BadgeTextStyle}"
+                                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="AdvancedRecommendedText" Style="{StaticResource BadgeTextStyle}"
                                                            Foreground="{ThemeResource BadgeRecommendedForeground}"/>
                                                 </StackPanel>
                                             </Border>
@@ -549,13 +550,13 @@
                                                 <StackPanel Orientation="Horizontal" Spacing="4">
                                                     <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12"
                                                           VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                                    <TextBlock x:Name="AdvancedDefaultText" Style="{StaticResource BadgeTextStyle}"
+                                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="AdvancedDefaultText" Style="{StaticResource BadgeTextStyle}"
                                                            Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                                 </StackPanel>
                                             </Border>
                                             <Border x:Name="AdvancedCustomPill" Style="{StaticResource BadgeCustomStyle}" Visibility="Collapsed">
                                                 <StackPanel Orientation="Horizontal" Spacing="4">
-                                                    <TextBlock x:Name="AdvancedCustomText" Style="{StaticResource BadgeTextStyle}"
+                                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="AdvancedCustomText" Style="{StaticResource BadgeTextStyle}"
                                                            Foreground="{ThemeResource BadgeCustomForeground}"/>
                                                 </StackPanel>
                                             </Border>
@@ -581,7 +582,7 @@
                         HorizontalAlignment="Center"/>
                     <TextBlock x:Name="OptimizeLoadingText"
                                helpers:Loc.Key="WinOptimize_LoadingText"
-                               FontFamily="{ThemeResource Jura}"
+                               FontFamily="{ThemeResource AppCustomFont}"
                                HorizontalAlignment="Center"
                                TextAlignment="Center"/>
                 </StackPanel>

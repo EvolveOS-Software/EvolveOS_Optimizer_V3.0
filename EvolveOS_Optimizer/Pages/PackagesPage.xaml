@@ -189,7 +189,7 @@
 
                     <TextBlock helpers:Loc.Key="text_status_active"
                                FontSize="12"
-                               FontFamily="{ThemeResource Jura}"
+                               FontFamily="{ThemeResource AppCustomFont}"
                                Foreground="White"
                                VerticalAlignment="Center"
                                HorizontalAlignment="Center"/>

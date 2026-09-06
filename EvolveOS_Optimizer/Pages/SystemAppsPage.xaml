@@ -131,12 +131,12 @@
                 <ColumnDefinition Width="80"/>
             </Grid.ColumnDefinitions>
 
-            <TextBlock helpers:Loc.Key="SystemAppsPage_HeaderName" Text="App Name" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="13" VerticalAlignment="Center"/>
-            <TextBlock helpers:Loc.Key="SystemAppsPage_HeaderStartup" Text="Startup" Grid.Column="1" TextAlignment="Center" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="13" Opacity="0.8" VerticalAlignment="Center"/>
-            <TextBlock helpers:Loc.Key="SystemAppsPage_HeaderDate" Text="Installed On" Grid.Column="2" TextAlignment="Center" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="13" Opacity="0.8" VerticalAlignment="Center"/>
-            <TextBlock helpers:Loc.Key="SystemAppsPage_HeaderSize" Text="Size" Grid.Column="3" TextAlignment="Center" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="13" Opacity="0.8" VerticalAlignment="Center"/>
-            <TextBlock helpers:Loc.Key="SystemAppsPage_HeaderType" Text="Type" Grid.Column="4" TextAlignment="Center" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="13" Opacity="0.8" VerticalAlignment="Center"/>
-            <TextBlock helpers:Loc.Key="SystemAppsPage_HeaderActions" Text="Actions" Grid.Column="5" TextAlignment="Center" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="13" Opacity="0.8" VerticalAlignment="Center"/>
+            <TextBlock helpers:Loc.Key="SystemAppsPage_HeaderName" Text="App Name" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" VerticalAlignment="Center"/>
+            <TextBlock helpers:Loc.Key="SystemAppsPage_HeaderStartup" Text="Startup" Grid.Column="1" TextAlignment="Center" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" Opacity="0.8" VerticalAlignment="Center"/>
+            <TextBlock helpers:Loc.Key="SystemAppsPage_HeaderDate" Text="Installed On" Grid.Column="2" TextAlignment="Center" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" Opacity="0.8" VerticalAlignment="Center"/>
+            <TextBlock helpers:Loc.Key="SystemAppsPage_HeaderSize" Text="Size" Grid.Column="3" TextAlignment="Center" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" Opacity="0.8" VerticalAlignment="Center"/>
+            <TextBlock helpers:Loc.Key="SystemAppsPage_HeaderType" Text="Type" Grid.Column="4" TextAlignment="Center" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" Opacity="0.8" VerticalAlignment="Center"/>
+            <TextBlock helpers:Loc.Key="SystemAppsPage_HeaderActions" Text="Actions" Grid.Column="5" TextAlignment="Center" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" Opacity="0.8" VerticalAlignment="Center"/>
         </Grid>
 
         <ScrollViewer Padding="4,0,24,0" Grid.Row="2" VerticalScrollBarVisibility="Auto">
@@ -218,7 +218,7 @@
                                         <Button.Flyout>
                                             <Flyout Placement="LeftEdgeAlignedTop">
                                                 <StackPanel Width="320" Spacing="8">
-                                                    <TextBlock Text="AI Explainer" FontFamily="{StaticResource Jura-SemiBold}" FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                                    <TextBlock Text="AI Explainer" FontFamily="{ThemeResource AppCustomFont}" FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                     <TextBlock Tag="AiExplanationText" TextWrapping="Wrap" FontSize="12" Opacity="0.9"/>
                                                 </StackPanel>
                                             </Flyout>

@@ -25,6 +25,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Windowing;
+using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Input;
 using WinRT.Interop;
@@ -91,6 +92,8 @@ namespace EvolveOS_Optimizer
                 else
                     rootElement.RequestedTheme = ElementTheme.Default;
             }
+
+            ApplyFontGlobally(SettingsEngine.AppFont);
 
             string savedBackdrop = SettingsEngine.Backdrop;
             UIHelper.ApplyBackdrop(this, savedBackdrop);
@@ -247,6 +250,36 @@ namespace EvolveOS_Optimizer
             catch (Exception)
             {
                 //_logService?.LogDebug($"Failed to initialize DialogService: {ex.Message}");
+            }
+        }
+
+        public void ApplyFontGlobally(string fontName)
+        {
+            FontFamily targetFont;
+            if (Application.Current.Resources.TryGetValue(fontName, out var resource) && resource is FontFamily customFont)
+            {
+                targetFont = customFont;
+            }
+            else
+            {
+                targetFont = new FontFamily(fontName);
+            }
+
+            Application.Current.Resources["AppCustomFont"] = targetFont;
+            Application.Current.Resources["ContentControlThemeFontFamily"] = targetFont;
+
+            if (ContentFrame != null)
+            {
+                ContentFrame.FontFamily = targetFont;
+            }
+
+            if (this.Content is FrameworkElement root)
+            {
+                var currentTheme = root.RequestedTheme;
+                var oppositeTheme = root.ActualTheme == ElementTheme.Dark ? ElementTheme.Light : ElementTheme.Dark;
+
+                root.RequestedTheme = oppositeTheme;
+                root.RequestedTheme = currentTheme;
             }
         }
         #endregion

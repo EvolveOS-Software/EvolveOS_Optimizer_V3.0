@@ -21,7 +21,7 @@
 
         <Grid Grid.Row="0" Margin="12,8,8,0">
             <TextBlock Text="EvolveOS Optimizer"
-                       FontFamily="{StaticResource Jura-Bold}"
+                       FontFamily="{ThemeResource AppCustomFont}"
                        Style="{StaticResource CaptionTextBlockStyle}" 
                        Foreground="{ThemeResource MyDynamicAccentBrush}"
                        VerticalAlignment="Center"/>

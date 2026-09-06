@@ -9,6 +9,7 @@
     <StackPanel Spacing="6">
         <TextBlock
             Text="{x:Bind DescriptionText, Mode=OneWay}"
+            FontFamily="{ThemeResource AppCustomFont}"
             TextWrapping="Wrap"
             Style="{StaticResource CaptionTextBlockStyle}"/>
 

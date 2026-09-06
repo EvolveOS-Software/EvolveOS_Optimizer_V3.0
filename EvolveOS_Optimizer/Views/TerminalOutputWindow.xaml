@@ -58,7 +58,7 @@
                                  PointerMoved="RTBOutput_PointerMoved"
                                  Foreground="#DCDCDC"
                                  BorderThickness="0"
-                                 FontFamily="{ThemeResource Jura}"
+                                 FontFamily="{ThemeResource AppCustomFont}"
                                  FontSize="12"
                                  ScrollViewer.VerticalScrollBarVisibility="Auto">
                         <RichEditBox.Resources>

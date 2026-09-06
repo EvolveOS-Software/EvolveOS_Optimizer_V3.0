@@ -17,7 +17,7 @@
     <Grid Padding="5,0,24,0">
         <StackPanel Spacing="10">
 
-            <TextBlock helpers:Loc.Key="AdvancedUtils_PageTitle" FontSize="26" FontFamily="{StaticResource Jura-SemiBold}"/>
+            <TextBlock helpers:Loc.Key="AdvancedUtils_PageTitle" FontSize="26" FontFamily="{ThemeResource AppCustomFont}"/>
 
             <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
@@ -31,14 +31,15 @@
                     </Grid.ColumnDefinitions>
 
                     <StackPanel VerticalAlignment="Center">
-                        <TextBlock helpers:Loc.Key="AdvancedUtils_PwdManager_Title" FontWeight="SemiBold" FontSize="16"/>
-                        <TextBlock helpers:Loc.Key="AdvancedUtils_PwdManager_Desc" 
+                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" helpers:Loc.Key="AdvancedUtils_PwdManager_Title" FontWeight="SemiBold" FontSize="16"/>
+                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" helpers:Loc.Key="AdvancedUtils_PwdManager_Desc" 
                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}" 
                                    TextWrapping="Wrap" 
                                    Margin="0,4,0,0"/>
                     </StackPanel>
 
                     <Button Grid.Column="1" 
+                            FontFamily="{ThemeResource AppCustomFont}"
                             helpers:Loc.Key="AdvancedUtils_PwdManager_Btn" 
                             Style="{StaticResource AccentButtonStyle}"
                             Click="BtnOpenPasswordManager_Click"
@@ -59,14 +60,15 @@
                     </Grid.ColumnDefinitions>
 
                     <StackPanel VerticalAlignment="Center">
-                        <TextBlock helpers:Loc.Key="AdvancedUtils_FileEncryptor_Title" FontWeight="SemiBold" FontSize="16"/>
-                        <TextBlock helpers:Loc.Key="AdvancedUtils_FileEncryptor_Desc"
+                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" helpers:Loc.Key="AdvancedUtils_FileEncryptor_Title" FontWeight="SemiBold" FontSize="16"/>
+                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" helpers:Loc.Key="AdvancedUtils_FileEncryptor_Desc"
                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}" 
                                    TextWrapping="Wrap" 
                                    Margin="0,4,0,0"/>
                     </StackPanel>
 
                     <Button Grid.Column="1" 
+                            FontFamily="{ThemeResource AppCustomFont}"
                             helpers:Loc.Key="AdvancedUtils_FileEncryptor_Btn" 
                             Style="{StaticResource AccentButtonStyle}"
                             Click="BtnOpenFileEncryptor_Click"
@@ -87,8 +89,8 @@
                     </Grid.ColumnDefinitions>
 
                     <StackPanel VerticalAlignment="Center">
-                        <TextBlock helpers:Loc.Key="AdvancedUtils_PwdGen_Title" FontWeight="SemiBold" FontSize="16"/>
-                        <TextBlock helpers:Loc.Key="AdvancedUtils_PwdGen_Desc" 
+                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" helpers:Loc.Key="AdvancedUtils_PwdGen_Title" FontWeight="SemiBold" FontSize="16"/>
+                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" helpers:Loc.Key="AdvancedUtils_PwdGen_Desc" 
                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}" 
                                    TextWrapping="Wrap" 
                                    Margin="0,4,0,0"/>
@@ -100,18 +102,19 @@
                                       OnContent="Hotkey Enabled"
                                       OffContent="Hotkey Disabled"
                                       Margin="0"
-                                      FontFamily="{StaticResource Jura}"
+                                      FontFamily="{ThemeResource AppCustomFont}"
                                       HorizontalAlignment="Right"/>
 
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
 
-                            <ComboBox ItemsSource="{x:Bind ViewModel.KeyboardModifiers, Mode=OneWay}"
+                            <ComboBox FontFamily="{ThemeResource AppCustomFont}"
+                                      ItemsSource="{x:Bind ViewModel.KeyboardModifiers, Mode=OneWay}"
                                       SelectedItem="{Binding PasswordGenModifier, Mode=TwoWay}"
                                       IsEnabled="{x:Bind ViewModel.IsComboEnabled, Mode=OneWay}"
                                       MinWidth="100">
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding Converter={StaticResource KeyDisplayConverter}}"/>
+                                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{Binding Converter={StaticResource KeyDisplayConverter}}"/>
                                     </DataTemplate>
                                 </ComboBox.ItemTemplate>
                             </ComboBox>
@@ -120,15 +123,16 @@
                                        Foreground="{ThemeResource TextFillColorPrimaryBrush}"
                                        FontSize="18"
                                        VerticalAlignment="Center"
-                                       FontFamily="{StaticResource Jura-Bold}"/>
+                                       FontFamily="{ThemeResource AppCustomFont}"/>
 
-                            <ComboBox ItemsSource="{x:Bind ViewModel.KeyboardKeys, Mode=OneWay}"
+                            <ComboBox FontFamily="{ThemeResource AppCustomFont}"
+                                      ItemsSource="{x:Bind ViewModel.KeyboardKeys, Mode=OneWay}"
                                       SelectedItem="{Binding PasswordGenKey, Mode=TwoWay}"
                                       IsEnabled="{x:Bind ViewModel.IsComboEnabled, Mode=OneWay}"
                                       MinWidth="80">
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding Converter={StaticResource KeyDisplayConverter}}"/>
+                                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{Binding Converter={StaticResource KeyDisplayConverter}}"/>
                                     </DataTemplate>
                                 </ComboBox.ItemTemplate>
                             </ComboBox>

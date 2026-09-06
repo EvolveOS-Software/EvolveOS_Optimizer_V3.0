@@ -54,7 +54,7 @@
                 </Grid.RowDefinitions>
 
                 <Grid Margin="16,10,10,8">
-                    <TextBlock helpers:Loc.Key="values_viewer_session_history" FontFamily="{ThemeResource Jura}" FontSize="18" VerticalAlignment="Center"/>
+                    <TextBlock helpers:Loc.Key="values_viewer_session_history" FontFamily="{ThemeResource AppCustomFont}" FontSize="18" VerticalAlignment="Center"/>
                     <Button HorizontalAlignment="Right" VerticalAlignment="Center" Background="Transparent" BorderThickness="0" Click="ToggleHistoryPane_Click">
                         <FontIcon Glyph="&#xE711;" Margin="0,2,0,0" FontSize="12"/>
                     </Button>
@@ -70,9 +70,9 @@
                                 </Grid.ColumnDefinitions>
 
                                 <StackPanel Grid.Column="0" Margin="16,0,8,0">
-                                    <TextBlock Text="{x:Bind ActionDisplay}" FontFamily="{ThemeResource Jura-SemiBold}" TextTrimming="CharacterEllipsis"/>
-                                    <TextBlock Text="{x:Bind PathDisplay}" FontSize="12" FontFamily="{ThemeResource Jura}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap"/>
-                                    <TextBlock Text="{x:Bind TimeDisplay}" FontSize="10" FontFamily="{ThemeResource Jura}" Foreground="{ThemeResource TextFillColorTertiaryBrush}"/>
+                                    <TextBlock Text="{x:Bind ActionDisplay}" FontFamily="{ThemeResource AppCustomFont}" TextTrimming="CharacterEllipsis"/>
+                                    <TextBlock Text="{x:Bind PathDisplay}" FontSize="12" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap"/>
+                                    <TextBlock Text="{x:Bind TimeDisplay}" FontSize="10" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorTertiaryBrush}"/>
                                 </StackPanel>
 
                                 <Button Grid.Column="1" VerticalAlignment="Center" Margin="0,0,16,0" Content="{helpers:ResourceString Key=values_viewer_undo_button}" Tag="{x:Bind}" Click="SpecificUndoButton_Click"/>
@@ -108,7 +108,7 @@
                                     <TextBlock x:Name="PathItemNotLastOne"
                                                VerticalAlignment="Center"
                                                x:Load="{x:Bind IsLast, Converter={StaticResource ObjectToBoolConverter}, ConverterParameter=Invert}"
-                                               FontFamily="{ThemeResource Jura}"
+                                               FontFamily="{ThemeResource AppCustomFont}"
                                                Opacity="0.6" Style="{StaticResource SubtitleTextBlockStyle}"
                                                Text="{x:Bind PathItem}"
                                                TextTrimming="CharacterEllipsis"
@@ -116,7 +116,7 @@
                                     <TextBlock x:Name="PathItemLastOne"
                                                VerticalAlignment="Center"
                                                x:Load="{x:Bind IsLast}"
-                                               FontFamily="{ThemeResource Jura-SemiBold}"
+                                               FontFamily="{ThemeResource AppCustomFont}"
                                                Style="{StaticResource SubtitleTextBlockStyle}"
                                                Text="{x:Bind PathItem}"
                                                TextTrimming="CharacterEllipsis"
@@ -129,7 +129,7 @@
                     <TextBox x:Name="PathAddressBox"
                              Visibility="Collapsed"
                              VerticalAlignment="Center"
-                             FontFamily="{ThemeResource Jura}"
+                             FontFamily="{ThemeResource AppCustomFont}"
                              KeyDown="PathAddressBox_KeyDown"
                              LostFocus="PathAddressBox_LostFocus">
                         <TextBox.ContextFlyout>
@@ -179,20 +179,20 @@
                                 <SplitButton.Content>
                                     <StackPanel Orientation="Horizontal" Spacing="8">
                                         <FontIcon FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}" Glyph="&#xe710;" />
-                                        <TextBlock helpers:Loc.Key="values_viewer_btn_new" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="13" VerticalAlignment="Center"/>
+                                        <TextBlock helpers:Loc.Key="values_viewer_btn_new" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </SplitButton.Content>
 
                                 <SplitButton.Flyout>
                                     <MenuFlyout Placement="Bottom">
-                                        <MenuFlyoutItem Text="{helpers:ResourceString Key=values_viewer_menu_key}" FontFamily="{ThemeResource Jura}" Click="OnNewKeyClick" />
+                                        <MenuFlyoutItem Text="{helpers:ResourceString Key=values_viewer_menu_key}" FontFamily="{ThemeResource AppCustomFont}" Click="OnNewKeyClick" />
                                         <MenuFlyoutSeparator />
-                                        <MenuFlyoutItem Text="{helpers:ResourceString Key=values_viewer_menu_string}" FontFamily="{ThemeResource Jura}" Click="OnNewStringValueClick" />
-                                        <MenuFlyoutItem Text="{helpers:ResourceString Key=values_viewer_menu_binary}" FontFamily="{ThemeResource Jura}" Click="OnNewBinaryValueClick" />
-                                        <MenuFlyoutItem Text="{helpers:ResourceString Key=values_viewer_menu_dword}" FontFamily="{ThemeResource Jura}" Click="OnNewDwordValueClick" />
-                                        <MenuFlyoutItem Text="{helpers:ResourceString Key=values_viewer_menu_qword}" FontFamily="{ThemeResource Jura}" Click="OnNewQwordValueClick" />
-                                        <MenuFlyoutItem Text="{helpers:ResourceString Key=values_viewer_menu_multistring}" FontFamily="{ThemeResource Jura}" Click="OnNewMultiStringValueClick" />
-                                        <MenuFlyoutItem Text="{helpers:ResourceString Key=values_viewer_menu_expandstring}" FontFamily="{ThemeResource Jura}" Click="OnNewExpandStringValueClick" />
+                                        <MenuFlyoutItem Text="{helpers:ResourceString Key=values_viewer_menu_string}" FontFamily="{ThemeResource AppCustomFont}" Click="OnNewStringValueClick" />
+                                        <MenuFlyoutItem Text="{helpers:ResourceString Key=values_viewer_menu_binary}" FontFamily="{ThemeResource AppCustomFont}" Click="OnNewBinaryValueClick" />
+                                        <MenuFlyoutItem Text="{helpers:ResourceString Key=values_viewer_menu_dword}" FontFamily="{ThemeResource AppCustomFont}" Click="OnNewDwordValueClick" />
+                                        <MenuFlyoutItem Text="{helpers:ResourceString Key=values_viewer_menu_qword}" FontFamily="{ThemeResource AppCustomFont}" Click="OnNewQwordValueClick" />
+                                        <MenuFlyoutItem Text="{helpers:ResourceString Key=values_viewer_menu_multistring}" FontFamily="{ThemeResource AppCustomFont}" Click="OnNewMultiStringValueClick" />
+                                        <MenuFlyoutItem Text="{helpers:ResourceString Key=values_viewer_menu_expandstring}" FontFamily="{ThemeResource AppCustomFont}" Click="OnNewExpandStringValueClick" />
                                     </MenuFlyout>
                                 </SplitButton.Flyout>
                             </SplitButton>
@@ -200,35 +200,35 @@
                             <Button Click="OnImportButtonClick" IsTabStop="False" Style="{StaticResource NavigationBarButtonStyle}">
                                 <StackPanel Orientation="Horizontal" Spacing="8">
                                     <FontIcon FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}" Glyph="&#xe8b5;" />
-                                    <TextBlock helpers:Loc.Key="values_viewer_btn_import" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="13" VerticalAlignment="Center" />
+                                    <TextBlock helpers:Loc.Key="values_viewer_btn_import" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" VerticalAlignment="Center" />
                                 </StackPanel>
                             </Button>
 
                             <Button Click="OnExportButtonClick" IsTabStop="False" Style="{StaticResource NavigationBarButtonStyle}">
                                 <StackPanel Orientation="Horizontal" Spacing="8">
                                     <FontIcon FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}" Glyph="&#xede1;" />
-                                    <TextBlock helpers:Loc.Key="values_viewer_btn_export" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="13" VerticalAlignment="Center" />
+                                    <TextBlock helpers:Loc.Key="values_viewer_btn_export" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" VerticalAlignment="Center" />
                                 </StackPanel>
                             </Button>
 
                             <Button Click="ConnectButton_Click" IsTabStop="False" Style="{StaticResource NavigationBarButtonStyle}">
                                 <StackPanel Orientation="Horizontal" Spacing="8">
                                     <FontIcon FontSize="14" Foreground="{x:Bind ViewModel.ConnectionStatusBrush, Mode=OneWay}" Glyph="&#xe774;" />
-                                    <TextBlock helpers:Loc.Key="values_viewer_btn_connect" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="13" VerticalAlignment="Center" />
+                                    <TextBlock helpers:Loc.Key="values_viewer_btn_connect" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" VerticalAlignment="Center" />
                                 </StackPanel>
                             </Button>
 
                             <Button IsTabStop="False" Style="{StaticResource NavigationBarButtonStyle}">
                                 <StackPanel Orientation="Horizontal" Spacing="8">
                                     <FontIcon FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}" Glyph="&#xe8d7;" />
-                                    <TextBlock helpers:Loc.Key="values_viewer_btn_permissions" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="13" VerticalAlignment="Center" />
+                                    <TextBlock helpers:Loc.Key="values_viewer_btn_permissions" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" VerticalAlignment="Center" />
                                 </StackPanel>
                                 <Button.Flyout>
                                     <MenuFlyout Placement="Bottom">
-                                        <MenuFlyoutItem Text="{helpers:ResourceString Key=values_viewer_menu_perm_standard}" FontFamily="{ThemeResource Jura}" Click="OnKeyPermissionsButtonClick" />
+                                        <MenuFlyoutItem Text="{helpers:ResourceString Key=values_viewer_menu_perm_standard}" FontFamily="{ThemeResource AppCustomFont}" Click="OnKeyPermissionsButtonClick" />
                                         <MenuFlyoutSeparator />
-                                        <MenuFlyoutItem Text="{helpers:ResourceString Key=values_viewer_menu_perm_unlock}" FontFamily="{ThemeResource Jura}" Foreground="IndianRed" Click="OnForceUnlock_Click" />
-                                        <MenuFlyoutItem Text="{helpers:ResourceString Key=values_viewer_menu_perm_restore}" FontFamily="{ThemeResource Jura}" Foreground="{ThemeResource SystemFillColorSuccessBrush}" Click="OnRestoreOwnership_Click" />
+                                        <MenuFlyoutItem Text="{helpers:ResourceString Key=values_viewer_menu_perm_unlock}" FontFamily="{ThemeResource AppCustomFont}" Foreground="IndianRed" Click="OnForceUnlock_Click" />
+                                        <MenuFlyoutItem Text="{helpers:ResourceString Key=values_viewer_menu_perm_restore}" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource SystemFillColorSuccessBrush}" Click="OnRestoreOwnership_Click" />
                                     </MenuFlyout>
                                 </Button.Flyout>
                             </Button>
@@ -239,21 +239,21 @@
                             <Button Click="UndoLastButton_Click" IsTabStop="False" Style="{StaticResource NavigationBarButtonStyle}">
                                 <StackPanel Orientation="Horizontal" Spacing="8">
                                     <FontIcon FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}" Glyph="&#xE7A7;" />
-                                    <TextBlock helpers:Loc.Key="values_viewer_btn_undo" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="13" VerticalAlignment="Center" />
+                                    <TextBlock helpers:Loc.Key="values_viewer_btn_undo" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" VerticalAlignment="Center" />
                                 </StackPanel>
                             </Button>
 
                             <Button Click="ToggleHistoryPane_Click" IsTabStop="False" Style="{StaticResource NavigationBarButtonStyle}">
                                 <StackPanel Orientation="Horizontal" Spacing="8">
                                     <FontIcon FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}" Glyph="&#xE81C;" />
-                                    <TextBlock helpers:Loc.Key="values_viewer_btn_history" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="13" VerticalAlignment="Center" />
+                                    <TextBlock helpers:Loc.Key="values_viewer_btn_history" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" VerticalAlignment="Center" />
                                 </StackPanel>
                             </Button>
 
                             <Button Click="ClearHistoryButton_Click" IsTabStop="False" Style="{StaticResource NavigationBarButtonStyle}">
                                 <StackPanel Orientation="Horizontal" Spacing="8">
                                     <FontIcon FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}" Glyph="&#xE74D;" />
-                                    <TextBlock helpers:Loc.Key="values_viewer_btn_clear" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="13" VerticalAlignment="Center" />
+                                    <TextBlock helpers:Loc.Key="values_viewer_btn_clear" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" VerticalAlignment="Center" />
                                 </StackPanel>
                             </Button>
 
@@ -262,16 +262,16 @@
                             <Button IsTabStop="False" Style="{StaticResource NavigationBarButtonStyle}">
                                 <StackPanel Orientation="Horizontal" Spacing="8">
                                     <FontIcon FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}" Glyph="&#xE722;" />
-                                    <TextBlock helpers:Loc.Key="values_viewer_btn_regshot" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="13" VerticalAlignment="Center" />
+                                    <TextBlock helpers:Loc.Key="values_viewer_btn_regshot" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" VerticalAlignment="Center" />
                                 </StackPanel>
                                 <Button.Flyout>
                                     <MenuFlyout Placement="Bottom">
-                                        <MenuFlyoutItem Text="{helpers:ResourceString Key=values_viewer_menu_snapshot_a}" FontFamily="{ThemeResource Jura}" Click="OnSnapshotAClick">
+                                        <MenuFlyoutItem Text="{helpers:ResourceString Key=values_viewer_menu_snapshot_a}" FontFamily="{ThemeResource AppCustomFont}" Click="OnSnapshotAClick">
                                             <MenuFlyoutItem.Icon>
                                                 <FontIcon Glyph="&#xE73A;" />
                                             </MenuFlyoutItem.Icon>
                                         </MenuFlyoutItem>
-                                        <MenuFlyoutItem Text="{helpers:ResourceString Key=values_viewer_menu_snapshot_b}" FontFamily="{ThemeResource Jura}" Click="OnSnapshotBClick">
+                                        <MenuFlyoutItem Text="{helpers:ResourceString Key=values_viewer_menu_snapshot_b}" FontFamily="{ThemeResource AppCustomFont}" Click="OnSnapshotBClick">
                                             <MenuFlyoutItem.Icon>
                                                 <FontIcon Glyph="&#xE89A;" Foreground="{ThemeResource SystemFillColorSuccessBrush}" />
                                             </MenuFlyoutItem.Icon>
@@ -283,7 +283,7 @@
                             <Button Click="OnFindButtonClick" IsTabStop="False" Style="{StaticResource NavigationBarButtonStyle}">
                                 <StackPanel Orientation="Horizontal" Spacing="8">
                                     <FontIcon Glyph="&#xE11A;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="14" />
-                                    <TextBlock helpers:Loc.Key="values_viewer_btn_find" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="13" VerticalAlignment="Center" />
+                                    <TextBlock helpers:Loc.Key="values_viewer_btn_find" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" VerticalAlignment="Center" />
                                 </StackPanel>
                             </Button>
 
@@ -311,7 +311,7 @@
                                        helpers:Loc.Key="values_viewer_header_name"
                                        HorizontalAlignment="Left" VerticalAlignment="Center"
                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                       FontFamily="{ThemeResource Jura-SemiBold}" FontSize="13"
+                                       FontFamily="{ThemeResource AppCustomFont}" FontSize="13"
                                        TextTrimming="CharacterEllipsis" />
 
                             <toolkit:GridSplitter Grid.Column="1" IsTabStop="False" Margin="0" Width="12" Background="Transparent" />
@@ -320,7 +320,7 @@
                                        helpers:Loc.Key="values_viewer_header_type"
                                        HorizontalAlignment="Left" VerticalAlignment="Center"
                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                       FontFamily="{ThemeResource Jura-SemiBold}" FontSize="13"
+                                       FontFamily="{ThemeResource AppCustomFont}" FontSize="13"
                                        TextTrimming="CharacterEllipsis" />
 
                             <toolkit:GridSplitter Grid.Column="3" IsTabStop="False" Margin="0" Width="12" Background="Transparent" />
@@ -329,7 +329,7 @@
                                        helpers:Loc.Key="values_viewer_header_data"
                                        HorizontalAlignment="Left" VerticalAlignment="Center"
                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                       FontFamily="{ThemeResource Jura-SemiBold}" FontSize="13"
+                                       FontFamily="{ThemeResource AppCustomFont}" FontSize="13"
                                        TextTrimming="CharacterEllipsis" />
                         </Grid>
 
@@ -392,20 +392,20 @@
 
                                         <TextBlock Margin="24,0,0,0"
                                                    VerticalAlignment="Center"
-                                                   FontFamily="{ThemeResource Jura}" FontSize="13"
+                                                   FontFamily="{ThemeResource AppCustomFont}" FontSize="13"
                                                    Text="{x:Bind DisplayName, Mode=OneWay}"
                                                    TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
 
                                         <TextBlock Grid.Column="2"
                                                    VerticalAlignment="Center"
-                                                   FontFamily="{ThemeResource Jura}" FontSize="13" Opacity="0.8"
+                                                   FontFamily="{ThemeResource AppCustomFont}" FontSize="13" Opacity="0.8"
                                                    Text="{x:Bind TypeString}"
                                                    TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
 
                                         <TextBlock Grid.Column="4"
                                                    VerticalAlignment="Center"
                                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                                   FontFamily="{ThemeResource Jura}" FontSize="13"
+                                                   FontFamily="{ThemeResource AppCustomFont}" FontSize="13"
                                                    Text="{x:Bind DisplayValue}"
                                                    TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
 
@@ -415,9 +415,9 @@
                                                     <StackPanel Width="350" Spacing="8">
                                                         <StackPanel Orientation="Horizontal" Spacing="8">
                                                             <FontIcon Glyph="&#xe9d9;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="16"/>
-                                                            <TextBlock helpers:Loc.Key="values_viewer_ai_explainer" FontFamily="{StaticResource Jura-SemiBold}" FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                                            <TextBlock helpers:Loc.Key="values_viewer_ai_explainer" FontFamily="{ThemeResource AppCustomFont}" FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                         </StackPanel>
-                                                        <TextBlock x:Name="AiExplanationText" helpers:Loc.Key="values_viewer_ai_loading" TextWrapping="Wrap" FontFamily="{StaticResource Jura}" FontSize="13" Opacity="0.9"/>
+                                                        <TextBlock x:Name="AiExplanationText" helpers:Loc.Key="values_viewer_ai_loading" TextWrapping="Wrap" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" Opacity="0.9"/>
                                                         <ProgressBar x:Name="AiLoadingBar" IsIndeterminate="True" Height="2" Margin="0,4,0,0"/>
                                                     </StackPanel>
                                                 </Flyout>
@@ -439,16 +439,16 @@
                         <Grid Grid.Row="0" Margin="0,0,0,8" Padding="12,8" Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}" CornerRadius="4">
                             <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
                                 <ProgressRing IsActive="{x:Bind ViewModel.IsSearchRunning, Mode=OneWay}" Width="16" Height="16" Margin="0,0,8,0"/>
-                                <TextBlock helpers:Loc.Key="values_viewer_search_results" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}" VerticalAlignment="Center"/>
-                                <TextBlock Text="{x:Bind ViewModel.SearchResults.Count, Mode=OneWay}" FontFamily="{ThemeResource Jura}" FontSize="14" VerticalAlignment="Center"/>
-                                <TextBlock helpers:Loc.Key="values_viewer_matches_found" FontFamily="{ThemeResource Jura}" FontSize="14" Opacity="0.7" VerticalAlignment="Center"/>
+                                <TextBlock helpers:Loc.Key="values_viewer_search_results" FontFamily="{ThemeResource AppCustomFont}" FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}" VerticalAlignment="Center"/>
+                                <TextBlock Text="{x:Bind ViewModel.SearchResults.Count, Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}" FontSize="14" VerticalAlignment="Center"/>
+                                <TextBlock helpers:Loc.Key="values_viewer_matches_found" FontFamily="{ThemeResource AppCustomFont}" FontSize="14" Opacity="0.7" VerticalAlignment="Center"/>
                             </StackPanel>
 
                             <Button HorizontalAlignment="Right" VerticalAlignment="Center" Click="CloseSearch_Click" Style="{StaticResource NavigationBarButtonStyle}">
                                 <Button.Content>
                                     <StackPanel Orientation="Horizontal" Spacing="8">
                                         <FontIcon Glyph="&#xE711;" FontSize="12"/>
-                                        <TextBlock helpers:Loc.Key="values_viewer_close_search" FontFamily="{ThemeResource Jura}" FontSize="12" VerticalAlignment="Center"/>
+                                        <TextBlock helpers:Loc.Key="values_viewer_close_search" FontFamily="{ThemeResource AppCustomFont}" FontSize="12" VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </Button.Content>
                             </Button>
@@ -485,13 +485,13 @@
                                         </Grid.ColumnDefinitions>
 
                                         <StackPanel Grid.Column="0" VerticalAlignment="Center">
-                                            <TextBlock FontFamily="{ThemeResource Jura-SemiBold}" FontSize="13" Text="{x:Bind Name}" TextTrimming="CharacterEllipsis"/>
-                                            <TextBlock FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.6" Text="{x:Bind MatchType}" Margin="0,2,0,0"/>
+                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" FontSize="13" Text="{x:Bind Name}" TextTrimming="CharacterEllipsis"/>
+                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" FontSize="11" Opacity="0.6" Text="{x:Bind MatchType}" Margin="0,2,0,0"/>
                                         </StackPanel>
 
                                         <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                            <TextBlock FontFamily="{ThemeResource Jura}" FontSize="12" Opacity="0.8" Text="{x:Bind FullPath}" TextTrimming="CharacterEllipsis"/>
-                                            <TextBlock FontFamily="{ThemeResource Jura}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="{x:Bind Data}" MaxLines="1" TextTrimming="CharacterEllipsis" Margin="0,2,0,0"/>
+                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" FontSize="12" Opacity="0.8" Text="{x:Bind FullPath}" TextTrimming="CharacterEllipsis"/>
+                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="{x:Bind Data}" MaxLines="1" TextTrimming="CharacterEllipsis" Margin="0,2,0,0"/>
                                         </StackPanel>
                                     </Grid>
                                 </DataTemplate>
@@ -510,16 +510,16 @@
                     <Grid Grid.Row="0" Margin="0,0,0,8" Padding="12,8" Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}" CornerRadius="4">
                         <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
                             <FontIcon Glyph="&#xE722;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                            <TextBlock helpers:Loc.Key="values_viewer_snapshot_results" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="14" VerticalAlignment="Center"/>
-                            <TextBlock Text="{x:Bind ViewModel.SnapshotResults.Count, Mode=OneWay}" FontFamily="{ThemeResource Jura}" FontSize="14" VerticalAlignment="Center" Margin="8,0,0,0"/>
-                            <TextBlock helpers:Loc.Key="values_viewer_changes_detected" FontFamily="{ThemeResource Jura}" FontSize="14" Opacity="0.7" VerticalAlignment="Center"/>
+                            <TextBlock helpers:Loc.Key="values_viewer_snapshot_results" FontFamily="{ThemeResource AppCustomFont}" FontSize="14" VerticalAlignment="Center"/>
+                            <TextBlock Text="{x:Bind ViewModel.SnapshotResults.Count, Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}" FontSize="14" VerticalAlignment="Center" Margin="8,0,0,0"/>
+                            <TextBlock helpers:Loc.Key="values_viewer_changes_detected" FontFamily="{ThemeResource AppCustomFont}" FontSize="14" Opacity="0.7" VerticalAlignment="Center"/>
                         </StackPanel>
 
                         <Button HorizontalAlignment="Right" VerticalAlignment="Center" Click="CloseSnapshot_Click" Style="{StaticResource NavigationBarButtonStyle}">
                             <Button.Content>
                                 <StackPanel Orientation="Horizontal" Spacing="8">
                                     <FontIcon Glyph="&#xE711;" FontSize="12"/>
-                                    <TextBlock helpers:Loc.Key="values_viewer_close" FontFamily="{ThemeResource Jura}" FontSize="12" VerticalAlignment="Center"/>
+                                    <TextBlock helpers:Loc.Key="values_viewer_close" FontFamily="{ThemeResource AppCustomFont}" FontSize="12" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Button.Content>
                         </Button>
@@ -555,12 +555,12 @@
                                     </Grid.ColumnDefinitions>
 
                                     <Border Grid.Column="0" Padding="8,4" CornerRadius="4" VerticalAlignment="Top" HorizontalAlignment="Left" Background="{ThemeResource SystemFillColorNeutralBackgroundBrush}">
-                                        <TextBlock FontFamily="{ThemeResource Jura-SemiBold}" FontSize="12" Text="{x:Bind Type}"/>
+                                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" FontSize="12" Text="{x:Bind Type}"/>
                                     </Border>
 
                                     <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                        <TextBlock FontFamily="{ThemeResource Jura-SemiBold}" FontSize="13" Text="{x:Bind Path}" TextWrapping="Wrap"/>
-                                        <TextBlock FontFamily="{ThemeResource Jura}" FontSize="12" Opacity="0.8" Text="{x:Bind Details}" TextWrapping="Wrap" Margin="0,4,0,0"/>
+                                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" FontSize="13" Text="{x:Bind Path}" TextWrapping="Wrap"/>
+                                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" FontSize="12" Opacity="0.8" Text="{x:Bind Details}" TextWrapping="Wrap" Margin="0,4,0,0"/>
                                     </StackPanel>
                                 </Grid>
                             </DataTemplate>
@@ -580,8 +580,8 @@
 
                         <TextBlock VerticalAlignment="Center"
                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                   FontFamily="{ThemeResource Jura}" FontSize="12">
-                            <Run Text="{x:Bind ViewModel.ValueItems.Count, Mode=OneWay}" FontFamily="{ThemeResource Jura-SemiBold}"/>
+                                   FontFamily="{ThemeResource AppCustomFont}" FontSize="12">
+                            <Run Text="{x:Bind ViewModel.ValueItems.Count, Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}"/>
                             <Run Text="{helpers:ResourceString Key=values_viewer_statusbar_items}" />
                         </TextBlock>
 
@@ -595,17 +595,17 @@
                             <TextBlock helpers:Loc.Key="values_viewer_statusbar_one_item_selected"
                                        VerticalAlignment="Center"
                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                       FontFamily="{ThemeResource Jura}" FontSize="12" />
+                                       FontFamily="{ThemeResource AppCustomFont}" FontSize="12" />
 
                             <TextBlock VerticalAlignment="Center"
                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                       FontFamily="{ThemeResource Jura-SemiBold}" FontSize="12"
+                                       FontFamily="{ThemeResource AppCustomFont}" FontSize="12"
                                        Text="{x:Bind ViewModel.SelectedValueItem.DisplayName, Converter={StaticResource StringToSurroundedStringConverter}, ConverterParameter=quotes, Mode=OneWay}" />
 
                             <TextBlock VerticalAlignment="Center"
                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                       FontFamily="{ThemeResource Jura}" FontSize="12">
-                                <Run Text="{x:Bind ViewModel.SelectedValueItem.DataSize, Mode=OneWay}" FontFamily="{ThemeResource Jura-SemiBold}" />
+                                       FontFamily="{ThemeResource AppCustomFont}" FontSize="12">
+                                <Run Text="{x:Bind ViewModel.SelectedValueItem.DataSize, Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}" />
                                 <Run Text="{helpers:ResourceString Key=values_viewer_statusbar_bytes}" />
                             </TextBlock>
                         </StackPanel>
@@ -623,7 +623,7 @@
                                     CornerRadius="4">
                                 <TextBlock VerticalAlignment="Center"
                                            Foreground="{ThemeResource SystemFillColorCriticalBrush}"
-                                           FontFamily="{ThemeResource Jura-SemiBold}" FontSize="12"
+                                           FontFamily="{ThemeResource AppCustomFont}" FontSize="12"
                                            Text="{x:Bind ViewModel.StatusBarMessage, Mode=OneWay}" />
                             </Border>
                         </StackPanel>

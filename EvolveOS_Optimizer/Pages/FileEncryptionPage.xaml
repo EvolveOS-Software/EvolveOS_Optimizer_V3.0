@@ -28,7 +28,7 @@
                     <TextBlock helpers:Loc.Key="FileEncryptor_Title" 
                                FontSize="28" 
                                FontWeight="SemiBold" 
-                               FontFamily="{StaticResource Jura-SemiBold}" 
+                               FontFamily="{ThemeResource AppCustomFont}" 
                                VerticalAlignment="Center"
                                HorizontalAlignment="Center"/>
 

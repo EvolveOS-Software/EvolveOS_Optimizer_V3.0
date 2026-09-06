@@ -35,12 +35,12 @@
                 <TextBlock
                     Text="{x:Bind ViewModel.PageTitle}"
                     Style="{StaticResource TitleTextBlockStyle}"
-                    FontFamily="{ThemeResource Jura-SemiBold}"
+                    FontFamily="{ThemeResource AppCustomFont}"
                     FontSize="24"
                     AutomationProperties.HeadingLevel="Level1"/>
                 <TextBlock
                     Text="{x:Bind ViewModel.PageDescription}"
-                    FontFamily="{ThemeResource Jura}"
+                    FontFamily="{ThemeResource AppCustomFont}"
                     FontSize="13"
                     Style="{StaticResource BodyTextBlockStyle}"
                     Foreground="{ThemeResource TextFillColorSecondaryBrush}"
@@ -71,7 +71,7 @@
                             <Viewbox Width="16" Height="16" VerticalAlignment="Center" Margin="0,-2,0,0">
                                 <PathIcon Data="{StaticResource CustomizeIconPath}" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
                             </Viewbox>
-                            <TextBlock Text="{x:Bind ViewModel.BreadcrumbRootText}" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind ViewModel.BreadcrumbRootText}" VerticalAlignment="Center" FontWeight="SemiBold"/>
                         </StackPanel>
                     </Button>
 
@@ -95,7 +95,7 @@
                                     <PathIcon x:Name="BreadcrumbSectionIcon" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
                                 </Viewbox>
                                 <fluentIcons:FluentIcon x:Name="BreadcrumbSectionSymbol" IconVariant="Regular" FontSize="16" VerticalAlignment="Center" Foreground="{ThemeResource TextFillColorPrimaryBrush}" Visibility="Collapsed"/>
-                                <TextBlock x:Name="BreadcrumbSectionText" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                                <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="BreadcrumbSectionText" VerticalAlignment="Center" FontWeight="SemiBold"/>
                             </StackPanel>
                         </DropDownButton.Content>
                         <DropDownButton.Flyout>
@@ -112,7 +112,7 @@
                                             <Viewbox Grid.Column="0" Width="16" Height="16" Margin="0,0,8,0" VerticalAlignment="Center">
                                                 <PathIcon Data="{StaticResource WindowsThemeIconPath}"/>
                                             </Viewbox>
-                                            <TextBlock x:Name="FlyoutTextWindowsTheme" Grid.Column="1" VerticalAlignment="Center"/>
+                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="FlyoutTextWindowsTheme" Grid.Column="1" VerticalAlignment="Center"/>
                                         </Grid>
                                     </Button>
                                     <Button x:Name="FlyoutButtonTaskbar" Click="NavigateTaskbar_Click" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Background="Transparent" BorderThickness="0" Padding="8,6">
@@ -120,7 +120,7 @@
                                             <Viewbox Grid.Column="0" Width="16" Height="16" Margin="0,0,8,0" VerticalAlignment="Center">
                                                 <PathIcon Data="{StaticResource TaskbarIconPath}"/>
                                             </Viewbox>
-                                            <TextBlock x:Name="FlyoutTextTaskbar" Grid.Column="1" VerticalAlignment="Center"/>
+                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="FlyoutTextTaskbar" Grid.Column="1" VerticalAlignment="Center"/>
                                         </Grid>
                                     </Button>
                                     <Button x:Name="FlyoutButtonStartMenu" Click="NavigateStartMenu_Click" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Background="Transparent" BorderThickness="0" Padding="8,6">
@@ -128,7 +128,7 @@
                                             <Viewbox Grid.Column="0" Width="16" Height="16" Margin="0,0,8,0" VerticalAlignment="Center">
                                                 <PathIcon Data="{StaticResource StartMenuIconPath}"/>
                                             </Viewbox>
-                                            <TextBlock x:Name="FlyoutTextStartMenu" Grid.Column="1" VerticalAlignment="Center"/>
+                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="FlyoutTextStartMenu" Grid.Column="1" VerticalAlignment="Center"/>
                                         </Grid>
                                     </Button>
                                     <Button x:Name="FlyoutButtonExplorer" Click="NavigateExplorer_Click" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Background="Transparent" BorderThickness="0" Padding="8,6">
@@ -136,7 +136,7 @@
                                             <Viewbox Grid.Column="0" Width="16" Height="16" Margin="0,0,8,0" VerticalAlignment="Center">
                                                 <PathIcon Data="{StaticResource ExplorerIconPath}"/>
                                             </Viewbox>
-                                            <TextBlock x:Name="FlyoutTextExplorer" Grid.Column="1" VerticalAlignment="Center"/>
+                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="FlyoutTextExplorer" Grid.Column="1" VerticalAlignment="Center"/>
                                         </Grid>
                                     </Button>
                                 </StackPanel>
@@ -213,8 +213,8 @@
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
                                     <StackPanel Grid.Column="1">
-                                        <TextBlock Text="{x:Bind SettingName, Mode=OneTime}" Style="{StaticResource BodyTextBlockStyle}"/>
-                                        <TextBlock Text="{x:Bind SectionDisplayName, Mode=OneTime}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind SettingName, Mode=OneTime}" Style="{StaticResource BodyTextBlockStyle}"/>
+                                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind SectionDisplayName, Mode=OneTime}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                                     </StackPanel>
                                 </Grid>
                             </DataTemplate>
@@ -243,10 +243,10 @@
                                 Click="WindowsThemeCard_Click">
                                     <controls:SettingsCard.Header>
                                         <StackPanel Orientation="Horizontal" Spacing="8">
-                                            <TextBlock Text="{x:Bind ViewModel.WindowsThemeViewModel.DisplayName}" VerticalAlignment="Center"/>
+                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind ViewModel.WindowsThemeViewModel.DisplayName}" VerticalAlignment="Center"/>
                                             <Border x:Name="WindowsThemeNewBadge" Visibility="Collapsed"
                                                 Style="{StaticResource NewBadgeBorderStyle}">
-                                                <TextBlock x:Name="WindowsThemeNewText" Style="{StaticResource NewBadgeTextStyle}"/>
+                                                <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="WindowsThemeNewText" Style="{StaticResource NewBadgeTextStyle}"/>
                                             </Border>
                                         </StackPanel>
                                     </controls:SettingsCard.Header>
@@ -259,7 +259,7 @@
                                                 <StackPanel Orientation="Horizontal" Spacing="4">
                                                     <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,1,0,0"
                                                           Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                                    <TextBlock x:Name="WindowsThemeRecommendedText" Style="{StaticResource BadgeTextStyle}"
+                                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="WindowsThemeRecommendedText" Style="{StaticResource BadgeTextStyle}"
                                                            Foreground="{ThemeResource BadgeRecommendedForeground}"/>
                                                 </StackPanel>
                                             </Border>
@@ -267,13 +267,13 @@
                                                 <StackPanel Orientation="Horizontal" Spacing="4">
                                                     <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12"
                                                           VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                                    <TextBlock x:Name="WindowsThemeDefaultText" Style="{StaticResource BadgeTextStyle}"
+                                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="WindowsThemeDefaultText" Style="{StaticResource BadgeTextStyle}"
                                                            Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                                 </StackPanel>
                                             </Border>
                                             <Border x:Name="WindowsThemeCustomPill" Style="{StaticResource BadgeCustomStyle}" Visibility="Collapsed">
                                                 <StackPanel Orientation="Horizontal" Spacing="4">
-                                                    <TextBlock x:Name="WindowsThemeCustomText" Style="{StaticResource BadgeTextStyle}"
+                                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="WindowsThemeCustomText" Style="{StaticResource BadgeTextStyle}"
                                                            Foreground="{ThemeResource BadgeCustomForeground}"/>
                                                 </StackPanel>
                                             </Border>
@@ -287,10 +287,10 @@
                                 Click="TaskbarCard_Click">
                                     <controls:SettingsCard.Header>
                                         <StackPanel Orientation="Horizontal" Spacing="8">
-                                            <TextBlock Text="{x:Bind ViewModel.TaskbarViewModel.DisplayName}" VerticalAlignment="Center"/>
+                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind ViewModel.TaskbarViewModel.DisplayName}" VerticalAlignment="Center"/>
                                             <Border x:Name="TaskbarNewBadge" Visibility="Collapsed"
                                                 Style="{StaticResource NewBadgeBorderStyle}">
-                                                <TextBlock x:Name="TaskbarNewText" Style="{StaticResource NewBadgeTextStyle}"/>
+                                                <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="TaskbarNewText" Style="{StaticResource NewBadgeTextStyle}"/>
                                             </Border>
                                         </StackPanel>
                                     </controls:SettingsCard.Header>
@@ -303,7 +303,7 @@
                                                 <StackPanel Orientation="Horizontal" Spacing="4">
                                                     <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,1,0,0"
                                                           Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                                    <TextBlock x:Name="TaskbarRecommendedText" Style="{StaticResource BadgeTextStyle}"
+                                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="TaskbarRecommendedText" Style="{StaticResource BadgeTextStyle}"
                                                            Foreground="{ThemeResource BadgeRecommendedForeground}"/>
                                                 </StackPanel>
                                             </Border>
@@ -311,13 +311,13 @@
                                                 <StackPanel Orientation="Horizontal" Spacing="4">
                                                     <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12"
                                                           VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                                    <TextBlock x:Name="TaskbarDefaultText" Style="{StaticResource BadgeTextStyle}"
+                                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="TaskbarDefaultText" Style="{StaticResource BadgeTextStyle}"
                                                            Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                                 </StackPanel>
                                             </Border>
                                             <Border x:Name="TaskbarCustomPill" Style="{StaticResource BadgeCustomStyle}" Visibility="Collapsed">
                                                 <StackPanel Orientation="Horizontal" Spacing="4">
-                                                    <TextBlock x:Name="TaskbarCustomText" Style="{StaticResource BadgeTextStyle}"
+                                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="TaskbarCustomText" Style="{StaticResource BadgeTextStyle}"
                                                            Foreground="{ThemeResource BadgeCustomForeground}"/>
                                                 </StackPanel>
                                             </Border>
@@ -331,10 +331,10 @@
                                 Click="StartMenuCard_Click">
                                     <controls:SettingsCard.Header>
                                         <StackPanel Orientation="Horizontal" Spacing="8">
-                                            <TextBlock Text="{x:Bind ViewModel.StartMenuViewModel.DisplayName}" VerticalAlignment="Center"/>
+                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind ViewModel.StartMenuViewModel.DisplayName}" VerticalAlignment="Center"/>
                                             <Border x:Name="StartMenuNewBadge" Visibility="Collapsed"
                                                 Style="{StaticResource NewBadgeBorderStyle}">
-                                                <TextBlock x:Name="StartMenuNewText" Style="{StaticResource NewBadgeTextStyle}"/>
+                                                <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="StartMenuNewText" Style="{StaticResource NewBadgeTextStyle}"/>
                                             </Border>
                                         </StackPanel>
                                     </controls:SettingsCard.Header>
@@ -347,7 +347,7 @@
                                                 <StackPanel Orientation="Horizontal" Spacing="4">
                                                     <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,1,0,0"
                                                           Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                                    <TextBlock x:Name="StartMenuRecommendedText" Style="{StaticResource BadgeTextStyle}"
+                                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="StartMenuRecommendedText" Style="{StaticResource BadgeTextStyle}"
                                                            Foreground="{ThemeResource BadgeRecommendedForeground}"/>
                                                 </StackPanel>
                                             </Border>
@@ -355,13 +355,13 @@
                                                 <StackPanel Orientation="Horizontal" Spacing="4">
                                                     <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12"
                                                           VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                                    <TextBlock x:Name="StartMenuDefaultText" Style="{StaticResource BadgeTextStyle}"
+                                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="StartMenuDefaultText" Style="{StaticResource BadgeTextStyle}"
                                                            Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                                 </StackPanel>
                                             </Border>
                                             <Border x:Name="StartMenuCustomPill" Style="{StaticResource BadgeCustomStyle}" Visibility="Collapsed">
                                                 <StackPanel Orientation="Horizontal" Spacing="4">
-                                                    <TextBlock x:Name="StartMenuCustomText" Style="{StaticResource BadgeTextStyle}"
+                                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="StartMenuCustomText" Style="{StaticResource BadgeTextStyle}"
                                                            Foreground="{ThemeResource BadgeCustomForeground}"/>
                                                 </StackPanel>
                                             </Border>
@@ -375,10 +375,10 @@
                                 Click="ExplorerCard_Click">
                                     <controls:SettingsCard.Header>
                                         <StackPanel Orientation="Horizontal" Spacing="8">
-                                            <TextBlock Text="{x:Bind ViewModel.ExplorerViewModel.DisplayName}" VerticalAlignment="Center"/>
+                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind ViewModel.ExplorerViewModel.DisplayName}" VerticalAlignment="Center"/>
                                             <Border x:Name="ExplorerNewBadge" Visibility="Collapsed"
                                                 Style="{StaticResource NewBadgeBorderStyle}">
-                                                <TextBlock x:Name="ExplorerNewText" Style="{StaticResource NewBadgeTextStyle}"/>
+                                                <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="ExplorerNewText" Style="{StaticResource NewBadgeTextStyle}"/>
                                             </Border>
                                         </StackPanel>
                                     </controls:SettingsCard.Header>
@@ -391,7 +391,7 @@
                                                 <StackPanel Orientation="Horizontal" Spacing="4">
                                                     <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,1,0,0"
                                                           Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                                    <TextBlock x:Name="ExplorerRecommendedText" Style="{StaticResource BadgeTextStyle}"
+                                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="ExplorerRecommendedText" Style="{StaticResource BadgeTextStyle}"
                                                            Foreground="{ThemeResource BadgeRecommendedForeground}"/>
                                                 </StackPanel>
                                             </Border>
@@ -399,13 +399,13 @@
                                                 <StackPanel Orientation="Horizontal" Spacing="4">
                                                     <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12"
                                                           VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                                    <TextBlock x:Name="ExplorerDefaultText" Style="{StaticResource BadgeTextStyle}"
+                                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="ExplorerDefaultText" Style="{StaticResource BadgeTextStyle}"
                                                            Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                                 </StackPanel>
                                             </Border>
                                             <Border x:Name="ExplorerCustomPill" Style="{StaticResource BadgeCustomStyle}" Visibility="Collapsed">
                                                 <StackPanel Orientation="Horizontal" Spacing="4">
-                                                    <TextBlock x:Name="ExplorerCustomText" Style="{StaticResource BadgeTextStyle}"
+                                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="ExplorerCustomText" Style="{StaticResource BadgeTextStyle}"
                                                            Foreground="{ThemeResource BadgeCustomForeground}"/>
                                                 </StackPanel>
                                             </Border>
@@ -433,7 +433,7 @@
                                         VerticalAlignment="Center" 
                                         Margin="0,1,0,0"
                                         Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                                <TextBlock x:Name="ContextMenuModernText"
+                                                <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="ContextMenuModernText"
                                                            Text="{x:Bind helpers:ResourceString.GetString('cme_badge_modern_fallback'), Mode=OneTime}"
                                                            Style="{StaticResource BadgeTextStyle}"
                                                            Foreground="{ThemeResource BadgeCustomForeground}"/>
@@ -448,7 +448,7 @@
                                                                         VerticalAlignment="Center"
                                                                         Margin="0,1,0,0"
                                                                         Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                                <TextBlock x:Name="ContextMenuClassicText"
+                                                <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="ContextMenuClassicText"
                                                            Text="{x:Bind helpers:ResourceString.GetString('cme_badge_classic_fallback'), Mode=OneTime}"
                                                            Style="{StaticResource BadgeTextStyle}"
                                                            Foreground="{ThemeResource BadgeCustomForeground}"/>
@@ -480,7 +480,7 @@
                         HorizontalAlignment="Center"/>
                     <TextBlock x:Name="CustomizeLoadingText"
                                helpers:Loc.Key="WinCustomize_LoadingText"
-                               FontFamily="{ThemeResource Jura}"
+                               FontFamily="{ThemeResource AppCustomFont}"
                                HorizontalAlignment="Center"
                                TextAlignment="Center"/>
                 </StackPanel>

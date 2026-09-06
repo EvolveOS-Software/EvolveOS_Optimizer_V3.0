@@ -183,6 +183,9 @@
     <sys:String x:Key="Settings_CustomColor_Header">Eigene Farbe</sys:String>
     <sys:String x:Key="Settings_ApplyColor_Button">Eigene Farbe anwenden</sys:String>
 
+    <sys:String x:Key="Settings_Font_Title">Anwendungsschriftart</sys:String>
+    <sys:String x:Key="Settings_Font_Subtitle">Wählen Sie die Standardschriftart für die Anwendungsoberfläche.</sys:String>
+
     <sys:String x:Key="Settings_Language_Title">Sprache</sys:String>
     <sys:String x:Key="Settings_Language_Subtitle">Wählen Sie Ihre bevorzugte Sprache</sys:String>
 

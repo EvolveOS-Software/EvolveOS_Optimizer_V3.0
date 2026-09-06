@@ -54,8 +54,8 @@
                         VerticalAlignment="Center"/>
                 </Viewbox>
                 <StackPanel VerticalAlignment="Center">
-                    <TextBlock helpers:Loc.Key="profile_builder_title" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="24" />
-                    <TextBlock helpers:Loc.Key="profile_builder_description" FontFamily="{ThemeResource Jura}" FontSize="13" Opacity="0.6"/>
+                    <TextBlock helpers:Loc.Key="profile_builder_title" FontFamily="{ThemeResource AppCustomFont}" FontSize="24" />
+                    <TextBlock helpers:Loc.Key="profile_builder_description" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" Opacity="0.6"/>
                 </StackPanel>
             </StackPanel>
 
@@ -316,7 +316,7 @@
                 <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center" Spacing="12" Margin="0,50,525,0">
                     <ProgressRing IsActive="{x:Bind ViewModel.IsLoading, Mode=OneWay}" Width="72" Height="72" />
                     <TextBlock helpers:Loc.Key="ProfileBuilder_LoadingSettingsText" 
-                               FontFamily="{ThemeResource Jura}"
+                               FontFamily="{ThemeResource AppCustomFont}"
                                HorizontalAlignment="Center" />
                 </StackPanel>
             </Grid>

@@ -38,8 +38,8 @@
                 <StackPanel Orientation="Horizontal" Spacing="12">
                     <FontIcon Glyph="&#xECAA;" FontSize="24" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                     <StackPanel>
-                        <TextBlock x:Name="TotalProcessesText" Text="0" FontSize="18" FontFamily="{ThemeResource Jura-SemiBold}" />
-                        <TextBlock helpers:Loc.Key="process_manager_page_total_processes" FontFamily="{ThemeResource Jura}" FontSize="12" Opacity="0.7"/>
+                        <TextBlock x:Name="TotalProcessesText" Text="0" FontSize="18" FontFamily="{ThemeResource AppCustomFont}" />
+                        <TextBlock helpers:Loc.Key="process_manager_page_total_processes" FontFamily="{ThemeResource AppCustomFont}" FontSize="12" Opacity="0.7"/>
                     </StackPanel>
                 </StackPanel>
             </Border>
@@ -54,8 +54,8 @@
                 <StackPanel Orientation="Horizontal" Spacing="12">
                     <FontIcon Glyph="&#xE964;" FontSize="24" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                     <StackPanel>
-                        <TextBlock x:Name="TotalMemoryText" Text="0 MB" FontSize="18" FontFamily="{ThemeResource Jura-SemiBold}"/>
-                        <TextBlock helpers:Loc.Key="process_manager_page_total_memory" FontFamily="{ThemeResource Jura}" FontSize="12" Opacity="0.7"/>
+                        <TextBlock x:Name="TotalMemoryText" Text="0 MB" FontSize="18" FontFamily="{ThemeResource AppCustomFont}"/>
+                        <TextBlock helpers:Loc.Key="process_manager_page_total_memory" FontFamily="{ThemeResource AppCustomFont}" FontSize="12" Opacity="0.7"/>
                     </StackPanel>
                 </StackPanel>
             </Border>
@@ -70,8 +70,8 @@
                 <StackPanel Orientation="Horizontal" Spacing="12">
                     <FontIcon Glyph="&#xE8A7;" FontSize="24" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                     <StackPanel>
-                        <TextBlock x:Name="TotalThreadsText" Text="0" FontSize="18" FontFamily="{ThemeResource Jura-SemiBold}"/>
-                        <TextBlock helpers:Loc.Key="process_manager_page_total_threads" FontFamily="{ThemeResource Jura}" FontSize="12" Opacity="0.7"/>
+                        <TextBlock x:Name="TotalThreadsText" Text="0" FontSize="18" FontFamily="{ThemeResource AppCustomFont}"/>
+                        <TextBlock helpers:Loc.Key="process_manager_page_total_threads" FontFamily="{ThemeResource AppCustomFont}" FontSize="12" Opacity="0.7"/>
                     </StackPanel>
                 </StackPanel>
             </Border>
@@ -85,7 +85,7 @@
 
             <AutoSuggestBox x:Name="SearchBox"
                             PlaceholderText="{helpers:ResourceString Key=process_manager_page_search_placeholder}"
-                            FontFamily="{ThemeResource Jura}"
+                            FontFamily="{ThemeResource AppCustomFont}"
                             Width="300"
                             QueryIcon="Find"
                             HorizontalAlignment="Left"
@@ -101,7 +101,7 @@
                               Glyph="&#xE769;"
                               FontSize="14"
                               Foreground="LimeGreen"/>
-                    <TextBlock x:Name="LiveMonitoringText" FontFamily="{ThemeResource Jura}"
+                    <TextBlock x:Name="LiveMonitoringText" FontFamily="{ThemeResource AppCustomFont}"
                                helpers:Loc.Key="process_manager_page_live_monitor"/>
                 </StackPanel>
             </Button>
@@ -129,7 +129,7 @@
                     BorderThickness="0"
                     Padding="4.4"
                     HorizontalAlignment="Left">
-                <TextBlock helpers:Loc.Key="process_manager_page_name" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="13"/>
+                <TextBlock helpers:Loc.Key="process_manager_page_name" FontFamily="{ThemeResource AppCustomFont}" FontSize="13"/>
             </Button>
 
             <Button x:Name="PidHeader"
@@ -140,7 +140,7 @@
                     BorderThickness="0"
                     Padding="4.4"
                     HorizontalAlignment="Center">
-                <TextBlock helpers:Loc.Key="process_manager_page_pid" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="13"/>
+                <TextBlock helpers:Loc.Key="process_manager_page_pid" FontFamily="{ThemeResource AppCustomFont}" FontSize="13"/>
             </Button>
 
             <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Center" Spacing="4">
@@ -150,7 +150,7 @@
                         Background="Transparent"
                         BorderThickness="0"
                         Padding="4.4">
-                    <TextBlock helpers:Loc.Key="process_manager_page_memory" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="13"/>
+                    <TextBlock helpers:Loc.Key="process_manager_page_memory" FontFamily="{ThemeResource AppCustomFont}" FontSize="13"/>
                 </Button>
 
                 <Button Background="Transparent" BorderThickness="0" Padding="4" ToolTipService.ToolTip="Memory Display Settings">
@@ -179,7 +179,7 @@
                     BorderThickness="0"
                     Padding="4.4"
                     HorizontalAlignment="Center">
-                <TextBlock helpers:Loc.Key="process_manager_page_threads" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="13"/>
+                <TextBlock helpers:Loc.Key="process_manager_page_threads" FontFamily="{ThemeResource AppCustomFont}" FontSize="13"/>
             </Button>
 
             <Button x:Name="PriorityHeader"
@@ -190,12 +190,12 @@
                     BorderThickness="0"
                     Padding="4.4"
                     HorizontalAlignment="Center">
-                <TextBlock helpers:Loc.Key="process_manager_page_priority" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="13"/>
+                <TextBlock helpers:Loc.Key="process_manager_page_priority" FontFamily="{ThemeResource AppCustomFont}" FontSize="13"/>
             </Button>
 
             <TextBlock helpers:Loc.Key="process_manager_page_actions"
                        Grid.Column="5"
-                       FontFamily="{ThemeResource Jura-SemiBold}"
+                       FontFamily="{ThemeResource AppCustomFont}"
                        FontSize="13"
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center"/>
@@ -219,7 +219,7 @@
                         <GroupStyle.HeaderTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Name}" 
-                                           FontFamily="{ThemeResource Jura-SemiBold}" 
+                                           FontFamily="{ThemeResource AppCustomFont}" 
                                            FontSize="14"
                                            Margin="0,16,0,8" 
                                            Opacity="0.8"/>
@@ -312,7 +312,7 @@
                                                Text="{Binding Id}"
                                                HorizontalAlignment="Center"
                                                VerticalAlignment="Center"
-                                               FontFamily="{ThemeResource Jura}"
+                                               FontFamily="{ThemeResource AppCustomFont}"
                                                FontSize="12"
                                                Opacity="0.8"/>
 
@@ -325,7 +325,7 @@
                                                Text="{x:Bind ThreadCount, Mode=OneWay}"
                                                HorizontalAlignment="Center"
                                                VerticalAlignment="Center"
-                                               FontFamily="{ThemeResource Jura}"
+                                               FontFamily="{ThemeResource AppCustomFont}"
                                                FontSize="12"
                                                Opacity="0.8"/>
 
@@ -333,7 +333,7 @@
                                                Text="{x:Bind Priority, Mode=OneWay}"
                                                HorizontalAlignment="Center"
                                                VerticalAlignment="Center"
-                                               FontFamily="{ThemeResource Jura}"
+                                               FontFamily="{ThemeResource AppCustomFont}"
                                                FontSize="12"
                                                Opacity="0.8"/>
 
@@ -348,7 +348,7 @@
                                             <Button.Flyout>
                                                 <Flyout Placement="LeftEdgeAlignedTop">
                                                     <StackPanel Width="300" Spacing="8">
-                                                        <TextBlock Text="AI Explainer" FontFamily="{StaticResource Jura}" FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                                        <TextBlock Text="AI Explainer" FontFamily="{ThemeResource AppCustomFont}" FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                         <TextBlock x:Name="AiExplanationText" TextWrapping="Wrap" FontSize="12" Opacity="0.9"/>
                                                     </StackPanel>
                                                 </Flyout>
@@ -358,12 +358,12 @@
 
                                         <Button Tag="{Binding Id}"
                                                 Click="EndTask_Click"
-                                                FontFamily="{ThemeResource Jura}"
+                                                FontFamily="{ThemeResource AppCustomFont}"
                                                 ToolTipService.ToolTip="{helpers:ResourceString Key=process_manager_page_end_task_tooltip}"
                                                 Padding="12,6">
                                             <StackPanel Orientation="Horizontal" Spacing="6">
                                                 <FontIcon Glyph="&#xE711;" FontSize="12"/>
-                                                <TextBlock helpers:Loc.Key="process_manager_page_end_task" FontFamily="{ThemeResource Jura}" FontSize="12"/>
+                                                <TextBlock helpers:Loc.Key="process_manager_page_end_task" FontFamily="{ThemeResource AppCustomFont}" FontSize="12"/>
                                             </StackPanel>
                                         </Button>
                                     </StackPanel>

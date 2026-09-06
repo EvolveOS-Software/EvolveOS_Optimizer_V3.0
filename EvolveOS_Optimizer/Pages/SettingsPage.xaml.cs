@@ -107,6 +107,8 @@ namespace EvolveOS_Optimizer.Pages
 
             LocalizationService.Instance.PropertyChanged += _localizationHandler;
 
+            LoadFontSettings();
+
             InitializeSelections();
             UpdateComboBoxLocalization();
             SetSelectedByTag(ThemeSelector, SettingsEngine.AppTheme);
@@ -1098,6 +1100,53 @@ namespace EvolveOS_Optimizer.Pages
                 NativeToastHelper.SendNativeToast("Developer Tools", "File does not exist yet.");
             }
         }
+        #endregion
+
+        #region Font Selector
+
+        private void LoadFontSettings()
+        {
+            var availableFonts = new List<string>
+            {
+                "Barlow",
+                "DMSans",
+                "Figtree",
+                "IBMPlexSans",
+                "Inter",
+                "Jura",
+                "Manrope",
+                "Play",
+                "Segoe UI",
+                "SourceSans3",
+                "SpaceGrotesk",
+                "Triakis",
+                "WorkSans"
+            };
+
+            FontSelectionBox.ItemsSource = availableFonts;
+
+            FontSelectionBox.SelectedItem = SettingsEngine.AppFont;
+        }
+
+        private void FontSelectionBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (FontSelectionBox.SelectedItem is string selectedFont)
+            {
+                SettingsEngine.AppFont = selectedFont;
+
+                MainWindow.Instance?.ApplyFontGlobally(selectedFont);
+            }
+        }
+
+        private FontFamily GetFontFamilySafely(string fontName)
+        {
+            if (Application.Current.Resources.TryGetValue(fontName, out var resource) && resource is FontFamily customFont)
+            {
+                return customFont;
+            }
+            return new FontFamily(fontName);
+        }
+
         #endregion
 
         #region Bound Properties

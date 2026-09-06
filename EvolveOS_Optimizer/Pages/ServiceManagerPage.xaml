@@ -34,8 +34,8 @@
                 <StackPanel Orientation="Horizontal" Spacing="12">
                     <FontIcon Glyph="&#xE9F5;" FontSize="24" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                     <StackPanel>
-                        <TextBlock x:Name="TotalServicesText" Text="0" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="18" />
-                        <TextBlock helpers:Loc.Key="service_manager_page_total_services" FontFamily="{ThemeResource Jura}" FontSize="12" Opacity="0.7"/>
+                        <TextBlock x:Name="TotalServicesText" Text="0" FontFamily="{ThemeResource AppCustomFont}" FontSize="18" />
+                        <TextBlock helpers:Loc.Key="service_manager_page_total_services" FontFamily="{ThemeResource AppCustomFont}" FontSize="12" Opacity="0.7"/>
                     </StackPanel>
                 </StackPanel>
             </Border>
@@ -50,8 +50,8 @@
                 <StackPanel Orientation="Horizontal" Spacing="12">
                     <FontIcon Glyph="&#xE768;" FontSize="24" Foreground="{ThemeResource SystemFillColorSuccessBrush}"/>
                     <StackPanel>
-                        <TextBlock x:Name="RunningServicesText" Text="0" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="18" />
-                        <TextBlock helpers:Loc.Key="service_manager_page_running_services" FontFamily="{ThemeResource Jura}" FontSize="12" Opacity="0.7"/>
+                        <TextBlock x:Name="RunningServicesText" Text="0" FontFamily="{ThemeResource AppCustomFont}" FontSize="18" />
+                        <TextBlock helpers:Loc.Key="service_manager_page_running_services" FontFamily="{ThemeResource AppCustomFont}" FontSize="12" Opacity="0.7"/>
                     </StackPanel>
                 </StackPanel>
             </Border>
@@ -66,8 +66,8 @@
                 <StackPanel Orientation="Horizontal" Spacing="12">
                     <FontIcon Glyph="&#xE71A;" FontSize="24" Foreground="{ThemeResource SystemFillColorCautionBrush}"/>
                     <StackPanel>
-                        <TextBlock x:Name="StoppedServicesText" FontFamily="{ThemeResource Jura-SemiBold}" Text="0" FontSize="18" />
-                        <TextBlock helpers:Loc.Key="service_manager_page_stopped_services" FontFamily="{ThemeResource Jura}" FontSize="12" Opacity="0.7"/>
+                        <TextBlock x:Name="StoppedServicesText" FontFamily="{ThemeResource AppCustomFont}" Text="0" FontSize="18" />
+                        <TextBlock helpers:Loc.Key="service_manager_page_stopped_services" FontFamily="{ThemeResource AppCustomFont}" FontSize="12" Opacity="0.7"/>
                     </StackPanel>
                 </StackPanel>
             </Border>
@@ -100,7 +100,7 @@
                       Grid.Column="2"
                       Margin="8,0,0,0"
                       Width="140"
-                      FontFamily="{ThemeResource Jura}"
+                      FontFamily="{ThemeResource AppCustomFont}"
                       SelectionChanged="FilterComboBox_SelectionChanged">
                 <ComboBoxItem Content="{helpers:ResourceString Key=service_manager_page_all}" IsSelected="True"/>
                 <ComboBoxItem Content="{helpers:ResourceString Key=service_manager_page_running}"/>
@@ -119,7 +119,7 @@
                 <StackPanel Orientation="Horizontal" Spacing="8">
                     <FontIcon x:Name="LiveMonitoringIcon" Glyph="&#xE769;" FontSize="14" Foreground="LimeGreen"/>
                     <TextBlock x:Name="LiveMonitoringText" 
-                               FontFamily="{ThemeResource Jura}" 
+                               FontFamily="{ThemeResource AppCustomFont}" 
                                helpers:Loc.Key="process_manager_page_live_monitor"/>
                 </StackPanel>
             </Button>
@@ -152,7 +152,7 @@
                     Padding="0" 
                     HorizontalAlignment="Left">
                 <TextBlock helpers:Loc.Key="service_manager_page_service_name"
-                           FontFamily="{ThemeResource Jura-SemiBold}"
+                           FontFamily="{ThemeResource AppCustomFont}"
                            FontSize="13"/>
             </Button>
 
@@ -165,7 +165,7 @@
                     Padding="0" 
                     HorizontalAlignment="Center">
                 <TextBlock helpers:Loc.Key="service_manager_page_status"
-                           FontFamily="{ThemeResource Jura-SemiBold}"
+                           FontFamily="{ThemeResource AppCustomFont}"
                            FontSize="13"/>
             </Button>
 
@@ -184,7 +184,7 @@
 
             <TextBlock helpers:Loc.Key="service_manager_page_actions" 
                        Grid.Column="3"
-                       FontFamily="{ThemeResource Jura}"
+                       FontFamily="{ThemeResource AppCustomFont}"
                        FontSize="13"
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center"/>
@@ -225,7 +225,7 @@
                                     <StackPanel Spacing="2">
                                         <TextBlock Text="{Binding DisplayName}" TextTrimming="CharacterEllipsis" FontSize="13"/>
                                         <TextBlock Text="{Binding Name}" FontSize="11" Opacity="0.5" TextTrimming="CharacterEllipsis"/>
-                                        <TextBlock Text="{Binding ExecutablePath}" FontFamily="Consolas" FontSize="10" Opacity="0.4" TextWrapping="Wrap" MaxWidth="350"/>
+                                        <TextBlock Text="{Binding ExecutablePath}" FontFamily="{ThemeResource AppCustomFont}" FontSize="10" Opacity="0.4" TextWrapping="Wrap" MaxWidth="350"/>
                                     </StackPanel>
                                 </StackPanel>
 
@@ -241,7 +241,7 @@
                                 <ComboBox Grid.Column="2"
                                           SelectedIndex="{Binding StartTypeIndex}"
                                           Tag="{Binding Name}"
-                                          FontFamily="{ThemeResource Jura}"
+                                          FontFamily="{ThemeResource AppCustomFont}"
                                           SelectionChanged="StartupType_SelectionChanged"
                                           DropDownOpened="StartupType_DropDownOpened"
                                           DropDownClosed="StartupType_DropDownClosed"
@@ -265,7 +265,7 @@
                                         <Button.Flyout>
                                             <Flyout Placement="LeftEdgeAlignedTop">
                                                 <StackPanel Width="300" Spacing="8">
-                                                    <TextBlock Text="AI Explainer" FontFamily="{StaticResource Jura}" FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                                    <TextBlock Text="AI Explainer" FontFamily="{ThemeResource AppCustomFont}" FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                     <TextBlock x:Name="AiExplanationText" TextWrapping="Wrap" FontSize="12" Opacity="0.9"/>
                                                 </StackPanel>
                                             </Flyout>

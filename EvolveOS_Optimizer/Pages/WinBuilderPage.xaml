@@ -26,8 +26,8 @@
             <PathIcon x:Name="HeaderLogo" Data="{StaticResource WinBuilderIconPath}" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
             </Viewbox>
             <StackPanel VerticalAlignment="Center">
-                <TextBlock x:Name="WinBuild_Title" helpers:Loc.Key="winbuilder_title" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="24" />
-                <TextBlock x:Name="WinBuild_Desc" helpers:Loc.Key="winbuilder_description" FontFamily="{ThemeResource Jura}" FontSize="13" Opacity="0.6"/>
+                <TextBlock x:Name="WinBuild_Title" helpers:Loc.Key="winbuilder_title" FontFamily="{ThemeResource AppCustomFont}" FontSize="24" />
+                <TextBlock x:Name="WinBuild_Desc" helpers:Loc.Key="winbuilder_description" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" Opacity="0.6"/>
             </StackPanel>
         </StackPanel>
 

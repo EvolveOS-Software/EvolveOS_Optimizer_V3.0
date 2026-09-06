@@ -154,13 +154,13 @@
                             </TextBlock.RenderTransform>
                             
                             <Run Text="{helpers:ResourceString Key=text_info_scripts}"
-                                 FontFamily="{StaticResource Jura}"
+                                 FontFamily="{ThemeResource AppCustomFont}"
                                  FontSize="24"
                                  FontWeight="Bold"
                                  Foreground="{ThemeResource TextFillColorPrimaryBrush}"/><LineBreak/>
                                  
                             <Run Text="{helpers:ResourceString Key=scripts_info_scripts}"
-                                 FontFamily="{StaticResource Jura}"
+                                 FontFamily="{ThemeResource AppCustomFont}"
                                  FontSize="20"
                                  Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                         </TextBlock>

@@ -62,7 +62,7 @@
                                             Visibility="{Binding ShowHardwarePanelInTray, Converter={StaticResource InverseConverter}}">
                                     <Image Source="ms-appx:///Assets/EvolveOS_Optimizer.ico" Width="16" Height="16"/>
                                     <TextBlock Text="EvolveOS Optimizer" FontSize="14" FontWeight="Bold"
-                                               Foreground="{ThemeResource MyDynamicAccentBrush}" FontFamily="{StaticResource Jura}"/>
+                                               Foreground="{ThemeResource MyDynamicAccentBrush}" FontFamily="{ThemeResource AppCustomFont}"/>
                                 </StackPanel>
 
                                 <Border Background="{ThemeResource Brush_Overlay_Dim}"
@@ -79,7 +79,7 @@
                                         <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,0,0,4">
                                             <Image Source="ms-appx:///Assets/EvolveOS_Optimizer.ico" Width="16" Height="16"/>
                                             <TextBlock Text="EvolveOS Optimizer" FontSize="14" FontWeight="Bold"
-                                                       Foreground="{ThemeResource MyDynamicAccentBrush}" FontFamily="{StaticResource Jura}"/>
+                                                       Foreground="{ThemeResource MyDynamicAccentBrush}" FontFamily="{ThemeResource AppCustomFont}"/>
                                         </StackPanel>
 
                                         <Grid Visibility="{Binding ShowCpuInTray, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -90,9 +90,9 @@
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
                                             <FontIcon Glyph="&#xE9D9;" Foreground="#85E064" FontSize="16" HorizontalAlignment="Left"/>
-                                            <TextBlock Text="CPU" Grid.Column="1" Foreground="White" FontFamily="{StaticResource Jura}" FontSize="13" VerticalAlignment="Center"/>
+                                            <TextBlock Text="CPU" Grid.Column="1" Foreground="White" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" VerticalAlignment="Center"/>
                                             <Polyline Grid.Column="2" Points="{Binding CpuTrayPoints}" Stroke="#85E064" StrokeThickness="1.5" VerticalAlignment="Center" Height="15" HorizontalAlignment="Right" Margin="0,0,10,0"/>
-                                            <TextBlock Text="{Binding CurrentCpuLoadStr}" Grid.Column="3" Foreground="#85E064" FontFamily="{StaticResource Jura}" FontSize="13" VerticalAlignment="Center"/>
+                                            <TextBlock Text="{Binding CurrentCpuLoadStr}" Grid.Column="3" Foreground="#85E064" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" VerticalAlignment="Center"/>
                                         </Grid>
 
                                         <Grid Visibility="{Binding ShowGpuInTray, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -103,9 +103,9 @@
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
                                             <FontIcon Glyph="&#xE99A;" Foreground="#E65C5C" FontSize="16" HorizontalAlignment="Left"/>
-                                            <TextBlock Text="GPU" Grid.Column="1" Foreground="White" FontFamily="{StaticResource Jura}" FontSize="13" VerticalAlignment="Center"/>
+                                            <TextBlock Text="GPU" Grid.Column="1" Foreground="White" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" VerticalAlignment="Center"/>
                                             <Polyline Grid.Column="2" Points="{Binding GpuTrayPoints}" Stroke="#E65C5C" StrokeThickness="1.5" VerticalAlignment="Center" Height="15" HorizontalAlignment="Right" Margin="0,0,10,0"/>
-                                            <TextBlock Text="{Binding CurrentGpuLoadStr}" Grid.Column="3" Foreground="#E65C5C" FontFamily="{StaticResource Jura}" FontSize="13" VerticalAlignment="Center"/>
+                                            <TextBlock Text="{Binding CurrentGpuLoadStr}" Grid.Column="3" Foreground="#E65C5C" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" VerticalAlignment="Center"/>
                                         </Grid>
 
                                         <Grid Visibility="{Binding ShowRamInTray, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -116,9 +116,9 @@
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
                                             <FontIcon Glyph="&#xE964;" Foreground="#5C9CE6" FontSize="16" HorizontalAlignment="Left"/>
-                                            <TextBlock Text="RAM" Grid.Column="1" Foreground="White" FontFamily="{StaticResource Jura}" FontSize="13" VerticalAlignment="Center"/>
+                                            <TextBlock Text="RAM" Grid.Column="1" Foreground="White" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" VerticalAlignment="Center"/>
                                             <Polyline Grid.Column="2" Points="{Binding RamTrayPoints}" Stroke="#5C9CE6" StrokeThickness="1.5" VerticalAlignment="Center" Height="15" HorizontalAlignment="Right" Margin="0,0,10,0"/>
-                                            <TextBlock Text="{Binding CurrentRamLoadStr}" Grid.Column="3" Foreground="#5C9CE6" FontFamily="{StaticResource Jura}" FontSize="13" VerticalAlignment="Center"/>
+                                            <TextBlock Text="{Binding CurrentRamLoadStr}" Grid.Column="3" Foreground="#5C9CE6" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" VerticalAlignment="Center"/>
                                         </Grid>
 
                                         <Grid Visibility="{Binding ShowDiskInTray, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -129,9 +129,9 @@
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
                                             <FontIcon Glyph="&#xEDA2;" Foreground="#B973E6" FontSize="16" HorizontalAlignment="Left"/>
-                                            <TextBlock Text="I/O" Grid.Column="1" Foreground="White" FontFamily="{StaticResource Jura}" FontSize="13" VerticalAlignment="Center"/>
+                                            <TextBlock Text="I/O" Grid.Column="1" Foreground="White" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" VerticalAlignment="Center"/>
                                             <Polyline Grid.Column="2" Points="{Binding DiskTrayPoints}" Stroke="#B973E6" StrokeThickness="1.5" VerticalAlignment="Center" Height="15" HorizontalAlignment="Right" Margin="0,0,10,0"/>
-                                            <TextBlock Text="{Binding CurrentDiskLoadStr}" Grid.Column="3" Foreground="#B973E6" FontFamily="{StaticResource Jura}" FontSize="13" VerticalAlignment="Center"/>
+                                            <TextBlock Text="{Binding CurrentDiskLoadStr}" Grid.Column="3" Foreground="#B973E6" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" VerticalAlignment="Center"/>
                                         </Grid>
                                     </StackPanel>
                                 </Border>
@@ -161,7 +161,7 @@
             <tb:TaskbarIcon.ContextFlyout>
                 <MenuFlyout MenuFlyoutPresenterStyle="{StaticResource EvolveOSPresenterStyle}">
 
-                    <MenuFlyoutItem x:Name="MenuDetachMonitor" MinWidth="225" Text="{helpers:ResourceString Key=systray_menu_detach}" Click="MenuDetachMonitor_Click" FontFamily="{StaticResource Jura-Regular}">
+                    <MenuFlyoutItem x:Name="MenuDetachMonitor" MinWidth="225" Text="{helpers:ResourceString Key=systray_menu_detach}" Click="MenuDetachMonitor_Click" FontFamily="{ThemeResource AppCustomFont}">
                         <MenuFlyoutItem.Icon>
                             <FontIcon Glyph="&#xE8A7;"/>
                         </MenuFlyoutItem.Icon>
@@ -170,19 +170,19 @@
 
                     <MenuFlyoutSeparator x:Name="HardwarePanelSeparator" Style="{StaticResource TrayWidgetSeparatorStyle}" />
 
-                    <MenuFlyoutItem Text="{helpers:ResourceString Key=systray_security}" Command="{Binding OpenSecurityCommand}" FontFamily="{StaticResource Jura-Regular}">
+                    <MenuFlyoutItem Text="{helpers:ResourceString Key=systray_security}" Command="{Binding OpenSecurityCommand}" FontFamily="{ThemeResource AppCustomFont}">
                         <MenuFlyoutItem.Icon>
                             <FontIcon Glyph="&#xEA18;" FontSize="14"/>
                         </MenuFlyoutItem.Icon>
                     </MenuFlyoutItem>
 
-                    <MenuFlyoutItem Text="{helpers:ResourceString Key=systray_maintenance}" Command="{Binding OpenMaintenanceCommand}" FontFamily="{StaticResource Jura-Regular}">
+                    <MenuFlyoutItem Text="{helpers:ResourceString Key=systray_maintenance}" Command="{Binding OpenMaintenanceCommand}" FontFamily="{ThemeResource AppCustomFont}">
                         <MenuFlyoutItem.Icon>
                             <FontIcon Glyph="&#xE90F;" FontSize="14"/>
                         </MenuFlyoutItem.Icon>
                     </MenuFlyoutItem>
 
-                    <MenuFlyoutItem Text="{helpers:ResourceString Key=systray_dns}" Command="{Binding OpenDnsCommand}" FontFamily="{StaticResource Jura-Regular}">
+                    <MenuFlyoutItem Text="{helpers:ResourceString Key=systray_dns}" Command="{Binding OpenDnsCommand}" FontFamily="{ThemeResource AppCustomFont}">
                         <MenuFlyoutItem.Icon>
                             <FontIcon Glyph="&#xE774;" FontSize="14"/>
                         </MenuFlyoutItem.Icon>
@@ -190,13 +190,13 @@
 
                     <MenuFlyoutSeparator Opacity="0.5"/>
 
-                    <MenuFlyoutItem Text="{helpers:ResourceString Key=systray_show_window}" Command="{Binding MaximizeCommand}" FontFamily="{StaticResource Jura-Regular}">
+                    <MenuFlyoutItem Text="{helpers:ResourceString Key=systray_show_window}" Command="{Binding MaximizeCommand}" FontFamily="{ThemeResource AppCustomFont}">
                         <MenuFlyoutItem.Icon>
                             <FontIcon Glyph="&#xE922;" FontSize="14"/>
                         </MenuFlyoutItem.Icon>
                     </MenuFlyoutItem>
 
-                    <MenuFlyoutItem Text="{helpers:ResourceString Key=systray_hide_window}" Command="{Binding MinimizeCommand}" FontFamily="{StaticResource Jura-Regular}">
+                    <MenuFlyoutItem Text="{helpers:ResourceString Key=systray_hide_window}" Command="{Binding MinimizeCommand}" FontFamily="{ThemeResource AppCustomFont}">
                         <MenuFlyoutItem.Icon>
                             <FontIcon Glyph="&#xE921;" FontSize="14"/>
                         </MenuFlyoutItem.Icon>
@@ -204,13 +204,13 @@
 
                     <MenuFlyoutSeparator Opacity="0.5"/>
 
-                    <MenuFlyoutItem Text="{helpers:ResourceString Key=systray_run_startup}" Command="{Binding ToggleRunOnStartupCommand}" FontFamily="{StaticResource Jura-Regular}">
+                    <MenuFlyoutItem Text="{helpers:ResourceString Key=systray_run_startup}" Command="{Binding ToggleRunOnStartupCommand}" FontFamily="{ThemeResource AppCustomFont}">
                         <MenuFlyoutItem.Icon>
                             <FontIcon Glyph="&#xE73E;" FontSize="14" Visibility="{Binding IsRunOnStartUp, Converter={StaticResource BooleanToVisibilityConverter}}" />
                         </MenuFlyoutItem.Icon>
                     </MenuFlyoutItem>
 
-                    <MenuFlyoutItem Text="{helpers:ResourceString Key=systray_low_priority}" Command="{Binding ToggleLowPriorityCommand}" FontFamily="{StaticResource Jura-Regular}">
+                    <MenuFlyoutItem Text="{helpers:ResourceString Key=systray_low_priority}" Command="{Binding ToggleLowPriorityCommand}" FontFamily="{ThemeResource AppCustomFont}">
                         <MenuFlyoutItem.Icon>
                             <FontIcon Glyph="&#xE73E;" FontSize="14" Visibility="{Binding IsLowPriorityEnabled, Converter={StaticResource BooleanToVisibilityConverter}}" />
                         </MenuFlyoutItem.Icon>
@@ -219,7 +219,7 @@
 
                     <MenuFlyoutSeparator Opacity="0.5"/>
 
-                    <MenuFlyoutItem Text="{helpers:ResourceString Key=systray_close_window}" Command="{Binding CloseCommand}" Foreground="#FF5555" FontFamily="{StaticResource Jura-Regular}">
+                    <MenuFlyoutItem Text="{helpers:ResourceString Key=systray_close_window}" Command="{Binding CloseCommand}" Foreground="#FF5555" FontFamily="{ThemeResource AppCustomFont}">
                         <MenuFlyoutItem.Icon>
                             <FontIcon Glyph="&#xE711;" Foreground="#FF5555" FontSize="14"/>
                         </MenuFlyoutItem.Icon>
@@ -235,7 +235,7 @@
                  Title="{helpers:ResourceString Key=ib_firstrun_title}"
                  Message="{helpers:ResourceString Key=ib_firstrun_msg}"
                  IsOpen="False"
-                 FontFamily="{ThemeResource Jura}"
+                 FontFamily="{ThemeResource AppCustomFont}"
                  Severity="Warning"
                  IsClosable="False"
                  Margin="0,44,0,0"
@@ -258,7 +258,7 @@
 
                     <TextBlock Text="{helpers:ResourceString Key=txt_mode_change_anytime}"
                                FontSize="11"
-                               FontFamily="{ThemeResource Jura}"
+                               FontFamily="{ThemeResource AppCustomFont}"
                                FontStyle="Italic"
                                Margin="0,0,0,10"
                                Opacity="0.6"/>
@@ -271,7 +271,7 @@
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="16,0,0,0">
                 <Image Source="/Assets/EvolveOS_Optimizer.ico" Width="18" Height="18" />
                 <TextBlock Text="EvolveOS Optimizer"
-                           FontFamily="{StaticResource Jura-SemiBold}"
+                           FontFamily="{ThemeResource AppCustomFont}"
                            VerticalAlignment="Center" 
                            Margin="12,0,0,0"
                            FontSize="14"
@@ -291,7 +291,7 @@
 
                 <TextBlock x:Name="DisplayProfileName"
                            Text="{Binding DisplayProfileName}"
-                           FontFamily="{StaticResource Jura-Regular}"
+                           FontFamily="{ThemeResource AppCustomFont}"
                            FontSize="14"
                            FontWeight="Medium"
                            Foreground="{StaticResource MyDynamicAccentBrush}"
@@ -323,7 +323,8 @@
                             BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}">
                         <StackPanel Orientation="Horizontal" Spacing="4">
                             <FontIcon Glyph="&#xE77B;" FontSize="10" Foreground="White" VerticalAlignment="Center"/>
-                            <TextBlock Text="{Binding AssignedUserType}" 
+                            <TextBlock Text="{Binding AssignedUserType}"
+                                       FontFamily="{ThemeResource AppCustomFont}"
                                        FontSize="10" 
                                        FontWeight="Bold" 
                                        Foreground="White" 
@@ -350,7 +351,7 @@
                     ToolTipService.ToolTip="{x:Bind GetText('AIAssistant_Tooltip'), Mode=OneWay}">
                 <StackPanel Orientation="Horizontal" Spacing="8">
                     <FontIcon Glyph="&#xE994;" FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                    <TextBlock Text="AI Assistant" FontFamily="{StaticResource Jura}" FontSize="12" VerticalAlignment="Center"/>
+                    <TextBlock Text="AI Assistant" FontFamily="{ThemeResource AppCustomFont}" FontSize="12" VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
 
@@ -429,13 +430,13 @@
                                VerticalAlignment="Center"
                                HorizontalAlignment="Left"
                                Margin="12,0,15,0"
-                               FontFamily="{StaticResource Jura-SemiBold}"/>
+                               FontFamily="{ThemeResource AppCustomFont}"/>
 
                     <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8" VerticalAlignment="Top">
 
                         <Button x:Name="BtnUpdateAction"
                                 Content="{helpers:ResourceString Key=Update_Banner_ConfirmButton}"
-                                FontFamily="{StaticResource Jura}"
+                                FontFamily="{ThemeResource AppCustomFont}"
                                 Click="UpdateNow_Click"
                                 Style="{StaticResource AccentButtonStyle}"
                                 Background="White"
@@ -480,7 +481,7 @@
                     <TextBlock x:Name="SizeByte"
                                Text="0 KB / 0 KB"
                                FontSize="10"
-                               FontFamily="{StaticResource Jura}"
+                               FontFamily="{ThemeResource AppCustomFont}"
                                Foreground="White"
                                HorizontalAlignment="Right"
                                Opacity="0.9"/>
@@ -531,7 +532,7 @@
                                    Foreground="White"
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Left"
-                                   FontFamily="{StaticResource Jura-SemiBold}"/>
+                                   FontFamily="{ThemeResource AppCustomFont}"/>
                     </ScrollViewer>
 
                     <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8" VerticalAlignment="Top" HorizontalAlignment="Right">
@@ -636,11 +637,11 @@
                     </Grid>
                     
                     <TextBlock Text="{x:Bind DiagnosticsVM.OptimizationProgressStep, Mode=OneWay}"
-                               FontFamily="{StaticResource Jura}" FontWeight="SemiBold"
+                               FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"
                                HorizontalAlignment="Center" FontSize="16" Foreground="White" Margin="0,0,0,4"/>
 
                     <TextBlock Text="{x:Bind DiagnosticsVM.OptimizationProgressValue, Mode=OneWay}"
-                               FontFamily="{StaticResource Jura}" HorizontalAlignment="Center"
+                               FontFamily="{ThemeResource AppCustomFont}" HorizontalAlignment="Center"
                                Foreground="LightGray" FontStyle="Italic" Margin="0,0,0,8" FontSize="14" Opacity="0.8"/>
                 </StackPanel>
             </Border>

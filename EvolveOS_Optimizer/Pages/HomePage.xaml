@@ -103,7 +103,7 @@
                     </Viewbox>
 
                     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <TextBlock Text="CPU" FontSize="11" FontFamily="{StaticResource Jura}" Foreground="{StaticResource Brush_Inactive}" HorizontalAlignment="Center"/>
+                        <TextBlock Text="CPU" FontSize="11" FontFamily="{ThemeResource AppCustomFont}" Foreground="{StaticResource Brush_Inactive}" HorizontalAlignment="Center"/>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,-2,0,0">
                             <TextBlock x:Name="CPUText" Text="{x:Bind ViewModel.CpuUsageText, Mode=OneWay}" FontSize="18" FontWeight="Bold" Style="{StaticResource BodyTextBlockStyle}" Foreground="{StaticResource Brush_Inactive}"/>
                             <TextBlock Text="%" FontSize="13" Style="{StaticResource BodyTextBlockStyle}" Foreground="{StaticResource Brush_Inactive}" Margin="1,2,0,0"/>
@@ -119,7 +119,7 @@
                     </Viewbox>
 
                     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <TextBlock Text="RAM" FontSize="11" FontFamily="{StaticResource Jura}" Foreground="{StaticResource Brush_Inactive}" HorizontalAlignment="Center"/>
+                        <TextBlock Text="RAM" FontSize="11" FontFamily="{ThemeResource AppCustomFont}" Foreground="{StaticResource Brush_Inactive}" HorizontalAlignment="Center"/>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,-2,0,0">
                             <TextBlock x:Name="RAMText" Text="{x:Bind ViewModel.RamUsageText, Mode=OneWay}" FontSize="18" FontWeight="Bold" Style="{StaticResource BodyTextBlockStyle}" Foreground="{StaticResource Brush_Inactive}"/>
                             <TextBlock Text="%" FontSize="13" Style="{StaticResource BodyTextBlockStyle}" Foreground="{StaticResource Brush_Inactive}" Margin="1,2,0,0"/>
@@ -144,21 +144,21 @@
                     </Grid>
 
                     <StackPanel Margin="20,0,0,0" Orientation="Vertical" VerticalAlignment="Top">
-                        <TextBlock FontSize="21" TextWrapping="Wrap" PointerPressed="HandleCopyingData_PointerPressed" Margin="0,-2,0,0">
+                        <TextBlock FontSize="21" FontFamily="{ThemeResource AppCustomFont}" TextWrapping="Wrap" PointerPressed="HandleCopyingData_PointerPressed" Margin="0,-2,0,0">
                             <Run Foreground="{ThemeResource Brush_Highlighted}" Text="{x:Bind ViewModel.OSName, Mode=OneWay}"/>
                                 <LineBreak/>
                             <Run Foreground="{ThemeResource Brush_Inactive}" Text="{x:Bind ViewModel.OSVersion, Mode=OneWay}"/>
                         </TextBlock>
 
                         <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
-                            <TextBlock helpers:Loc.Key="label_proc_sysinfo" FontFamily="{StaticResource Jura}" FontSize="16.5" Foreground="{ThemeResource Brush_TextBlock_Inactivity}"/>
-                            <TextBlock x:Name="ProcCountText" Text="0" FontFamily="{StaticResource Play}" FontSize="16" Margin="5,0.5,5,0" Foreground="{ThemeResource Brush_TextBlock_Inactivity}"/>
-                            <TextBlock Text=" • " FontFamily="{StaticResource Jura}" FontSize="16.5" Foreground="{ThemeResource Brush_TextBlock_Inactivity}"/>
-                            <TextBlock helpers:Loc.Key="label_svc_sysinfo" FontFamily="{StaticResource Jura}" FontSize="16.5" Foreground="{ThemeResource Brush_TextBlock_Inactivity}"/>
-                            <TextBlock x:Name="SvcCountText" Text="0" FontFamily="{StaticResource Play}" FontSize="16" Margin="5,0.5,0,0" Foreground="{ThemeResource Brush_TextBlock_Inactivity}"/>
+                            <TextBlock helpers:Loc.Key="label_proc_sysinfo" FontFamily="{ThemeResource AppCustomFont}" FontSize="16.5" Foreground="{ThemeResource Brush_TextBlock_Inactivity}"/>
+                            <TextBlock x:Name="ProcCountText" Text="0" FontFamily="{ThemeResource AppCustomFont}" FontSize="16" Margin="5,0.5,5,0" Foreground="{ThemeResource Brush_TextBlock_Inactivity}"/>
+                            <TextBlock Text=" • " FontFamily="{ThemeResource AppCustomFont}" FontSize="16.5" Foreground="{ThemeResource Brush_TextBlock_Inactivity}"/>
+                            <TextBlock helpers:Loc.Key="label_svc_sysinfo" FontFamily="{ThemeResource AppCustomFont}" FontSize="16.5" Foreground="{ThemeResource Brush_TextBlock_Inactivity}"/>
+                            <TextBlock x:Name="SvcCountText" Text="0" FontFamily="{ThemeResource AppCustomFont}" FontSize="16" Margin="5,0.5,0,0" Foreground="{ThemeResource Brush_TextBlock_Inactivity}"/>
                         </StackPanel>
 
-                        <TextBlock x:Name="StatusLabel" FontFamily="{StaticResource Jura}" FontSize="14.5" helpers:Loc.Key="label_status_checking" Margin="0,-1,0,0"/>
+                        <TextBlock x:Name="StatusLabel" FontFamily="{ThemeResource AppCustomFont}" FontSize="14.5" helpers:Loc.Key="label_status_checking" Margin="0,-1,0,0"/>
                     </StackPanel>
                 </StackPanel>
             </Grid>
@@ -171,8 +171,8 @@
                         <ProgressRing x:Name="DownLoadRing" Value="0" Maximum="1000" IsIndeterminate="False" Foreground="#00bfff"/>
                     </Viewbox>
                     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <TextBlock Text="DOWNLOAD" FontSize="11" FontFamily="{StaticResource Jura}" Foreground="{StaticResource Brush_Inactive}" HorizontalAlignment="Center"/>
-                        <TextBlock Text="Mbps" FontSize="10" FontFamily="{StaticResource Jura}" Foreground="{StaticResource Brush_Inactive}" HorizontalAlignment="Center" Margin="0,-2,0,2"/>
+                        <TextBlock Text="DOWNLOAD" FontSize="11" FontFamily="{ThemeResource AppCustomFont}" Foreground="{StaticResource Brush_Inactive}" HorizontalAlignment="Center"/>
+                        <TextBlock Text="Mbps" FontSize="10" FontFamily="{ThemeResource AppCustomFont}" Foreground="{StaticResource Brush_Inactive}" HorizontalAlignment="Center" Margin="0,-2,0,2"/>
                         <TextBlock x:Name="DownLoadText" Text="0.00" FontSize="18" FontWeight="Bold" Style="{StaticResource BodyTextBlockStyle}" Foreground="{StaticResource Brush_Inactive}" HorizontalAlignment="Center"/>
                     </StackPanel>
                 </Grid>
@@ -183,8 +183,8 @@
                         <ProgressRing x:Name="UpLoadRing" Value="0" Maximum="1000" IsIndeterminate="False" Foreground="#ff9f1c"/>
                     </Viewbox>
                     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <TextBlock Text="UPLOAD" FontSize="11" FontFamily="{StaticResource Jura}" Foreground="{StaticResource Brush_Inactive}" HorizontalAlignment="Center"/>
-                        <TextBlock Text="Mbps" FontSize="10" FontFamily="{StaticResource Jura}" Foreground="{StaticResource Brush_Inactive}" HorizontalAlignment="Center" Margin="0,-2,0,2"/>
+                        <TextBlock Text="UPLOAD" FontSize="11" FontFamily="{ThemeResource AppCustomFont}" Foreground="{StaticResource Brush_Inactive}" HorizontalAlignment="Center"/>
+                        <TextBlock Text="Mbps" FontSize="10" FontFamily="{ThemeResource AppCustomFont}" Foreground="{StaticResource Brush_Inactive}" HorizontalAlignment="Center" Margin="0,-2,0,2"/>
                         <TextBlock x:Name="UpLoadText" Text="0.00" FontSize="18" FontWeight="Bold" Style="{StaticResource BodyTextBlockStyle}" Foreground="{StaticResource Brush_Inactive}" HorizontalAlignment="Center"/>
                     </StackPanel>
                 </Grid>
@@ -235,8 +235,8 @@
                                         <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
                                     <StackPanel Grid.Row="0" VerticalAlignment="Top" Margin="0, 10, 0, 10">
-                                        <TextBlock Text="{x:Bind ViewModel.CurrentTime, Mode=OneWay}" FontSize="82" FontFamily="{ThemeResource Jura}" Foreground="{ThemeResource MyDynamicAccentBrush}" HorizontalAlignment="Left"/>
-                                        <TextBlock Text="{x:Bind ViewModel.CurrentDate, Mode=OneWay}" FontSize="18" FontFamily="{ThemeResource Jura}" FontWeight="SemiBold" Foreground="{ThemeResource MyDynamicAccentBrush}" Margin="5,0,0,0"/>
+                                        <TextBlock Text="{x:Bind ViewModel.CurrentTime, Mode=OneWay}" FontSize="82" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource MyDynamicAccentBrush}" HorizontalAlignment="Left"/>
+                                        <TextBlock Text="{x:Bind ViewModel.CurrentDate, Mode=OneWay}" FontSize="18" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" Foreground="{ThemeResource MyDynamicAccentBrush}" Margin="5,0,0,0"/>
                                     </StackPanel>
                                     <StackPanel Grid.Row="1" HorizontalAlignment="Right" Orientation="Vertical" Margin="0,-5,0,0">
                                         <Grid HorizontalAlignment="Right">
@@ -246,12 +246,12 @@
                                             </Grid.ColumnDefinitions>
                                             <Image Grid.Column="0" Source="{x:Bind ViewModel.CurrentWeatherIcon, Mode=OneWay}" Width="70" Height="70" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,20,0"/>
                                             <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                                <TextBlock Text="{x:Bind ViewModel.WeatherTemperature, Mode=OneWay}" FontFamily="Jura Medium" Style="{StaticResource InfoValue}" FontSize="48" FontWeight="Bold" Foreground="{ThemeResource MyDynamicAccentBrush}" Margin="0,-5,10,0"/>
+                                                <TextBlock Text="{x:Bind ViewModel.WeatherTemperature, Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource InfoValue}" FontSize="48" FontWeight="Bold" Foreground="{ThemeResource MyDynamicAccentBrush}" Margin="0,-5,10,0"/>
                                             </StackPanel>
                                         </Grid>
                                         <StackPanel HorizontalAlignment="Right">
                                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="4">
-                                                <TextBlock Text="{x:Bind ViewModel.WeatherLocation, Mode=OneWay}" Style="{StaticResource InfoValue}" FontFamily="Jura Medium" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource Brush_Highlighted}" VerticalAlignment="Center"/>
+                                                <TextBlock Text="{x:Bind ViewModel.WeatherLocation, Mode=OneWay}" Style="{StaticResource InfoValue}" FontFamily="{ThemeResource AppCustomFont}" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource Brush_Highlighted}" VerticalAlignment="Center"/>
                                                 <Button x:Name="RefreshWeatherButton" IsTabStop="False" Background="Transparent" BorderThickness="0" Padding="6" ToolTipService.ToolTip="Refresh Weather" Click="RefreshWeatherButton_Click">
                                                     <SymbolIcon x:Name="RefreshIcon" Symbol="Refresh" Foreground="{ThemeResource Brush_Inactive}"/>
                                                 </Button>
@@ -270,7 +270,7 @@
                                                     <SymbolIcon Symbol="Map" Foreground="{ThemeResource Brush_Inactive}"/>
                                                 </Button>
                                             </StackPanel>
-                                            <TextBlock Text="{x:Bind ViewModel.WeatherDescription, Mode=OneWay}" Style="{StaticResource InfoValue}" FontFamily="Jura Medium" FontSize="16" Foreground="{StaticResource Brush_Highlighted}" HorizontalAlignment="Right" Margin="0,5,10,0"/>
+                                            <TextBlock Text="{x:Bind ViewModel.WeatherDescription, Mode=OneWay}" Style="{StaticResource InfoValue}" FontFamily="{ThemeResource AppCustomFont}" FontSize="16" Foreground="{StaticResource Brush_Highlighted}" HorizontalAlignment="Right" Margin="0,5,10,0"/>
                                         </StackPanel>
                                     </StackPanel>
                                 </Grid>
@@ -299,7 +299,7 @@
                             <Border Grid.Column="1" Width="1" Background="{StaticResource Brush_Inactive}" Opacity="0.3" Margin="4,0,22,0"/>
 
                             <StackPanel Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Center">
-                                <CalendarView x:Name="Calendar" VerticalAlignment="Center" Background="Transparent" Width="310" Margin="-11,0,-4,0" HorizontalAlignment="Center" PointerEntered="Calendar_MouseEnter" PointerExited="Calendar_MouseLeave"/>
+                                <CalendarView x:Name="Calendar" VerticalAlignment="Center" Background="Transparent" FontFamily="{ThemeResource AppCustomFont}" Width="310" Margin="-11,0,-4,0" HorizontalAlignment="Center" PointerEntered="Calendar_MouseEnter" PointerExited="Calendar_MouseLeave"/>
                             </StackPanel>
                         </Grid>
                     </Grid>
@@ -328,15 +328,15 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <FontIcon Glyph="&#xE7FC;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Column="1" helpers:Loc.Key="gm_card_title" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" helpers:Loc.Key="gm_card_title" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center"/>
 
                             <!-- Gaming Settings (Dialog) -->
-                            <Button x:Name="BtnGamingSettings" Grid.Column="2" Background="Transparent" BorderThickness="0" Padding="4" Margin="0,0,4,0" ToolTipService.ToolTip="Gaming Settings" Click="BtnGamingSettings_Click">
+                            <Button x:Name="BtnGamingSettings" Grid.Column="2" Background="Transparent" BorderThickness="0" Padding="4" Margin="0,0,4,0" FontFamily="{ThemeResource AppCustomFont}" ToolTipService.ToolTip="Gaming Settings" Click="BtnGamingSettings_Click">
                                 <FontIcon Glyph="&#xE713;" FontSize="13" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                             </Button>
 
                             <!-- Visual Style Selection Flyout -->
-                            <Button x:Name="BtnGamingGraphicStyle" Grid.Column="3" Background="Transparent" BorderThickness="0" Padding="4" Margin="0,0,4,0" ToolTipService.ToolTip="Change Visual Style">
+                            <Button x:Name="BtnGamingGraphicStyle" Grid.Column="3" FontFamily="{ThemeResource AppCustomFont}" Background="Transparent" BorderThickness="0" Padding="4" Margin="0,0,4,0" ToolTipService.ToolTip="Change Visual Style">
                                 <FontIcon Glyph="&#xE790;" FontSize="13" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                                 <Button.Flyout>
                                     <MenuFlyout>
@@ -347,7 +347,7 @@
                             </Button>
 
                             <!-- Expand Button -->
-                            <Button x:Name="BtnExpandGamingMode" Grid.Column="4" Background="Transparent" BorderThickness="0" Padding="4" Click="BtnExpandGamingMode_Click">
+                            <Button x:Name="BtnExpandGamingMode" Grid.Column="4" FontFamily="{ThemeResource AppCustomFont}" Background="Transparent" BorderThickness="0" Padding="4" Click="BtnExpandGamingMode_Click">
                                 <FontIcon x:Name="IconExpandGamingMode" Glyph="&#xE70D;" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                             </Button>
                         </Grid>
@@ -359,18 +359,18 @@
 
                         <!-- Row 2: Status Texts -->
                         <StackPanel x:Name="GamingStatusPanel" Grid.Row="2" Height="36" VerticalAlignment="Top" Spacing="4" Margin="0">
-                            <TextBlock x:Name="GamingModeButtonLabel" helpers:Loc.Key="gm_label_normal" FontFamily="Jura Medium" FontSize="13" HorizontalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}" FontWeight="SemiBold"/>
-                            <TextBlock x:Name="GamingStatusLabel" helpers:Loc.Key="gm_mode_standard" FontSize="11" Foreground="{ThemeResource Brush_Inactive}" Opacity="1" HorizontalAlignment="Center" FontFamily="Jura Medium" Margin="0,-2,0,0"/>
+                            <TextBlock x:Name="GamingModeButtonLabel" helpers:Loc.Key="gm_label_normal" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" HorizontalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}" FontWeight="SemiBold"/>
+                            <TextBlock x:Name="GamingStatusLabel" helpers:Loc.Key="gm_mode_standard" FontSize="11" Foreground="{ThemeResource Brush_Inactive}" Opacity="1" HorizontalAlignment="Center" FontFamily="{ThemeResource AppCustomFont}" Margin="0,-2,0,0"/>
                         </StackPanel>
 
                         <!-- Row 3: Expanded Section with Console & Results -->
                         <StackPanel x:Name="GamingExpandedContent" Grid.Row="3" Visibility="Collapsed" VerticalAlignment="Top" Margin="0,16,0,0">
 
                             <Grid Margin="0,0,0,8">
-                                <TextBlock x:Name="TxtGamingViewTitle" Text="Live Progress" FontSize="12" FontFamily="Jura Medium" Foreground="{ThemeResource TextFillColorSecondaryBrush}" VerticalAlignment="Center"/>
+                                <TextBlock x:Name="TxtGamingViewTitle" Text="Live Progress" FontSize="12" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" VerticalAlignment="Center"/>
                                 <Button x:Name="BtnToggleConsoleView" HorizontalAlignment="Right" Background="Transparent" BorderThickness="0" Padding="4" Click="BtnToggleConsoleView_Click" Visibility="Collapsed">
                                     <StackPanel Orientation="Horizontal" Spacing="4">
-                                        <TextBlock x:Name="TxtToggleConsoleView" Text="View Console" FontSize="10" VerticalAlignment="Center"/>
+                                        <TextBlock x:Name="TxtToggleConsoleView" Text="View Console" FontFamily="{ThemeResource AppCustomFont}" FontSize="10" VerticalAlignment="Center"/>
                                         <FontIcon x:Name="IconToggleConsoleView" Glyph="&#xE70D;" FontSize="10" VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </Button>
@@ -380,26 +380,26 @@
                             <Grid x:Name="GamingResultsGrid" ColumnDefinitions="*, *" RowDefinitions="Auto, Auto" ColumnSpacing="8" RowSpacing="8" Visibility="Collapsed">
                                 <Border Grid.Row="0" Grid.Column="0" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
                                     <StackPanel Spacing="2">
-                                        <TextBlock Text="RAM Freed" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
-                                        <TextBlock x:Name="TxtGmRamFreed" Text="-- MB" FontSize="13" FontWeight="Bold" FontFamily="Jura" Foreground="{ThemeResource SystemFillColorSuccessBrush}"/>
+                                        <TextBlock Text="RAM Freed" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                        <TextBlock x:Name="TxtGmRamFreed" Text="-- MB" FontSize="13" FontWeight="Bold" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource SystemFillColorSuccessBrush}"/>
                                     </StackPanel>
                                 </Border>
                                 <Border Grid.Row="0" Grid.Column="1" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
                                     <StackPanel Spacing="2">
-                                        <TextBlock Text="Apps Closed" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
-                                        <TextBlock x:Name="TxtGmAppsClosed" Text="--" FontSize="13" FontWeight="Bold" FontFamily="Jura" Foreground="{ThemeResource SystemFillColorSuccessBrush}"/>
+                                        <TextBlock Text="Apps Closed" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                        <TextBlock x:Name="TxtGmAppsClosed" Text="--" FontSize="13" FontWeight="Bold" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource SystemFillColorSuccessBrush}"/>
                                     </StackPanel>
                                 </Border>
                                 <Border Grid.Row="1" Grid.Column="0" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
                                     <StackPanel Spacing="2">
-                                        <TextBlock Text="Services Suspended" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
-                                        <TextBlock x:Name="TxtGmServices" Text="--" FontSize="13" FontWeight="Bold" FontFamily="Jura" Foreground="{ThemeResource SystemFillColorSuccessBrush}"/>
+                                        <TextBlock Text="Services Suspended" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                        <TextBlock x:Name="TxtGmServices" Text="--" FontSize="13" FontWeight="Bold" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource SystemFillColorSuccessBrush}"/>
                                     </StackPanel>
                                 </Border>
                                 <Border Grid.Row="1" Grid.Column="1" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
                                     <StackPanel Spacing="2">
-                                        <TextBlock Text="Est. Latency" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
-                                        <TextBlock x:Name="TxtGmPing" Text="-- ms" FontSize="13" FontWeight="Bold" FontFamily="Jura" Foreground="{ThemeResource SystemFillColorSuccessBrush}"/>
+                                        <TextBlock Text="Est. Latency" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                        <TextBlock x:Name="TxtGmPing" Text="-- ms" FontSize="13" FontWeight="Bold" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource SystemFillColorSuccessBrush}"/>
                                     </StackPanel>
                                 </Border>
                             </Grid>
@@ -410,7 +410,7 @@
                                     <TextBlock x:Name="GamingProgressText"
                                                helpers:Loc.Key="gm_progress_idle"
                                                FontSize="11"
-                                               FontFamily="Consolas"
+                                               FontFamily="{ThemeResource AppCustomFont}"
                                                TextWrapping="Wrap"
                                                Padding="10"
                                                Opacity="0.8"
@@ -422,11 +422,11 @@
 
                         <!-- Row 4: Refresh/Action Bottom -->
                         <Grid Grid.Row="4" VerticalAlignment="Bottom" Margin="0,8,0,0">
-                            <Button x:Name="BtnGamingMode" IsTabStop="False" HorizontalAlignment="Stretch" Click="BtnGamingMode_Click" FontFamily="Jura Medium">
+                            <Button x:Name="BtnGamingMode" IsTabStop="False" HorizontalAlignment="Stretch" Click="BtnGamingMode_Click" FontFamily="{ThemeResource AppCustomFont}">
                                 <Button.Content>
                                     <StackPanel Orientation="Horizontal" Spacing="8">
                                         <FontIcon Glyph="&#xE7E8;" FontSize="14"/>
-                                        <TextBlock x:Name="GamingModeBtnText" helpers:Loc.Key="gm_btn_enable"/>
+                                        <TextBlock x:Name="GamingModeBtnText" FontFamily="{ThemeResource AppCustomFont}" helpers:Loc.Key="gm_btn_enable"/>
                                     </StackPanel>
                                 </Button.Content>
                             </Button>
@@ -453,7 +453,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <FontIcon Grid.Column="0" Glyph="&#xE839;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Column="1" Style="{StaticResource CardTitle}" Margin="10,0,0,-10" FontFamily="Jura Medium" FontSize="16" helpers:Loc.Key="title_netadapter_sysinfo"/>
+                            <TextBlock Grid.Column="1" Style="{StaticResource CardTitle}" Margin="10,0,0,-10" FontFamily="{ThemeResource AppCustomFont}" FontSize="16" helpers:Loc.Key="title_netadapter_sysinfo"/>
 
                             <Button x:Name="BtnExpandNetwork" Grid.Column="2" Background="Transparent" BorderThickness="0" Padding="4" HorizontalAlignment="Right" VerticalAlignment="Center" Click="BtnExpandNetwork_Click" Margin="0,0,0,0">
                                 <FontIcon x:Name="IconExpandNetwork" Glyph="&#xE70D;" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
@@ -463,16 +463,16 @@
                         <!-- Row 1: Always Visible Content -->
                         <Grid Grid.Row="1">
                             <StackPanel>
-                                <TextBlock Text="{x:Bind ViewModel.NetworkName, Mode=OneWay}" Style="{StaticResource InfoValue}" FontFamily="Jura Medium" FontWeight="Normal" TextAlignment="Left" TextWrapping="Wrap" Margin="0,5,0,10" PointerPressed="HandleCopyingData_PointerPressed" />
+                                <TextBlock Text="{x:Bind ViewModel.NetworkName, Mode=OneWay}" Style="{StaticResource InfoValue}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="Normal" TextAlignment="Left" TextWrapping="Wrap" Margin="0,5,0,10" PointerPressed="HandleCopyingData_PointerPressed" />
                                 <Grid Margin="0,5,0,0">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
                                     <StackPanel Grid.Column="0">
-                                        <TextBlock Style="{StaticResource InfoLabel}" helpers:Loc.Key="title_ip_sysinfo" FontFamily="Jura Medium" FontWeight="SemiBold" Margin="0,0,0,0"/>
+                                        <TextBlock Style="{StaticResource InfoLabel}" helpers:Loc.Key="title_ip_sysinfo" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" Margin="0,0,0,0"/>
                                         <Grid Margin="10,0,0,10" MinHeight="30">
-                                            <TextBlock x:Name="IpAddress" Text="{x:Bind ViewModel.PublicIP, Mode=OneWay}" Style="{StaticResource InfoValue}" FontFamily="Jura Medium" FontWeight="Normal" HorizontalAlignment="Left" TextWrapping="Wrap" PointerPressed="HandleCopyingData_PointerPressed" VerticalAlignment="Center"/>
+                                            <TextBlock x:Name="IpAddress" Text="{x:Bind ViewModel.PublicIP, Mode=OneWay}" Style="{StaticResource InfoValue}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="Normal" HorizontalAlignment="Left" TextWrapping="Wrap" PointerPressed="HandleCopyingData_PointerPressed" VerticalAlignment="Center"/>
                                             <Border x:Name="IpBlurMask" Height="20" MinWidth="100" CornerRadius="6" Margin="-6,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False">
                                                 <Border.Background>
                                                     <LinearGradientBrush x:Name="IpShimmerBrush" StartPoint="0,0" EndPoint="1,1">
@@ -484,9 +484,9 @@
                                                 <FontIcon Glyph="&#xED1A;" FontSize="12" Foreground="White" Opacity="0.5" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                             </Border>
                                         </Grid>
-                                        <TextBlock helpers:Loc.Key="title_localip_sysinfo" Style="{StaticResource InfoLabel}" FontFamily="Jura Medium" FontWeight="Normal" Margin="0,0,0,0"/>
+                                        <TextBlock helpers:Loc.Key="title_localip_sysinfo" Style="{StaticResource InfoLabel}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="Normal" Margin="0,0,0,0"/>
                                         <Grid Margin="10,0,0,0" MinHeight="30">
-                                            <TextBlock x:Name="LocalIpAddress" Text="{x:Bind ViewModel.LocalIPValue, Mode=OneWay}" Style="{StaticResource InfoValue}" FontFamily="Jura Medium" FontWeight="Normal" HorizontalAlignment="Left" TextWrapping="Wrap" PointerPressed="HandleCopyingData_PointerPressed" VerticalAlignment="Center"/>
+                                            <TextBlock x:Name="LocalIpAddress" Text="{x:Bind ViewModel.LocalIPValue, Mode=OneWay}" Style="{StaticResource InfoValue}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="Normal" HorizontalAlignment="Left" TextWrapping="Wrap" PointerPressed="HandleCopyingData_PointerPressed" VerticalAlignment="Center"/>
                                             <Border x:Name="LocalIpBlurMask" Height="20" MinWidth="100" CornerRadius="6" Margin="-6,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False">
                                                 <Border.Background>
                                                     <LinearGradientBrush x:Name="LocalIpShimmerBrush" StartPoint="0,0" EndPoint="1,1">
@@ -512,15 +512,15 @@
                                 <Grid>
                                     <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
                                         <FontIcon Glyph="&#xE839;" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                                        <TextBlock Text="{helpers:ResourceString Key=txt_live_ping}" FontSize="12" FontFamily="Jura Medium" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=txt_live_ping}" FontSize="12" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                                     </StackPanel>
-                                    <TextBlock x:Name="TxtPingValue" Text="{helpers:ResourceString Key=txt_testing}" FontSize="14" FontWeight="Bold" FontFamily="Jura" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+                                    <TextBlock x:Name="TxtPingValue" Text="{helpers:ResourceString Key=txt_testing}" FontSize="14" FontWeight="Bold" FontFamily="{ThemeResource AppCustomFont}" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
                                 </Grid>
                             </Border>
 
                             <!-- Top Active Connections -->
                             <StackPanel Spacing="4">
-                                <TextBlock Text="{helpers:ResourceString Key=txt_top_apps_connections}" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium" Margin="0,0,0,4"/>
+                                <TextBlock Text="{helpers:ResourceString Key=txt_top_apps_connections}" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="{ThemeResource AppCustomFont}" Margin="0,0,0,4"/>
                                 <ItemsControl x:Name="NetworkHogsList">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
@@ -531,8 +531,8 @@
                                                     <ColumnDefinition Width="Auto"/>
                                                 </Grid.ColumnDefinitions>
                                                 <FontIcon Grid.Column="0" Glyph="&#xE7EF;" FontSize="12" Margin="0,0,8,0" Foreground="{ThemeResource MyDynamicAccentBrush}" VerticalAlignment="Center"/>
-                                                <TextBlock Grid.Column="1" Text="{Binding ProcessName}" FontSize="12" FontFamily="Jura Medium" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
-                                                <TextBlock Grid.Column="2" Text="{Binding ConnectionCount}" FontSize="11" FontFamily="Jura Medium" Opacity="0.7" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="1" Text="{Binding ProcessName}" FontSize="12" FontFamily="{ThemeResource AppCustomFont}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="2" Text="{Binding ConnectionCount}" FontSize="11" FontFamily="{ThemeResource AppCustomFont}" Opacity="0.7" VerticalAlignment="Center"/>
                                             </Grid>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
@@ -541,17 +541,17 @@
 
                             <!-- Action Tools -->
                             <Grid ColumnDefinitions="*, *" ColumnSpacing="8">
-                                <Button x:Name="BtnFlushDns" Grid.Column="0" HorizontalAlignment="Stretch" FontFamily="Jura Medium" Height="34" Click="BtnFlushDns_Click">
+                                <Button x:Name="BtnFlushDns" Grid.Column="0" HorizontalAlignment="Stretch" FontFamily="{ThemeResource AppCustomFont}" Height="34" Click="BtnFlushDns_Click">
                                     <StackPanel Orientation="Horizontal" Spacing="6">
                                         <FontIcon Glyph="&#xE898;" FontSize="13"/>
-                                        <TextBlock Text="{helpers:ResourceString Key=btn_flush_dns}"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=btn_flush_dns}" FontFamily="{ThemeResource AppCustomFont}"/>
                                     </StackPanel>
                                 </Button>
 
-                                <Button x:Name="BtnResetAdapter" Grid.Column="1" HorizontalAlignment="Stretch" Style="{StaticResource DefaultButtonStyle}" FontFamily="Jura Medium" Height="34" Click="BtnResetAdapter_Click">
+                                <Button x:Name="BtnResetAdapter" Grid.Column="1" HorizontalAlignment="Stretch" Style="{StaticResource DefaultButtonStyle}" FontFamily="{ThemeResource AppCustomFont}" Height="34" Click="BtnResetAdapter_Click">
                                     <StackPanel Orientation="Horizontal" Spacing="6">
                                         <FontIcon Glyph="&#xE72C;" FontSize="13"/>
-                                        <TextBlock Text="{helpers:ResourceString Key=btn_reset_adapter}"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=btn_reset_adapter}" FontFamily="{ThemeResource AppCustomFont}"/>
                                     </StackPanel>
                                 </Button>
                             </Grid>
@@ -572,12 +572,12 @@
                         </Grid.RowDefinitions>
                         <StackPanel Grid.Row="0" Orientation="Horizontal">
                             <FontIcon Glyph="&#xE964;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}" VerticalAlignment="Center"/>
-                            <TextBlock Style="{StaticResource CardTitle}" Margin="10,0,0,-10" FontFamily="Jura Medium" FontSize="16" helpers:Loc.Key="title_ram_sysinfo"/>
+                            <TextBlock Style="{StaticResource CardTitle}" Margin="10,0,0,-10" FontFamily="{ThemeResource AppCustomFont}" FontSize="16" helpers:Loc.Key="title_ram_sysinfo"/>
                         </StackPanel>
                         <StackPanel Grid.Row="1" VerticalAlignment="Top" Margin="0,10,0,0">
-                            <TextBlock Text="{Binding [Memory].Data}" Style="{StaticResource InfoValue}" FontFamily="Jura Medium" FontWeight="Normal" TextAlignment="Left" TextWrapping="Wrap" Margin="0,0,0,10" PointerPressed="HandleCopyingData_PointerPressed" />
-                            <TextBlock Style="{StaticResource InfoLabel}" helpers:Loc.Key="title_mtype_sysinfo" FontFamily="Jura Medium" FontWeight="SemiBold" Margin="0,10,0,5"/>
-                            <TextBlock Text="{Binding [Type].Data}" Style="{StaticResource InfoValue}" FontFamily="Jura Medium" FontWeight="Normal" TextAlignment="Left" PointerPressed="HandleCopyingData_PointerPressed" />
+                            <TextBlock Text="{Binding [Memory].Data}" Style="{StaticResource InfoValue}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="Normal" TextAlignment="Left" TextWrapping="Wrap" Margin="0,0,0,10" PointerPressed="HandleCopyingData_PointerPressed" />
+                            <TextBlock Style="{StaticResource InfoLabel}" helpers:Loc.Key="title_mtype_sysinfo" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                            <TextBlock Text="{Binding [Type].Data}" Style="{StaticResource InfoValue}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="Normal" TextAlignment="Left" PointerPressed="HandleCopyingData_PointerPressed" />
                         </StackPanel>
                     </Grid>
                 </Border>
@@ -603,7 +603,7 @@
                             </Grid.ColumnDefinitions>
 
                             <FontIcon Grid.Column="0" Glyph="&#xE950;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Column="1" helpers:Loc.Key="title_cpu_sysinfo" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" helpers:Loc.Key="title_cpu_sysinfo" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center"/>
 
                             <Button x:Name="BtnExpandCpu" Grid.Column="2" Background="Transparent" BorderThickness="0" Padding="4" Click="BtnExpandCpu_Click" Margin="4,0,0,0">
                                 <FontIcon x:Name="IconExpandCpu" Glyph="&#xE70D;" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
@@ -612,7 +612,7 @@
 
                         <!-- Row 1: Always Visible Content -->
                         <ScrollViewer Grid.Row="1" MaxHeight="140" VerticalScrollBarVisibility="Auto" VerticalAlignment="Top">
-                            <TextBlock Text="{Binding [CPU].Data}" FontFamily="Jura Medium" FontWeight="Normal" TextWrapping="Wrap" Opacity="0.85" LineHeight="22" Margin="0,6,0,0"/>
+                            <TextBlock Text="{Binding [CPU].Data}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="Normal" TextWrapping="Wrap" Opacity="0.85" LineHeight="22" Margin="0,6,0,0"/>
                         </ScrollViewer>
 
                         <!-- Row 2: Expanded Advanced Features -->
@@ -623,9 +623,9 @@
                                 <Grid Width="95" Height="95">
                                     <Ellipse Stroke="{StaticResource Brush_Separator}" StrokeThickness="4.5" Opacity="0.2"/>
                                     <ProgressRing Value="{x:Bind ViewModel.CpuUsageDisplay, Mode=OneWay}" Maximum="100" IsIndeterminate="False" Foreground="{ThemeResource MyDynamicAccentBrush}" Width="95" Height="95"/>
-                                    <TextBlock Text="{x:Bind ViewModel.CpuUsageDisplay, Mode=OneWay, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0}%'}" FontSize="20" FontWeight="Bold" FontFamily="Jura" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{x:Bind ViewModel.CpuUsageDisplay, Mode=OneWay, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0}%'}" FontSize="20" FontWeight="Bold" FontFamily="{ThemeResource AppCustomFont}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 </Grid>
-                                <TextBlock Text="{helpers:ResourceString Key=txt_live_load}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium" HorizontalAlignment="Center"/>
+                                <TextBlock Text="{helpers:ResourceString Key=txt_live_load}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="{ThemeResource AppCustomFont}" HorizontalAlignment="Center"/>
                             </StackPanel>
 
                             <!-- Hardware Vitals (Temp, Clock, Power) -->
@@ -633,24 +633,24 @@
                                 <!-- 1. Temperature -->
                                 <Border Grid.Column="0" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
                                     <StackPanel Spacing="2" VerticalAlignment="Center">
-                                        <TextBlock Text="{helpers:ResourceString Key=txt_temp}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
-                                        <TextBlock Text="{x:Bind ViewModel.CpuTempStr, Mode=OneWay}" FontSize="14" FontWeight="Bold" FontFamily="Jura" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=txt_temp}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                        <TextBlock Text="{x:Bind ViewModel.CpuTempStr, Mode=OneWay}" FontSize="14" FontWeight="Bold" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
                                     </StackPanel>
                                 </Border>
 
                                 <!-- 2. Clock Speed -->
                                 <Border Grid.Column="1" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
                                     <StackPanel Spacing="2" VerticalAlignment="Center">
-                                        <TextBlock Text="{helpers:ResourceString Key=txt_clock}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
-                                        <TextBlock Text="{x:Bind ViewModel.CpuClockStr, Mode=OneWay}" FontSize="14" FontWeight="Bold" FontFamily="Jura" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=txt_clock}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                        <TextBlock Text="{x:Bind ViewModel.CpuClockStr, Mode=OneWay}" FontSize="14" FontWeight="Bold" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                     </StackPanel>
                                 </Border>
 
                                 <!-- 3. Power Draw -->
                                 <Border Grid.Column="2" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
                                     <StackPanel Spacing="2" VerticalAlignment="Center">
-                                        <TextBlock Text="{helpers:ResourceString Key=txt_power}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
-                                        <TextBlock Text="{x:Bind ViewModel.CpuPowerDrawStr, Mode=OneWay}" FontSize="14" FontWeight="Bold" FontFamily="Jura" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=txt_power}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                        <TextBlock Text="{x:Bind ViewModel.CpuPowerDrawStr, Mode=OneWay}" FontSize="14" FontWeight="Bold" FontFamily="{ThemeResource AppCustomFont}" TextTrimming="CharacterEllipsis"/>
                                     </StackPanel>
                                 </Border>
                             </Grid>
@@ -665,7 +665,7 @@
                                                 DropDownClosed="CmbPowerPlan_DropDownClosed" />
 
                                 <Button x:Name="BtnOpenResmon" Grid.Column="2" HorizontalAlignment="Stretch"
-                                        Style="{StaticResource DefaultButtonStyle}" FontFamily="Jura Medium" Height="34"
+                                        Style="{StaticResource DefaultButtonStyle}" FontFamily="{ThemeResource AppCustomFont}" Height="34"
                                         Click="BtnOpenResmon_Click" Padding="8,0">
                                     <StackPanel Orientation="Horizontal" Spacing="6" HorizontalAlignment="Center">
                                         <FontIcon Glyph="&#xE9F5;" FontSize="13"/>
@@ -700,7 +700,7 @@
                             </Grid.ColumnDefinitions>
 
                             <FontIcon Grid.Column="0" Glyph="&#xEC06;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Column="1" helpers:Loc.Key="title_gpu_sysinfo" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" helpers:Loc.Key="title_gpu_sysinfo" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center"/>
 
                             <Button x:Name="BtnExpandGpu" Grid.Column="2" Background="Transparent" BorderThickness="0" Padding="4" Click="BtnExpandGpu_Click" Margin="4,0,0,0">
                                 <FontIcon x:Name="IconExpandGpu" Glyph="&#xE70D;" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
@@ -709,7 +709,7 @@
 
                         <!-- Row 1: Always Visible Content -->
                         <ScrollViewer Grid.Row="1" MaxHeight="140" VerticalScrollBarVisibility="Auto" VerticalAlignment="Top">
-                            <TextBlock Text="{Binding [GPU].Data}" FontFamily="Jura Medium" FontWeight="Normal" TextWrapping="Wrap" Opacity="0.85" LineHeight="22" Margin="0,6,0,0"/>
+                            <TextBlock Text="{Binding [GPU].Data}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="Normal" TextWrapping="Wrap" Opacity="0.85" LineHeight="22" Margin="0,6,0,0"/>
                         </ScrollViewer>
 
                         <!-- Row 2: Expanded Advanced Features -->
@@ -720,9 +720,9 @@
                                 <Grid Width="95" Height="95">
                                     <Ellipse Stroke="{StaticResource Brush_Separator}" StrokeThickness="4" Opacity="0.2"/>
                                     <ProgressRing Value="{x:Bind ViewModel.GpuUsageDisplay, Mode=OneWay}" Maximum="100" IsIndeterminate="False" Foreground="{ThemeResource MyDynamicAccentBrush}" Width="95" Height="95"/>
-                                    <TextBlock Text="{x:Bind ViewModel.GpuUsageDisplay, Mode=OneWay, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0}%'}" FontSize="20" FontWeight="Bold" FontFamily="Jura" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{x:Bind ViewModel.GpuUsageDisplay, Mode=OneWay, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0}%'}" FontSize="20" FontWeight="Bold" FontFamily="{ThemeResource AppCustomFont}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 </Grid>
-                                <TextBlock Text="{helpers:ResourceString Key=txt_live_load}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium" HorizontalAlignment="Center"/>
+                                <TextBlock Text="{helpers:ResourceString Key=txt_live_load}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="{ThemeResource AppCustomFont}" HorizontalAlignment="Center"/>
                             </StackPanel>
 
                             <!-- Live Advanced Telemetry Mini Cards -->
@@ -730,38 +730,38 @@
                                 <!-- Temperature -->
                                 <Border Grid.Column="0" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
                                     <StackPanel Spacing="2">
-                                        <TextBlock Text="{helpers:ResourceString Key=txt_temp}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
-                                        <TextBlock Text="{x:Bind ViewModel.GpuTemperatureStr, Mode=OneWay}" FontSize="15" FontWeight="Bold" FontFamily="Jura" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=txt_temp}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                        <TextBlock Text="{x:Bind ViewModel.GpuTemperatureStr, Mode=OneWay}" FontSize="15" FontWeight="Bold" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
                                     </StackPanel>
                                 </Border>
 
                                 <!-- VRAM Usage -->
                                 <Border Grid.Column="1" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
                                     <StackPanel Spacing="2">
-                                        <TextBlock Text="{helpers:ResourceString Key=txt_vram_used}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
-                                        <TextBlock Text="{x:Bind ViewModel.GpuVramUsedStr, Mode=OneWay}" FontSize="15" FontWeight="Bold" FontFamily="Jura" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=txt_vram_used}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                        <TextBlock Text="{x:Bind ViewModel.GpuVramUsedStr, Mode=OneWay}" FontSize="15" FontWeight="Bold" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                     </StackPanel>
                                 </Border>
 
                                 <!-- Power Draw -->
                                 <Border Grid.Column="2" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
                                     <StackPanel Spacing="2">
-                                        <TextBlock Text="{helpers:ResourceString Key=txt_power_draw}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
-                                        <TextBlock Text="{x:Bind ViewModel.GpuPowerDrawStr, Mode=OneWay}" FontSize="15" FontWeight="Bold" FontFamily="Jura" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=txt_power_draw}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                        <TextBlock Text="{x:Bind ViewModel.GpuPowerDrawStr, Mode=OneWay}" FontSize="15" FontWeight="Bold" FontFamily="{ThemeResource AppCustomFont}" TextTrimming="CharacterEllipsis"/>
                                     </StackPanel>
                                 </Border>
                             </Grid>
 
                             <!-- Action Tools Row -->
                             <Grid ColumnDefinitions="*, *" ColumnSpacing="8">
-                                <Button x:Name="BtnOpenGraphicsSettings" Grid.Column="0" HorizontalAlignment="Stretch" FontFamily="Jura Medium" Height="34" Click="BtnOpenGraphicsSettings_Click">
+                                <Button x:Name="BtnOpenGraphicsSettings" Grid.Column="0" HorizontalAlignment="Stretch" FontFamily="{ThemeResource AppCustomFont}" Height="34" Click="BtnOpenGraphicsSettings_Click">
                                     <StackPanel Orientation="Horizontal" Spacing="6">
                                         <FontIcon Glyph="&#xE713;" FontSize="13"/>
                                         <TextBlock Text="{helpers:ResourceString Key=btn_graphics_settings}"/>
                                     </StackPanel>
                                 </Button>
 
-                                <Button x:Name="BtnRestartGpuDriver" Grid.Column="1" HorizontalAlignment="Stretch" Style="{StaticResource DefaultButtonStyle}" FontFamily="Jura Medium" Height="34" Click="BtnRestartGpuDriver_Click">
+                                <Button x:Name="BtnRestartGpuDriver" Grid.Column="1" HorizontalAlignment="Stretch" Style="{StaticResource DefaultButtonStyle}" FontFamily="{ThemeResource AppCustomFont}" Height="34" Click="BtnRestartGpuDriver_Click">
                                     <StackPanel Orientation="Horizontal" Spacing="6">
                                         <FontIcon Glyph="&#xE72C;" FontSize="13"/>
                                         <TextBlock Text="{helpers:ResourceString Key=btn_reset_driver}"/>
@@ -795,7 +795,7 @@
                             </Grid.ColumnDefinitions>
 
                             <FontIcon Grid.Column="0" Glyph="&#xEDA2;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Column="1" helpers:Loc.Key="txt_header_disk_space_card" FontFamily="{ThemeResource Jura-SemiBold}" FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" helpers:Loc.Key="txt_header_disk_space_card" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center"/>
 
                             <Button x:Name="BtnOpenDiskCleanupPage" Grid.Column="2" IsTabStop="False" Background="Transparent" BorderThickness="0" Padding="6" Click="BtnOpenDiskCleanupPage_Click" ToolTipService.ToolTip="{helpers:ResourceString Key=tooltip_open_disk_cleanup}">
                                 <FontIcon Glyph="&#xE8A7;" FontSize="14" Opacity="0.6"/>
@@ -810,7 +810,7 @@
                         <Grid Grid.Row="1" Margin="0,5,0,0">
                             <TextBlock Text="{Binding [Storage].Data}"
                                        Style="{StaticResource InfoValue}"
-                                       FontFamily="Jura Medium"
+                                       FontFamily="{ThemeResource AppCustomFont}"
                                        FontWeight="Normal"
                                        TextAlignment="Left"
                                        TextWrapping="Wrap"
@@ -839,7 +839,7 @@
 
                                                 <Grid Grid.Column="0" Width="48" Height="48" Margin="0,0,10,0" VerticalAlignment="Center">
                                                     <ProgressRing Value="{Binding UsedPercentage}" Maximum="100" IsIndeterminate="False" Foreground="{ThemeResource MyDynamicAccentBrush}" Width="44" Height="44"/>
-                                                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{StaticResource Brush_Inactive}" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="9" Text="{Binding UsedPercentage, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:N0}%'}"/>
+                                                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{StaticResource Brush_Inactive}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" FontSize="9" Text="{Binding UsedPercentage, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:N0}%'}"/>
                                                 </Grid>
 
                                                 <StackPanel Grid.Column="1" VerticalAlignment="Center">
@@ -863,37 +863,37 @@
                             <Grid ColumnDefinitions="*, *, *" ColumnSpacing="6">
                                 <Border Grid.Column="0" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
                                     <StackPanel Spacing="2">
-                                        <TextBlock Text="{helpers:ResourceString Key=txt_health}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
-                                        <TextBlock x:Name="TxtSmartHealth" Text="{helpers:ResourceString Key=txt_checking}" FontSize="13" FontWeight="Bold" FontFamily="Jura" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=txt_health}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                        <TextBlock x:Name="TxtSmartHealth" Text="{helpers:ResourceString Key=txt_checking}" FontSize="13" FontWeight="Bold" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
                                     </StackPanel>
                                 </Border>
                                 <Border Grid.Column="1" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
                                     <StackPanel Spacing="2">
-                                        <TextBlock Text="{helpers:ResourceString Key=txt_temp}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
-                                        <TextBlock x:Name="TxtSmartTemp" Text="--" FontSize="13" FontWeight="Bold" FontFamily="Jura"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=txt_temp}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                        <TextBlock x:Name="TxtSmartTemp" Text="--" FontSize="13" FontWeight="Bold" FontFamily="{ThemeResource AppCustomFont}"/>
                                     </StackPanel>
                                 </Border>
                                 <Border Grid.Column="2" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
                                     <StackPanel Spacing="2">
-                                        <TextBlock Text="{helpers:ResourceString Key=txt_type}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
-                                        <TextBlock x:Name="TxtSmartType" Text="--" FontSize="13" FontWeight="Bold" FontFamily="Jura" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=txt_type}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                        <TextBlock x:Name="TxtSmartType" Text="--" FontSize="13" FontWeight="Bold" FontFamily="{ThemeResource AppCustomFont}" TextTrimming="CharacterEllipsis"/>
                                     </StackPanel>
                                 </Border>
                             </Grid>
 
                             <!-- Action Row -->
                             <Grid ColumnDefinitions="*, *" ColumnSpacing="8">
-                                <Button x:Name="BtnRunDiskCleanup" Grid.Column="0" HorizontalAlignment="Stretch" FontFamily="Jura Medium" Height="34" Click="BtnRunDiskCleanup_Click">
+                                <Button x:Name="BtnRunDiskCleanup" Grid.Column="0" HorizontalAlignment="Stretch" FontFamily="{ThemeResource AppCustomFont}" Height="34" Click="BtnRunDiskCleanup_Click">
                                     <StackPanel Orientation="Horizontal" Spacing="6">
                                         <FontIcon Glyph="&#xE74C;" FontSize="13"/>
-                                        <TextBlock Text="{helpers:ResourceString Key=btn_clean_junk}"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=btn_clean_junk}" FontFamily="{ThemeResource AppCustomFont}"/>
                                     </StackPanel>
                                 </Button>
 
-                                <Button x:Name="BtnOptimizeDrive" Grid.Column="1" HorizontalAlignment="Stretch" Style="{StaticResource DefaultButtonStyle}" FontFamily="Jura Medium" Height="34" Click="BtnOptimizeDrive_Click">
+                                <Button x:Name="BtnOptimizeDrive" Grid.Column="1" HorizontalAlignment="Stretch" Style="{StaticResource DefaultButtonStyle}" FontFamily="{ThemeResource AppCustomFont}" Height="34" Click="BtnOptimizeDrive_Click">
                                     <StackPanel Orientation="Horizontal" Spacing="6">
                                         <FontIcon Glyph="&#xE945;" FontSize="13"/>
-                                        <TextBlock Text="{helpers:ResourceString Key=btn_trim_optimize}"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=btn_trim_optimize}" FontFamily="{ThemeResource AppCustomFont}"/>
                                     </StackPanel>
                                 </Button>
                             </Grid>
@@ -925,7 +925,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <FontIcon Grid.Column="0" Glyph="&#xE774;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Column="1" helpers:Loc.Key="title_dns_encryption" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" helpers:Loc.Key="title_dns_encryption" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center"/>
 
                             <Button x:Name="BtnOpenDnsPage" Grid.Column="2" IsTabStop="False" Background="Transparent" BorderThickness="0" Padding="6" Click="BtnOpenDnsPage_Click" ToolTipService.ToolTip="{helpers:ResourceString Key=tooltip_open_dns_page}">
                                 <FontIcon Glyph="&#xE8A7;" FontSize="14" Opacity="0.6"/>
@@ -946,9 +946,9 @@
                         <!-- Row 2: Status Texts -->
                         <StackPanel Grid.Row="2" Height="36" VerticalAlignment="Top" Spacing="4" Margin="0">
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="4">
-                                <TextBlock x:Name="TxtServicesRunning" helpers:Loc.Key="text_services_running" FontFamily="Jura Medium" FontSize="13" VerticalAlignment="Center" Visibility="Visible" Foreground="{ThemeResource SystemFillColorSuccessBrush}" FontWeight="SemiBold"/>
+                                <TextBlock x:Name="TxtServicesRunning" helpers:Loc.Key="text_services_running" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" VerticalAlignment="Center" Visibility="Visible" Foreground="{ThemeResource SystemFillColorSuccessBrush}" FontWeight="SemiBold"/>
                             </StackPanel>
-                            <TextBlock x:Name="statusLabel" helpers:Loc.Key="text_status" HorizontalAlignment="Center" Foreground="{ThemeResource Brush_Inactive}" FontFamily="Jura Medium" Opacity="0.6" FontSize="11" TextWrapping="Wrap" Margin="0,-4,0,0"/>
+                            <TextBlock x:Name="statusLabel" helpers:Loc.Key="text_status" HorizontalAlignment="Center" Foreground="{ThemeResource Brush_Inactive}" FontFamily="{ThemeResource AppCustomFont}" Opacity="0.6" FontSize="11" TextWrapping="Wrap" Margin="0,-4,0,0"/>
                         </StackPanel>
 
                         <!-- Row 3: Expanded DNS Features -->
@@ -956,13 +956,13 @@
 
                             <!-- Preset Dropdown & Latency Benchmark Button -->
                             <StackPanel Spacing="4">
-                                <TextBlock Text="{helpers:ResourceString Key=txt_dns_preset}" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
+                                <TextBlock Text="{helpers:ResourceString Key=txt_dns_preset}" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="{ThemeResource AppCustomFont}"/>
                                 <Grid ColumnDefinitions="*, Auto" ColumnSpacing="8">
-                                    <ComboBox x:Name="CmbDnsPresets" HorizontalAlignment="Stretch" DisplayMemberPath="Name" SelectionChanged="CmbDnsPresets_SelectionChanged" FontFamily="Jura Medium"/>
+                                    <ComboBox x:Name="CmbDnsPresets" HorizontalAlignment="Stretch" DisplayMemberPath="Name" SelectionChanged="CmbDnsPresets_SelectionChanged" FontFamily="{ThemeResource AppCustomFont}"/>
                                     <Button x:Name="BtnBenchmarkDns" Grid.Column="1" Click="BtnBenchmarkDns_Click" ToolTipService.ToolTip="{helpers:ResourceString Key=tooltip_benchmark_dns}" Padding="8,6">
                                         <StackPanel Orientation="Horizontal" Spacing="6">
                                             <FontIcon x:Name="IconBenchmark" Glyph="&#xE9D9;" FontSize="12"/>
-                                            <TextBlock Text="{helpers:ResourceString Key=btn_speed_test}" FontSize="11" FontFamily="Jura Medium"/>
+                                            <TextBlock Text="{helpers:ResourceString Key=btn_speed_test}" FontSize="11" FontFamily="{ThemeResource AppCustomFont}"/>
                                         </StackPanel>
                                     </Button>
                                 </Grid>
@@ -974,8 +974,8 @@
                                 <Border Grid.Column="0" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="10,6" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
                                     <Grid ColumnDefinitions="*, Auto">
                                         <StackPanel VerticalAlignment="Center">
-                                            <TextBlock Text="{helpers:ResourceString Key=txt_family_safe}" FontSize="11" FontWeight="SemiBold" FontFamily="Jura Medium"/>
-                                            <TextBlock Text="{helpers:ResourceString Key=txt_block_adult_nsfw}" FontSize="9" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
+                                            <TextBlock Text="{helpers:ResourceString Key=txt_family_safe}" FontSize="11" FontWeight="SemiBold" FontFamily="{ThemeResource AppCustomFont}"/>
+                                            <TextBlock Text="{helpers:ResourceString Key=txt_block_adult_nsfw}" FontSize="9" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="{ThemeResource AppCustomFont}"/>
                                         </StackPanel>
                                         <ToggleSwitch x:Name="ToggleFamilySafe" Grid.Column="1" Margin="0,-6,-10,-6" MinWidth="0" OnContent="" OffContent="" Toggled="ToggleFamilySafe_Toggled"/>
                                     </Grid>
@@ -985,8 +985,8 @@
                                 <Border Grid.Column="1" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="10,6" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
                                     <Grid ColumnDefinitions="*, Auto">
                                         <StackPanel VerticalAlignment="Center">
-                                            <TextBlock Text="{helpers:ResourceString Key=txt_ad_malware}" FontSize="11" FontWeight="SemiBold" FontFamily="Jura Medium"/>
-                                            <TextBlock Text="{helpers:ResourceString Key=txt_adguard_shield}" FontSize="9" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
+                                            <TextBlock Text="{helpers:ResourceString Key=txt_ad_malware}" FontSize="11" FontWeight="SemiBold" FontFamily="{ThemeResource AppCustomFont}"/>
+                                            <TextBlock Text="{helpers:ResourceString Key=txt_adguard_shield}" FontSize="9" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="{ThemeResource AppCustomFont}"/>
                                         </StackPanel>
                                         <ToggleSwitch x:Name="ToggleAdBlock" Grid.Column="1" Margin="0,-6,-10,-6" MinWidth="0" OnContent="" OffContent="" Toggled="ToggleAdBlock_Toggled"/>
                                     </Grid>
@@ -994,14 +994,14 @@
                             </Grid>
 
                             <!-- Status Feedback Label -->
-                            <TextBlock x:Name="TxtDnsFeedback" Text="" FontSize="11" FontFamily="Jura Medium" HorizontalAlignment="Center" Foreground="{ThemeResource SystemFillColorSuccessBrush}" Visibility="Collapsed"/>
+                            <TextBlock x:Name="TxtDnsFeedback" Text="" FontSize="11" FontFamily="{ThemeResource AppCustomFont}" HorizontalAlignment="Center" Foreground="{ThemeResource SystemFillColorSuccessBrush}" Visibility="Collapsed"/>
                         </StackPanel>
 
                         <!-- Row 4: Button Actions -->
                         <Grid Grid.Row="4" VerticalAlignment="Bottom" Margin="0,8,0,0">
                             <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
-                                <Button x:Name="BtnDebug" IsTabStop="False" Grid.Column="0" Content="{helpers:ResourceString Key=btn_debug_process}" HorizontalAlignment="Stretch" Click="BtnDebug_Click" FontFamily="Jura Medium" BorderThickness="0"/>
-                                <Button x:Name="BtnStartService" IsTabStop="False" Grid.Column="1" Content="{helpers:ResourceString Key=btn_start_service}" HorizontalAlignment="Stretch" Click="BtnStartService_Click" Style="{StaticResource AccentButtonStyle}" FontFamily="Jura Medium"/>
+                                <Button x:Name="BtnDebug" IsTabStop="False" Grid.Column="0" Content="{helpers:ResourceString Key=btn_debug_process}" HorizontalAlignment="Stretch" Click="BtnDebug_Click" FontFamily="{ThemeResource AppCustomFont}" BorderThickness="0"/>
+                                <Button x:Name="BtnStartService" IsTabStop="False" Grid.Column="1" Content="{helpers:ResourceString Key=btn_start_service}" HorizontalAlignment="Stretch" Click="BtnStartService_Click" Style="{StaticResource AccentButtonStyle}" FontFamily="{ThemeResource AppCustomFont}"/>
                             </Grid>
                         </Grid>
 
@@ -1032,7 +1032,7 @@
                             </Grid.ColumnDefinitions>
 
                             <FontIcon Grid.Column="0" Glyph="&#xE9D9;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Column="1" helpers:Loc.Key="title_system_health_status" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" helpers:Loc.Key="title_system_health_status" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center"/>
 
                             <Button x:Name="BtnOpenMaintenancePage" Grid.Column="2" IsTabStop="False" Background="Transparent" BorderThickness="0" Padding="6" Click="BtnOpenMaintenancePage_Click" ToolTipService.ToolTip="{helpers:ResourceString Key=tooltip_open_maintenance}">
                                 <FontIcon Glyph="&#xE8A7;" FontSize="14" Opacity="0.6"/>
@@ -1080,7 +1080,7 @@
                             </Canvas>
 
                             <!-- Premium Gradient Text -->
-                            <TextBlock x:Name="TxtHealthScore" Text="0%" FontFamily="Jura Medium" FontSize="15" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,4">
+                            <TextBlock x:Name="TxtHealthScore" Text="0%" FontFamily="{ThemeResource AppCustomFont}" FontSize="15" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,4">
                                 <TextBlock.Foreground>
                                     <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
                                         <GradientStop Color="#FFFFFFFF" Offset="0.0"/>
@@ -1092,8 +1092,8 @@
 
                         <!-- Row 2: Status Texts -->
                         <StackPanel x:Name="HealthStatusPanel" Grid.Row="2" Height="32" VerticalAlignment="Top" Spacing="0" Margin="0,0,0,0">
-                            <TextBlock x:Name="TxtHealthStatus" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" helpers:Loc.Key="text_scanning_system" FontFamily="Jura Medium" FontSize="13" HorizontalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}" FontWeight="SemiBold"/>
-                            <TextBlock x:Name="TxtLastRefreshed" Text="" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" HorizontalAlignment="Center" Foreground="{ThemeResource Brush_Inactive}" FontFamily="Jura Medium" Opacity="1" FontSize="11" Margin="0,2,0,0"/>
+                            <TextBlock x:Name="TxtHealthStatus" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" helpers:Loc.Key="text_scanning_system" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" HorizontalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}" FontWeight="SemiBold"/>
+                            <TextBlock x:Name="TxtLastRefreshed" Text="" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" HorizontalAlignment="Center" Foreground="{ThemeResource Brush_Inactive}" FontFamily="{ThemeResource AppCustomFont}" Opacity="1" FontSize="11" Margin="0,2,0,0"/>
                         </StackPanel>
 
                         <!-- Row 3: Expanded Section -->
@@ -1102,20 +1102,20 @@
                             <Grid ColumnDefinitions="*, *, *" ColumnSpacing="6">
                                 <Border Grid.Column="0" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
                                     <StackPanel Spacing="2">
-                                        <TextBlock Text="Temp Files" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium" TextTrimming="CharacterEllipsis"/>
-                                        <TextBlock x:Name="TxtHealthTempFiles" Text="-- GB" FontSize="13" FontWeight="Bold" FontFamily="Jura"/>
+                                        <TextBlock Text="Temp Files" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="{ThemeResource AppCustomFont}" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock x:Name="TxtHealthTempFiles" Text="-- GB" FontSize="13" FontWeight="Bold" FontFamily="{ThemeResource AppCustomFont}"/>
                                     </StackPanel>
                                 </Border>
                                 <Border Grid.Column="1" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
                                     <StackPanel Spacing="2">
-                                        <TextBlock Text="Memory Usage" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium" TextTrimming="CharacterEllipsis"/>
-                                        <TextBlock x:Name="TxtHealthRamUsage" Text="--%" FontSize="13" FontWeight="Bold" FontFamily="Jura"/>
+                                        <TextBlock Text="Memory Usage" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="{ThemeResource AppCustomFont}" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock x:Name="TxtHealthRamUsage" Text="--%" FontSize="13" FontWeight="Bold" FontFamily="{ThemeResource AppCustomFont}"/>
                                     </StackPanel>
                                 </Border>
                                 <Border Grid.Column="2" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
                                     <StackPanel Spacing="2">
-                                        <TextBlock Text="Pagefile" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium" TextTrimming="CharacterEllipsis"/>
-                                        <TextBlock x:Name="TxtHealthPagefileUsage" Text="--%" FontSize="13" FontWeight="Bold" FontFamily="Jura"/>
+                                        <TextBlock Text="Pagefile" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="{ThemeResource AppCustomFont}" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock x:Name="TxtHealthPagefileUsage" Text="--%" FontSize="13" FontWeight="Bold" FontFamily="{ThemeResource AppCustomFont}"/>
                                     </StackPanel>
                                 </Border>
                             </Grid>
@@ -1123,11 +1123,11 @@
 
                         <!-- Row 4: Refresh Bottom Action -->
                         <Grid Grid.Row="4" VerticalAlignment="Bottom" Margin="0,8,0,0">
-                            <Button x:Name="BtnRefreshHealth" IsTabStop="False" HorizontalAlignment="Stretch" Click="BtnRefreshHealth_Click" FontFamily="Jura Medium" BorderThickness="0">
+                            <Button x:Name="BtnRefreshHealth" IsTabStop="False" HorizontalAlignment="Stretch" Click="BtnRefreshHealth_Click" FontFamily="{ThemeResource AppCustomFont}" BorderThickness="0">
                                 <Button.Content>
                                     <StackPanel Orientation="Horizontal" Spacing="8">
                                         <FontIcon Glyph="&#xE72C;" FontSize="14"/>
-                                        <TextBlock helpers:Loc.Key="btn_refresh_status"/>
+                                        <TextBlock helpers:Loc.Key="btn_refresh_status" FontFamily="{ThemeResource AppCustomFont}"/>
                                     </StackPanel>
                                 </Button.Content>
                             </Button>
@@ -1160,7 +1160,7 @@
                             </Grid.ColumnDefinitions>
 
                             <FontIcon Grid.Column="0" Glyph="&#xE773;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Column="1" helpers:Loc.Key="title_security_card" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" helpers:Loc.Key="title_security_card" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center"/>
 
                             <Button x:Name="BtnOpenSecurityPage" Grid.Column="2" IsTabStop="False" Background="Transparent" BorderThickness="0" Padding="6" Click="BtnOpenSecurityPage_Click" ToolTipService.ToolTip="{helpers:ResourceString Key=tooltip_open_security}">
                                 <FontIcon Glyph="&#xE8A7;" FontSize="14" Opacity="0.6"/>
@@ -1180,12 +1180,12 @@
                         <!-- Row 2: Status Texts -->
                         <StackPanel x:Name="SecurityStatusPanel" Grid.Row="2" Height="36" VerticalAlignment="Top" Spacing="4" Margin="0">
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="4">
-                                <TextBlock x:Name="TxtSecurityStatus" helpers:Loc.Key="txt_scanning" FontFamily="Jura Medium" FontSize="13" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}" FontWeight="SemiBold"/>
+                                <TextBlock x:Name="TxtSecurityStatus" helpers:Loc.Key="txt_scanning" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}" FontWeight="SemiBold"/>
                                 <Button x:Name="BtnDashViewIssues" Background="Transparent" BorderThickness="0" Padding="6,4" MinHeight="0" MinWidth="0" VerticalAlignment="Center" Visibility="Collapsed" Click="BtnDashViewIssues_Click">
                                     <FontIcon Glyph="&#xE946;" FontSize="13" Opacity="0.8"/>
                                 </Button>
                             </StackPanel>
-                            <TextBlock x:Name="TxtSecurityLastRefreshed" Text=" " FontSize="11" Foreground="{ThemeResource Brush_Inactive}" HorizontalAlignment="Center" FontFamily="Jura Medium" Margin="0,-4,0,0"/>
+                            <TextBlock x:Name="TxtSecurityLastRefreshed" Text=" " FontSize="11" Foreground="{ThemeResource Brush_Inactive}" HorizontalAlignment="Center" FontFamily="{ThemeResource AppCustomFont}" Margin="0,-4,0,0"/>
                         </StackPanel>
 
                         <!-- Row 3: Expanded Section with Minicards -->
@@ -1193,20 +1193,20 @@
                             <Grid ColumnDefinitions="*, *, *" ColumnSpacing="6">
                                 <Border Grid.Column="0" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
                                     <StackPanel Spacing="2">
-                                        <TextBlock Text="Firewall" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium" TextTrimming="CharacterEllipsis"/>
-                                        <TextBlock x:Name="TxtSecFirewall" Text="Active" FontSize="13" FontWeight="Bold" FontFamily="Jura" Foreground="{ThemeResource SystemFillColorSuccessBrush}"/>
+                                        <TextBlock Text="Firewall" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="{ThemeResource AppCustomFont}" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock x:Name="TxtSecFirewall" Text="Active" FontSize="13" FontWeight="Bold" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource SystemFillColorSuccessBrush}"/>
                                     </StackPanel>
                                 </Border>
                                 <Border Grid.Column="1" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
                                     <StackPanel Spacing="2">
-                                        <TextBlock Text="Defender" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium" TextTrimming="CharacterEllipsis"/>
-                                        <TextBlock x:Name="TxtSecDefender" Text="Active" FontSize="13" FontWeight="Bold" FontFamily="Jura" Foreground="{ThemeResource SystemFillColorSuccessBrush}"/>
+                                        <TextBlock Text="Defender" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="{ThemeResource AppCustomFont}" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock x:Name="TxtSecDefender" Text="Active" FontSize="13" FontWeight="Bold" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource SystemFillColorSuccessBrush}"/>
                                     </StackPanel>
                                 </Border>
                                 <Border Grid.Column="2" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
                                     <StackPanel Spacing="2">
-                                        <TextBlock Text="UAC" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium" TextTrimming="CharacterEllipsis"/>
-                                        <TextBlock x:Name="TxtSecUAC" Text="Enabled" FontSize="13" FontWeight="Bold" FontFamily="Jura" Foreground="{ThemeResource SystemFillColorSuccessBrush}"/>
+                                        <TextBlock Text="UAC" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="{ThemeResource AppCustomFont}" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock x:Name="TxtSecUAC" Text="Enabled" FontSize="13" FontWeight="Bold" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource SystemFillColorSuccessBrush}"/>
                                     </StackPanel>
                                 </Border>
                             </Grid>
@@ -1214,11 +1214,11 @@
 
                         <!-- Row 4: Refresh Bottom Action -->
                         <Grid Grid.Row="4" VerticalAlignment="Bottom" Margin="0,8,0,0">
-                            <Button x:Name="BtnRefreshSecurity" IsTabStop="False" HorizontalAlignment="Stretch" Click="BtnRefreshSecurity_Click" BorderThickness="0" FontFamily="Jura Medium">
+                            <Button x:Name="BtnRefreshSecurity" IsTabStop="False" HorizontalAlignment="Stretch" Click="BtnRefreshSecurity_Click" BorderThickness="0" FontFamily="{ThemeResource AppCustomFont}">
                                 <Button.Content>
                                     <StackPanel Orientation="Horizontal" Spacing="8">
                                         <FontIcon Glyph="&#xE72C;" FontSize="14"/>
-                                        <TextBlock helpers:Loc.Key="btn_quick_scan"/>
+                                        <TextBlock helpers:Loc.Key="btn_quick_scan" FontFamily="{ThemeResource AppCustomFont}"/>
                                     </StackPanel>
                                 </Button.Content>
                             </Button>
@@ -1241,11 +1241,11 @@
                         <Grid Grid.Row="0" Margin="0,0,0,16">
                             <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Left">
                                 <FontIcon Glyph="&#xE950;" Margin="0,0,0,0" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="16"/>
-                                <TextBlock Text="{helpers:ResourceString Key=txt_cpu_history}" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16"/>
+                                <TextBlock Text="{helpers:ResourceString Key=txt_cpu_history}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" FontSize="16"/>
                             </StackPanel>
 
                             <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Right">
-                                <TextBlock x:Name="TxtCurrentCpu" Text="{x:Bind ViewModel.CpuUsageDisplay, Mode=OneWay, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0}%'}" FontFamily="Jura" FontWeight="Bold" FontSize="16" Foreground="#0078D7" VerticalAlignment="Center" Width="45" TextAlignment="Right"/>
+                                <TextBlock x:Name="TxtCurrentCpu" Text="{x:Bind ViewModel.CpuUsageDisplay, Mode=OneWay, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0}%'}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="Bold" FontSize="16" Foreground="#0078D7" VerticalAlignment="Center" Width="45" TextAlignment="Right"/>
                             </StackPanel>
                         </Grid>
 
@@ -1266,11 +1266,11 @@
                                     <RowDefinition/>
                                     <RowDefinition/>
                                 </Grid.RowDefinitions>
-                                <TextBlock Grid.Row="0" Text="100%" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-7,0,0"/>
-                                <TextBlock Grid.Row="1" Text="75%" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-7,0,0"/>
-                                <TextBlock Grid.Row="2" Text="50%" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-7,0,0"/>
-                                <TextBlock Grid.Row="3" Text="25%" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-7,0,0"/>
-                                <TextBlock Grid.Row="3" Text="0%" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,0,-7"/>
+                                <TextBlock Grid.Row="0" Text="100%" FontSize="10" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-7,0,0"/>
+                                <TextBlock Grid.Row="1" Text="75%" FontSize="10" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-7,0,0"/>
+                                <TextBlock Grid.Row="2" Text="50%" FontSize="10" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-7,0,0"/>
+                                <TextBlock Grid.Row="3" Text="25%" FontSize="10" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-7,0,0"/>
+                                <TextBlock Grid.Row="3" Text="0%" FontSize="10" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,0,-7"/>
                             </Grid>
 
                             <Grid Grid.Row="1" Grid.Column="1" Margin="0,8,0,0">
@@ -1280,11 +1280,11 @@
                                     <ColumnDefinition/>
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="{x:Bind ViewModel.XAxisLabelStart, Mode=OneWay}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
-                                <TextBlock Grid.Column="1" Text="{x:Bind ViewModel.XAxisLabelQ1, Mode=OneWay}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
-                                <TextBlock Grid.Column="2" Text="{x:Bind ViewModel.XAxisLabelMid, Mode=OneWay}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
-                                <TextBlock Grid.Column="3" Text="{x:Bind ViewModel.XAxisLabelQ3, Mode=OneWay}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
-                                <TextBlock Grid.Column="3" Text="0s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,-6,0"/>
+                                <TextBlock Grid.Column="0" Text="{x:Bind ViewModel.XAxisLabelStart, Mode=OneWay}" FontSize="10" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
+                                <TextBlock Grid.Column="1" Text="{x:Bind ViewModel.XAxisLabelQ1, Mode=OneWay}" FontSize="10" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
+                                <TextBlock Grid.Column="2" Text="{x:Bind ViewModel.XAxisLabelMid, Mode=OneWay}" FontSize="10" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
+                                <TextBlock Grid.Column="3" Text="{x:Bind ViewModel.XAxisLabelQ3, Mode=OneWay}" FontSize="10" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
+                                <TextBlock Grid.Column="3" Text="0s" FontSize="10" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,-6,0"/>
                             </Grid>
 
                             <Grid Grid.Row="0" Grid.Column="1">
@@ -1337,11 +1337,11 @@
                         <Grid Grid.Row="0" Margin="0,0,0,16">
                             <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Left">
                                 <FontIcon Glyph="&#xE964;" Margin="0,0,0,0" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="16"/>
-                                <TextBlock Text="{helpers:ResourceString Key=txt_memory_history}" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16"/>
+                                <TextBlock Text="{helpers:ResourceString Key=txt_memory_history}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" FontSize="16"/>
                             </StackPanel>
 
                             <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Right">
-                                <TextBlock x:Name="TxtCurrentRam" Text="{x:Bind ViewModel.RamUsagePercentageText, Mode=OneWay}" FontFamily="Jura" FontWeight="Bold" FontSize="16" Foreground="#881798" VerticalAlignment="Center" Width="45" TextAlignment="Right"/>
+                                <TextBlock x:Name="TxtCurrentRam" Text="{x:Bind ViewModel.RamUsagePercentageText, Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="Bold" FontSize="16" Foreground="#881798" VerticalAlignment="Center" Width="45" TextAlignment="Right"/>
                             </StackPanel>
                         </Grid>
 
@@ -1362,11 +1362,11 @@
                                     <RowDefinition/>
                                     <RowDefinition/>
                                 </Grid.RowDefinitions>
-                                <TextBlock Grid.Row="0" Text="100%" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-7,0,0"/>
-                                <TextBlock Grid.Row="1" Text="75%" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-7,0,0"/>
-                                <TextBlock Grid.Row="2" Text="50%" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-7,0,0"/>
-                                <TextBlock Grid.Row="3" Text="25%" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-7,0,0"/>
-                                <TextBlock Grid.Row="3" Text="0%" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,0,-7"/>
+                                <TextBlock Grid.Row="0" Text="100%" FontSize="10" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-7,0,0"/>
+                                <TextBlock Grid.Row="1" Text="75%" FontSize="10" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-7,0,0"/>
+                                <TextBlock Grid.Row="2" Text="50%" FontSize="10" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-7,0,0"/>
+                                <TextBlock Grid.Row="3" Text="25%" FontSize="10" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-7,0,0"/>
+                                <TextBlock Grid.Row="3" Text="0%" FontSize="10" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,0,-7"/>
                             </Grid>
 
                             <Grid Grid.Row="1" Grid.Column="1" Margin="0,8,0,0">
@@ -1376,11 +1376,11 @@
                                     <ColumnDefinition/>
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="{x:Bind ViewModel.XAxisLabelStart, Mode=OneWay}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
-                                <TextBlock Grid.Column="1" Text="{x:Bind ViewModel.XAxisLabelQ1, Mode=OneWay}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
-                                <TextBlock Grid.Column="2" Text="{x:Bind ViewModel.XAxisLabelMid, Mode=OneWay}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
-                                <TextBlock Grid.Column="3" Text="{x:Bind ViewModel.XAxisLabelQ3, Mode=OneWay}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
-                                <TextBlock Grid.Column="3" Text="0s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,-6,0"/>
+                                <TextBlock Grid.Column="0" Text="{x:Bind ViewModel.XAxisLabelStart, Mode=OneWay}" FontSize="10" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
+                                <TextBlock Grid.Column="1" Text="{x:Bind ViewModel.XAxisLabelQ1, Mode=OneWay}" FontSize="10" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
+                                <TextBlock Grid.Column="2" Text="{x:Bind ViewModel.XAxisLabelMid, Mode=OneWay}" FontSize="10" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
+                                <TextBlock Grid.Column="3" Text="{x:Bind ViewModel.XAxisLabelQ3, Mode=OneWay}" FontSize="10" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
+                                <TextBlock Grid.Column="3" Text="0s" FontSize="10" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,-6,0"/>
                             </Grid>
 
                             <Grid Grid.Row="0" Grid.Column="1">
@@ -1437,19 +1437,19 @@
 
                             <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,2,0,0">
                                 <FontIcon Glyph="&#xE839;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="16"/>
-                                <TextBlock Text="{helpers:ResourceString Key=txt_network_history}" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16"/>
+                                <TextBlock Text="{helpers:ResourceString Key=txt_network_history}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" FontSize="16"/>
                             </StackPanel>
 
                             <StackPanel Grid.Column="1" Orientation="Vertical" Spacing="2" HorizontalAlignment="Right" VerticalAlignment="Center">
 
                                 <StackPanel Orientation="Horizontal" Spacing="6" HorizontalAlignment="Right">
                                     <FontIcon Glyph="&#xE896;" FontSize="12" Foreground="#0078D7" VerticalAlignment="Center"/>
-                                    <TextBlock x:Name="TxtCurrentDown" Text="{x:Bind DownLoadText.Text, Mode=OneWay}" FontFamily="Jura" FontWeight="Bold" FontSize="12" Foreground="#0078D7" Width="65" TextAlignment="Right" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="TxtCurrentDown" Text="{x:Bind DownLoadText.Text, Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="Bold" FontSize="12" Foreground="#0078D7" Width="65" TextAlignment="Right" VerticalAlignment="Center"/>
                                 </StackPanel>
 
                                 <StackPanel Orientation="Horizontal" Spacing="6" HorizontalAlignment="Right">
                                     <FontIcon Glyph="&#xE898;" FontSize="12" Foreground="#881798" VerticalAlignment="Center"/>
-                                    <TextBlock x:Name="TxtCurrentUp" Text="{x:Bind UpLoadText.Text, Mode=OneWay}" FontFamily="Jura" FontWeight="Bold" FontSize="12" Foreground="#881798" Width="65" TextAlignment="Right" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="TxtCurrentUp" Text="{x:Bind UpLoadText.Text, Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="Bold" FontSize="12" Foreground="#881798" Width="65" TextAlignment="Right" VerticalAlignment="Center"/>
                                 </StackPanel>
 
                             </StackPanel>
@@ -1472,11 +1472,11 @@
                                     <RowDefinition/>
                                     <RowDefinition/>
                                 </Grid.RowDefinitions>
-                                <TextBlock Grid.Row="0" Text="{x:Bind ViewModel.NetYAxis100, Mode=OneWay}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,-7,0,0"/>
-                                <TextBlock Grid.Row="1" Text="{x:Bind ViewModel.NetYAxis75, Mode=OneWay}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,-7,0,0"/>
-                                <TextBlock Grid.Row="2" Text="{x:Bind ViewModel.NetYAxis50, Mode=OneWay}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,-7,0,0"/>
-                                <TextBlock Grid.Row="3" Text="{x:Bind ViewModel.NetYAxis25, Mode=OneWay}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,-7,0,0"/>
-                                <TextBlock Grid.Row="3" Text="0" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,0,0,-7"/>
+                                <TextBlock Grid.Row="0" Text="{x:Bind ViewModel.NetYAxis100, Mode=OneWay}" FontSize="10" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,-7,0,0"/>
+                                <TextBlock Grid.Row="1" Text="{x:Bind ViewModel.NetYAxis75, Mode=OneWay}" FontSize="10" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,-7,0,0"/>
+                                <TextBlock Grid.Row="2" Text="{x:Bind ViewModel.NetYAxis50, Mode=OneWay}" FontSize="10" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,-7,0,0"/>
+                                <TextBlock Grid.Row="3" Text="{x:Bind ViewModel.NetYAxis25, Mode=OneWay}" FontSize="10" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,-7,0,0"/>
+                                <TextBlock Grid.Row="3" Text="0" FontSize="10" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,0,0,-7"/>
                             </Grid>
 
                             <Grid Grid.Row="1" Grid.Column="1" Margin="0,8,0,0">
@@ -1486,11 +1486,11 @@
                                     <ColumnDefinition/>
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="{x:Bind ViewModel.XAxisLabelStart, Mode=OneWay}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
-                                <TextBlock Grid.Column="1" Text="{x:Bind ViewModel.XAxisLabelQ1, Mode=OneWay}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
-                                <TextBlock Grid.Column="2" Text="{x:Bind ViewModel.XAxisLabelMid, Mode=OneWay}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
-                                <TextBlock Grid.Column="3" Text="{x:Bind ViewModel.XAxisLabelQ3, Mode=OneWay}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
-                                <TextBlock Grid.Column="3" Text="0s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,-6,0"/>
+                                <TextBlock Grid.Column="0" Text="{x:Bind ViewModel.XAxisLabelStart, Mode=OneWay}" FontSize="10" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
+                                <TextBlock Grid.Column="1" Text="{x:Bind ViewModel.XAxisLabelQ1, Mode=OneWay}" FontSize="10" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
+                                <TextBlock Grid.Column="2" Text="{x:Bind ViewModel.XAxisLabelMid, Mode=OneWay}" FontSize="10" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
+                                <TextBlock Grid.Column="3" Text="{x:Bind ViewModel.XAxisLabelQ3, Mode=OneWay}" FontSize="10" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
+                                <TextBlock Grid.Column="3" Text="0s" FontSize="10" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,-6,0"/>
                             </Grid>
 
                             <Grid Grid.Row="0" Grid.Column="1">
@@ -1542,11 +1542,11 @@
                         <Grid Grid.Row="0" Margin="0,0,0,16">
                             <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Left">
                                 <FontIcon Glyph="&#xECA5;" Margin="0,0,0,0" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="16"/>
-                                <TextBlock Text="{helpers:ResourceString Key=txt_gpu_history}" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16"/>
+                                <TextBlock Text="{helpers:ResourceString Key=txt_gpu_history}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" FontSize="16"/>
                             </StackPanel>
 
                             <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Right">
-                                <TextBlock x:Name="TxtCurrentGpu" Text="{x:Bind ViewModel.GpuUsageDisplay, Mode=OneWay, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0}%'}" FontFamily="Jura" FontWeight="Bold" FontSize="16" Foreground="#107C10" VerticalAlignment="Center" Width="45" TextAlignment="Right"/>
+                                <TextBlock x:Name="TxtCurrentGpu" Text="{x:Bind ViewModel.GpuUsageDisplay, Mode=OneWay, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0}%'}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="Bold" FontSize="16" Foreground="#107C10" VerticalAlignment="Center" Width="45" TextAlignment="Right"/>
                             </StackPanel>
                         </Grid>
 
@@ -1567,11 +1567,11 @@
                                     <RowDefinition/>
                                     <RowDefinition/>
                                 </Grid.RowDefinitions>
-                                <TextBlock Grid.Row="0" Text="100%" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,-7,0,0"/>
-                                <TextBlock Grid.Row="1" Text="75%" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,-7,0,0"/>
-                                <TextBlock Grid.Row="2" Text="50%" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,-7,0,0"/>
-                                <TextBlock Grid.Row="3" Text="25%" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,-7,0,0"/>
-                                <TextBlock Grid.Row="3" Text="0%" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,0,0,-7"/>
+                                <TextBlock Grid.Row="0" Text="100%" FontSize="10" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,-7,0,0"/>
+                                <TextBlock Grid.Row="1" Text="75%" FontSize="10" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,-7,0,0"/>
+                                <TextBlock Grid.Row="2" Text="50%" FontSize="10" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,-7,0,0"/>
+                                <TextBlock Grid.Row="3" Text="25%" FontSize="10" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,-7,0,0"/>
+                                <TextBlock Grid.Row="3" Text="0%" FontSize="10" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,0,0,-7"/>
                             </Grid>
 
                             <Grid Grid.Row="1" Grid.Column="1" Margin="0,8,0,0">
@@ -1581,11 +1581,11 @@
                                     <ColumnDefinition/>
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="{x:Bind ViewModel.XAxisLabelStart, Mode=OneWay}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
-                                <TextBlock Grid.Column="1" Text="{x:Bind ViewModel.XAxisLabelQ1, Mode=OneWay}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
-                                <TextBlock Grid.Column="2" Text="{x:Bind ViewModel.XAxisLabelMid, Mode=OneWay}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
-                                <TextBlock Grid.Column="3" Text="{x:Bind ViewModel.XAxisLabelQ3, Mode=OneWay}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
-                                <TextBlock Grid.Column="3" Text="0s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,-6,0"/>
+                                <TextBlock Grid.Column="0" Text="{x:Bind ViewModel.XAxisLabelStart, Mode=OneWay}" FontSize="10" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
+                                <TextBlock Grid.Column="1" Text="{x:Bind ViewModel.XAxisLabelQ1, Mode=OneWay}" FontSize="10" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
+                                <TextBlock Grid.Column="2" Text="{x:Bind ViewModel.XAxisLabelMid, Mode=OneWay}" FontSize="10" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
+                                <TextBlock Grid.Column="3" Text="{x:Bind ViewModel.XAxisLabelQ3, Mode=OneWay}" FontSize="10" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
+                                <TextBlock Grid.Column="3" Text="0s" FontSize="10" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,-6,0"/>
                             </Grid>
 
                             <Grid Grid.Row="0" Grid.Column="1">
@@ -1646,7 +1646,7 @@
                             </Grid.ColumnDefinitions>
 
                             <FontIcon Grid.Column="0" Glyph="&#xE9A1;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=txt_memory_optimizer}" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=txt_memory_optimizer}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center"/>
 
                             <Button x:Name="BtnOpenRamBoostPage" Grid.Column="2" IsTabStop="False" Background="Transparent" BorderThickness="0" Padding="6" Click="BtnOpenRamBoostPage_Click" ToolTipService.ToolTip="{helpers:ResourceString Key=tooltip_open_maintenance}">
                                 <FontIcon Glyph="&#xE8A7;" FontSize="14" Opacity="0.6"/>
@@ -1669,9 +1669,9 @@
                                 <Grid Width="95" Height="95">
                                     <Ellipse Stroke="{StaticResource Brush_Separator}" StrokeThickness="5" Opacity="0.2"/>
                                     <ProgressRing x:Name="BoostRamRing" Maximum="100" Width="95" Height="95" IsIndeterminate="False" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                                    <TextBlock Text="{x:Bind ViewModel.RamUsagePercentageText, Mode=OneWay}" FontSize="18" FontFamily="Jura" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{x:Bind ViewModel.RamUsagePercentageText, Mode=OneWay}" FontSize="18" FontFamily="{ThemeResource AppCustomFont}" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 </Grid>
-                                <TextBlock Text="{x:Bind ViewModel.RamUsageGbText, Mode=OneWay}" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Center" FontFamily="Jura Medium"/>
+                                <TextBlock Text="{x:Bind ViewModel.RamUsageGbText, Mode=OneWay}" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Center" FontFamily="{ThemeResource AppCustomFont}"/>
                             </StackPanel>
 
                             <!-- Right: 4 Mini Cards Grid -->
@@ -1679,36 +1679,36 @@
                                 <!-- 1. Total Installed -->
                                 <Border Grid.Row="0" Grid.Column="0" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
                                     <StackPanel Spacing="2">
-                                        <TextBlock Text="{helpers:ResourceString Key=txt_total_physical}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
-                                        <TextBlock Text="{x:Bind ViewModel.TotalRamGb, Mode=OneWay}" FontSize="15" FontWeight="Bold" FontFamily="Jura"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=txt_total_physical}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                        <TextBlock Text="{x:Bind ViewModel.TotalRamGb, Mode=OneWay}" FontSize="15" FontWeight="Bold" FontFamily="{ThemeResource AppCustomFont}"/>
                                     </StackPanel>
                                 </Border>
                                 <!-- 2. In Use -->
                                 <Border Grid.Row="0" Grid.Column="1" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
                                     <StackPanel Spacing="2">
-                                        <TextBlock Text="{helpers:ResourceString Key=txt_in_use}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=txt_in_use}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="{ThemeResource AppCustomFont}"/>
                                         <StackPanel Orientation="Horizontal" Spacing="4" VerticalAlignment="Bottom">
-                                            <TextBlock Text="{x:Bind ViewModel.UsedRamGb, Mode=OneWay}" FontSize="15" FontWeight="Bold" FontFamily="Jura"/>
-                                            <TextBlock Text="{x:Bind ViewModel.RamUsagePercentageText, Mode=OneWay}" FontSize="10" Foreground="{ThemeResource MyDynamicAccentBrush}" VerticalAlignment="Bottom" Margin="0,0,0,2"/>
+                                            <TextBlock Text="{x:Bind ViewModel.UsedRamGb, Mode=OneWay}" FontSize="15" FontWeight="Bold" FontFamily="{ThemeResource AppCustomFont}"/>
+                                            <TextBlock Text="{x:Bind ViewModel.RamUsagePercentageText, Mode=OneWay}" FontSize="10" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource MyDynamicAccentBrush}" VerticalAlignment="Bottom" Margin="0,0,0,2"/>
                                         </StackPanel>
                                     </StackPanel>
                                 </Border>
                                 <!-- 3. Available -->
                                 <Border Grid.Row="1" Grid.Column="0" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
                                     <StackPanel Spacing="2">
-                                        <TextBlock Text="{helpers:ResourceString Key=txt_available}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=txt_available}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="{ThemeResource AppCustomFont}"/>
                                         <StackPanel Orientation="Horizontal" Spacing="4" VerticalAlignment="Bottom">
-                                            <TextBlock Text="{x:Bind ViewModel.AvailableRamGb, Mode=OneWay}" FontSize="15" FontWeight="Bold" FontFamily="Jura"/>
-                                            <TextBlock Text="{x:Bind ViewModel.AvailableRamPercentageText, Mode=OneWay}" FontSize="10" Foreground="{ThemeResource SystemFillColorSuccessBrush}" VerticalAlignment="Bottom" Margin="0,0,0,2"/>
+                                            <TextBlock Text="{x:Bind ViewModel.AvailableRamGb, Mode=OneWay}" FontSize="15" FontWeight="Bold" FontFamily="{ThemeResource AppCustomFont}"/>
+                                            <TextBlock Text="{x:Bind ViewModel.AvailableRamPercentageText, Mode=OneWay}" FontSize="10" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource SystemFillColorSuccessBrush}" VerticalAlignment="Bottom" Margin="0,0,0,2"/>
                                         </StackPanel>
                                     </StackPanel>
                                 </Border>
                                 <!-- 4. System Cache -->
                                 <Border Grid.Row="1" Grid.Column="1" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
                                     <StackPanel Spacing="0">
-                                        <TextBlock Text="{helpers:ResourceString Key=txt_system_cache}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium" Margin="0,0,0,2"/>
-                                        <TextBlock Text="{x:Bind ViewModel.SystemCacheGb, Mode=OneWay}" FontSize="15" FontWeight="Bold" FontFamily="Jura"/>
-                                        <TextBlock Text="{helpers:ResourceString Key=txt_standby_mapped}" FontSize="9" Opacity="0.6" Foreground="{ThemeResource TextFillColorTertiaryBrush}" Margin="0,1,0,0" TextTrimming="CharacterEllipsis" ToolTipService.ToolTip="{helpers:ResourceString Key=txt_standby_mapped}"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=txt_system_cache}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="{ThemeResource AppCustomFont}" Margin="0,0,0,2"/>
+                                        <TextBlock Text="{x:Bind ViewModel.SystemCacheGb, Mode=OneWay}" FontSize="15" FontWeight="Bold" FontFamily="{ThemeResource AppCustomFont}"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=txt_standby_mapped}" FontSize="9" FontFamily="{ThemeResource AppCustomFont}" Opacity="0.6" Foreground="{ThemeResource TextFillColorTertiaryBrush}" Margin="0,1,0,0" TextTrimming="CharacterEllipsis" ToolTipService.ToolTip="{helpers:ResourceString Key=txt_standby_mapped}"/>
                                     </StackPanel>
                                 </Border>
                             </Grid>
@@ -1721,8 +1721,8 @@
                             <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="12,10" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" Margin="0,0,0,12">
                                 <StackPanel Spacing="6">
                                     <Grid>
-                                        <TextBlock Text="{helpers:ResourceString Key=txt_load_last_5_min}" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
-                                        <TextBlock Text="{x:Bind ViewModel.LastBoostFreedText, Mode=OneWay}" FontSize="11" FontWeight="Bold" FontFamily="Jura Medium" HorizontalAlignment="Right" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=txt_load_last_5_min}" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                        <TextBlock Text="{x:Bind ViewModel.LastBoostFreedText, Mode=OneWay}" FontSize="11" FontWeight="Bold" FontFamily="{ThemeResource AppCustomFont}" HorizontalAlignment="Right" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
                                     </Grid>
                                     <ProgressBar Value="{x:Bind ViewModel.AverageRamLoad, Mode=OneWay}" Maximum="100" Height="4" Foreground="{ThemeResource MyDynamicAccentBrush}" CornerRadius="2"/>
                                 </StackPanel>
@@ -1735,23 +1735,23 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock x:Name="BoostStatusText" Grid.Column="0" Text="{helpers:ResourceString Key=txt_ready_to_optimize}" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium" HorizontalAlignment="Left" Margin="0,0,10,0"/>
-                                    <TextBlock x:Name="BoostResultsText" Grid.Column="1" Text="" FontSize="11" FontWeight="Bold" Foreground="{ThemeResource SystemFillColorSuccessBrush}" FontFamily="Jura Medium" HorizontalAlignment="Right" TextTrimming="CharacterEllipsis" MaxLines="1"/>
+                                    <TextBlock x:Name="BoostStatusText" Grid.Column="0" Text="{helpers:ResourceString Key=txt_ready_to_optimize}" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="{ThemeResource AppCustomFont}" HorizontalAlignment="Left" Margin="0,0,10,0"/>
+                                    <TextBlock x:Name="BoostResultsText" Grid.Column="1" Text="" FontSize="11" FontWeight="Bold" Foreground="{ThemeResource SystemFillColorSuccessBrush}" FontFamily="{ThemeResource AppCustomFont}" HorizontalAlignment="Right" TextTrimming="CharacterEllipsis" MaxLines="1"/>
                                 </Grid>
 
                                 <ProgressBar x:Name="BoostProgressBar" Value="0" Maximum="100" Height="2" Visibility="Collapsed" IsIndeterminate="True" Foreground="{ThemeResource SystemFillColorSuccessBrush}"/>
 
                                 <Grid ColumnDefinitions="*, Auto" ColumnSpacing="8">
-                                    <Button x:Name="BtnOptimizeMemory" Grid.Column="0" HorizontalAlignment="Stretch" Click="BtnOptimizeMemory_Click" FontFamily="Jura Medium" Height="34">
+                                    <Button x:Name="BtnOptimizeMemory" Grid.Column="0" HorizontalAlignment="Stretch" Click="BtnOptimizeMemory_Click" FontFamily="{ThemeResource AppCustomFont}" Height="34">
                                         <StackPanel Orientation="Horizontal" Spacing="6">
                                             <FontIcon Glyph="&#xE945;" FontSize="13"/>
-                                            <TextBlock Text="{helpers:ResourceString Key=btn_optimize_now}"/>
+                                            <TextBlock Text="{helpers:ResourceString Key=btn_optimize_now}" FontFamily="{ThemeResource AppCustomFont}"/>
                                         </StackPanel>
                                     </Button>
 
                                     <Border Grid.Column="1" Height="36" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="10,0" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
                                         <StackPanel Orientation="Horizontal" Spacing="16" VerticalAlignment="Center">
-                                            <TextBlock Text="{helpers:ResourceString Key=txt_auto}" FontSize="11" FontWeight="SemiBold" VerticalAlignment="Center" FontFamily="Jura Medium" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                            <TextBlock Text="{helpers:ResourceString Key=txt_auto}" FontSize="11" FontWeight="SemiBold" VerticalAlignment="Center" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                                             <ToggleSwitch x:Name="ToggleAutoOptimize" IsOn="False" Toggled="ToggleAutoOptimize_Toggled" VerticalAlignment="Center" Margin="0,-4,-8,-4" MinWidth="0" OnContent="" OffContent=""/>
                                         </StackPanel>
                                     </Border>
@@ -1761,7 +1761,7 @@
                                 <Border Style="{StaticResource BadgePreferenceStyle}" HorizontalAlignment="Center" Margin="0,4,0,0">
                                     <StackPanel Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
                                         <FontIcon Glyph="&#xE909;" FontSize="11" Foreground="{ThemeResource BadgePreferenceForeground}" VerticalAlignment="Center" Margin="0,0,0,1"/>
-                                        <TextBlock x:Name="TxtAutoTriggerBadge" Text="Auto-trigger at 85% RAM usage" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgePreferenceForeground}"/>
+                                        <TextBlock x:Name="TxtAutoTriggerBadge" Text="Auto-trigger at 85% RAM usage" Style="{StaticResource BadgeTextStyle}" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource BadgePreferenceForeground}"/>
                                     </StackPanel>
                                 </Border>
                             </StackPanel>
@@ -1795,7 +1795,7 @@
                             </Grid.ColumnDefinitions>
 
                             <FontIcon Grid.Column="0" Glyph="&#xE72E;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=title_privacy_check}" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=title_privacy_check}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center"/>
 
                             <Button x:Name="BtnOpenPrivacyPage" Grid.Column="2" IsTabStop="False" Background="Transparent" BorderThickness="0" Padding="6" Click="BtnOpenPrivacyPage_Click" ToolTipService.ToolTip="{helpers:ResourceString Key=tooltip_open_privacy_center}">
                                 <FontIcon Glyph="&#xE8A7;" FontSize="14" Opacity="0.6"/>
@@ -1852,7 +1852,7 @@
                             </Canvas>
 
                             <!-- Premium Gradient Text -->
-                            <TextBlock x:Name="TxtPrivacyScore" Text="0%" FontFamily="Jura Medium" FontSize="15" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,4" Visibility="Collapsed">
+                            <TextBlock x:Name="TxtPrivacyScore" Text="0%" FontFamily="{ThemeResource AppCustomFont}" FontSize="15" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,4" Visibility="Collapsed">
                                 <TextBlock.Foreground>
                                     <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
                                         <GradientStop Color="#FFFFFFFF" Offset="0.0"/>
@@ -1873,14 +1873,14 @@
                         <!-- Row 2: Status Texts & View Issues Button -->
                         <StackPanel x:Name="PrivacyStatusPanel" Grid.Row="2" Spacing="0" Margin="0,0,0,0">
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="4">
-                                <TextBlock x:Name="TxtPrivacyStatus" Text="{helpers:ResourceString Key=txt_scanning}" FontFamily="Jura Medium" FontSize="13" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}" FontWeight="SemiBold"/>
+                                <TextBlock x:Name="TxtPrivacyStatus" Text="{helpers:ResourceString Key=txt_scanning}" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}" FontWeight="SemiBold"/>
 
                                 <Button x:Name="BtnPrivacyViewIssues" Background="Transparent" BorderThickness="0" Padding="6,4" MinHeight="0" MinWidth="0" VerticalAlignment="Center" Visibility="Collapsed" Click="BtnPrivacyViewIssues_Click" ToolTipService.ToolTip="{helpers:ResourceString Key=tooltip_view_privacy_leaks}">
                                     <FontIcon Glyph="&#xE946;" FontSize="13" Opacity="0.8"/>
                                 </Button>
                             </StackPanel>
 
-                            <TextBlock x:Name="TxtPrivacyLastRefreshed" Text="{helpers:ResourceString Key=text_never_updated}" FontSize="11" Foreground="{ThemeResource Brush_Inactive}" Opacity="1" Margin="0,2,0,0" HorizontalAlignment="Center"/>
+                            <TextBlock x:Name="TxtPrivacyLastRefreshed" Text="{helpers:ResourceString Key=text_never_updated}" FontSize="11" Foreground="{ThemeResource Brush_Inactive}" Opacity="1" Margin="0,2,0,0" HorizontalAlignment="Center" FontFamily="{ThemeResource AppCustomFont}"/>
                         </StackPanel>
 
                         <!-- Row 3: Expanded Section (Hidden by default) -->
@@ -1890,37 +1890,37 @@
                             <Grid ColumnDefinitions="*, *, *" ColumnSpacing="6">
                                 <Border Grid.Column="0" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
                                     <StackPanel Spacing="2">
-                                        <TextBlock Text="{helpers:ResourceString Key=txt_privacy_app_perms}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium" TextTrimming="CharacterEllipsis"/>
-                                        <TextBlock x:Name="TxtAppPermIssues" Text="{helpers:ResourceString Key=txt_secure}" FontSize="13" FontWeight="Bold" FontFamily="Jura"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=txt_privacy_app_perms}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="{ThemeResource AppCustomFont}" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock x:Name="TxtAppPermIssues" Text="{helpers:ResourceString Key=txt_secure}" FontSize="13" FontWeight="Bold" FontFamily="{ThemeResource AppCustomFont}"/>
                                     </StackPanel>
                                 </Border>
                                 <Border Grid.Column="1" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
                                     <StackPanel Spacing="2">
-                                        <TextBlock Text="{helpers:ResourceString Key=txt_privacy_edge_web}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium" TextTrimming="CharacterEllipsis"/>
-                                        <TextBlock x:Name="TxtEdgeWebIssues" Text="{helpers:ResourceString Key=txt_secure}" FontSize="13" FontWeight="Bold" FontFamily="Jura"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=txt_privacy_edge_web}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="{ThemeResource AppCustomFont}" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock x:Name="TxtEdgeWebIssues" Text="{helpers:ResourceString Key=txt_secure}" FontSize="13" FontWeight="Bold" FontFamily="{ThemeResource AppCustomFont}"/>
                                     </StackPanel>
                                 </Border>
                                 <Border Grid.Column="2" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
                                     <StackPanel Spacing="2">
-                                        <TextBlock Text="{helpers:ResourceString Key=txt_privacy_windows_ai}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium" TextTrimming="CharacterEllipsis"/>
-                                        <TextBlock x:Name="TxtAiIssues" Text="{helpers:ResourceString Key=txt_secure}" FontSize="13" FontWeight="Bold" FontFamily="Jura"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=txt_privacy_windows_ai}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="{ThemeResource AppCustomFont}" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock x:Name="TxtAiIssues" Text="{helpers:ResourceString Key=txt_secure}" FontSize="13" FontWeight="Bold" FontFamily="{ThemeResource AppCustomFont}"/>
                                     </StackPanel>
                                 </Border>
                             </Grid>
 
                             <!-- Action Buttons: Apply & Restore -->
                             <Grid ColumnDefinitions="*, *" ColumnSpacing="8">
-                                <Button x:Name="BtnApplyRecommendedPrivacy" Grid.Column="0" HorizontalAlignment="Stretch" FontFamily="Jura Medium" Height="34" Click="BtnApplyRecommendedPrivacy_Click">
+                                <Button x:Name="BtnApplyRecommendedPrivacy" Grid.Column="0" HorizontalAlignment="Stretch" FontFamily="{ThemeResource AppCustomFont}" Height="34" Click="BtnApplyRecommendedPrivacy_Click">
                                     <StackPanel Orientation="Horizontal" Spacing="6" HorizontalAlignment="Center">
                                         <FontIcon Glyph="&#xE73E;" FontSize="13"/>
-                                        <TextBlock Text="{helpers:ResourceString Key=btn_apply_fixes}"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=btn_apply_fixes}" FontFamily="{ThemeResource AppCustomFont}"/>
                                     </StackPanel>
                                 </Button>
 
-                                <Button x:Name="BtnRestorePrivacyDefaults" Grid.Column="1" HorizontalAlignment="Stretch" Style="{StaticResource DefaultButtonStyle}" FontFamily="Jura Medium" Height="34" Click="BtnRestorePrivacyDefaults_Click">
+                                <Button x:Name="BtnRestorePrivacyDefaults" Grid.Column="1" HorizontalAlignment="Stretch" Style="{StaticResource DefaultButtonStyle}" FontFamily="{ThemeResource AppCustomFont}" Height="34" Click="BtnRestorePrivacyDefaults_Click">
                                     <StackPanel Orientation="Horizontal" Spacing="6" HorizontalAlignment="Center">
                                         <FontIcon Glyph="&#xE777;" FontSize="13"/>
-                                        <TextBlock Text="{helpers:ResourceString Key=btn_undo_fixes}"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=btn_undo_fixes}" FontFamily="{ThemeResource AppCustomFont}"/>
                                     </StackPanel>
                                 </Button>
                             </Grid>
@@ -1928,11 +1928,11 @@
 
                         <!-- Row 4: Refresh Bottom Action -->
                         <Grid Grid.Row="4" VerticalAlignment="Bottom" Margin="0,8,0,0">
-                            <Button x:Name="BtnRefreshPrivacy" IsTabStop="False" HorizontalAlignment="Stretch" Click="BtnRefreshPrivacy_Click" BorderThickness="0" FontFamily="Jura Medium">
+                            <Button x:Name="BtnRefreshPrivacy" IsTabStop="False" HorizontalAlignment="Stretch" Click="BtnRefreshPrivacy_Click" BorderThickness="0" FontFamily="{ThemeResource AppCustomFont}">
                                 <Button.Content>
                                     <StackPanel Orientation="Horizontal" Spacing="8">
                                         <FontIcon Glyph="&#xE72C;" FontSize="14"/>
-                                        <TextBlock Text="{helpers:ResourceString Key=btn_quick_scan}"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=btn_quick_scan}" FontFamily="{ThemeResource AppCustomFont}"/>
                                     </StackPanel>
                                 </Button.Content>
                             </Button>
@@ -1965,7 +1965,7 @@
                             </Grid.ColumnDefinitions>
 
                             <FontIcon Grid.Column="0" Glyph="&#xE9D9;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=title_performance_check}" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=title_performance_check}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center"/>
 
                             <Button x:Name="BtnOpenPerformancePage" Grid.Column="2" IsTabStop="False" Background="Transparent" BorderThickness="0" Padding="6" Click="BtnOpenPerformancePage_Click" ToolTipService.ToolTip="{helpers:ResourceString Key=tooltip_open_performance_center}">
                                 <FontIcon Glyph="&#xE8A7;" FontSize="14" Opacity="0.6"/>
@@ -2023,7 +2023,7 @@
                             </Canvas>
 
                             <!-- 4. Premium Gradient Text -->
-                            <TextBlock x:Name="TxtPerformanceScore" Text="0%" FontFamily="Jura Medium" FontSize="15" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,4" Visibility="Collapsed">
+                            <TextBlock x:Name="TxtPerformanceScore" Text="0%" FontFamily="{ThemeResource AppCustomFont}" FontSize="15" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,4" Visibility="Collapsed">
                                 <TextBlock.Foreground>
                                     <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
                                         <GradientStop Color="#FFFFFFFF" Offset="0.0"/>
@@ -2036,12 +2036,12 @@
                         <!-- Row 2: Status Texts & View Issues Button -->
                         <StackPanel x:Name="PerformanceStatusPanel" Grid.Row="2" Spacing="0" Margin="0,0,0,0">
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="4">
-                                <TextBlock x:Name="TxtPerformanceStatus" Text="{helpers:ResourceString Key=txt_scanning}" FontFamily="Jura Medium" FontSize="13" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}" FontWeight="SemiBold"/>
+                                <TextBlock x:Name="TxtPerformanceStatus" Text="{helpers:ResourceString Key=txt_scanning}" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}" FontWeight="SemiBold"/>
                                 <Button x:Name="BtnPerformanceViewIssues" Background="Transparent" BorderThickness="0" Padding="6,4" MinHeight="0" MinWidth="0" VerticalAlignment="Center" Visibility="Collapsed" Click="BtnPerformanceViewIssues_Click" ToolTipService.ToolTip="{helpers:ResourceString Key=tooltip_view_performance_issues}">
                                     <FontIcon Glyph="&#xE946;" FontSize="13" Opacity="0.8"/>
                                 </Button>
                             </StackPanel>
-                            <TextBlock x:Name="TxtPerformanceLastRefreshed" Text="{helpers:ResourceString Key=text_never_updated}" FontSize="11" Foreground="{ThemeResource Brush_Inactive}" Opacity="1" Margin="0,2,0,0" HorizontalAlignment="Center"/>
+                            <TextBlock x:Name="TxtPerformanceLastRefreshed" Text="{helpers:ResourceString Key=text_never_updated}" FontSize="11" Foreground="{ThemeResource Brush_Inactive}" Opacity="1" Margin="0,2,0,0" HorizontalAlignment="Center" FontFamily="{ThemeResource AppCustomFont}"/>
                         </StackPanel>
 
                         <!-- Row 3: Expanded Section (Hidden by default) -->
@@ -2051,37 +2051,37 @@
                             <Grid ColumnDefinitions="*, *, *" ColumnSpacing="6">
                                 <Border Grid.Column="0" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
                                     <StackPanel Spacing="2">
-                                        <TextBlock Text="{helpers:ResourceString Key=txt_perf_services}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium" TextTrimming="CharacterEllipsis"/>
-                                        <TextBlock x:Name="TxtPerfServicesIssues" Text="{helpers:ResourceString Key=txt_optimized}" FontSize="13" FontWeight="Bold" FontFamily="Jura"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=txt_perf_services}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="{ThemeResource AppCustomFont}" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock x:Name="TxtPerfServicesIssues" Text="{helpers:ResourceString Key=txt_optimized}" FontSize="13" FontWeight="Bold" FontFamily="{ThemeResource AppCustomFont}"/>
                                     </StackPanel>
                                 </Border>
                                 <Border Grid.Column="1" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
                                     <StackPanel Spacing="2">
-                                        <TextBlock Text="{helpers:ResourceString Key=txt_perf_visuals}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium" TextTrimming="CharacterEllipsis"/>
-                                        <TextBlock x:Name="TxtPerfVisualIssues" Text="{helpers:ResourceString Key=txt_optimized}" FontSize="13" FontWeight="Bold" FontFamily="Jura"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=txt_perf_visuals}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="{ThemeResource AppCustomFont}" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock x:Name="TxtPerfVisualIssues" Text="{helpers:ResourceString Key=txt_optimized}" FontSize="13" FontWeight="Bold" FontFamily="{ThemeResource AppCustomFont}"/>
                                     </StackPanel>
                                 </Border>
                                 <Border Grid.Column="2" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
                                     <StackPanel Spacing="2">
-                                        <TextBlock Text="{helpers:ResourceString Key=txt_perf_hardware}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium" TextTrimming="CharacterEllipsis"/>
-                                        <TextBlock x:Name="TxtPerfHardwareIssues" Text="{helpers:ResourceString Key=txt_optimized}" FontSize="13" FontWeight="Bold" FontFamily="Jura"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=txt_perf_hardware}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="{ThemeResource AppCustomFont}" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock x:Name="TxtPerfHardwareIssues" Text="{helpers:ResourceString Key=txt_optimized}" FontSize="13" FontWeight="Bold" FontFamily="{ThemeResource AppCustomFont}"/>
                                     </StackPanel>
                                 </Border>
                             </Grid>
 
                             <!-- Action Buttons: Apply & Restore -->
                             <Grid ColumnDefinitions="*, *" ColumnSpacing="8">
-                                <Button x:Name="BtnApplyRecommendedPerformance" Grid.Column="0" HorizontalAlignment="Stretch" FontFamily="Jura Medium" Height="34" Click="BtnApplyRecommendedPerformance_Click">
+                                <Button x:Name="BtnApplyRecommendedPerformance" Grid.Column="0" HorizontalAlignment="Stretch" FontFamily="{ThemeResource AppCustomFont}" Height="34" Click="BtnApplyRecommendedPerformance_Click">
                                     <StackPanel Orientation="Horizontal" Spacing="6" HorizontalAlignment="Center">
                                         <FontIcon Glyph="&#xE73E;" FontSize="13"/>
-                                        <TextBlock Text="{helpers:ResourceString Key=btn_apply_optimizations}"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=btn_apply_optimizations}" FontFamily="{ThemeResource AppCustomFont}"/>
                                     </StackPanel>
                                 </Button>
 
-                                <Button x:Name="BtnRestorePerformanceDefaults" Grid.Column="1" HorizontalAlignment="Stretch" Style="{StaticResource DefaultButtonStyle}" FontFamily="Jura Medium" Height="34" Click="BtnRestorePerformanceDefaults_Click">
+                                <Button x:Name="BtnRestorePerformanceDefaults" Grid.Column="1" HorizontalAlignment="Stretch" Style="{StaticResource DefaultButtonStyle}" FontFamily="{ThemeResource AppCustomFont}" Height="34" Click="BtnRestorePerformanceDefaults_Click">
                                     <StackPanel Orientation="Horizontal" Spacing="6" HorizontalAlignment="Center">
                                         <FontIcon Glyph="&#xE777;" FontSize="13"/>
-                                        <TextBlock Text="{helpers:ResourceString Key=btn_undo_optimizations}"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=btn_undo_optimizations}" FontFamily="{ThemeResource AppCustomFont}"/>
                                     </StackPanel>
                                 </Button>
                             </Grid>
@@ -2089,11 +2089,11 @@
 
                         <!-- Row 4: Refresh Bottom Action -->
                         <Grid Grid.Row="4" VerticalAlignment="Bottom" Margin="0,8,0,0">
-                            <Button x:Name="BtnRefreshPerformance" IsTabStop="False" HorizontalAlignment="Stretch" Click="BtnRefreshPerformance_Click" BorderThickness="0" FontFamily="Jura Medium">
+                            <Button x:Name="BtnRefreshPerformance" IsTabStop="False" HorizontalAlignment="Stretch" Click="BtnRefreshPerformance_Click" BorderThickness="0" FontFamily="{ThemeResource AppCustomFont}">
                                 <Button.Content>
                                     <StackPanel Orientation="Horizontal" Spacing="8">
                                         <FontIcon Glyph="&#xE72C;" FontSize="14"/>
-                                        <TextBlock Text="{helpers:ResourceString Key=btn_quick_scan}"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=btn_quick_scan}" FontFamily="{ThemeResource AppCustomFont}"/>
                                     </StackPanel>
                                 </Button.Content>
                             </Button>
@@ -2113,7 +2113,7 @@
                     Padding="10">
                 <StackPanel Orientation="Horizontal" Spacing="10">
                     <SymbolIcon Symbol="Admin" Foreground="{StaticResource Brush_Error}" VerticalAlignment="Center"/>
-                    <TextBlock VerticalAlignment="Center" FontFamily="{StaticResource Jura}" Foreground="{StaticResource Brush_Error}" FontWeight="SemiBold">
+                    <TextBlock VerticalAlignment="Center" FontFamily="{ThemeResource AppCustomFont}" Foreground="{StaticResource Brush_Error}" FontWeight="SemiBold">
                         <Run helpers:Loc.Key="label_limited_mode"/>
                         <Run Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="11" helpers:Loc.Key="label_admin_notice"/>
                     </TextBlock>
@@ -2316,8 +2316,8 @@
 
                 <StackPanel Spacing="8">
                     <Grid>
-                        <TextBlock Text="{helpers:ResourceString Key=txt_trigger_threshold}" VerticalAlignment="Center" FontFamily="Jura Medium"/>
-                        <TextBlock x:Name="TxtDialogThresholdValue" Text="85%" HorizontalAlignment="Right" FontWeight="Bold" FontFamily="Jura" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                        <TextBlock Text="{helpers:ResourceString Key=txt_trigger_threshold}" VerticalAlignment="Center" FontFamily="{ThemeResource AppCustomFont}"/>
+                        <TextBlock x:Name="TxtDialogThresholdValue" Text="85%" HorizontalAlignment="Right" FontWeight="Bold" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                     </Grid>
                     <Slider x:Name="SliderRamThreshold" Minimum="50" Maximum="95" StepFrequency="1" Value="85" ValueChanged="SliderRamThreshold_ValueChanged"/>
                 </StackPanel>

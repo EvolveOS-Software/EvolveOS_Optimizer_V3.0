@@ -27,6 +27,7 @@
             </Grid.RowDefinitions>
 
             <TextBlock Grid.Row="0" 
+                       FontFamily="{ThemeResource AppCustomFont}"
                        Text="{helpers:ResourceString Key=diag_cpu_metrics_title}" 
                        Style="{ThemeResource TitleTextBlockStyle}"
                        FontSize="20"
@@ -50,6 +51,7 @@
                     </Grid.ColumnDefinitions>
 
                     <ComboBox Grid.Column="0" 
+                              FontFamily="{ThemeResource AppCustomFont}"
                               ItemsSource="{x:Bind ViewModel.TimeOptions}"
                               SelectedItem="{x:Bind ViewModel.SelectedTimeOption, Mode=TwoWay}"
                               DisplayMemberPath="Label"
@@ -58,6 +60,7 @@
                               Header="History Duration"/>
 
                     <ToggleSwitch Grid.Column="1"
+                                  FontFamily="{ThemeResource AppCustomFont}"
                                   OffContent="{helpers:ResourceString Key=diag_cpu_core_load}"
                                   OnContent="{helpers:ResourceString Key=diag_cpu_core_temp}"
                                   IsOn="{x:Bind ViewModel.IsShowingTemperatures, Mode=TwoWay}"
@@ -86,7 +89,8 @@
 
                         <GroupStyle.HeaderTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Key}" 
+                                <TextBlock FontFamily="{ThemeResource AppCustomFont}"
+                                           Text="{Binding Key}" 
                                            FontSize="16" 
                                            FontWeight="SemiBold" 
                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
@@ -120,12 +124,14 @@
                             </Grid.RowDefinitions>
 
                             <Grid Grid.Row="0">
-                                <TextBlock Text="{Binding CoreName}"
+                                <TextBlock FontFamily="{ThemeResource AppCustomFont}"
+                                           Text="{Binding CoreName}"
                                            FontWeight="Medium"
                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                            HorizontalAlignment="Left" />
 
-                                <TextBlock Text="{Binding DisplayValue}"
+                                <TextBlock FontFamily="{ThemeResource AppCustomFont}"
+                                           Text="{Binding DisplayValue}"
                                            FontWeight="Bold"
                                            Foreground="OrangeRed"
                                            HorizontalAlignment="Right" />
@@ -144,7 +150,8 @@
             </GridView>
 
             <Grid Grid.Row="3" Width="700" Margin="42,16,0,24" HorizontalAlignment="Left">
-                <Button Content="{helpers:ResourceString Key=diag_close}" 
+                <Button FontFamily="{ThemeResource AppCustomFont}"
+                        Content="{helpers:ResourceString Key=diag_close}" 
                         Click="CloseButton_Click"
                         Style="{ThemeResource AccentButtonStyle}"
                         HorizontalAlignment="Center" 
@@ -158,7 +165,8 @@
                     Visibility="{x:Bind ViewModel.IsLoading, Mode=OneWay}"
                     Spacing="12">
             <ProgressRing IsActive="True" Width="68" Height="68"/>
-            <TextBlock Text="{helpers:ResourceString Key=diag_querying_cpu_sensors}" 
+            <TextBlock FontFamily="{ThemeResource AppCustomFont}"
+                       Text="{helpers:ResourceString Key=diag_querying_cpu_sensors}" 
                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
         </StackPanel>
 

@@ -25,8 +25,8 @@
                 Foreground="{ThemeResource MyDynamicAccentBrush}"
                 VerticalAlignment="Center"/>
             <StackPanel VerticalAlignment="Center">
-                <TextBlock helpers:Loc.Key="registry_editor_page_title" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="24" />
-                <TextBlock helpers:Loc.Key="registry_editor_page_description" FontFamily="{ThemeResource Jura}" FontSize="13" Opacity="0.6"/>
+                <TextBlock helpers:Loc.Key="registry_editor_page_title" FontFamily="{ThemeResource AppCustomFont}" FontSize="24" />
+                <TextBlock helpers:Loc.Key="registry_editor_page_description" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" Opacity="0.6"/>
             </StackPanel>
         </StackPanel>
 
@@ -50,7 +50,7 @@
                         <FontIcon Glyph="&#xE710;"/>
                     </NavigationViewItem.Icon>
                     <NavigationViewItem.Content>
-                        <TextBlock helpers:Loc.Key="registry_editor_page_new_workspace" FontFamily="{ThemeResource Jura-SemiBold}"/>
+                        <TextBlock helpers:Loc.Key="registry_editor_page_new_workspace" FontFamily="{ThemeResource AppCustomFont}"/>
                     </NavigationViewItem.Content>
                 </NavigationViewItem>
             </NavigationView.PaneFooter>

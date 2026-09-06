@@ -20,7 +20,7 @@
 
             <!-- Header -->
             <Grid Grid.Row="0" Margin="42,24,42,16">
-                <TextBlock Text="{helpers:ResourceString Key=pitr_window_title}" Style="{ThemeResource TitleTextBlockStyle}" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=pitr_window_title}" Style="{ThemeResource TitleTextBlockStyle}" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Left"/>
 
                 <Border HorizontalAlignment="Right" Style="{StaticResource BadgeRecommendedStyle}">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
@@ -34,7 +34,7 @@
                                   Foreground="{ThemeResource BadgeRecommendedForeground}"/>
 
                         <!-- Badge Text -->
-                        <TextBlock Text="{helpers:ResourceString Key=pitr_win11_exclusive}"
+                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=pitr_win11_exclusive}"
                                    Style="{StaticResource BadgeTextStyle}"
                                    Foreground="{ThemeResource BadgeRecommendedForeground}"/>
 
@@ -60,11 +60,11 @@
                             </Border>
 
                             <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="0,0,12,0">
-                                <TextBlock x:Name="TxtStateTitle" FontWeight="SemiBold" FontSize="15" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
-                                <TextBlock x:Name="TxtStateDesc" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap"/>
+                                <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="TxtStateTitle" FontWeight="SemiBold" FontSize="15" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+                                <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="TxtStateDesc" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap"/>
                             </StackPanel>
 
-                            <ToggleSwitch x:Name="MasterStateToggle" Grid.Column="2" VerticalAlignment="Center" Toggled="MasterStateToggle_Toggled"/>
+                            <ToggleSwitch FontFamily="{ThemeResource AppCustomFont}" x:Name="MasterStateToggle" Grid.Column="2" VerticalAlignment="Center" Toggled="MasterStateToggle_Toggled"/>
                         </Grid>
                     </Border>
 
@@ -83,11 +83,11 @@
                                 <FontIcon Grid.Column="0" Glyph="&#xE916;" FontSize="18" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Margin="0,0,14,0" VerticalAlignment="Center"/>
 
                                 <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="0,0,12,0">
-                                    <TextBlock x:Name="TxtFrequencyTitle" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
-                                    <TextBlock x:Name="TxtFrequencyDesc" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap"/>
+                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="TxtFrequencyTitle" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="TxtFrequencyDesc" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap"/>
                                 </StackPanel>
 
-                                <ComboBox x:Name="CbFrequency" Grid.Column="2" Width="200" VerticalAlignment="Center" SelectionChanged="CbFrequency_SelectionChanged"/>
+                                <ComboBox FontFamily="{ThemeResource AppCustomFont}" x:Name="CbFrequency" Grid.Column="2" Width="200" VerticalAlignment="Center" SelectionChanged="CbFrequency_SelectionChanged"/>
                             </Grid>
                         </Border>
 
@@ -103,11 +103,11 @@
                                 <FontIcon Grid.Column="0" Glyph="&#xE787;" FontSize="18" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Margin="0,0,14,0" VerticalAlignment="Center"/>
 
                                 <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="0,0,12,0">
-                                    <TextBlock x:Name="TxtRetentionTitle" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
-                                    <TextBlock x:Name="TxtRetentionDesc" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap"/>
+                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="TxtRetentionTitle" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="TxtRetentionDesc" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap"/>
                                 </StackPanel>
 
-                                <ComboBox x:Name="CbRetention" Grid.Column="2" Width="200" VerticalAlignment="Center" SelectionChanged="CbRetention_SelectionChanged"/>
+                                <ComboBox FontFamily="{ThemeResource AppCustomFont}" x:Name="CbRetention" Grid.Column="2" Width="200" VerticalAlignment="Center" SelectionChanged="CbRetention_SelectionChanged"/>
                             </Grid>
                         </Border>
 
@@ -123,13 +123,13 @@
                                 <FontIcon Grid.Column="0" Glyph="&#xE7F4;" FontSize="18" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Margin="0,0,14,0" VerticalAlignment="Center"/>
 
                                 <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="0,0,12,0">
-                                    <TextBlock x:Name="TxtStorageTitle" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
-                                    <TextBlock x:Name="TxtStorageDesc" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap"/>
+                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="TxtStorageTitle" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="TxtStorageDesc" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap"/>
 
                                     <Slider x:Name="SliderStorage" Margin="0,8,40,0" ValueChanged="SliderStorage_ValueChanged"/>
                                 </StackPanel>
 
-                                <TextBlock x:Name="TxtStorageValueDisplay" Grid.Column="2" VerticalAlignment="Center" FontWeight="Bold" FontSize="16" Foreground="{ThemeResource SystemAccentColor}" Width="50" TextAlignment="Right"/>
+                                <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="TxtStorageValueDisplay" Grid.Column="2" VerticalAlignment="Center" FontWeight="Bold" FontSize="16" Foreground="{ThemeResource SystemAccentColor}" Width="50" TextAlignment="Right"/>
                             </Grid>
                         </Border>
 
@@ -145,11 +145,11 @@
                                 <FontIcon Grid.Column="0" Glyph="&#xE72E;" FontSize="18" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Margin="0,0,14,0" VerticalAlignment="Center"/>
 
                                 <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="0,0,12,0">
-                                    <TextBlock x:Name="TxtHardLockTitle" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
-                                    <TextBlock x:Name="TxtHardLockDesc" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap"/>
+                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="TxtHardLockTitle" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="TxtHardLockDesc" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap"/>
                                 </StackPanel>
 
-                                <ToggleSwitch x:Name="HardLockToggle" Grid.Column="2" VerticalAlignment="Center" Toggled="HardLockToggle_Toggled"/>
+                                <ToggleSwitch FontFamily="{ThemeResource AppCustomFont}" x:Name="HardLockToggle" Grid.Column="2" VerticalAlignment="Center" Toggled="HardLockToggle_Toggled"/>
                             </Grid>
                         </Border>
 
@@ -165,11 +165,11 @@
                                 <FontIcon Grid.Column="0" Glyph="&#xE81C;" FontSize="18" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Margin="0,0,14,0" VerticalAlignment="Center"/>
 
                                 <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="0,0,12,0">
-                                    <TextBlock x:Name="TxtSnapshotsTitle" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
-                                    <TextBlock x:Name="TxtSnapshotsDesc" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap"/>
+                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="TxtSnapshotsTitle" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="TxtSnapshotsDesc" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap"/>
                                 </StackPanel>
 
-                                <Button Grid.Column="2" Content="{helpers:ResourceString Key=pitr_view_snapshots_btn}" VerticalAlignment="Center" Click="BtnViewSnapshots_Click" Style="{StaticResource AccentButtonStyle}" MinWidth="130"/>
+                                <Button FontFamily="{ThemeResource AppCustomFont}" Grid.Column="2" Content="{helpers:ResourceString Key=pitr_view_snapshots_btn}" VerticalAlignment="Center" Click="BtnViewSnapshots_Click" Style="{StaticResource AccentButtonStyle}" MinWidth="130"/>
                             </Grid>
                         </Border>
 
@@ -179,7 +179,7 @@
 
             <!-- Footer / Close Button -->
             <Grid Grid.Row="2" Margin="42,16,42,24" HorizontalAlignment="Stretch">
-                <Button Content="{helpers:ResourceString Key=pitr_close_btn}" Click="CloseButton_Click" Style="{ThemeResource DefaultButtonStyle}" HorizontalAlignment="Center" MinWidth="150" />
+                <Button FontFamily="{ThemeResource AppCustomFont}" Content="{helpers:ResourceString Key=pitr_close_btn}" Click="CloseButton_Click" Style="{ThemeResource DefaultButtonStyle}" HorizontalAlignment="Center" MinWidth="150" />
             </Grid>
         </Grid>
     </Grid>

@@ -61,7 +61,7 @@
 
         <Style x:Key="AxisLabelStyle" TargetType="TextBlock">
             <Setter Property="FontSize" Value="10"/>
-            <Setter Property="FontFamily" Value="Consolas"/>
+            <Setter Property="FontFamily" Value="{ThemeResource AppCustomFont}"/>
             <Setter Property="Foreground" Value="{ThemeResource TextFillColorTertiaryBrush}"/>
             <Setter Property="Opacity" Value="0.8"/>
         </Style>
@@ -170,12 +170,12 @@
                     <StackPanel VerticalAlignment="Center">
                         <TextBlock helpers:Loc.Key="diag_header_subtitle"
                                    Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                                   FontFamily="{ThemeResource Jura}"
+                                   FontFamily="{ThemeResource AppCustomFont}"
                                    FontSize="11"
                                    Opacity="0.9"/>
                         <TextBlock helpers:Loc.Key="diag_header_title"
                                    Foreground="{ThemeResource TextFillColorPrimaryBrush}"
-                                   FontFamily="{ThemeResource Jura}"
+                                   FontFamily="{ThemeResource AppCustomFont}"
                                    FontSize="20"
                                    FontWeight="Bold"/>
                     </StackPanel>
@@ -191,7 +191,7 @@
                         CornerRadius="4">
                     <StackPanel Orientation="Horizontal" Spacing="12">
                         <TextBlock Text="{x:Bind ViewModel.ScanStatus, Mode=OneWay}"
-                                   FontFamily="{ThemeResource Jura}"
+                                   FontFamily="{ThemeResource AppCustomFont}"
                                    Foreground="{ThemeResource TextFillColorPrimaryBrush}"
                                    VerticalAlignment="Center"/>
 
@@ -209,27 +209,27 @@
                     <Button Content="{helpers:ResourceString Key=diag_btn_start_scan}"
                             Click="StartFullScan_Click"
                             Width="150"
-                            FontFamily="{ThemeResource Jura}"
+                            FontFamily="{ThemeResource AppCustomFont}"
                             IsEnabled="{x:Bind ViewModel.IsNotScanning, Mode=OneWay}"/>
                     <AppBarSeparator Foreground="{ThemeResource DividerStrokeColorDefaultBrush}"/>
 
                     <ToggleButton x:Name="SecurityToggle" Click="SecurityToggle_Click" Padding="12,6" CornerRadius="4">
                         <ToolTipService.ToolTip>
-                            <TextBlock helpers:Loc.Key="diag_toggle_security" FontFamily="{StaticResource Jura}" />
+                            <TextBlock helpers:Loc.Key="diag_toggle_security" FontFamily="{ThemeResource AppCustomFont}" />
                         </ToolTipService.ToolTip>
                         <FontIcon Glyph="&#xEA18;" FontSize="16"/>
                     </ToggleButton>
 
                     <ToggleButton x:Name="DnsCryptToggle" Click="DnsCryptToggle_Click" Padding="12,6" CornerRadius="4">
                         <ToolTipService.ToolTip>
-                            <TextBlock helpers:Loc.Key="systray_dns" FontFamily="{StaticResource Jura}" />
+                            <TextBlock helpers:Loc.Key="systray_dns" FontFamily="{ThemeResource AppCustomFont}" />
                         </ToolTipService.ToolTip>
                         <FontIcon Glyph="&#xE950;" FontSize="16"/>
                     </ToggleButton>
 
                     <ToggleButton x:Name="MaintenanceToggle" Click="MaintenanceToggle_Click" Padding="12,6" CornerRadius="4">
                         <ToolTipService.ToolTip>
-                            <TextBlock helpers:Loc.Key="diag_toggle_maintenance" FontFamily="{StaticResource Jura}" />
+                            <TextBlock helpers:Loc.Key="diag_toggle_maintenance" FontFamily="{ThemeResource AppCustomFont}" />
                         </ToolTipService.ToolTip>
                         <FontIcon Glyph="&#xE90F;" FontSize="16"/>
                     </ToggleButton>
@@ -239,7 +239,7 @@
                             Padding="12,6"
                             CornerRadius="4">
                         <ToolTipService.ToolTip>
-                            <TextBlock helpers:Loc.Key="diag_btn_thermal_management" FontFamily="{StaticResource Jura}" />
+                            <TextBlock helpers:Loc.Key="diag_btn_thermal_management" FontFamily="{ThemeResource AppCustomFont}" />
                         </ToolTipService.ToolTip>
                         <fluentIcons:SymbolIcon Symbol="Temperature" FontSize="16"/>
                     </Button>
@@ -265,7 +265,7 @@
                                     <Grid Margin="0,0,0,5">
                                         <TextBlock helpers:Loc.Key="SecurityPage_Status"
                                                    HorizontalAlignment="Center"
-                                                   FontFamily="{ThemeResource Jura}"
+                                                   FontFamily="{ThemeResource AppCustomFont}"
                                                    Style="{StaticResource TitleTextBlockStyle}"/>
                                         <Button Command="{x:Bind ViewModel.RefreshSecurityStatusCommand}"
                                                 HorizontalAlignment="Right"
@@ -283,7 +283,7 @@
                                     </Grid>
 
                                     <StackPanel HorizontalAlignment="Center" Spacing="4" Margin="0,0,0,10">
-                                        <TextBlock Text="{x:Bind ViewModel.SecurityStatusText, Mode=OneWay}" FontFamily="{ThemeResource Jura}" FontSize="13" HorizontalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}" FontWeight="SemiBold"/>
+                                        <TextBlock Text="{x:Bind ViewModel.SecurityStatusText, Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" HorizontalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}" FontWeight="SemiBold"/>
 
                                         <HyperlinkButton Content="{helpers:ResourceString Key=SecurityPage_ViewIssues}"
                                                          Command="{x:Bind ViewModel.ViewSecurityIssuesCommand}"
@@ -303,7 +303,7 @@
                                                 <Button Command="{x:Bind ViewModel.OpenWindowsSecurityCommand}" CommandParameter="windowsdefender://">
                                                     <StackPanel Orientation="Horizontal" Spacing="8" Padding="4,2">
                                                         <FontIcon Glyph="&#xE72E;" FontSize="16"/>
-                                                        <TextBlock FontFamily="{ThemeResource Jura}" FontSize="16" helpers:Loc.Key="SecurityPage_OpenWindowsSecurity"/>
+                                                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" FontSize="16" helpers:Loc.Key="SecurityPage_OpenWindowsSecurity"/>
                                                     </StackPanel>
                                                 </Button>
 
@@ -313,14 +313,14 @@
                                                                       Visibility="{x:Bind ViewModel.IsQuickScanRunning, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
                                                         <FontIcon Glyph="&#xE8C8;" FontSize="16"
                                                                   Visibility="{x:Bind ViewModel.IsQuickScanRunning, Mode=OneWay, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
-                                                        <TextBlock FontFamily="{ThemeResource Jura}" FontSize="16" helpers:Loc.Key="SecurityPage_QuickScan"/>
+                                                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" FontSize="16" helpers:Loc.Key="SecurityPage_QuickScan"/>
                                                     </StackPanel>
                                                 </Button>
 
                                                 <Button Command="{x:Bind ViewModel.UpdateDefenderSignaturesCommand}">
                                                     <StackPanel Orientation="Horizontal" Spacing="8" Padding="4,2">
                                                         <FontIcon Glyph="&#xE896;" FontSize="16"/>
-                                                        <TextBlock FontFamily="{ThemeResource Jura}" FontSize="16" helpers:Loc.Key="SecurityPage_UpdateDefinitions"/>
+                                                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" FontSize="16" helpers:Loc.Key="SecurityPage_UpdateDefinitions"/>
                                                     </StackPanel>
                                                 </Button>
                                             </StackPanel>
@@ -336,14 +336,14 @@
                                                     <Grid>
                                                         <FontIcon Glyph="&#xEA18;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                         <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
-                                                            <TextBlock Text="{x:Bind ViewModel.VirusThreatProtectionStatus, Mode=OneWay}" FontFamily="{ThemeResource Jura}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
+                                                            <TextBlock Text="{x:Bind ViewModel.VirusThreatProtectionStatus, Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
                                                             <HyperlinkButton Content="{helpers:ResourceString Key=SecurityPage_Enable}" Command="{x:Bind ViewModel.OpenWindowsSecurityCommand}" CommandParameter="windowsdefender://threatsettings/"
                                                                              FontSize="12" Padding="0" Margin="0,4,0,0" Visibility="{x:Bind ViewModel.VirusThreatProtectionLinkVisibility, Mode=OneWay}"/>
                                                         </StackPanel>
                                                         <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
-                                                            <TextBlock helpers:Loc.Key="SecurityPage_VirusThreatProtection" FontFamily="{ThemeResource Jura}" FontSize="16"/>
-                                                            <TextBlock Text="{x:Bind ViewModel.AntivirusProductName, Mode=OneWay}" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
-                                                            <TextBlock Text="{x:Bind ViewModel.SignatureUpdateText, Mode=OneWay}" Visibility="{x:Bind ViewModel.SignatureUpdateTextVisibility, Mode=OneWay}" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0" />
+                                                            <TextBlock helpers:Loc.Key="SecurityPage_VirusThreatProtection" FontFamily="{ThemeResource AppCustomFont}" FontSize="16"/>
+                                                            <TextBlock Text="{x:Bind ViewModel.AntivirusProductName, Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
+                                                            <TextBlock Text="{x:Bind ViewModel.SignatureUpdateText, Mode=OneWay}" Visibility="{x:Bind ViewModel.SignatureUpdateTextVisibility, Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}" FontSize="11" Opacity="0.7" Margin="0,2,0,0" />
                                                         </StackPanel>
                                                     </Grid>
                                                 </Button>
@@ -352,13 +352,13 @@
                                                     <Grid>
                                                         <FontIcon Glyph="&#xE964;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                         <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
-                                                            <TextBlock Text="{x:Bind ViewModel.FirewallStatus, Mode=OneWay}" FontFamily="{ThemeResource Jura}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
+                                                            <TextBlock Text="{x:Bind ViewModel.FirewallStatus, Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
                                                             <HyperlinkButton Content="{helpers:ResourceString Key=SecurityPage_Enable}" Command="{x:Bind ViewModel.OpenWindowsSecurityCommand}" CommandParameter="windowsdefender://network/"
                                                                              FontSize="12" Padding="0" Margin="0,4,0,0" Visibility="{x:Bind ViewModel.FirewallLinkVisibility, Mode=OneWay}"/>
                                                         </StackPanel>
                                                         <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
-                                                            <TextBlock helpers:Loc.Key="SecurityPage_FirewallNetworkProtection" FontFamily="{ThemeResource Jura}" FontSize="16"/>
-                                                            <TextBlock helpers:Loc.Key="SecurityPage_BlocksUnauthorizedAccess" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
+                                                            <TextBlock helpers:Loc.Key="SecurityPage_FirewallNetworkProtection" FontFamily="{ThemeResource AppCustomFont}" FontSize="16"/>
+                                                            <TextBlock helpers:Loc.Key="SecurityPage_BlocksUnauthorizedAccess" FontFamily="{ThemeResource AppCustomFont}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
                                                         </StackPanel>
                                                     </Grid>
                                                 </Button>
@@ -367,13 +367,13 @@
                                                     <Grid>
                                                         <FontIcon Glyph="&#xE77B;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                         <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
-                                                            <TextBlock Text="{x:Bind ViewModel.AccountProtectionStatus, Mode=OneWay}" FontFamily="{ThemeResource Jura}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
+                                                            <TextBlock Text="{x:Bind ViewModel.AccountProtectionStatus, Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
                                                             <HyperlinkButton Content="{helpers:ResourceString Key=SecurityPage_Enable}" Command="{x:Bind ViewModel.OpenWindowsSecurityCommand}" CommandParameter="windowsdefender://account/"
                                                                              FontSize="12" Padding="0" Margin="0,4,0,0" Visibility="{x:Bind ViewModel.AccountProtectionLinkVisibility, Mode=OneWay}"/>
                                                         </StackPanel>
                                                         <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
-                                                            <TextBlock helpers:Loc.Key="SecurityPage_AccountProtection" FontFamily="{ThemeResource Jura}" FontSize="16"/>
-                                                            <TextBlock helpers:Loc.Key="SecurityPage_AccountProtectionDesc" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
+                                                            <TextBlock helpers:Loc.Key="SecurityPage_AccountProtection" FontFamily="{ThemeResource AppCustomFont}" FontSize="16"/>
+                                                            <TextBlock helpers:Loc.Key="SecurityPage_AccountProtectionDesc" FontFamily="{ThemeResource AppCustomFont}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
                                                         </StackPanel>
                                                     </Grid>
                                                 </Button>
@@ -382,13 +382,13 @@
                                                     <Grid>
                                                         <FontIcon Glyph="&#xE895;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                         <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
-                                                            <TextBlock Text="{x:Bind ViewModel.WindowsUpdateStatus, Mode=OneWay}" FontFamily="{ThemeResource Jura}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
+                                                            <TextBlock Text="{x:Bind ViewModel.WindowsUpdateStatus, Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
                                                             <HyperlinkButton Content="{helpers:ResourceString Key=SecurityPage_Enable}" Command="{x:Bind ViewModel.OpenWindowsSecurityCommand}" CommandParameter="ms-settings:windowsupdate"
                                                                              FontSize="12" Padding="0" Margin="0,4,0,0" Visibility="{x:Bind ViewModel.WindowsUpdateLinkVisibility, Mode=OneWay}"/>
                                                         </StackPanel>
                                                         <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
-                                                            <TextBlock helpers:Loc.Key="SecurityPage_WindowsUpdate" FontFamily="{ThemeResource Jura}" FontSize="16"/>
-                                                            <TextBlock helpers:Loc.Key="SecurityPage_SecurityPatchesAndUpdates" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
+                                                            <TextBlock helpers:Loc.Key="SecurityPage_WindowsUpdate" FontFamily="{ThemeResource AppCustomFont}" FontSize="16"/>
+                                                            <TextBlock helpers:Loc.Key="SecurityPage_SecurityPatchesAndUpdates" FontFamily="{ThemeResource AppCustomFont}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
                                                         </StackPanel>
                                                     </Grid>
                                                 </Button>
@@ -397,16 +397,16 @@
                                                     <Grid>
                                                         <FontIcon Glyph="&#xE8A5;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                         <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10" Spacing="6">
-                                                            <TextBlock Text="{x:Bind ViewModel.SmartAppControlDescription, Mode=OneWay}" FontFamily="{ThemeResource Jura}" Style="{StaticResource DetailBodyBaseMediumStyle}" TextWrapping="Wrap" Width="200" TextAlignment="Right" HorizontalAlignment="Right"/>
-                                                            <ComboBox SelectedIndex="{x:Bind ViewModel.SmartAppControlSelectedIndex, Mode=TwoWay}" IsEnabled="{x:Bind ViewModel.IsSmartAppControlComboBoxEnabled, Mode=OneWay}" HorizontalAlignment="Right" MinWidth="150" FontFamily="{ThemeResource Jura}">
+                                                            <TextBlock Text="{x:Bind ViewModel.SmartAppControlDescription, Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource DetailBodyBaseMediumStyle}" TextWrapping="Wrap" Width="200" TextAlignment="Right" HorizontalAlignment="Right"/>
+                                                            <ComboBox SelectedIndex="{x:Bind ViewModel.SmartAppControlSelectedIndex, Mode=TwoWay}" IsEnabled="{x:Bind ViewModel.IsSmartAppControlComboBoxEnabled, Mode=OneWay}" HorizontalAlignment="Right" MinWidth="150" FontFamily="{ThemeResource AppCustomFont}">
                                                                 <ComboBoxItem Content="{helpers:ResourceString Key=SmartAppControl_StateOff}"/>
                                                                 <ComboBoxItem Content="{helpers:ResourceString Key=SmartAppControl_StateEvaluation}"/>
                                                                 <ComboBoxItem Content="{helpers:ResourceString Key=SmartAppControl_StateOn}"/>
                                                             </ComboBox>
                                                         </StackPanel>
                                                         <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
-                                                            <TextBlock helpers:Loc.Key="SecurityPage_SmartAppControl" FontFamily="{ThemeResource Jura}" FontSize="16"/>
-                                                            <TextBlock helpers:Loc.Key="SecurityPage_SmartAppControlDesc" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
+                                                            <TextBlock helpers:Loc.Key="SecurityPage_SmartAppControl" FontFamily="{ThemeResource AppCustomFont}" FontSize="16"/>
+                                                            <TextBlock helpers:Loc.Key="SecurityPage_SmartAppControlDesc" FontFamily="{ThemeResource AppCustomFont}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
                                                         </StackPanel>
                                                     </Grid>
                                                 </Button>
@@ -415,13 +415,13 @@
                                                     <Grid>
                                                         <FontIcon Glyph="&#xE7EF;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                         <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
-                                                            <TextBlock Text="{x:Bind ViewModel.RealTimeProtectionStatus, Mode=OneWay}" FontFamily="{ThemeResource Jura}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
+                                                            <TextBlock Text="{x:Bind ViewModel.RealTimeProtectionStatus, Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
                                                             <HyperlinkButton Content="{helpers:ResourceString Key=SecurityPage_Enable}" Command="{x:Bind ViewModel.OpenWindowsSecurityCommand}" CommandParameter="windowsdefender://threatsettings/"
                                                                              FontSize="12" Padding="0" Margin="0,4,0,0" Visibility="{x:Bind ViewModel.RealTimeProtectionLinkVisibility, Mode=OneWay}"/>
                                                         </StackPanel>
                                                         <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
-                                                            <TextBlock helpers:Loc.Key="SecurityPage_RealTimeProtection" FontFamily="{ThemeResource Jura}" FontSize="16"/>
-                                                            <TextBlock helpers:Loc.Key="SecurityPage_ActiveMalwareScanning" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
+                                                            <TextBlock helpers:Loc.Key="SecurityPage_RealTimeProtection" FontFamily="{ThemeResource AppCustomFont}" FontSize="16"/>
+                                                            <TextBlock helpers:Loc.Key="SecurityPage_ActiveMalwareScanning" FontFamily="{ThemeResource AppCustomFont}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
                                                         </StackPanel>
                                                     </Grid>
                                                 </Button>
@@ -430,13 +430,13 @@
                                                     <Grid>
                                                         <FontIcon Glyph="&#xE72E;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                         <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
-                                                            <TextBlock Text="{x:Bind ViewModel.TamperProtectionStatus, Mode=OneWay}" FontFamily="{ThemeResource Jura}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
+                                                            <TextBlock Text="{x:Bind ViewModel.TamperProtectionStatus, Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
                                                             <HyperlinkButton Content="{helpers:ResourceString Key=SecurityPage_Enable}" Command="{x:Bind ViewModel.OpenWindowsSecurityCommand}" CommandParameter="windowsdefender://threatsettings/"
                                                                              FontSize="12" Padding="0" Margin="0,4,0,0" Visibility="{x:Bind ViewModel.TamperProtectionLinkVisibility, Mode=OneWay}"/>
                                                         </StackPanel>
                                                         <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
-                                                            <TextBlock helpers:Loc.Key="SecurityPage_TamperProtection" FontFamily="{ThemeResource Jura}" FontSize="16"/>
-                                                            <TextBlock helpers:Loc.Key="SecurityPage_PreventsUnauthorizedChanges" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
+                                                            <TextBlock helpers:Loc.Key="SecurityPage_TamperProtection" FontFamily="{ThemeResource AppCustomFont}" FontSize="16"/>
+                                                            <TextBlock helpers:Loc.Key="SecurityPage_PreventsUnauthorizedChanges" FontFamily="{ThemeResource AppCustomFont}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
                                                         </StackPanel>
                                                     </Grid>
                                                 </Button>
@@ -445,13 +445,13 @@
                                                     <Grid>
                                                         <FontIcon Glyph="&#xEA39;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                         <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
-                                                            <TextBlock Text="{x:Bind ViewModel.CoreIsolationStatus, Mode=OneWay}" FontFamily="{ThemeResource Jura}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
+                                                            <TextBlock Text="{x:Bind ViewModel.CoreIsolationStatus, Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
                                                             <HyperlinkButton Content="{helpers:ResourceString Key=SecurityPage_Enable}" Command="{x:Bind ViewModel.OpenWindowsSecurityCommand}" CommandParameter="windowsdefender://coreisolation/"
                                                                              FontSize="12" Padding="0" Margin="0,4,0,0" Visibility="{x:Bind ViewModel.CoreIsolationLinkVisibility, Mode=OneWay}"/>
                                                         </StackPanel>
                                                         <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
-                                                            <TextBlock helpers:Loc.Key="SecurityPage_CoreIsolation" FontFamily="{ThemeResource Jura}" FontSize="16"/>
-                                                            <TextBlock helpers:Loc.Key="SecurityPage_CoreIsolationDesc" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
+                                                            <TextBlock helpers:Loc.Key="SecurityPage_CoreIsolation" FontFamily="{ThemeResource AppCustomFont}" FontSize="16"/>
+                                                            <TextBlock helpers:Loc.Key="SecurityPage_CoreIsolationDesc" FontFamily="{ThemeResource AppCustomFont}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
                                                         </StackPanel>
                                                     </Grid>
                                                 </Button>
@@ -460,13 +460,13 @@
                                                     <Grid>
                                                         <FontIcon Glyph="&#xE8D7;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                         <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
-                                                            <TextBlock Text="{x:Bind ViewModel.BitLockerStatus, Mode=OneWay}" FontFamily="{ThemeResource Jura}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
+                                                            <TextBlock Text="{x:Bind ViewModel.BitLockerStatus, Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
                                                             <HyperlinkButton Content="{helpers:ResourceString Key=SecurityPage_Enable}" Command="{x:Bind ViewModel.OpenWindowsSecurityCommand}" CommandParameter="ms-settings:deviceencryption"
                                                                              FontSize="12" Padding="0" Margin="0,4,0,0" Visibility="{x:Bind ViewModel.BitLockerLinkVisibility, Mode=OneWay}"/>
                                                         </StackPanel>
                                                         <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
-                                                            <TextBlock helpers:Loc.Key="SecurityPage_BitLockerEncryption" FontFamily="{ThemeResource Jura}" FontSize="16"/>
-                                                            <TextBlock helpers:Loc.Key="SecurityPage_DriveEncryptionStatus" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
+                                                            <TextBlock helpers:Loc.Key="SecurityPage_BitLockerEncryption" FontFamily="{ThemeResource AppCustomFont}" FontSize="16"/>
+                                                            <TextBlock helpers:Loc.Key="SecurityPage_DriveEncryptionStatus" FontFamily="{ThemeResource AppCustomFont}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
                                                         </StackPanel>
                                                     </Grid>
                                                 </Button>
@@ -475,13 +475,13 @@
                                                     <Grid>
                                                         <FontIcon Glyph="&#xE8B7;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                         <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
-                                                            <TextBlock Text="{x:Bind ViewModel.ControlledFolderAccessStatus, Mode=OneWay}" FontFamily="{ThemeResource Jura}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
+                                                            <TextBlock Text="{x:Bind ViewModel.ControlledFolderAccessStatus, Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
                                                             <HyperlinkButton Content="{helpers:ResourceString Key=SecurityPage_Enable}" Command="{x:Bind ViewModel.OpenWindowsSecurityCommand}" CommandParameter="windowsdefender://ransomwareprotection/"
                                                                              FontSize="12" Padding="0" Margin="0,4,0,0" Visibility="{x:Bind ViewModel.ControlledFolderAccessLinkVisibility, Mode=OneWay}"/>
                                                         </StackPanel>
                                                         <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
-                                                            <TextBlock helpers:Loc.Key="SecurityPage_ControlledFolderAccess" FontFamily="{ThemeResource Jura}" FontSize="16"/>
-                                                            <TextBlock helpers:Loc.Key="SecurityPage_RansomwareProtection" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
+                                                            <TextBlock helpers:Loc.Key="SecurityPage_ControlledFolderAccess" FontFamily="{ThemeResource AppCustomFont}" FontSize="16"/>
+                                                            <TextBlock helpers:Loc.Key="SecurityPage_RansomwareProtection" FontFamily="{ThemeResource AppCustomFont}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
                                                         </StackPanel>
                                                     </Grid>
                                                 </Button>
@@ -490,13 +490,13 @@
                                                     <Grid>
                                                         <FontIcon Glyph="&#xF8A5;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                         <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
-                                                            <TextBlock Text="{x:Bind ViewModel.SmartScreenStatus, Mode=OneWay}" FontFamily="{ThemeResource Jura}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
+                                                            <TextBlock Text="{x:Bind ViewModel.SmartScreenStatus, Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
                                                             <HyperlinkButton Content="{helpers:ResourceString Key=SecurityPage_Enable}" Command="{x:Bind ViewModel.OpenWindowsSecurityCommand}" CommandParameter="windowsdefender://smartscreenpua/"
                                                                              FontSize="12" Padding="0" Margin="0,4,0,0" Visibility="{x:Bind ViewModel.SmartScreenLinkVisibility, Mode=OneWay}"/>
                                                         </StackPanel>
                                                         <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
-                                                            <TextBlock helpers:Loc.Key="SecurityPage_SmartScreen" FontFamily="{ThemeResource Jura}" FontSize="16"/>
-                                                            <TextBlock helpers:Loc.Key="SecurityPage_WebAndAppProtection" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
+                                                            <TextBlock helpers:Loc.Key="SecurityPage_SmartScreen" FontFamily="{ThemeResource AppCustomFont}" FontSize="16"/>
+                                                            <TextBlock helpers:Loc.Key="SecurityPage_WebAndAppProtection" FontFamily="{ThemeResource AppCustomFont}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
                                                         </StackPanel>
                                                     </Grid>
                                                 </Button>
@@ -505,13 +505,13 @@
                                                     <Grid>
                                                         <FontIcon Glyph="&#xE9F5;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                         <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
-                                                            <TextBlock Text="{x:Bind ViewModel.DefenderServiceStatus, Mode=OneWay}" FontFamily="{ThemeResource Jura}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
+                                                            <TextBlock Text="{x:Bind ViewModel.DefenderServiceStatus, Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
                                                             <HyperlinkButton Content="{helpers:ResourceString Key=SecurityPage_Enable}" Command="{x:Bind ViewModel.OpenWindowsSecurityCommand}" CommandParameter="windowsdefender://threatsettings/"
                                                                              FontSize="12" Padding="0" Margin="0,4,0,0" Visibility="{x:Bind ViewModel.DefenderServiceLinkVisibility, Mode=OneWay}"/>
                                                         </StackPanel>
                                                         <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
-                                                            <TextBlock helpers:Loc.Key="SecurityPage_WindowsDefenderService" FontFamily="{ThemeResource Jura}" FontSize="16"/>
-                                                            <TextBlock helpers:Loc.Key="SecurityPage_CoreSecurityService" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
+                                                            <TextBlock helpers:Loc.Key="SecurityPage_WindowsDefenderService" FontFamily="{ThemeResource AppCustomFont}" FontSize="16"/>
+                                                            <TextBlock helpers:Loc.Key="SecurityPage_CoreSecurityService" FontFamily="{ThemeResource AppCustomFont}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
                                                         </StackPanel>
                                                     </Grid>
                                                 </Button>
@@ -520,13 +520,13 @@
                                                     <Grid>
                                                         <FontIcon Glyph="&#xEC06;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                         <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
-                                                            <TextBlock Text="{x:Bind ViewModel.LsaProtectionStatus, Mode=OneWay}" FontFamily="{ThemeResource Jura}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
+                                                            <TextBlock Text="{x:Bind ViewModel.LsaProtectionStatus, Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
                                                             <HyperlinkButton Content="{helpers:ResourceString Key=SecurityPage_Enable}" Command="{x:Bind ViewModel.OpenWindowsSecurityCommand}" CommandParameter="windowsdefender://coreisolation/"
                                                                      FontSize="12" Padding="0" Margin="0,4,0,0" Visibility="{x:Bind ViewModel.LsaProtectionLinkVisibility, Mode=OneWay}"/>
                                                         </StackPanel>
                                                         <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
-                                                            <TextBlock helpers:Loc.Key="SecurityPage_LSAProtection" FontFamily="{ThemeResource Jura}" FontSize="16"/>
-                                                            <TextBlock helpers:Loc.Key="SecurityPage_LSAProtectionDesc" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
+                                                            <TextBlock helpers:Loc.Key="SecurityPage_LSAProtection" FontFamily="{ThemeResource AppCustomFont}" FontSize="16"/>
+                                                            <TextBlock helpers:Loc.Key="SecurityPage_LSAProtectionDesc" FontFamily="{ThemeResource AppCustomFont}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
                                                         </StackPanel>
                                                     </Grid>
                                                 </Button>
@@ -537,13 +537,13 @@
                                                             <PathIcon Data="M3,2 A2,2,0,0,0,1,4 L1,16 C1,17.11,1.9,18,3,18 L10,18 L10,20 L8,20 L8,22 L16,22 L16,20 L14,20 L14,18 L21,18 A2,2,0,0,0,23,16 L23,4 A2,2,0,0,0,21,2 M3,4 L21,4 L21,16 L3,16 M15,5 L11.5,8.5 L15,12 L16.4,10.6 L14.3,8.5 L16.4,6.4 M9,8 L7.6,9.4 L9.7,11.5 L7.6,13.6 L9,15 L12.5,11.5" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                         </Viewbox>
                                                         <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10" Spacing="2">
-                                                            <TextBlock Text="{x:Bind ViewModel.RemoteDesktopStatus, Mode=OneWay}" FontFamily="{ThemeResource Jura}" Style="{StaticResource DetailBodyBaseMediumStyle}" HorizontalAlignment="Right"/>
+                                                            <TextBlock Text="{x:Bind ViewModel.RemoteDesktopStatus, Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource DetailBodyBaseMediumStyle}" HorizontalAlignment="Right"/>
                                                             <ToggleSwitch IsOn="{x:Bind ViewModel.IsRdpEnabled, Mode=TwoWay}" IsEnabled="{x:Bind ViewModel.IsRdpToggleEnabled, Mode=OneWay}" HorizontalAlignment="Right" OnContent="{x:Null}" OffContent="{x:Null}" MinWidth="0" Margin="0"/>
                                                             <HyperlinkButton Content="{helpers:ResourceString Key=SecurityPage_Enable}" Command="{x:Bind ViewModel.OpenWindowsSecurityCommand}" CommandParameter="ms-settings:remotedesktop" FontSize="12" Padding="0" HorizontalAlignment="Right" Visibility="{x:Bind ViewModel.RemoteDesktopLinkVisibility, Mode=OneWay}"/>
                                                         </StackPanel>
                                                         <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
-                                                            <TextBlock helpers:Loc.Key="SecurityPage_RemoteDesktop" FontFamily="{ThemeResource Jura}" FontSize="16"/>
-                                                            <TextBlock helpers:Loc.Key="SecurityPage_RemoteDesktopDesc" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
+                                                            <TextBlock helpers:Loc.Key="SecurityPage_RemoteDesktop" FontFamily="{ThemeResource AppCustomFont}" FontSize="16"/>
+                                                            <TextBlock helpers:Loc.Key="SecurityPage_RemoteDesktopDesc" FontFamily="{ThemeResource AppCustomFont}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
                                                         </StackPanel>
                                                     </Grid>
                                                 </Button>
@@ -554,13 +554,13 @@
                                                             <PathIcon Data="M12,2A5,5,0,1,0,17,7,5,5,0,0,0,12,2m0,8A3,3,0,1,1,15,7,3,3,0,0,1,12,10M12,12c-4.42,0-8,1.79-8,4v2H20V16c0-2.21-3.58-4-8-4m6,4H6v-.5c0-.83,2.69-2.5,6-2.5s6,1.67,6,2.5ZM21,2h-2v3L16,5v2h3v3h2V7h3V5H21Z" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                         </Viewbox>
                                                         <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10" Spacing="2">
-                                                            <TextBlock Text="{x:Bind ViewModel.RemoteAssistanceStatus, Mode=OneWay}" FontFamily="{ThemeResource Jura}" Style="{StaticResource DetailBodyBaseMediumStyle}" HorizontalAlignment="Right"/>
+                                                            <TextBlock Text="{x:Bind ViewModel.RemoteAssistanceStatus, Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource DetailBodyBaseMediumStyle}" HorizontalAlignment="Right"/>
                                                             <ToggleSwitch IsOn="{x:Bind ViewModel.IsRaEnabled, Mode=TwoWay}" IsEnabled="{x:Bind ViewModel.IsRaToggleEnabled, Mode=OneWay}" HorizontalAlignment="Right" OnContent="{x:Null}" OffContent="{x:Null}" MinWidth="0" Margin="0"/>
                                                             <HyperlinkButton Content="{helpers:ResourceString Key=SecurityPage_Enable}" Command="{x:Bind ViewModel.OpenWindowsSecurityCommand}" CommandParameter="msra.exe" FontSize="12" Padding="0" HorizontalAlignment="Right" Visibility="{x:Bind ViewModel.RemoteAssistanceLinkVisibility, Mode=OneWay}"/>
                                                         </StackPanel>
                                                         <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
-                                                            <TextBlock helpers:Loc.Key="SecurityPage_RemoteAssistance" FontFamily="{ThemeResource Jura}" FontSize="16"/>
-                                                            <TextBlock helpers:Loc.Key="SecurityPage_RemoteAssistanceDesc" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
+                                                            <TextBlock helpers:Loc.Key="SecurityPage_RemoteAssistance" FontFamily="{ThemeResource AppCustomFont}" FontSize="16"/>
+                                                            <TextBlock helpers:Loc.Key="SecurityPage_RemoteAssistanceDesc" FontFamily="{ThemeResource AppCustomFont}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
                                                         </StackPanel>
                                                     </Grid>
                                                 </Button>
@@ -571,13 +571,13 @@
                                                             <PathIcon Data="M 9.4 16.6 L 4.8 12 L 9.4 7.4 L 8 6 L 2 12 L 8 18 L 9.4 16.6 Z M 14.6 16.6 L 19.2 12 L 14.6 7.4 L 16 6 L 22 12 L 16 18 L 14.6 16.6 Z" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                         </Viewbox>
                                                         <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10" Spacing="2">
-                                                            <TextBlock Text="{x:Bind ViewModel.DeveloperModeStatus, Mode=OneWay}" FontFamily="{ThemeResource Jura}" Style="{StaticResource DetailBodyBaseMediumStyle}" HorizontalAlignment="Right"/>
+                                                            <TextBlock Text="{x:Bind ViewModel.DeveloperModeStatus, Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource DetailBodyBaseMediumStyle}" HorizontalAlignment="Right"/>
                                                             <ToggleSwitch IsOn="{x:Bind ViewModel.IsDevModeEnabled, Mode=TwoWay}" IsEnabled="{x:Bind ViewModel.IsDevModeToggleEnabled, Mode=OneWay}" HorizontalAlignment="Right" OnContent="{x:Null}" OffContent="{x:Null}" MinWidth="0" Margin="0"/>
                                                             <HyperlinkButton Content="{helpers:ResourceString Key=SecurityPage_Enable}" Command="{x:Bind ViewModel.OpenWindowsSecurityCommand}" CommandParameter="ms-settings:developers" FontSize="12" Padding="0" HorizontalAlignment="Right" Visibility="{x:Bind ViewModel.DeveloperModeLinkVisibility, Mode=OneWay}"/>
                                                         </StackPanel>
                                                         <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
-                                                            <TextBlock helpers:Loc.Key="SecurityPage_DeveloperMode" FontFamily="{ThemeResource Jura}" FontSize="16"/>
-                                                            <TextBlock helpers:Loc.Key="SecurityPage_DeveloperModeDesc" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0" TextWrapping="Wrap" MaxWidth="380"/>
+                                                            <TextBlock helpers:Loc.Key="SecurityPage_DeveloperMode" FontFamily="{ThemeResource AppCustomFont}" FontSize="16"/>
+                                                            <TextBlock helpers:Loc.Key="SecurityPage_DeveloperModeDesc" FontFamily="{ThemeResource AppCustomFont}" FontSize="11" Opacity="0.7" Margin="0,2,0,0" TextWrapping="Wrap" MaxWidth="380"/>
                                                         </StackPanel>
                                                     </Grid>
                                                 </Button>
@@ -596,13 +596,13 @@
                                                             </Grid.ColumnDefinitions>
                                                             <FontIcon Glyph="&#xE7C1;" FontSize="22" Margin="5,5,12,0" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                             <StackPanel Grid.Column="1" Margin="0,2,0,0">
-                                                                <TextBlock helpers:Loc.Key="SecurityPage_UAC" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="16"/>
-                                                                <TextBlock helpers:Loc.Key="SecurityPage_AdministrativeAccessControl" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
+                                                                <TextBlock helpers:Loc.Key="SecurityPage_UAC" FontFamily="{ThemeResource AppCustomFont}" FontSize="16"/>
+                                                                <TextBlock helpers:Loc.Key="SecurityPage_AdministrativeAccessControl" FontFamily="{ThemeResource AppCustomFont}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
                                                             </StackPanel>
                                                             <HyperlinkButton Grid.Column="2" Content="{helpers:ResourceString Key=SecurityPage_Enable}" Command="{x:Bind ViewModel.OpenWindowsSecurityCommand}" CommandParameter="UserAccountControlSettings.exe" FontSize="12" Padding="0" VerticalAlignment="Top" Visibility="Collapsed"/>
                                                         </Grid>
                                                         <StackPanel Grid.Row="1" VerticalAlignment="Bottom" Spacing="2">
-                                                            <TextBlock Text="{x:Bind ViewModel.UacLevelDescription, Mode=OneWay}" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.8" TextWrapping="Wrap" MaxHeight="34"/>
+                                                            <TextBlock Text="{x:Bind ViewModel.UacLevelDescription, Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}" FontSize="11" Opacity="0.8" TextWrapping="Wrap" MaxHeight="34"/>
                                                             <Slider Minimum="0" Maximum="3" StepFrequency="1" TickFrequency="1" SnapsTo="Ticks" TickPlacement="Outside"
                                                                     Value="{x:Bind ViewModel.UacSliderValue, Mode=TwoWay}" IsEnabled="{x:Bind ViewModel.IsUacSliderEnabled, Mode=OneWay}"/>
                                                         </StackPanel>
@@ -625,7 +625,7 @@
 
                                                         <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10" Orientation="Horizontal" Spacing="8">
                                                             <TextBlock Text="Ready"
-                                                                       FontFamily="{ThemeResource Jura}"
+                                                                       FontFamily="{ThemeResource AppCustomFont}"
                                                                        Style="{StaticResource DetailBodyBaseMediumStyle}"
                                                                        VerticalAlignment="Center"/>
                                                             <FontIcon Glyph="&#xE76C;"
@@ -636,10 +636,10 @@
 
                                                         <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
                                                             <TextBlock Text="{helpers:ResourceString Key='SecurityPage_NetworkAuditHeader'}"
-                                                                       FontFamily="{ThemeResource Jura}"
+                                                                       FontFamily="{ThemeResource AppCustomFont}"
                                                                        FontSize="16"/>
                                                             <TextBlock Text="{helpers:ResourceString Key='SecurityPage_NetworkAuditDesc'}"
-                                                                       FontFamily="{ThemeResource Jura}"
+                                                                       FontFamily="{ThemeResource AppCustomFont}"
                                                                        FontSize="11"
                                                                        Opacity="0.7"
                                                                        Margin="0,2,0,0"
@@ -653,17 +653,17 @@
                                                     <Grid>
                                                         <FontIcon Glyph="&#xE756;" FontSize="22" Margin="5,5,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                         <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
-                                                            <TextBlock helpers:Loc.Key="SecurityPage_PSExecutionPolicy" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="16"/>
-                                                            <TextBlock helpers:Loc.Key="SecurityPage_PSExecutionPolicyDesc" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
+                                                            <TextBlock helpers:Loc.Key="SecurityPage_PSExecutionPolicy" FontFamily="{ThemeResource AppCustomFont}" FontSize="16"/>
+                                                            <TextBlock helpers:Loc.Key="SecurityPage_PSExecutionPolicyDesc" FontFamily="{ThemeResource AppCustomFont}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
                                                         </StackPanel>
-                                                        <ComboBox SelectedIndex="{x:Bind ViewModel.PowerShellPolicySelectedIndex, Mode=TwoWay}" IsEnabled="{x:Bind ViewModel.IsPowerShellPolicyComboBoxEnabled, Mode=OneWay}" HorizontalAlignment="Right" VerticalAlignment="Top" MinWidth="150" FontFamily="{ThemeResource Jura}">
+                                                        <ComboBox SelectedIndex="{x:Bind ViewModel.PowerShellPolicySelectedIndex, Mode=TwoWay}" IsEnabled="{x:Bind ViewModel.IsPowerShellPolicyComboBoxEnabled, Mode=OneWay}" HorizontalAlignment="Right" VerticalAlignment="Top" MinWidth="150" FontFamily="{ThemeResource AppCustomFont}">
                                                             <ComboBoxItem Content="{helpers:ResourceString Key=PSPolicy_Restricted}"/>
                                                             <ComboBoxItem Content="{helpers:ResourceString Key=PSPolicy_AllSigned}"/>
                                                             <ComboBoxItem Content="{helpers:ResourceString Key=PSPolicy_RemoteSigned}"/>
                                                             <ComboBoxItem Content="{helpers:ResourceString Key=PSPolicy_Unrestricted}"/>
                                                             <ComboBoxItem Content="{helpers:ResourceString Key=PSPolicy_Bypass}"/>
                                                         </ComboBox>
-                                                        <TextBlock Text="{x:Bind ViewModel.PowerShellPolicyDescription, Mode=OneWay}" Foreground="{x:Bind ViewModel.PowerShellPolicyDescriptionForeground, Mode=OneWay}" Opacity="{x:Bind ViewModel.PowerShellPolicyDescriptionOpacity, Mode=OneWay}" FontFamily="{ThemeResource Jura}" FontSize="11" TextWrapping="Wrap" Width="220" TextAlignment="Right" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                                        <TextBlock Text="{x:Bind ViewModel.PowerShellPolicyDescription, Mode=OneWay}" Foreground="{x:Bind ViewModel.PowerShellPolicyDescriptionForeground, Mode=OneWay}" Opacity="{x:Bind ViewModel.PowerShellPolicyDescriptionOpacity, Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}" FontSize="11" TextWrapping="Wrap" Width="220" TextAlignment="Right" HorizontalAlignment="Right" VerticalAlignment="Center"/>
                                                     </Grid>
                                                 </Border>
 
@@ -687,7 +687,7 @@
                                 <Border BorderThickness="1,0,0,0" BorderBrush="#22FFFFFF" Background="Transparent">
                                     <ScrollViewer Padding="20">
                                         <StackPanel Spacing="12">
-                                            <TextBlock helpers:Loc.Key="diag_pane_header" FontFamily="{StaticResource Jura}" FontSize="16" HorizontalAlignment="Center" Margin="0,-5,0,-5" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                            <TextBlock helpers:Loc.Key="diag_pane_header" FontFamily="{ThemeResource AppCustomFont}" FontSize="16" HorizontalAlignment="Center" Margin="0,-5,0,-5" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
 
                                             <Border Style="{StaticResource MaintenanceCardStyle}" Padding="16,20" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
                                                 <StackPanel HorizontalAlignment="Center" Spacing="10">
@@ -725,7 +725,7 @@
                                                             <Ellipse x:Name="DiagHealthPinInner" Canvas.Left="38" Canvas.Top="38" Width="4" Height="4" Fill="{ThemeResource CardBackgroundFillColorDefaultBrush}"/>
                                                         </Canvas>
 
-                                                        <TextBlock x:Name="TxtDiagHealthScore" Text="0%" FontFamily="Jura Medium" FontSize="13" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,4">
+                                                        <TextBlock x:Name="TxtDiagHealthScore" Text="0%" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,4">
                                                             <TextBlock.Foreground>
                                                                 <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
                                                                     <GradientStop Color="#FFFFFFFF" Offset="0.0"/>
@@ -745,7 +745,7 @@
                                                 <Expander.Header>
                                                     <StackPanel Orientation="Horizontal" Spacing="8">
                                                         <FontIcon Glyph="&#xE964;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                                                        <TextBlock helpers:Loc.Key="diag_expander_memory" FontWeight="SemiBold" FontFamily="{StaticResource Jura}"/>
+                                                        <TextBlock helpers:Loc.Key="diag_expander_memory" FontWeight="SemiBold" FontFamily="{ThemeResource AppCustomFont}"/>
                                                     </StackPanel>
                                                 </Expander.Header>
                                                 <StackPanel Padding="0,5,0,0">
@@ -753,7 +753,7 @@
                                                         <ItemsControl.ItemTemplate>
                                                             <DataTemplate>
                                                                 <StackPanel Orientation="Horizontal" Margin="0,2">
-                                                                    <CheckBox Content="{Binding Name}" IsChecked="{Binding Value, Mode=TwoWay}" FontFamily="{StaticResource Jura}" FontSize="13" VerticalAlignment="Center"/>
+                                                                    <CheckBox Content="{Binding Name}" IsChecked="{Binding Value, Mode=TwoWay}" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" VerticalAlignment="Center"/>
 
                                                                     <Button Tag="{Binding Name}"
                                                                             Click="ExplainMemoryArea_Click"
@@ -763,7 +763,7 @@
                                                                         <Button.Flyout>
                                                                             <Flyout Placement="RightEdgeAlignedTop">
                                                                                 <StackPanel Width="300" Spacing="8">
-                                                                                    <TextBlock Text="AI Explainer" FontFamily="{StaticResource Jura-SemiBold}" FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                                                                    <TextBlock Text="AI Explainer" FontFamily="{ThemeResource AppCustomFont}" FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                                                     <TextBlock Tag="AiExplanationText" TextWrapping="Wrap" FontSize="12" Opacity="0.9"/>
                                                                                 </StackPanel>
                                                                             </Flyout>
@@ -781,12 +781,12 @@
                                                 <Expander.Header>
                                                     <StackPanel Orientation="Horizontal" Spacing="8">
                                                         <FontIcon Glyph="&#xECE4;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                                                        <TextBlock helpers:Loc.Key="diag_expander_exclusions" FontWeight="SemiBold" FontFamily="{StaticResource Jura}"/>
+                                                        <TextBlock helpers:Loc.Key="diag_expander_exclusions" FontWeight="SemiBold" FontFamily="{ThemeResource AppCustomFont}"/>
                                                     </StackPanel>
                                                 </Expander.Header>
                                                 <StackPanel Padding="0,5,0,0">
                                                     <ListBox Name="ProcessExclusionList"
-                                                             FontFamily="{StaticResource Jura}"
+                                                             FontFamily="{ThemeResource AppCustomFont}"
                                                              ItemsSource="{x:Bind ViewModel.ProcessExclusionList, Mode=OneWay}"
                                                              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                                                              ScrollViewer.VerticalScrollBarVisibility="Auto"
@@ -824,18 +824,18 @@
                                                 <Expander.Header>
                                                     <StackPanel Orientation="Horizontal" Spacing="8">
                                                         <FontIcon Glyph="&#xE762;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                                                        <TextBlock helpers:Loc.Key="diag_expander_auto_opt" FontWeight="SemiBold" FontFamily="{StaticResource Jura}"/>
+                                                        <TextBlock helpers:Loc.Key="diag_expander_auto_opt" FontWeight="SemiBold" FontFamily="{ThemeResource AppCustomFont}"/>
                                                     </StackPanel>
                                                 </Expander.Header>
                                                 <StackPanel Padding="0,5,0,0">
                                                     <TextBlock Text="{x:Bind ViewModel.AutoOptimizationMemoryIntervalDescription, Mode=OneWay}"
-                                                               Foreground="{ThemeResource Brush_Highlighted}" FontFamily="{StaticResource Jura}" FontSize="13" Margin="0,0,0,8"/>
+                                                               Foreground="{ThemeResource Brush_Highlighted}" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" Margin="0,0,0,8"/>
                                                     <Slider x:Name="AutoOptimizationIntervalSlider" Minimum="0" Maximum="168"
                                                             Value="{x:Bind ViewModel.AutoOptimizationInterval, Mode=TwoWay}"
                                                             PointerPressed="OnSliderPointerPressed" Margin="0,0,0,24"/>
 
                                                     <TextBlock Text="{x:Bind ViewModel.AutoOptimizationMemoryUsageDescription, Mode=OneWay}"
-                                                               Foreground="{ThemeResource Brush_Highlighted}" FontFamily="{StaticResource Jura}" FontSize="13" Margin="0,0,0,8"/>
+                                                               Foreground="{ThemeResource Brush_Highlighted}" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" Margin="0,0,0,8"/>
                                                     <Slider x:Name="AutoOptimizationMemoryUsageSlider" Minimum="0" Maximum="100"
                                                             Value="{x:Bind ViewModel.AutoOptimizationMemoryUsage, Mode=TwoWay}"
                                                             PointerPressed="OnSliderPointerPressed" Margin="0,0,0,8"/>
@@ -847,13 +847,13 @@
                                                 <Expander.Header>
                                                     <StackPanel Orientation="Horizontal" Spacing="8">
                                                         <FontIcon Glyph="&#xE765;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                                                        <TextBlock helpers:Loc.Key="diag_expander_hotkey" FontWeight="SemiBold" FontFamily="{StaticResource Jura}"/>
+                                                        <TextBlock helpers:Loc.Key="diag_expander_hotkey" FontWeight="SemiBold" FontFamily="{ThemeResource AppCustomFont}"/>
                                                     </StackPanel>
                                                 </Expander.Header>
                                                 <StackPanel Padding="0,5,0,0" Spacing="16">
                                                     <ToggleSwitch IsOn="{x:Bind ViewModel.UseHotkey, Mode=TwoWay}"
                                                                   OnContent="{helpers:ResourceString Key=diag_hotkey_enabled}" OffContent="{helpers:ResourceString Key=diag_hotkey_disabled}" Margin="0"
-                                                                  FontFamily="{StaticResource Jura}" Foreground="{ThemeResource Brush_Highlighted}" />
+                                                                  FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource Brush_Highlighted}" />
 
                                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
                                                         <ComboBox ItemsSource="{x:Bind ViewModel.KeyboardModifiers, Mode=OneWay}"
@@ -868,7 +868,7 @@
                                                             </ComboBox.ItemTemplate>
                                                         </ComboBox>
 
-                                                        <TextBlock Text="+" Foreground="{ThemeResource Brush_Highlighted}" FontSize="18" VerticalAlignment="Center" FontFamily="{StaticResource Jura-Bold}"/>
+                                                        <TextBlock Text="+" Foreground="{ThemeResource Brush_Highlighted}" FontSize="18" VerticalAlignment="Center" FontFamily="{ThemeResource AppCustomFont}"/>
 
                                                         <ComboBox ItemsSource="{x:Bind ViewModel.KeyboardKeys, Mode=OneWay}"
                                                                   SelectedValue="{x:Bind ViewModel.OptimizationKey, Mode=TwoWay}"
@@ -881,7 +881,7 @@
                                                         </ComboBox>
                                                     </StackPanel>
 
-                                                    <TextBlock helpers:Loc.Key="txt_invalid" Foreground="{ThemeResource Brush_Error}" FontFamily="{StaticResource Jura}" FontSize="13"
+                                                    <TextBlock helpers:Loc.Key="txt_invalid" Foreground="{ThemeResource Brush_Error}" FontFamily="{ThemeResource AppCustomFont}" FontSize="13"
                                                                Visibility="{x:Bind ViewModel.IsOptimizationKeyValid, Mode=OneWay, Converter={StaticResource InverseBooleanToVisibilityConverter}, FallbackValue=Collapsed}" />
                                                 </StackPanel>
                                             </Expander>
@@ -890,14 +890,14 @@
                                                 <Expander.Header>
                                                     <StackPanel Orientation="Horizontal" Spacing="8">
                                                         <FontIcon Glyph="&#xE74D;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                                                        <TextBlock helpers:Loc.Key="diag_expander_cleanup" FontWeight="SemiBold" FontFamily="{StaticResource Jura}"/>
+                                                        <TextBlock helpers:Loc.Key="diag_expander_cleanup" FontWeight="SemiBold" FontFamily="{ThemeResource AppCustomFont}"/>
                                                     </StackPanel>
                                                 </Expander.Header>
                                                 <StackPanel Padding="0,5,0,0">
                                                     <ItemsControl ItemsSource="{x:Bind ViewModel.SystemCleanupAreaItems, Mode=OneWay}">
                                                         <ItemsControl.ItemTemplate>
                                                             <DataTemplate>
-                                                                <CheckBox Content="{Binding Name}" IsChecked="{Binding Value, Mode=TwoWay}" FontFamily="{StaticResource Jura}" FontSize="13" Margin="0,2"/>
+                                                                <CheckBox Content="{Binding Name}" IsChecked="{Binding Value, Mode=TwoWay}" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" Margin="0,2"/>
                                                             </DataTemplate>
                                                         </ItemsControl.ItemTemplate>
                                                     </ItemsControl>
@@ -909,13 +909,13 @@
                                                 <Expander.Header>
                                                     <StackPanel Orientation="Horizontal" Spacing="8">
                                                         <FontIcon Glyph="&#xE90F;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                                                        <TextBlock helpers:Loc.Key="diag_expander_repair" FontWeight="SemiBold" FontFamily="{StaticResource Jura}"/>
+                                                        <TextBlock helpers:Loc.Key="diag_expander_repair" FontWeight="SemiBold" FontFamily="{ThemeResource AppCustomFont}"/>
                                                     </StackPanel>
                                                 </Expander.Header>
                                                 <StackPanel Padding="0,5,0,0" Spacing="5">
 
                                                     <StackPanel Orientation="Horizontal">
-                                                        <CheckBox x:Name="DismCheckBox" Content="{helpers:ResourceString Key=diag_check_dism}" FontFamily="{StaticResource Jura}" FontSize="13" Checked="CheckBox_Changed" Unchecked="CheckBox_Changed" VerticalAlignment="Center"/>
+                                                        <CheckBox x:Name="DismCheckBox" Content="{helpers:ResourceString Key=diag_check_dism}" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" Checked="CheckBox_Changed" Unchecked="CheckBox_Changed" VerticalAlignment="Center"/>
                                                         <Button Tag="{helpers:ResourceString Key=diag_item_dism}"
                                                                 Click="ExplainRepairTask_Click"
                                                                 IsEnabled="{Binding ElementName=RootPage, Path=IsAiEnabled}"
@@ -924,7 +924,7 @@
                                                             <Button.Flyout>
                                                                 <Flyout Placement="RightEdgeAlignedTop">
                                                                     <StackPanel Width="300" Spacing="8">
-                                                                        <TextBlock Text="AI Explainer" FontFamily="{StaticResource Jura-SemiBold}" FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                                                        <TextBlock Text="AI Explainer" FontFamily="{ThemeResource AppCustomFont}" FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                                         <TextBlock Tag="AiExplanationText" TextWrapping="Wrap" FontSize="12" Opacity="0.9"/>
                                                                     </StackPanel>
                                                                 </Flyout>
@@ -934,7 +934,7 @@
                                                     </StackPanel>
 
                                                     <StackPanel Orientation="Horizontal">
-                                                        <CheckBox x:Name="SfcCheckBox" Content="{helpers:ResourceString Key=diag_check_sfc}" FontFamily="{StaticResource Jura}" FontSize="13" Checked="CheckBox_Changed" Unchecked="CheckBox_Changed" VerticalAlignment="Center"/>
+                                                        <CheckBox x:Name="SfcCheckBox" Content="{helpers:ResourceString Key=diag_check_sfc}" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" Checked="CheckBox_Changed" Unchecked="CheckBox_Changed" VerticalAlignment="Center"/>
                                                         <Button Tag="{helpers:ResourceString Key=diag_item_sfc}"
                                                                 Click="ExplainRepairTask_Click"
                                                                 IsEnabled="{Binding ElementName=RootPage, Path=IsAiEnabled}"
@@ -943,7 +943,7 @@
                                                             <Button.Flyout>
                                                                 <Flyout Placement="RightEdgeAlignedTop">
                                                                     <StackPanel Width="300" Spacing="8">
-                                                                        <TextBlock Text="AI Explainer" FontFamily="{StaticResource Jura-SemiBold}" FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                                                        <TextBlock Text="AI Explainer" FontFamily="{ThemeResource AppCustomFont}" FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                                         <TextBlock Tag="AiExplanationText" TextWrapping="Wrap" FontSize="12" Opacity="0.9"/>
                                                                     </StackPanel>
                                                                 </Flyout>
@@ -953,7 +953,7 @@
                                                     </StackPanel>
 
                                                     <StackPanel Orientation="Horizontal">
-                                                        <CheckBox x:Name="ChkdskCheckBox" Content="{helpers:ResourceString Key=diag_check_chkdsk}" FontFamily="{StaticResource Jura}" FontSize="13" Checked="CheckBox_Changed" Unchecked="CheckBox_Changed" VerticalAlignment="Center"/>
+                                                        <CheckBox x:Name="ChkdskCheckBox" Content="{helpers:ResourceString Key=diag_check_chkdsk}" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" Checked="CheckBox_Changed" Unchecked="CheckBox_Changed" VerticalAlignment="Center"/>
                                                         <Button Tag="{helpers:ResourceString Key=diag_item_chkdsk}"
                                                                 Click="ExplainRepairTask_Click"
                                                                 IsEnabled="{Binding ElementName=RootPage, Path=IsAiEnabled}"
@@ -962,7 +962,7 @@
                                                             <Button.Flyout>
                                                                 <Flyout Placement="RightEdgeAlignedTop">
                                                                     <StackPanel Width="300" Spacing="8">
-                                                                        <TextBlock Text="AI Explainer" FontFamily="{StaticResource Jura-SemiBold}" FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                                                        <TextBlock Text="AI Explainer" FontFamily="{ThemeResource AppCustomFont}" FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                                         <TextBlock Tag="AiExplanationText" TextWrapping="Wrap" FontSize="12" Opacity="0.9"/>
                                                                     </StackPanel>
                                                                 </Flyout>
@@ -980,7 +980,7 @@
 
                                                     <StackPanel Margin="0,15,0,0">
                                                         <Grid>
-                                                            <TextBlock x:Name="RepairStatusText" helpers:Loc.Key="diag_status_ready" FontSize="11" Opacity="0.6" FontFamily="{StaticResource Jura}"/>
+                                                            <TextBlock x:Name="RepairStatusText" helpers:Loc.Key="diag_status_ready" FontSize="11" Opacity="0.6" FontFamily="{ThemeResource AppCustomFont}"/>
                                                             <TextBlock x:Name="RepairPercentageText" HorizontalAlignment="Right" FontSize="11" FontWeight="Bold" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                         </Grid>
                                                         <ProgressBar x:Name="RepairProgressBar" Height="4" Margin="0,5,0,0" Background="#11FFFFFF" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
@@ -992,7 +992,7 @@
                                                 <Expander.Header>
                                                     <StackPanel Orientation="Horizontal" Spacing="8">
                                                         <FontIcon Glyph="&#xE9D9;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                                                        <TextBlock helpers:Loc.Key="diag_expander_utilities" FontWeight="SemiBold" FontFamily="{StaticResource Jura}"/>
+                                                        <TextBlock helpers:Loc.Key="diag_expander_utilities" FontWeight="SemiBold" FontFamily="{ThemeResource AppCustomFont}"/>
                                                     </StackPanel>
                                                 </Expander.Header>
                                                 <StackPanel Padding="0,5,0,0" Spacing="12">
@@ -1004,7 +1004,7 @@
                                                             <ColumnDefinition Width="Auto"/>
                                                         </Grid.ColumnDefinitions>
                                                         <FontIcon Glyph="&#xF5FC;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}" VerticalAlignment="Center" Margin="0,0,12,0"/>
-                                                        <TextBlock helpers:Loc.Key="txt_battery_health" Grid.Column="1" VerticalAlignment="Center" FontFamily="{StaticResource Jura-SemiBold}" FontSize="13" Foreground="{ThemeResource Brush_Highlighted}"/>
+                                                        <TextBlock helpers:Loc.Key="txt_battery_health" Grid.Column="1" VerticalAlignment="Center" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" Foreground="{ThemeResource Brush_Highlighted}"/>
                                                         <Button Content="{helpers:ResourceString Key=btn_generate}" Grid.Column="2" Click="BatteryHealthButton_Click" VerticalAlignment="Center" FontSize="11" Padding="8,4" MinWidth="80" Height="32"/>
                                                     </Grid>
 
@@ -1016,8 +1016,8 @@
                                                         </Grid.ColumnDefinitions>
                                                         <FontIcon Glyph="&#xE964;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}" VerticalAlignment="Center" Margin="0,0,12,0"/>
                                                         <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                                            <TextBlock helpers:Loc.Key="txt_memory_diagnostic" FontFamily="{StaticResource Jura-SemiBold}" FontSize="13" Foreground="{ThemeResource Brush_Highlighted}"/>
-                                                            <TextBlock x:Name="MemStatusText" FontFamily="{StaticResource Jura}" FontSize="11" Opacity="0.7" Foreground="{ThemeResource Brush_Highlighted}" Margin="0,2,0,0" Visibility="Collapsed"/>
+                                                            <TextBlock helpers:Loc.Key="txt_memory_diagnostic" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" Foreground="{ThemeResource Brush_Highlighted}"/>
+                                                            <TextBlock x:Name="MemStatusText" FontFamily="{ThemeResource AppCustomFont}" FontSize="11" Opacity="0.7" Foreground="{ThemeResource Brush_Highlighted}" Margin="0,2,0,0" Visibility="Collapsed"/>
                                                         </StackPanel>
                                                         <Button x:Name="MemCheckButton" Content="{helpers:ResourceString Key=btn_check}" Grid.Column="2" Click="MemoryHealthButton_Click" VerticalAlignment="Center" FontSize="11" Padding="8,4" MinWidth="80" Height="32"/>
                                                     </Grid>
@@ -1029,7 +1029,7 @@
                                                             <ColumnDefinition Width="Auto"/>
                                                         </Grid.ColumnDefinitions>
                                                         <FontIcon Glyph="&#xEB05;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}" VerticalAlignment="Center" Margin="0,0,12,0"/>
-                                                        <TextBlock helpers:Loc.Key="txt_disk_optimizations" Grid.Column="1" VerticalAlignment="Center" FontFamily="{StaticResource Jura-SemiBold}" FontSize="13" Foreground="{ThemeResource Brush_Highlighted}"/>
+                                                        <TextBlock helpers:Loc.Key="txt_disk_optimizations" Grid.Column="1" VerticalAlignment="Center" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" Foreground="{ThemeResource Brush_Highlighted}"/>
                                                         <Button Content="{helpers:ResourceString Key=btn_optimize}" Grid.Column="2" Click="DiskOptimizationsButton_Click" VerticalAlignment="Center" FontSize="11" Padding="8,4" MinWidth="80" Height="32"/>
                                                     </Grid>
 
@@ -1040,7 +1040,7 @@
                                                             <ColumnDefinition Width="Auto"/>
                                                         </Grid.ColumnDefinitions>
                                                         <FontIcon Glyph="&#xE82D;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}" VerticalAlignment="Center" Margin="0,0,12,0"/>
-                                                        <TextBlock helpers:Loc.Key="txt_event_viewer" Grid.Column="1" VerticalAlignment="Center" FontFamily="{StaticResource Jura-SemiBold}" FontSize="13" Foreground="{ThemeResource Brush_Highlighted}"/>
+                                                        <TextBlock helpers:Loc.Key="txt_event_viewer" Grid.Column="1" VerticalAlignment="Center" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" Foreground="{ThemeResource Brush_Highlighted}"/>
                                                         <Button Content="{helpers:ResourceString Key=diag_btn_open}" Grid.Column="2" Click="EventViewerSettingsCard_Click" VerticalAlignment="Center" FontSize="11" Padding="8,4" MinWidth="80" Height="32"/>
                                                     </Grid>
 
@@ -1051,7 +1051,7 @@
                                                 <Expander.Header>
                                                     <StackPanel Orientation="Horizontal" Spacing="8">
                                                         <FontIcon Glyph="&#xE713;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                                                        <TextBlock helpers:Loc.Key="diag_expander_settings" FontWeight="SemiBold" FontFamily="{StaticResource Jura}"/>
+                                                        <TextBlock helpers:Loc.Key="diag_expander_settings" FontWeight="SemiBold" FontFamily="{ThemeResource AppCustomFont}"/>
                                                     </StackPanel>
                                                 </Expander.Header>
                                                 <StackPanel Padding="0,5,0,0">
@@ -1060,7 +1060,7 @@
                                                             <DataTemplate>
                                                                 <CheckBox Content="{Binding Name}" ToolTipService.ToolTip="{Binding Tooltip}"
                                                                           IsChecked="{Binding Value, Mode=TwoWay}" IsEnabled="{Binding IsEnabled}"
-                                                                          Margin="0,0,0,12" VerticalAlignment="Center" FontFamily="{StaticResource Jura}" FontSize="13"
+                                                                          Margin="0,0,0,12" VerticalAlignment="Center" FontFamily="{ThemeResource AppCustomFont}" FontSize="13"
                                                                           Foreground="{ThemeResource Brush_Highlighted}"/>
                                                             </DataTemplate>
                                                         </ItemsControl.ItemTemplate>
@@ -1068,12 +1068,12 @@
 
                                                     <Border Background="#0AFFFFFF" BorderThickness="1" BorderBrush="#1AFFFFFF" CornerRadius="4" Padding="12" Margin="0,10,0,0">
                                                         <StackPanel Spacing="10">
-                                                            <TextBlock helpers:Loc.Key="settings_systray_title" FontFamily="{StaticResource Jura}" FontWeight="SemiBold" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                                            <TextBlock helpers:Loc.Key="settings_systray_title" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                             <TextBlock helpers:Loc.Key="settings_systray_description" FontSize="11" Opacity="0.7" TextWrapping="Wrap"/>
 
                                                             <CheckBox Content="{helpers:ResourceString Key=settings_systray_master_toggle}"
                                                                       IsChecked="{x:Bind ViewModel.ShowHardwarePanelInTray, Mode=TwoWay}"
-                                                                      FontFamily="{StaticResource Jura}"
+                                                                      FontFamily="{ThemeResource AppCustomFont}"
                                                                       FontSize="13"
                                                                       FontWeight="SemiBold"
                                                                       Margin="0,5,0,5"/>
@@ -1091,22 +1091,22 @@
                                                                 <CheckBox Grid.Row="0" Grid.Column="0" Content="{helpers:ResourceString Key=settings_systray_cpu}"
                                                                           IsChecked="{x:Bind ViewModel.ShowCpuInTray, Mode=TwoWay}"
                                                                           IsEnabled="{x:Bind ViewModel.ShowHardwarePanelInTray, Mode=OneWay}"
-                                                                          FontFamily="{StaticResource Jura}" FontSize="12"/>
+                                                                          FontFamily="{ThemeResource AppCustomFont}" FontSize="12"/>
 
                                                                 <CheckBox Grid.Row="0" Grid.Column="1" Content="{helpers:ResourceString Key=settings_systray_ram}"
                                                                           IsChecked="{x:Bind ViewModel.ShowRamInTray, Mode=TwoWay}"
                                                                           IsEnabled="{x:Bind ViewModel.ShowHardwarePanelInTray, Mode=OneWay}"
-                                                                          FontFamily="{StaticResource Jura}" FontSize="12"/>
+                                                                          FontFamily="{ThemeResource AppCustomFont}" FontSize="12"/>
 
                                                                 <CheckBox Grid.Row="1" Grid.Column="0" Content="{helpers:ResourceString Key=settings_systray_disk}"
                                                                           IsChecked="{x:Bind ViewModel.ShowDiskInTray, Mode=TwoWay}"
                                                                           IsEnabled="{x:Bind ViewModel.ShowHardwarePanelInTray, Mode=OneWay}"
-                                                                          FontFamily="{StaticResource Jura}" FontSize="12"/>
+                                                                          FontFamily="{ThemeResource AppCustomFont}" FontSize="12"/>
 
                                                                 <CheckBox Grid.Row="1" Grid.Column="1" Content="{helpers:ResourceString Key=settings_systray_gpu}"
                                                                           IsChecked="{x:Bind ViewModel.ShowGpuInTray, Mode=TwoWay}"
                                                                           IsEnabled="{x:Bind ViewModel.ShowHardwarePanelInTray, Mode=OneWay}"
-                                                                          FontFamily="{StaticResource Jura}" FontSize="12"/>
+                                                                          FontFamily="{ThemeResource AppCustomFont}" FontSize="12"/>
                                                             </Grid>
 
                                                             <Border Background="Transparent" BorderThickness="0,1,0,0" BorderBrush="#1AFFFFFF" Margin="-12,15,-12,0" Padding="12,15,12,5">
@@ -1123,7 +1123,7 @@
                                                                         </Grid.RowDefinitions>
                                                                         <TextBlock Grid.Row="0"
                                                                                    Text="{helpers:ResourceString Key=pawnio_card_title}"
-                                                                                   FontFamily="{StaticResource Jura}"
+                                                                                   FontFamily="{ThemeResource AppCustomFont}"
                                                                                    FontWeight="SemiBold"
                                                                                    Foreground="{ThemeResource MyDynamicAccentBrush}"
                                                                                    FontSize="13"
@@ -1143,19 +1143,19 @@
                                                                         <Button x:Name="BtnInstallDriver"
                                                                                 Content="{helpers:ResourceString Key=pawnio_card_btn_install}"
                                                                                 Click="InstallAdvancedSensorsButton_Click"
-                                                                                FontFamily="{StaticResource Jura}"
+                                                                                FontFamily="{ThemeResource AppCustomFont}"
                                                                                 FontSize="11"
                                                                                 Padding="10,6"
                                                                                 Style="{StaticResource AccentButtonStyle}">
                                                                             <ToolTipService.ToolTip>
-                                                                                <TextBlock Text="{helpers:ResourceString Key=pawnio_card_tooltip_install}" FontFamily="{StaticResource Jura}" />
+                                                                                <TextBlock Text="{helpers:ResourceString Key=pawnio_card_tooltip_install}" FontFamily="{ThemeResource AppCustomFont}" />
                                                                             </ToolTipService.ToolTip>
                                                                         </Button>
 
                                                                         <Button x:Name="BtnUninstallDriver"
                                                                                 Content="{helpers:ResourceString Key=pawnio_card_btn_uninstall}"
                                                                                 Click="UninstallAdvancedSensorsButton_Click"
-                                                                                FontFamily="{StaticResource Jura}"
+                                                                                FontFamily="{ThemeResource AppCustomFont}"
                                                                                 FontSize="11"
                                                                                 Padding="10,6"
                                                                                 BorderThickness="1"
@@ -1163,7 +1163,7 @@
                                                                                 BorderBrush="#44FF3333"
                                                                                 Foreground="#FFFF6666">
                                                                             <ToolTipService.ToolTip>
-                                                                                <TextBlock Text="{helpers:ResourceString Key=pawnio_card_tooltip_uninstall}" FontFamily="{StaticResource Jura}" />
+                                                                                <TextBlock Text="{helpers:ResourceString Key=pawnio_card_tooltip_uninstall}" FontFamily="{ThemeResource AppCustomFont}" />
                                                                             </ToolTipService.ToolTip>
                                                                         </Button>
 
@@ -1211,7 +1211,7 @@
 
                                                     <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Top" Spacing="14" Margin="0,0,0,20">
 
-                                                        <TextBlock Text="Service Status" FontSize="20" FontFamily="{ThemeResource Jura}" HorizontalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                                        <TextBlock Text="Service Status" FontSize="20" FontFamily="{ThemeResource AppCustomFont}" HorizontalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
 
                                                         <StackPanel Spacing="14" HorizontalAlignment="Stretch">
                                                             <StackPanel HorizontalAlignment="Center" Spacing="12">
@@ -1224,18 +1224,18 @@
 
                                                                 <TextBlock x:Name="TxtServicesRunning"
                                                                            Text="{helpers:ResourceString Key=text_services_running}"
-                                                                           FontFamily="{ThemeResource Jura}"
+                                                                           FontFamily="{ThemeResource AppCustomFont}"
                                                                            FontSize="12"
                                                                            Margin="0,-10,0,-10"
                                                                            HorizontalAlignment="Center"
                                                                            Visibility="Visible"
                                                                            Foreground="{ThemeResource SystemFillColorSuccessBrush}"/>
 
-                                                                <TextBlock x:Name="statusLabel" Text="{helpers:ResourceString Key=text_status}" HorizontalAlignment="Center" FontFamily="{ThemeResource Jura}" Opacity="0.7"/>
+                                                                <TextBlock x:Name="statusLabel" Text="{helpers:ResourceString Key=text_status}" HorizontalAlignment="Center" FontFamily="{ThemeResource AppCustomFont}" Opacity="0.7"/>
 
                                                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="16" Margin="0,12,0,0">
-                                                                    <Button x:Name="BtnDebug" Content="{helpers:ResourceString Key=btn_debug_process}" Width="130" Click="BtnDebug_Click" FontFamily="{ThemeResource Jura}"/>
-                                                                    <Button x:Name="BtnStartService" Content="{helpers:ResourceString Key=btn_start_service}" Width="130" Click="BtnStartService_Click" Style="{StaticResource AccentButtonStyle}" FontFamily="{ThemeResource Jura}"/>
+                                                                    <Button x:Name="BtnDebug" Content="{helpers:ResourceString Key=btn_debug_process}" Width="130" Click="BtnDebug_Click" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                                    <Button x:Name="BtnStartService" Content="{helpers:ResourceString Key=btn_start_service}" Width="130" Click="BtnStartService_Click" Style="{StaticResource AccentButtonStyle}" FontFamily="{ThemeResource AppCustomFont}"/>
                                                                 </StackPanel>
                                                             </StackPanel>
 
@@ -1249,16 +1249,16 @@
                                                                     <ColumnDefinition Width="*"/>
                                                                 </Grid.ColumnDefinitions>
 
-                                                                <Button Grid.Row="0" Grid.Column="0" Content="{helpers:ResourceString Key=btn_balanced_config}" x:Name="BtnBalanced" Click="BtnBalanced_Click" FontFamily="{ThemeResource Jura}" HorizontalAlignment="Stretch"/>
-                                                                <Button Grid.Row="0" Grid.Column="1" Content="{helpers:ResourceString Key=btn_privacy_config}" x:Name="BtnPrivacy" Click="BtnPrivacy_Click" FontFamily="{ThemeResource Jura}" HorizontalAlignment="Stretch"/>
-                                                                <Button Grid.Row="1" Grid.Column="0" Content="{helpers:ResourceString Key=btn_load_config}" x:Name="BtnLoadConfig" Click="BtnLoadConfig_Click" FontFamily="{ThemeResource Jura}" HorizontalAlignment="Stretch"/>
-                                                                <Button Grid.Row="1" Grid.Column="1" Content="{helpers:ResourceString Key=btn_save_config}" x:Name="BtnSaveConfig" Click="BtnSaveConfig_Click" Style="{StaticResource AccentButtonStyle}" FontFamily="{ThemeResource Jura-Bold}" HorizontalAlignment="Stretch"/>
+                                                                <Button Grid.Row="0" Grid.Column="0" Content="{helpers:ResourceString Key=btn_balanced_config}" x:Name="BtnBalanced" Click="BtnBalanced_Click" FontFamily="{ThemeResource AppCustomFont}" HorizontalAlignment="Stretch"/>
+                                                                <Button Grid.Row="0" Grid.Column="1" Content="{helpers:ResourceString Key=btn_privacy_config}" x:Name="BtnPrivacy" Click="BtnPrivacy_Click" FontFamily="{ThemeResource AppCustomFont}" HorizontalAlignment="Stretch"/>
+                                                                <Button Grid.Row="1" Grid.Column="0" Content="{helpers:ResourceString Key=btn_load_config}" x:Name="BtnLoadConfig" Click="BtnLoadConfig_Click" FontFamily="{ThemeResource AppCustomFont}" HorizontalAlignment="Stretch"/>
+                                                                <Button Grid.Row="1" Grid.Column="1" Content="{helpers:ResourceString Key=btn_save_config}" x:Name="BtnSaveConfig" Click="BtnSaveConfig_Click" Style="{StaticResource AccentButtonStyle}" FontFamily="{ThemeResource AppCustomFont}" HorizontalAlignment="Stretch"/>
                                                             </Grid>
                                                         </StackPanel>
 
                                                         <StackPanel Spacing="10" Margin="0,20,0,0">
                                                             <TextBlock Text="{helpers:ResourceString Key=txt_dns_settings}"
-                                                                       FontFamily="{ThemeResource Jura}"
+                                                                       FontFamily="{ThemeResource AppCustomFont}"
                                                                        FontSize="16"
                                                                        Style="{StaticResource TitleTextBlockStyle}"
                                                                        Foreground="{ThemeResource MyDynamicAccentBrush}"/>
@@ -1272,7 +1272,7 @@
                                                                             <ColumnDefinition Width="Auto"/>
                                                                         </Grid.ColumnDefinitions>
                                                                         <FontIcon Glyph="&#xE774;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}" VerticalAlignment="Center"/>
-                                                                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=header_core_dns}" FontWeight="SemiBold" FontFamily="{StaticResource Jura}" VerticalAlignment="Center"/>
+                                                                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=header_core_dns}" FontWeight="SemiBold" FontFamily="{ThemeResource AppCustomFont}" VerticalAlignment="Center"/>
 
                                                                         <Button Grid.Column="2" Tag="Core DNS Services (IPv4, IPv6, DoH, DNSCrypt)"
                                                                                 Click="ExplainDnsOption_Click"
@@ -1282,7 +1282,7 @@
                                                                             <Button.Flyout>
                                                                                 <Flyout Placement="RightEdgeAlignedTop">
                                                                                     <StackPanel Width="300" Spacing="8">
-                                                                                        <TextBlock Text="AI Explainer" FontFamily="{StaticResource Jura-SemiBold}" FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                                                                        <TextBlock Text="AI Explainer" FontFamily="{ThemeResource AppCustomFont}" FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                                                         <TextBlock Tag="AiExplanationText" TextWrapping="Wrap" FontSize="12" Opacity="0.9"/>
                                                                                     </StackPanel>
                                                                                 </Flyout>
@@ -1293,19 +1293,19 @@
                                                                 </Expander.Header>
                                                                 <StackPanel Padding="0,5,0,0" Spacing="12">
                                                                     <StackPanel Spacing="4">
-                                                                        <TextBlock Text="{helpers:ResourceString Key=text_combo_2}" Opacity="0.7" FontFamily="{ThemeResource Jura}" FontSize="12"/>
+                                                                        <TextBlock Text="{helpers:ResourceString Key=text_combo_2}" Opacity="0.7" FontFamily="{ThemeResource AppCustomFont}" FontSize="12"/>
                                                                         <ComboBox x:Name="ipv4_servers" HorizontalAlignment="Stretch"/>
                                                                     </StackPanel>
                                                                     <StackPanel Spacing="4">
-                                                                        <TextBlock Text="{helpers:ResourceString Key=text_combo_1}" Opacity="0.7" FontFamily="{ThemeResource Jura}" FontSize="12"/>
+                                                                        <TextBlock Text="{helpers:ResourceString Key=text_combo_1}" Opacity="0.7" FontFamily="{ThemeResource AppCustomFont}" FontSize="12"/>
                                                                         <ComboBox x:Name="ipv6_servers" HorizontalAlignment="Stretch"/>
                                                                     </StackPanel>
                                                                     <StackPanel Spacing="4">
-                                                                        <TextBlock Text="{helpers:ResourceString Key=text_combo_3}" Opacity="0.7" FontFamily="{ThemeResource Jura}" FontSize="12"/>
+                                                                        <TextBlock Text="{helpers:ResourceString Key=text_combo_3}" Opacity="0.7" FontFamily="{ThemeResource AppCustomFont}" FontSize="12"/>
                                                                         <ComboBox x:Name="doh_servers" HorizontalAlignment="Stretch"/>
                                                                     </StackPanel>
                                                                     <StackPanel Spacing="4">
-                                                                        <TextBlock Text="{helpers:ResourceString Key=text_combo_4}" Opacity="0.7" FontFamily="{ThemeResource Jura}" FontSize="12"/>
+                                                                        <TextBlock Text="{helpers:ResourceString Key=text_combo_4}" Opacity="0.7" FontFamily="{ThemeResource AppCustomFont}" FontSize="12"/>
                                                                         <ComboBox x:Name="dnscrypt_servers" HorizontalAlignment="Stretch"/>
                                                                     </StackPanel>
                                                                 </StackPanel>
@@ -1320,7 +1320,7 @@
                                                                             <ColumnDefinition Width="Auto"/>
                                                                         </Grid.ColumnDefinitions>
                                                                         <FontIcon Glyph="&#xE7EF;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}" VerticalAlignment="Center"/>
-                                                                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=header_security_privacy}" FontWeight="SemiBold" FontFamily="{StaticResource Jura}" VerticalAlignment="Center"/>
+                                                                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=header_security_privacy}" FontWeight="SemiBold" FontFamily="{ThemeResource AppCustomFont}" VerticalAlignment="Center"/>
 
                                                                         <Button Grid.Column="2" Tag="DNS Security &amp; Privacy (No-Log, DNSSEC, No-Filter, Ephemeral Keys)"
                                                                                 Click="ExplainDnsOption_Click"
@@ -1330,7 +1330,7 @@
                                                                             <Button.Flyout>
                                                                                 <Flyout Placement="RightEdgeAlignedTop">
                                                                                     <StackPanel Width="300" Spacing="8">
-                                                                                        <TextBlock Text="AI Explainer" FontFamily="{StaticResource Jura-SemiBold}" FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                                                                        <TextBlock Text="AI Explainer" FontFamily="{ThemeResource AppCustomFont}" FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                                                         <TextBlock Tag="AiExplanationText" TextWrapping="Wrap" FontSize="12" Opacity="0.9"/>
                                                                                     </StackPanel>
                                                                                 </Flyout>
@@ -1341,23 +1341,23 @@
                                                                 </Expander.Header>
                                                                 <StackPanel Padding="0,5,0,0" Spacing="12">
                                                                     <StackPanel Spacing="4">
-                                                                        <TextBlock Text="{helpers:ResourceString Key=text_combo_5}" Opacity="0.7" FontFamily="{ThemeResource Jura}" FontSize="12"/>
+                                                                        <TextBlock Text="{helpers:ResourceString Key=text_combo_5}" Opacity="0.7" FontFamily="{ThemeResource AppCustomFont}" FontSize="12"/>
                                                                         <ComboBox x:Name="require_nolog" HorizontalAlignment="Stretch"/>
                                                                     </StackPanel>
                                                                     <StackPanel Spacing="4">
-                                                                        <TextBlock Text="{helpers:ResourceString Key=text_combo_6}" Opacity="0.7" FontFamily="{ThemeResource Jura}" FontSize="12"/>
+                                                                        <TextBlock Text="{helpers:ResourceString Key=text_combo_6}" Opacity="0.7" FontFamily="{ThemeResource AppCustomFont}" FontSize="12"/>
                                                                         <ComboBox x:Name="require_dnssec" HorizontalAlignment="Stretch"/>
                                                                     </StackPanel>
                                                                     <StackPanel Spacing="4">
-                                                                        <TextBlock Text="{helpers:ResourceString Key=text_combo_8}" Opacity="0.7" FontFamily="{ThemeResource Jura}" FontSize="12"/>
+                                                                        <TextBlock Text="{helpers:ResourceString Key=text_combo_8}" Opacity="0.7" FontFamily="{ThemeResource AppCustomFont}" FontSize="12"/>
                                                                         <ComboBox x:Name="require_nofilter" HorizontalAlignment="Stretch"/>
                                                                     </StackPanel>
                                                                     <StackPanel Spacing="4">
-                                                                        <TextBlock Text="{helpers:ResourceString Key=text_combo_10}" Opacity="0.7" FontFamily="{ThemeResource Jura}" FontSize="12"/>
+                                                                        <TextBlock Text="{helpers:ResourceString Key=text_combo_10}" Opacity="0.7" FontFamily="{ThemeResource AppCustomFont}" FontSize="12"/>
                                                                         <ComboBox x:Name="dnscrypt_ephemeral_keys" HorizontalAlignment="Stretch"/>
                                                                     </StackPanel>
                                                                     <StackPanel Spacing="4">
-                                                                        <TextBlock Text="{helpers:ResourceString Key=text_combo_9}" Opacity="0.7" FontFamily="{ThemeResource Jura}" FontSize="12"/>
+                                                                        <TextBlock Text="{helpers:ResourceString Key=text_combo_9}" Opacity="0.7" FontFamily="{ThemeResource AppCustomFont}" FontSize="12"/>
                                                                         <ComboBox x:Name="tls_disable_session_tickets" HorizontalAlignment="Stretch"/>
                                                                     </StackPanel>
                                                                 </StackPanel>
@@ -1372,7 +1372,7 @@
                                                                             <ColumnDefinition Width="Auto"/>
                                                                         </Grid.ColumnDefinitions>
                                                                         <FontIcon Glyph="&#xE713;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}" VerticalAlignment="Center"/>
-                                                                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=header_advanced_system}" FontWeight="SemiBold" FontFamily="{StaticResource Jura}" VerticalAlignment="Center"/>
+                                                                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=header_advanced_system}" FontWeight="SemiBold" FontFamily="{ThemeResource AppCustomFont}" VerticalAlignment="Center"/>
 
                                                                         <Button Grid.Column="2" Tag="Advanced DNS Options (Bootstrap Resolvers, Netprobe, Reject TTL, Block IPv6)"
                                                                                 Click="ExplainDnsOption_Click"
@@ -1382,7 +1382,7 @@
                                                                             <Button.Flyout>
                                                                                 <Flyout Placement="RightEdgeAlignedTop">
                                                                                     <StackPanel Width="300" Spacing="8">
-                                                                                        <TextBlock Text="AI Explainer" FontFamily="{StaticResource Jura-SemiBold}" FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                                                                        <TextBlock Text="AI Explainer" FontFamily="{ThemeResource AppCustomFont}" FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                                                         <TextBlock Tag="AiExplanationText" TextWrapping="Wrap" FontSize="12" Opacity="0.9"/>
                                                                                     </StackPanel>
                                                                                 </Flyout>
@@ -1393,23 +1393,23 @@
                                                                 </Expander.Header>
                                                                 <StackPanel Padding="0,5,0,0" Spacing="12">
                                                                     <StackPanel Spacing="4">
-                                                                        <TextBlock Text="{helpers:ResourceString Key=text_combo_7}" Opacity="0.7" FontFamily="{ThemeResource Jura}" FontSize="12"/>
+                                                                        <TextBlock Text="{helpers:ResourceString Key=text_combo_7}" Opacity="0.7" FontFamily="{ThemeResource AppCustomFont}" FontSize="12"/>
                                                                         <ComboBox x:Name="bootstrap_resolvers" HorizontalAlignment="Stretch"/>
                                                                     </StackPanel>
                                                                     <StackPanel Spacing="4">
-                                                                        <TextBlock Text="{helpers:ResourceString Key=text_combo_11}" Opacity="0.7" FontFamily="{ThemeResource Jura}" FontSize="12"/>
+                                                                        <TextBlock Text="{helpers:ResourceString Key=text_combo_11}" Opacity="0.7" FontFamily="{ThemeResource AppCustomFont}" FontSize="12"/>
                                                                         <ComboBox x:Name="netprobe_address" HorizontalAlignment="Stretch"/>
                                                                     </StackPanel>
                                                                     <StackPanel Spacing="4">
-                                                                        <TextBlock Text="{helpers:ResourceString Key=text_combo_12}" Opacity="0.7" FontFamily="{ThemeResource Jura}" FontSize="12"/>
+                                                                        <TextBlock Text="{helpers:ResourceString Key=text_combo_12}" Opacity="0.7" FontFamily="{ThemeResource AppCustomFont}" FontSize="12"/>
                                                                         <ComboBox x:Name="netprobe_timeout" HorizontalAlignment="Stretch"/>
                                                                     </StackPanel>
                                                                     <StackPanel Spacing="4">
-                                                                        <TextBlock Text="{helpers:ResourceString Key=text_combo_13}" Opacity="0.7" FontFamily="{ThemeResource Jura}" FontSize="12"/>
+                                                                        <TextBlock Text="{helpers:ResourceString Key=text_combo_13}" Opacity="0.7" FontFamily="{ThemeResource AppCustomFont}" FontSize="12"/>
                                                                         <ComboBox x:Name="reject_ttl" HorizontalAlignment="Stretch"/>
                                                                     </StackPanel>
                                                                     <StackPanel Spacing="4">
-                                                                        <TextBlock Text="{helpers:ResourceString Key=text_combo_14}" Opacity="0.7" FontFamily="{ThemeResource Jura}" FontSize="12"/>
+                                                                        <TextBlock Text="{helpers:ResourceString Key=text_combo_14}" Opacity="0.7" FontFamily="{ThemeResource AppCustomFont}" FontSize="12"/>
                                                                         <ComboBox x:Name="block_ipv6" HorizontalAlignment="Stretch"/>
                                                                     </StackPanel>
                                                                 </StackPanel>
@@ -1487,8 +1487,8 @@
                                                     </Grid>
 
                                                     <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
-                                                        <TextBlock helpers:Loc.Key="diag_sys_status" FontFamily="{ThemeResource Jura}" Style="{StaticResource TechnicalLabelStyle}"/>
-                                                        <TextBlock Text="{x:Bind ViewModel.ScannerText, Mode=OneWay, FallbackValue='SYSTEM OPTIMAL'}" Style="{StaticResource TechnicalValueStyle}" FontFamily="{ThemeResource Jura}" FontSize="28" Foreground="{x:Bind ViewModel.SystemHealthBrush, Mode=OneWay}"/>
+                                                        <TextBlock helpers:Loc.Key="diag_sys_status" FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource TechnicalLabelStyle}"/>
+                                                        <TextBlock Text="{x:Bind ViewModel.ScannerText, Mode=OneWay, FallbackValue='SYSTEM OPTIMAL'}" Style="{StaticResource TechnicalValueStyle}" FontFamily="{ThemeResource AppCustomFont}" FontSize="28" Foreground="{x:Bind ViewModel.SystemHealthBrush, Mode=OneWay}"/>
                                                         <TextBlock helpers:Loc.Key="diag_sys_last_checked" Style="{StaticResource TechnicalLabelStyle}"/>
                                                     </StackPanel>
 
@@ -1571,7 +1571,7 @@
                                                                           Visibility="{x:Bind ViewModel.DiskSelectorVisibility, Mode=OneWay}"
                                                                           Width="180" Height="28" FontSize="11"
                                                                           Background="#11FFFFFF" BorderBrush="#33FFFFFF"
-                                                                          FontFamily="{ThemeResource Jura}" VerticalAlignment="Center"/>
+                                                                          FontFamily="{ThemeResource AppCustomFont}" VerticalAlignment="Center"/>
 
                                                                 <ToggleButton Content="{helpers:ResourceString Key=diag_btn_page}" IsChecked="{x:Bind ViewModel.IsPageSelected, Mode=TwoWay}"  Visibility="{x:Bind ViewModel.IsGraphingTemperature, Mode=OneWay, Converter={StaticResource InverseBooleanToVisibilityConverter}}" CornerRadius="4" MinWidth="55" FontSize="11" FontWeight="SemiBold"/>
 
@@ -1583,7 +1583,7 @@
                                                             <ToggleSwitch IsOn="{x:Bind ViewModel.IsGraphingTemperature, Mode=TwoWay}"
                                                                           Visibility="{x:Bind ViewModel.TemperatureToggleVisibility, Mode=OneWay}"
                                                                           OffContent="LOAD" OnContent="TEMP" MinWidth="0"
-                                                                          FontSize="10" FontFamily="{ThemeResource Jura}"
+                                                                          FontSize="10" FontFamily="{ThemeResource AppCustomFont}"
                                                                           VerticalAlignment="Center" Margin="0,0,0,0"/>
 
                                                             <ComboBox ItemsSource="{x:Bind ViewModel.TimeScaleOptions}"
@@ -1677,23 +1677,23 @@
 
                                                                                 <TextBlock Text="{x:Bind ViewModel.ActivePrimaryValueStr, Mode=OneWay}"
                                                                                            Visibility="{x:Bind ViewModel.HeroStandardVisibility, Mode=OneWay}"
-                                                                                           Foreground="White" FontSize="32" FontWeight="Bold" HorizontalAlignment="Center"/>
+                                                                                           Foreground="White" FontSize="32" FontFamily="{ThemeResource AppCustomFont}" FontWeight="Bold" HorizontalAlignment="Center"/>
 
                                                                                 <TextBlock Text="{x:Bind ViewModel.ActiveTemperatureStr, Mode=OneWay}"
                                                                                            Visibility="{x:Bind ViewModel.ActiveTemperatureVisibility, Mode=OneWay}"
-                                                                                           Foreground="#FFFF9900" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,-5,0,2"/>
+                                                                                           Foreground="#FFFF9900" FontSize="18" FontFamily="{ThemeResource AppCustomFont}" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,-5,0,2"/>
 
                                                                                 <StackPanel Visibility="{x:Bind ViewModel.IsNetworkSelected, Mode=OneWay}" Spacing="-2">
                                                                                     <TextBlock Text="{x:Bind ViewModel.CurrentNetworkDownLoadStr, Mode=OneWay, TargetNullValue=0 ▼, FallbackValue=0 ▼}"
-                                                                                               Foreground="White" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center"/>
+                                                                                               Foreground="White" FontSize="18" FontFamily="{ThemeResource AppCustomFont}" FontWeight="Bold" HorizontalAlignment="Center"/>
                                                                                     <TextBlock Text="{x:Bind ViewModel.CurrentNetworkUpLoadStr, Mode=OneWay, TargetNullValue=0 ▲, FallbackValue=0 ▲}"
-                                                                                               Foreground="White" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center"/>
-                                                                                    <TextBlock Text="Mbps" Foreground="Gray" FontSize="9" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                                                                                               Foreground="White" FontSize="18" FontFamily="{ThemeResource AppCustomFont}" FontWeight="Bold" HorizontalAlignment="Center"/>
+                                                                                    <TextBlock Text="Mbps" Foreground="Gray" FontSize="9" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" HorizontalAlignment="Center"/>
                                                                                 </StackPanel>
 
                                                                                 <TextBlock Text="{x:Bind ViewModel.ActivePrimaryLabel, Mode=OneWay}"
                                                                                            Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="12"
-                                                                                           FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,2,0,0"/>
+                                                                                           FontWeight="SemiBold" FontFamily="{ThemeResource AppCustomFont}" HorizontalAlignment="Center" Margin="0,2,0,0"/>
 
                                                                             </StackPanel>
 
@@ -1701,69 +1701,69 @@
 
                                                                                 <StackPanel Orientation="Vertical" Spacing="2" Visibility="{x:Bind ViewModel.CpuSecondaryVisibility, Mode=OneWay}">
                                                                                     <StackPanel Orientation="Horizontal" Spacing="5">
-                                                                                        <TextBlock helpers:Loc.Key="diag_cpu_load_small" Foreground="Gray" FontSize="12" FontWeight="SemiBold" Width="36" VerticalAlignment="Center"/>
-                                                                                        <TextBlock Text="{x:Bind ViewModel.CurrentCpuLoadStr, Mode=OneWay, TargetNullValue=0%, FallbackValue=0%}" Foreground="White" FontSize="14" FontWeight="Bold" VerticalAlignment="Center" Margin="0,-2,0,0"/>
+                                                                                        <TextBlock helpers:Loc.Key="diag_cpu_load_small" Foreground="Gray" FontSize="12" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" Width="36" VerticalAlignment="Center"/>
+                                                                                        <TextBlock Text="{x:Bind ViewModel.CurrentCpuLoadStr, Mode=OneWay, TargetNullValue=0%, FallbackValue=0%}" Foreground="White" FontSize="14" FontFamily="{ThemeResource AppCustomFont}" FontWeight="Bold" VerticalAlignment="Center" Margin="0,-2,0,0"/>
                                                                                     </StackPanel>
                                                                                     <StackPanel Orientation="Horizontal" Spacing="5">
-                                                                                        <TextBlock Text="TEMP" Foreground="Gray" FontSize="12" FontWeight="SemiBold" Width="36" VerticalAlignment="Center"/>
-                                                                                        <TextBlock Text="{x:Bind ViewModel.CpuTempStr, Mode=OneWay, FallbackValue='--°C'}" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="14" FontWeight="Bold" VerticalAlignment="Center" Margin="0,-2,0,0"/>
+                                                                                        <TextBlock Text="TEMP" Foreground="Gray" FontSize="12" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" Width="36" VerticalAlignment="Center"/>
+                                                                                        <TextBlock Text="{x:Bind ViewModel.CpuTempStr, Mode=OneWay, FallbackValue='--°C'}" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="14" FontFamily="{ThemeResource AppCustomFont}" FontWeight="Bold" VerticalAlignment="Center" Margin="0,-2,0,0"/>
                                                                                     </StackPanel>
                                                                                 </StackPanel>
 
                                                                                 <StackPanel Orientation="Vertical" Spacing="2" Visibility="{x:Bind ViewModel.GpuSecondaryVisibility, Mode=OneWay}">
                                                                                     <StackPanel Orientation="Horizontal" Spacing="5">
-                                                                                        <TextBlock helpers:Loc.Key="diag_gpu_load_small" Foreground="Gray" FontSize="12" FontWeight="SemiBold" Width="36" VerticalAlignment="Center"/>
-                                                                                        <TextBlock Text="{x:Bind ViewModel.CurrentGpuLoadStr, Mode=OneWay, TargetNullValue=0%, FallbackValue=0%}" Foreground="White" FontSize="14" FontWeight="Bold" VerticalAlignment="Center" Margin="0,-2,0,0"/>
+                                                                                        <TextBlock helpers:Loc.Key="diag_gpu_load_small" Foreground="Gray" FontSize="12" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" Width="36" VerticalAlignment="Center"/>
+                                                                                        <TextBlock Text="{x:Bind ViewModel.CurrentGpuLoadStr, Mode=OneWay, TargetNullValue=0%, FallbackValue=0%}" Foreground="White" FontSize="14" FontFamily="{ThemeResource AppCustomFont}" FontWeight="Bold" VerticalAlignment="Center" Margin="0,-2,0,0"/>
                                                                                     </StackPanel>
                                                                                     <StackPanel Orientation="Horizontal" Spacing="5">
-                                                                                        <TextBlock Text="TEMP" Foreground="Gray" FontSize="12" FontWeight="SemiBold" Width="36" VerticalAlignment="Center"/>
-                                                                                        <TextBlock Text="{x:Bind ViewModel.GpuTempStr, Mode=OneWay, FallbackValue='--°C'}" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="14" FontWeight="Bold" VerticalAlignment="Center" Margin="0,-2,0,0"/>
+                                                                                        <TextBlock Text="TEMP" Foreground="Gray" FontSize="12" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" Width="36" VerticalAlignment="Center"/>
+                                                                                        <TextBlock Text="{x:Bind ViewModel.GpuTempStr, Mode=OneWay, FallbackValue='--°C'}" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="14" FontFamily="{ThemeResource AppCustomFont}" FontWeight="Bold" VerticalAlignment="Center" Margin="0,-2,0,0"/>
                                                                                     </StackPanel>
                                                                                 </StackPanel>
 
                                                                                 <StackPanel Orientation="Vertical" Spacing="2" Visibility="{x:Bind ViewModel.RamSecondaryVisibility, Mode=OneWay}">
                                                                                     <StackPanel Orientation="Horizontal" Spacing="5">
-                                                                                        <TextBlock helpers:Loc.Key="diag_ram_load_small" Foreground="Gray" FontSize="12" FontWeight="SemiBold" Width="36" VerticalAlignment="Center"/>
-                                                                                        <TextBlock Text="{x:Bind ViewModel.CurrentRamLoadStr, Mode=OneWay, TargetNullValue=0%, FallbackValue=0%}" Foreground="White" FontSize="14" FontWeight="Bold" VerticalAlignment="Center" Margin="0,-2,0,0"/>
+                                                                                        <TextBlock helpers:Loc.Key="diag_ram_load_small" Foreground="Gray" FontSize="12" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" Width="36" VerticalAlignment="Center"/>
+                                                                                        <TextBlock Text="{x:Bind ViewModel.CurrentRamLoadStr, Mode=OneWay, TargetNullValue=0%, FallbackValue=0%}" Foreground="White" FontSize="14" FontFamily="{ThemeResource AppCustomFont}" FontWeight="Bold" VerticalAlignment="Center" Margin="0,-2,0,0"/>
                                                                                     </StackPanel>
                                                                                     <StackPanel Orientation="Horizontal" Spacing="5">
-                                                                                        <TextBlock Text="TEMP" Foreground="Gray" FontSize="12" FontWeight="SemiBold" Width="36" VerticalAlignment="Center"/>
-                                                                                        <TextBlock Text="{x:Bind ViewModel.RamTempStr, Mode=OneWay, FallbackValue='--°C'}" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="14" FontWeight="Bold" VerticalAlignment="Center" Margin="0,-2,0,0"/>
+                                                                                        <TextBlock Text="TEMP" Foreground="Gray" FontSize="12" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" Width="36" VerticalAlignment="Center"/>
+                                                                                        <TextBlock Text="{x:Bind ViewModel.RamTempStr, Mode=OneWay, FallbackValue='--°C'}" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="14" FontFamily="{ThemeResource AppCustomFont}" FontWeight="Bold" VerticalAlignment="Center" Margin="0,-2,0,0"/>
                                                                                     </StackPanel>
                                                                                 </StackPanel>
 
                                                                                 <StackPanel Orientation="Vertical" Spacing="0" Visibility="{x:Bind ViewModel.MoboSecondaryVisibility, Mode=OneWay}">
                                                                                     <StackPanel Orientation="Vertical" Spacing="0" Margin="0,0,35,0">
-                                                                                        <TextBlock Text="SYS" Foreground="Gray" Margin="0,0,25,0" FontSize="12" FontWeight="SemiBold" Width="36" VerticalAlignment="Center"/>
+                                                                                        <TextBlock Text="SYS" Foreground="Gray" Margin="0,0,25,0" FontSize="12" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" Width="36" VerticalAlignment="Center"/>
                                                                                     </StackPanel>
                                                                                     <StackPanel Orientation="Horizontal" Spacing="5">
-                                                                                        <TextBlock Text="TEMP:" Foreground="Gray" FontSize="12" FontWeight="SemiBold" Width="36" VerticalAlignment="Center"/>
-                                                                                        <TextBlock Text="{x:Bind ViewModel.MoboTempStr, Mode=OneWay, FallbackValue='--°C'}" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="14" FontWeight="Bold" VerticalAlignment="Center" Margin="0,-2,0,0"/>
+                                                                                        <TextBlock Text="TEMP:" Foreground="Gray" FontSize="12" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" Width="36" VerticalAlignment="Center"/>
+                                                                                        <TextBlock Text="{x:Bind ViewModel.MoboTempStr, Mode=OneWay, FallbackValue='--°C'}" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="14" FontFamily="{ThemeResource AppCustomFont}" FontWeight="Bold" VerticalAlignment="Center" Margin="0,-2,0,0"/>
                                                                                     </StackPanel>
                                                                                 </StackPanel>
 
                                                                                 <StackPanel Orientation="Horizontal" Spacing="5" Visibility="{x:Bind ViewModel.NetworkSecondaryVisibility, Mode=OneWay}" VerticalAlignment="Center">
-                                                                                    <TextBlock helpers:Loc.Key="diag_network_load_small" Foreground="Gray" FontSize="12" FontWeight="SemiBold" Width="36" VerticalAlignment="Center"/>
+                                                                                    <TextBlock helpers:Loc.Key="diag_network_load_small" Foreground="Gray" FontSize="12" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" Width="36" VerticalAlignment="Center"/>
                                                                                     <StackPanel Orientation="Vertical" Spacing="0" VerticalAlignment="Center" Margin="0,-2,0,0">
-                                                                                        <TextBlock Text="{x:Bind ViewModel.CurrentNetworkDownLoadStr, Mode=OneWay, TargetNullValue=▼ 0, FallbackValue=▼ 0}" Foreground="White" FontSize="13" FontWeight="Bold"/>
-                                                                                        <TextBlock Text="{x:Bind ViewModel.CurrentNetworkUpLoadStr, Mode=OneWay, TargetNullValue=▲ 0, FallbackValue=▲ 0}" Foreground="White" FontSize="13" FontWeight="Bold"/>
+                                                                                        <TextBlock Text="{x:Bind ViewModel.CurrentNetworkDownLoadStr, Mode=OneWay, TargetNullValue=▼ 0, FallbackValue=▼ 0}" Foreground="White" FontSize="13" FontFamily="{ThemeResource AppCustomFont}" FontWeight="Bold"/>
+                                                                                        <TextBlock Text="{x:Bind ViewModel.CurrentNetworkUpLoadStr, Mode=OneWay, TargetNullValue=▲ 0, FallbackValue=▲ 0}" Foreground="White" FontSize="13" FontFamily="{ThemeResource AppCustomFont}" FontWeight="Bold"/>
                                                                                     </StackPanel>
                                                                                 </StackPanel>
 
                                                                                 <StackPanel Orientation="Vertical" Spacing="2" Visibility="{x:Bind ViewModel.DiskSecondaryVisibility, Mode=OneWay}">
                                                                                     <StackPanel Orientation="Horizontal" Spacing="5">
-                                                                                        <TextBlock helpers:Loc.Key="diag_io_load_small" Foreground="Gray" FontSize="12" FontWeight="SemiBold" Width="36" VerticalAlignment="Center"/>
-                                                                                        <TextBlock Text="{x:Bind ViewModel.CurrentIoLoadStr, Mode=OneWay, TargetNullValue=0%, FallbackValue=0%}" Foreground="White" FontSize="14" FontWeight="Bold" VerticalAlignment="Center" Margin="0,-2,0,0"/>
+                                                                                        <TextBlock helpers:Loc.Key="diag_io_load_small" Foreground="Gray" FontSize="12" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" Width="36" VerticalAlignment="Center"/>
+                                                                                        <TextBlock Text="{x:Bind ViewModel.CurrentIoLoadStr, Mode=OneWay, TargetNullValue=0%, FallbackValue=0%}" Foreground="White" FontSize="14" FontFamily="{ThemeResource AppCustomFont}" FontWeight="Bold" VerticalAlignment="Center" Margin="0,-2,0,0"/>
                                                                                     </StackPanel>
                                                                                     <StackPanel Orientation="Horizontal" Spacing="5">
-                                                                                        <TextBlock Text="TEMP" Foreground="Gray" FontSize="12" FontWeight="SemiBold" Width="36" VerticalAlignment="Center"/>
-                                                                                        <TextBlock Text="{x:Bind ViewModel.DiskTempStr, Mode=OneWay}" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="14" FontWeight="Bold" VerticalAlignment="Center" Margin="0,-2,0,0"/>
+                                                                                        <TextBlock Text="TEMP" Foreground="Gray" FontSize="12" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" Width="36" VerticalAlignment="Center"/>
+                                                                                        <TextBlock Text="{x:Bind ViewModel.DiskTempStr, Mode=OneWay}" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="14" FontFamily="{ThemeResource AppCustomFont}" FontWeight="Bold" VerticalAlignment="Center" Margin="0,-2,0,0"/>
                                                                                     </StackPanel>
                                                                                 </StackPanel>
 
                                                                                 <StackPanel Orientation="Horizontal" Spacing="5" Visibility="{x:Bind ViewModel.PageSecondaryVisibility, Mode=OneWay}">
-                                                                                    <TextBlock helpers:Loc.Key="diag_pagefile_load_small" Foreground="Gray" FontSize="12" FontWeight="SemiBold" Width="36" VerticalAlignment="Center"/>
-                                                                                    <TextBlock Text="{x:Bind ViewModel.CurrentPagefileLoadStr, Mode=OneWay, TargetNullValue=0%, FallbackValue=0%}" Foreground="White" FontSize="14" FontWeight="Bold" VerticalAlignment="Center" Margin="0,-2,0,0"/>
+                                                                                    <TextBlock helpers:Loc.Key="diag_pagefile_load_small" Foreground="Gray" FontSize="12" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" Width="36" VerticalAlignment="Center"/>
+                                                                                    <TextBlock Text="{x:Bind ViewModel.CurrentPagefileLoadStr, Mode=OneWay, TargetNullValue=0%, FallbackValue=0%}" Foreground="White" FontSize="14" FontFamily="{ThemeResource AppCustomFont}" FontWeight="Bold" VerticalAlignment="Center" Margin="0,-2,0,0"/>
                                                                                 </StackPanel>
 
                                                                             </StackPanel>
@@ -1774,14 +1774,14 @@
                                                                             Background="Transparent" BorderThickness="0" Padding="0"
                                                                             Width="34" Height="34"
                                                                             Click="HudToggleBtn_Click" ToolTipService.ToolTip="Hide HUD">
-                                                                        <FontIcon x:Name="HudToggleIcon" FontFamily="Segoe Fluent Icons" Glyph="&#xE70E;" FontSize="12" Foreground="Gray" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                                        <FontIcon x:Name="HudToggleIcon" Glyph="&#xE70E;" FontSize="12" Foreground="Gray" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                                                     </Button>
 
                                                                     <Button x:Name="HudOpenBtn" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-6,-15,0"
                                                                             Background="Transparent" BorderThickness="0" Padding="0"
                                                                             Width="34" Height="34" Visibility="Collapsed"
                                                                             Click="HudToggleBtn_Click" ToolTipService.ToolTip="Show HUD">
-                                                                        <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE70D;" FontSize="12" Foreground="Gray" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                                        <FontIcon Glyph="&#xE70D;" FontSize="12" Foreground="Gray" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                                                     </Button>
                                                                     
                                                                 </Grid>
@@ -1903,7 +1903,7 @@
                                                                             <Button.Flyout>
                                                                                 <Flyout Placement="LeftEdgeAlignedTop">
                                                                                     <StackPanel Width="320" Spacing="8">
-                                                                                        <TextBlock Text="AI Explainer" FontFamily="{StaticResource Jura-SemiBold}" FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                                                                        <TextBlock Text="AI Explainer" FontFamily="{ThemeResource AppCustomFont}" FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                                                         <TextBlock Tag="AiExplanationText" TextWrapping="Wrap" FontSize="12" Opacity="0.9"/>
                                                                                     </StackPanel>
                                                                                 </Flyout>
@@ -1961,7 +1961,7 @@
                                                             </Grid>
                                                         </Viewbox>
 
-                                                        <TextBlock Grid.Row="1" Text="{x:Bind ViewModel.HardwareScannerText, Mode=OneWay}" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="10" FontWeight="SemiBold" CharacterSpacing="150" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,10" Opacity="0.8"/>
+                                                        <TextBlock Grid.Row="1" Text="{x:Bind ViewModel.HardwareScannerText, Mode=OneWay}" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="10" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" CharacterSpacing="150" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,10" Opacity="0.8"/>
                                                     </Grid>
                                                 </Grid>
                                             </Border>
@@ -1985,7 +1985,7 @@
                                                         </StackPanel>
 
                                                         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" VerticalScrollMode="Enabled" MaxHeight="80">
-                                                            <TextBlock Text="{x:Bind ViewModel.AiSummary, Mode=OneWay}" Foreground="LightGray" FontSize="12" TextWrapping="Wrap" LineHeight="16"/>
+                                                            <TextBlock Text="{x:Bind ViewModel.AiSummary, Mode=OneWay}" Foreground="LightGray" FontFamily="{ThemeResource AppCustomFont}" FontSize="12" TextWrapping="Wrap" LineHeight="16"/>
                                                         </ScrollViewer>
                                                     </Grid>
                                                 </Border>
@@ -1999,7 +1999,7 @@
 
                                                         <StackPanel Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,0,0,15">
                                                             <TextBlock helpers:Loc.Key="diag_stability_trend" Style="{StaticResource TechnicalLabelStyle}" />
-                                                            <TextBlock Text="{x:Bind ViewModel.StabilityScore, Mode=OneWay}" Style="{StaticResource TechnicalValueHighlightedStyle}" FontSize="24"/>
+                                                            <TextBlock Text="{x:Bind ViewModel.StabilityScore, Mode=OneWay}" Style="{StaticResource TechnicalValueHighlightedStyle}" FontFamily="{ThemeResource AppCustomFont}" FontSize="24"/>
                                                         </StackPanel>
 
                                                         <ItemsControl Grid.Row="1" ItemsSource="{x:Bind ViewModel.StabilityTrendData}"
@@ -2050,7 +2050,7 @@
                                                                           Visibility="{x:Bind ViewModel.MinorEventsButtonVisibility, Mode=OneWay}">
                                                                 <StackPanel Orientation="Horizontal" Spacing="6">
                                                                     <FontIcon Glyph="&#xE8F1;" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                                                                    <TextBlock Text="View Minor Events" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                                                    <TextBlock Text="View Minor Events" FontSize="12" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                                                                 </StackPanel>
                                                             </ToggleButton>
 
@@ -2062,7 +2062,7 @@
                                                                     Command="{x:Bind ViewModel.ToggleHistoryPanelCommand}">
                                                                 <StackPanel Orientation="Horizontal" Spacing="6">
                                                                     <FontIcon Glyph="&#xE81C;" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                                                                    <TextBlock helpers:Loc.Key="diag_btn_history" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                                                    <TextBlock helpers:Loc.Key="diag_btn_history" FontSize="12" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                                                                 </StackPanel>
                                                             </Button>
 
@@ -2074,7 +2074,7 @@
                                                         <TextBlock helpers:Loc.Key="diag_minor_events_nominal"
                                                                    Visibility="{x:Bind ViewModel.MinorEventsTextVisibility, Mode=OneWay}"
                                                                    Style="{StaticResource TechnicalLabelStyle}"
-                                                                   FontFamily="{ThemeResource Jura}"
+                                                                   FontFamily="{ThemeResource AppCustomFont}"
                                                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                                                    HorizontalAlignment="Center"
                                                                    VerticalAlignment="Bottom"
@@ -2104,12 +2104,12 @@
 
                                                                         <StackPanel Grid.Column="1" Spacing="4">
                                                                             <StackPanel Orientation="Horizontal" Spacing="8" Opacity="0.8">
-                                                                                <TextBlock Text="{x:Bind FormattedTime}" FontFamily="Consolas" FontSize="11" Foreground="{ThemeResource TextFillColorPrimaryBrush}" />
+                                                                                <TextBlock Text="{x:Bind FormattedTime}" FontFamily="{ThemeResource AppCustomFont}" FontSize="11" Foreground="{ThemeResource TextFillColorPrimaryBrush}" />
                                                                                 <TextBlock Text="|" Foreground="{ThemeResource TextFillColorTertiaryBrush}" FontSize="11"/>
                                                                                 <TextBlock Text="{x:Bind SourceName}" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" MaxWidth="180"/>
                                                                                 <TextBlock Text="|" Foreground="{ThemeResource TextFillColorTertiaryBrush}" FontSize="11"/>
                                                                                 <TextBlock helpers:Loc.Key="diag_event_id_prefix" Foreground="{ThemeResource TextFillColorTertiaryBrush}" FontSize="11"/>
-                                                                                <TextBlock Text="{x:Bind EventId}" FontFamily="Consolas" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                                                                <TextBlock Text="{x:Bind EventId}" FontFamily="{ThemeResource AppCustomFont}" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                                                                             </StackPanel>
 
                                                                             <TextBlock Text="{x:Bind Message}" ToolTipService.ToolTip="{x:Bind FullMessage}" Foreground="{ThemeResource TextFillColorPrimaryBrush}" FontSize="12" TextWrapping="Wrap" MaxLines="3" TextTrimming="CharacterEllipsis"/>
@@ -2124,7 +2124,7 @@
                                                                                 <Button.Flyout>
                                                                                     <Flyout Placement="LeftEdgeAlignedTop">
                                                                                         <StackPanel Width="320" Spacing="8">
-                                                                                            <TextBlock Text="AI Explainer" FontFamily="{StaticResource Jura-SemiBold}" FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                                                                            <TextBlock Text="AI Explainer" FontFamily="{ThemeResource AppCustomFont}" FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                                                             <TextBlock Tag="AiExplanationText" TextWrapping="Wrap" FontSize="12" Opacity="0.9"/>
                                                                                         </StackPanel>
                                                                                     </Flyout>
@@ -2210,7 +2210,7 @@
                                                                 <Ellipse Fill="{ThemeResource MyDynamicAccentBrush}" Width="90" Height="90" Opacity="0.05"/>
                                                                 <Ellipse Fill="{ThemeResource MyDynamicAccentBrush}" Width="60" Height="60" Opacity="0.15"/>
                                                                 <Ellipse x:Name="CenterGlowPulse" Fill="{ThemeResource MyDynamicAccentBrush}" Width="40" Height="40" Opacity="0.5"/>
-                                                                <TextBlock Text="AI" FontSize="42" FontWeight="Bold" FontFamily="{StaticResource Jura}" Foreground="{ThemeResource TextFillColorPrimaryBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-4,0,0"/>
+                                                                <TextBlock Text="AI" FontSize="42" FontWeight="Bold" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorPrimaryBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-4,0,0"/>
 
                                                                 <Ellipse Stroke="{ThemeResource MyDynamicAccentBrush}" StrokeThickness="1" Width="110" Height="110" Opacity="0.4"/>
                                                                 <Ellipse Stroke="{ThemeResource MyDynamicAccentBrush}" StrokeThickness="1" Width="140" Height="140" Opacity="0.2" StrokeDashArray="2,4"/>
@@ -2282,7 +2282,7 @@
                                                         <StackPanel VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,20,0,0"
                                                                     Visibility="{x:Bind ViewModel.HistoryEmptyStateVisibility, Mode=OneWay}">
                                                             <FontIcon Glyph="&#xE81C;" FontSize="24" Foreground="{ThemeResource TextFillColorTertiaryBrush}" Opacity="0.5" Margin="0,0,0,10"/>
-                                                            <TextBlock helpers:Loc.Key="diag_history_empty" Style="{StaticResource TechnicalLabelStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Center"/>
+                                                            <TextBlock helpers:Loc.Key="diag_history_empty" Style="{StaticResource TechnicalLabelStyle}" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Center"/>
                                                         </StackPanel>
 
                                                         <ListView x:Name="HistoryListView"
@@ -2312,15 +2312,16 @@
 
                                                                                 <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                                                                     <StackPanel Orientation="Horizontal" Spacing="8">
-                                                                                        <TextBlock Text="{x:Bind SourceName}" FontSize="12" Foreground="{ThemeResource TextFillColorPrimaryBrush}" FontWeight="SemiBold"/>
-                                                                                        <TextBlock Text="|" Foreground="{ThemeResource TextFillColorTertiaryBrush}" FontSize="12"/>
-                                                                                        <TextBlock helpers:Loc.Key="diag_event_id_prefix" Foreground="{ThemeResource TextFillColorTertiaryBrush}" FontSize="12"/>
-                                                                                        <TextBlock Text="{x:Bind EventId}" FontFamily="Consolas" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Margin="-2.5,0.5,0,0"/>
+                                                                                        <TextBlock Text="{x:Bind SourceName}" FontSize="12" Foreground="{ThemeResource TextFillColorPrimaryBrush}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                                                                        <TextBlock Text="|" Foreground="{ThemeResource TextFillColorTertiaryBrush}" FontSize="12" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                                                        <TextBlock helpers:Loc.Key="diag_event_id_prefix" Foreground="{ThemeResource TextFillColorTertiaryBrush}" FontSize="12" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                                                        <TextBlock Text="{x:Bind EventId}" FontFamily="{ThemeResource AppCustomFont}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Margin="-2.5,0.5,0,0"/>
                                                                                     </StackPanel>
 
                                                                                     <TextBlock Text="{x:Bind Message}"
                                                                                                ToolTipService.ToolTip="{x:Bind FullMessage}"
                                                                                                Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                                                                                               FontFamily="{ThemeResource AppCustomFont}"
                                                                                                FontSize="12"
                                                                                                TextWrapping="Wrap"
                                                                                                MaxLines="3"
@@ -2328,13 +2329,13 @@
                                                                                                Margin="0,4,0,0"/>
 
                                                                                     <StackPanel Orientation="Horizontal" Spacing="6" Margin="0,2,0,0" Opacity="0.8">
-                                                                                        <TextBlock helpers:Loc.Key="diag_event_latest" FontSize="11" Foreground="{ThemeResource TextFillColorTertiaryBrush}"/>
-                                                                                        <TextBlock Text="{x:Bind LatestDateString}" FontSize="11" FontFamily="Consolas" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Margin="0,1.5,0,0"/>
+                                                                                        <TextBlock helpers:Loc.Key="diag_event_latest" FontFamily="{ThemeResource AppCustomFont}" FontSize="11" Foreground="{ThemeResource TextFillColorTertiaryBrush}"/>
+                                                                                        <TextBlock Text="{x:Bind LatestDateString}" FontSize="11" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Margin="0,1.5,0,0"/>
                                                                                     </StackPanel>
                                                                                 </StackPanel>
 
                                                                                 <Border Grid.Column="2" Background="{ThemeResource ControlFillColorDefaultBrush}" CornerRadius="4" Padding="6,2" VerticalAlignment="Center" Margin="0,0,12,0">
-                                                                                    <TextBlock Text="{x:Bind OccurrenceCount, Mode=OneWay}" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                                                                    <TextBlock Text="{x:Bind OccurrenceCount, Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                                                                                 </Border>
 
                                                                                 <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,-10,0">
@@ -2343,7 +2344,7 @@
                                                                                             CommandParameter="{x:Bind}">
                                                                                         <StackPanel Orientation="Horizontal" Spacing="6">
                                                                                             <FontIcon Glyph="&#xE7A7;" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                                                                                            <TextBlock Text="{helpers:ResourceString Key=diag_btn_restore}" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                                                                            <TextBlock Text="{helpers:ResourceString Key=diag_btn_restore}" FontSize="11" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                                                                                         </StackPanel>
                                                                                     </Button>
                                                                                 </StackPanel>
@@ -2370,14 +2371,14 @@
 
                                                                                             <StackPanel Grid.Column="1" Orientation="Vertical" VerticalAlignment="Center">
                                                                                                 <StackPanel Orientation="Horizontal" Spacing="8">
-                                                                                                    <TextBlock Text="{x:Bind SourceName}" FontSize="12" Foreground="{ThemeResource TextFillColorPrimaryBrush}" FontWeight="SemiBold"/>
-                                                                                                    <TextBlock Text="|" Foreground="{ThemeResource TextFillColorTertiaryBrush}" FontSize="12"/>
-                                                                                                    <TextBlock helpers:Loc.Key="diag_event_id_prefix" Foreground="{ThemeResource TextFillColorTertiaryBrush}" FontSize="12"/>
-                                                                                                    <TextBlock Text="{x:Bind EventId}" FontFamily="Consolas" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Margin="-2.5,0.5,0,0"/>
+                                                                                                    <TextBlock Text="{x:Bind SourceName}" FontSize="12" Foreground="{ThemeResource TextFillColorPrimaryBrush}" FontWeight="SemiBold" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                                                                    <TextBlock Text="|" Foreground="{ThemeResource TextFillColorTertiaryBrush}" FontSize="12" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                                                                    <TextBlock helpers:Loc.Key="diag_event_id_prefix" Foreground="{ThemeResource TextFillColorTertiaryBrush}" FontSize="12" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                                                                    <TextBlock Text="{x:Bind EventId}" FontFamily="{ThemeResource AppCustomFont}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Margin="-2.5,0.5,0,0"/>
                                                                                                 </StackPanel>
 
                                                                                                 <TextBlock Text="{x:Bind DateString}"
-                                                                                                           FontFamily="Consolas"
+                                                                                                           FontFamily="{ThemeResource AppCustomFont}"
                                                                                                            FontSize="11"
                                                                                                            Foreground="{ThemeResource TextFillColorTertiaryBrush}"
                                                                                                            Margin="0,2,0,0"/>
@@ -2529,13 +2530,13 @@
                                         <TextBlock Grid.Column="3"
                                                    Text="{x:Bind Port}"
                                                    VerticalAlignment="Center"
-                                                   FontFamily="Consolas"/>
+                                                   FontFamily="{ThemeResource AppCustomFont}"/>
 
                                         <TextBlock Grid.Column="4"
                                                    Text="{x:Bind LocalIP}"
                                                    VerticalAlignment="Center"
                                                    TextTrimming="CharacterEllipsis"
-                                                   FontFamily="Consolas"
+                                                   FontFamily="{ThemeResource AppCustomFont}"
                                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
 
                                         <StackPanel Grid.Column="5" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center" ToolTipService.ToolTip="{x:Bind Description}">
@@ -2585,7 +2586,7 @@
 
                         <StackPanel Grid.Column="0" VerticalAlignment="Center">
                             <TextBlock helpers:Loc.Key="diag_dns_current_ipv4" FontSize="10" Opacity="0.6" FontWeight="Bold"/>
-                            <TextBlock Text="{x:Bind ViewModel.CurrentDnsIpv4, Mode=OneWay}" FontSize="14" FontFamily="Consolas" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                            <TextBlock Text="{x:Bind ViewModel.CurrentDnsIpv4, Mode=OneWay}" FontSize="14" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                         </StackPanel>
 
                         <Button Grid.Column="1" Margin="0,0,10,0" Command="{x:Bind ViewModel.RunDnsBenchmarkCommand}" Style="{StaticResource AccentButtonStyle}"
@@ -2645,13 +2646,13 @@
                 <StackPanel Grid.Row="1" Spacing="16" Visibility="{x:Bind ViewModel.IsManualDnsViewOpen, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
 
                     <StackPanel Spacing="8">
-                        <TextBlock Text="{helpers:ResourceString Key=txt_dns_server}" FontSize="14" FontFamily="{ThemeResource Jura-Bold}"/>
+                        <TextBlock Text="{helpers:ResourceString Key=txt_dns_server}" FontSize="14" FontFamily="{ThemeResource AppCustomFont}"/>
                         <ComboBox x:Name="CmbDnsPresets"
                                   HorizontalAlignment="Stretch"
                                   ItemsSource="{x:Bind ViewModel.DnsPresetsList, Mode=OneTime}"
                                   SelectedItem="{x:Bind ViewModel.SelectedDnsPreset, Mode=TwoWay}"
                                   DisplayMemberPath="Name"
-                                  FontFamily="{ThemeResource Jura}"/>
+                                  FontFamily="{ThemeResource AppCustomFont}"/>
                     </StackPanel>
 
                     <StackPanel x:Name="CustomDnsFields" Visibility="{x:Bind ViewModel.IsCustomDnsSelected, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" Spacing="12" Margin="0,4,0,0">
@@ -2660,8 +2661,8 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBox Header="{helpers:ResourceString Key=text_ipv4_primary}" Text="{x:Bind ViewModel.CustomIpv4Primary, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{x:Bind ViewModel.IsNotCustomDnsSelected, Mode=OneWay}" FontFamily="{ThemeResource Jura}"/>
-                            <TextBox Grid.Column="1" Header="{helpers:ResourceString Key=text_ipv4_secondary}" Text="{x:Bind ViewModel.CustomIpv4Secondary, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{x:Bind ViewModel.IsNotCustomDnsSelected, Mode=OneWay}" FontFamily="{ThemeResource Jura}"/>
+                            <TextBox Header="{helpers:ResourceString Key=text_ipv4_primary}" Text="{x:Bind ViewModel.CustomIpv4Primary, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{x:Bind ViewModel.IsNotCustomDnsSelected, Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}"/>
+                            <TextBox Grid.Column="1" Header="{helpers:ResourceString Key=text_ipv4_secondary}" Text="{x:Bind ViewModel.CustomIpv4Secondary, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{x:Bind ViewModel.IsNotCustomDnsSelected, Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}"/>
                         </Grid>
 
                         <Grid ColumnSpacing="12">
@@ -2669,8 +2670,8 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBox Header="{helpers:ResourceString Key=text_ipv6_primary}" Text="{x:Bind ViewModel.CustomIpv6Primary, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{x:Bind ViewModel.IsNotCustomDnsSelected, Mode=OneWay}" FontFamily="{ThemeResource Jura}"/>
-                            <TextBox Grid.Column="1" Header="{helpers:ResourceString Key=text_ipv6_secondary}" Text="{x:Bind ViewModel.CustomIpv6Secondary, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{x:Bind ViewModel.IsNotCustomDnsSelected, Mode=OneWay}" FontFamily="{ThemeResource Jura}"/>
+                            <TextBox Header="{helpers:ResourceString Key=text_ipv6_primary}" Text="{x:Bind ViewModel.CustomIpv6Primary, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{x:Bind ViewModel.IsNotCustomDnsSelected, Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}"/>
+                            <TextBox Grid.Column="1" Header="{helpers:ResourceString Key=text_ipv6_secondary}" Text="{x:Bind ViewModel.CustomIpv6Secondary, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{x:Bind ViewModel.IsNotCustomDnsSelected, Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}"/>
                         </Grid>
                     </StackPanel>
 
@@ -2679,7 +2680,7 @@
                             HorizontalAlignment="Stretch"
                             Style="{StaticResource AccentButtonStyle}"
                             Margin="0,10,0,0"
-                            FontFamily="{ThemeResource Jura-Bold}"/>
+                            FontFamily="{ThemeResource AppCustomFont}"/>
                 </StackPanel>
 
                 <Button Grid.Row="2" Content="{helpers:ResourceString Key=Close}" Click="CloseDnsToolkit_Click" HorizontalAlignment="Center" Margin="0,20,0,0" MinWidth="120"/>

@@ -67,7 +67,7 @@
 
                         <StackPanel Grid.Column="0" VerticalAlignment="Center">
                             <StackPanel Orientation="Horizontal" Spacing="8">
-                                <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="16" Foreground="{ThemeResource TextFillColorPrimaryBrush}" VerticalAlignment="Center" />
+                                <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{Binding Name}" FontWeight="SemiBold" FontSize="16" Foreground="{ThemeResource TextFillColorPrimaryBrush}" VerticalAlignment="Center" />
 
                                 <Button FontFamily="{ThemeResource SymbolThemeFontFamily}" Content="&#xE713;" 
                                         Background="Transparent" BorderThickness="0" Padding="6,4" 
@@ -75,7 +75,7 @@
                                         ToolTipService.ToolTip="{helpers:ResourceString Key=fan_tooltip_edit_sensor}"/>
                             </StackPanel>
 
-                            <TextBlock Foreground="{ThemeResource TextFillColorSecondaryBrush}" Margin="0,4,0,0">
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Margin="0,4,0,0">
                                 <Run Text="{helpers:ResourceString Key=fan_lbl_speed}"/>
                                 <Run Text="{Binding CurrentRpm}"/>
                                 <Run Text="{helpers:ResourceString Key=fan_lbl_rpm}"/>
@@ -84,15 +84,15 @@
 
                         <!-- Calibration and Auto Buttons -->
                         <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="16" VerticalAlignment="Center">
-                            <TextBlock FontWeight="Bold" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" VerticalAlignment="Center" Width="45" TextAlignment="Right">
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" FontWeight="Bold" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" VerticalAlignment="Center" Width="45" TextAlignment="Right">
                                 <Run Text="{Binding CurrentPercentage}"/>
                                 <Run Text="%"/>
                             </TextBlock>
 
-                            <TextBlock Text="{Binding CalibrationStatus}" VerticalAlignment="Center" FontSize="12" FontWeight="SemiBold" Foreground="{ThemeResource SystemFillColorCautionBrush}" Visibility="{Binding IsCalibrating, Converter={StaticResource BoolToVisConverter}}"/>
-                            <Button Content="{Binding CalibrationStatus}" Click="CalibrateButton_Click" Tag="{Binding}" IsEnabled="{Binding IsCalibrating, Converter={StaticResource InverseBoolConverter}}" ToolTipService.ToolTip="{helpers:ResourceString Key=fan_tooltip_calibrate}" Visibility="{Binding IsCalibrating, Converter={StaticResource InverseBoolConverter}}" />
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{Binding CalibrationStatus}" VerticalAlignment="Center" FontSize="12" FontWeight="SemiBold" Foreground="{ThemeResource SystemFillColorCautionBrush}" Visibility="{Binding IsCalibrating, Converter={StaticResource BoolToVisConverter}}"/>
+                            <Button FontFamily="{ThemeResource AppCustomFont}" Content="{Binding CalibrationStatus}" Click="CalibrateButton_Click" Tag="{Binding}" IsEnabled="{Binding IsCalibrating, Converter={StaticResource InverseBoolConverter}}" ToolTipService.ToolTip="{helpers:ResourceString Key=fan_tooltip_calibrate}" Visibility="{Binding IsCalibrating, Converter={StaticResource InverseBoolConverter}}" />
 
-                            <Button Content="{helpers:ResourceString Key=fan_btn_default_bios}" Click="AutoButton_Click" Tag="{Binding}" 
+                            <Button FontFamily="{ThemeResource AppCustomFont}" Content="{helpers:ResourceString Key=fan_btn_default_bios}" Click="AutoButton_Click" Tag="{Binding}" 
                                     IsEnabled="{Binding IsManualControl, Mode=OneWay}"
                                     ToolTipService.ToolTip="{helpers:ResourceString Key=fan_tooltip_default_bios}" />
                         </StackPanel>
@@ -106,20 +106,20 @@
                         </Grid.ColumnDefinitions>
 
                         <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="12">
-                            <TextBlock Text="{helpers:ResourceString Key=fan_lbl_sources}" VerticalAlignment="Center" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=fan_lbl_sources}" VerticalAlignment="Center" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
 
-                            <Button Content="{Binding SelectedSourcesText}" Width="190" HorizontalContentAlignment="Left" ToolTipService.ToolTip="{helpers:ResourceString Key=fan_tooltip_sources}">
+                            <Button FontFamily="{ThemeResource AppCustomFont}" Content="{Binding SelectedSourcesText}" Width="190" HorizontalContentAlignment="Left" ToolTipService.ToolTip="{helpers:ResourceString Key=fan_tooltip_sources}">
                                 <Button.Flyout>
                                     <Flyout Placement="BottomEdgeAlignedLeft">
                                         <StackPanel Spacing="12" Width="180">
-                                            <TextBlock Text="{helpers:ResourceString Key=fan_lbl_monitor_temps}" FontWeight="SemiBold" FontSize="14" Margin="0,0,0,4" />
+                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=fan_lbl_monitor_temps}" FontWeight="SemiBold" FontSize="14" Margin="0,0,0,4" />
 
-                                            <CheckBox Content="{helpers:ResourceString Key=fan_chk_cpu}" IsChecked="{Binding MonitorCpu, Mode=TwoWay}" />
-                                            <CheckBox Content="{helpers:ResourceString Key=fan_chk_gpu}" IsChecked="{Binding MonitorGpu, Mode=TwoWay}" />
-                                            <CheckBox Content="{helpers:ResourceString Key=fan_chk_mb}" IsChecked="{Binding MonitorMotherboard, Mode=TwoWay}" />
-                                            <CheckBox Content="{helpers:ResourceString Key=fan_chk_ram}" IsChecked="{Binding MonitorMemory, Mode=TwoWay}" />
+                                            <CheckBox FontFamily="{ThemeResource AppCustomFont}" Content="{helpers:ResourceString Key=fan_chk_cpu}" IsChecked="{Binding MonitorCpu, Mode=TwoWay}" />
+                                            <CheckBox FontFamily="{ThemeResource AppCustomFont}" Content="{helpers:ResourceString Key=fan_chk_gpu}" IsChecked="{Binding MonitorGpu, Mode=TwoWay}" />
+                                            <CheckBox FontFamily="{ThemeResource AppCustomFont}" Content="{helpers:ResourceString Key=fan_chk_mb}" IsChecked="{Binding MonitorMotherboard, Mode=TwoWay}" />
+                                            <CheckBox FontFamily="{ThemeResource AppCustomFont}" Content="{helpers:ResourceString Key=fan_chk_ram}" IsChecked="{Binding MonitorMemory, Mode=TwoWay}" />
 
-                                            <TextBlock Text="{helpers:ResourceString Key=fan_desc_highest_temp}" 
+                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=fan_desc_highest_temp}" 
                                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" FontSize="11" Margin="0,4,0,0"/>
                                         </StackPanel>
                                     </Flyout>
@@ -129,15 +129,15 @@
 
                         <StackPanel Grid.Column="1" HorizontalAlignment="Right" Spacing="6" Margin="0,-4,0,0">
                             <StackPanel Orientation="Horizontal" Spacing="12">
-                                <TextBlock Text="{helpers:ResourceString Key=fan_lbl_ramp_up}" VerticalAlignment="Center" Width="70" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=fan_lbl_ramp_up}" VerticalAlignment="Center" Width="70" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                                 <Slider Minimum="0" Maximum="10" StepFrequency="1" Value="{Binding StepUpTime, Mode=TwoWay}" Width="100" Margin="0,0,0,-8" ToolTipService.ToolTip="{helpers:ResourceString Key=fan_tooltip_ramp_up}"/>
-                                <TextBlock Width="30" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorPrimaryBrush}"><Run Text="{Binding StepUpTime}" /><Run Text="{helpers:ResourceString Key=fan_lbl_seconds}" /></TextBlock>
+                                <TextBlock FontFamily="{ThemeResource AppCustomFont}" Width="30" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorPrimaryBrush}"><Run Text="{Binding StepUpTime}" /><Run Text="{helpers:ResourceString Key=fan_lbl_seconds}" /></TextBlock>
                             </StackPanel>
 
                             <StackPanel Orientation="Horizontal" Spacing="12">
-                                <TextBlock Text="{helpers:ResourceString Key=fan_lbl_ramp_down}" VerticalAlignment="Center" Width="70" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=fan_lbl_ramp_down}" VerticalAlignment="Center" Width="70" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                                 <Slider Minimum="0" Maximum="10" StepFrequency="1" Value="{Binding StepDownTime, Mode=TwoWay}" Width="100" Margin="0,0,0,-8" ToolTipService.ToolTip="{helpers:ResourceString Key=fan_tooltip_ramp_down}"/>
-                                <TextBlock Width="30" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorPrimaryBrush}"><Run Text="{Binding StepDownTime}" /><Run Text="{helpers:ResourceString Key=fan_lbl_seconds}" /></TextBlock>
+                                <TextBlock FontFamily="{ThemeResource AppCustomFont}" Width="30" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorPrimaryBrush}"><Run Text="{Binding StepDownTime}" /><Run Text="{helpers:ResourceString Key=fan_lbl_seconds}" /></TextBlock>
                             </StackPanel>
                         </StackPanel>
                     </Grid>
@@ -156,11 +156,11 @@
 
                         <!-- Y-Axis Labels (Speed %) -->
                         <Grid Grid.Row="0" Grid.Column="0" Margin="0,0,8,0" Height="150">
-                            <TextBlock Text="100%" VerticalAlignment="Top" Margin="0,-8,0,0" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                            <TextBlock Text="75%" VerticalAlignment="Top" Margin="0,29.5,0,0" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                            <TextBlock Text="50%" VerticalAlignment="Center" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                            <TextBlock Text="25%" VerticalAlignment="Bottom" Margin="0,0,0,29.5" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                            <TextBlock Text="0%" VerticalAlignment="Bottom" Margin="0,0,0,-8" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="100%" VerticalAlignment="Top" Margin="0,-8,0,0" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="75%" VerticalAlignment="Top" Margin="0,29.5,0,0" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="50%" VerticalAlignment="Center" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="25%" VerticalAlignment="Bottom" Margin="0,0,0,29.5" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="0%" VerticalAlignment="Bottom" Margin="0,0,0,-8" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                         </Grid>
 
                         <!-- Graph Area -->
@@ -182,19 +182,19 @@
                             <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="8,8,0,0">
                                 <StackPanel Orientation="Horizontal" Spacing="4" Visibility="{Binding MonitorCpu, Converter={StaticResource BoolToVisConverter}}">
                                     <Ellipse Width="8" Height="8" Fill="#0078D7" />
-                                    <TextBlock Text="{helpers:ResourceString Key=fan_lbl_cpu}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=fan_lbl_cpu}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal" Spacing="4" Visibility="{Binding MonitorGpu, Converter={StaticResource BoolToVisConverter}}">
                                     <Ellipse Width="8" Height="8" Fill="#107C10" />
-                                    <TextBlock Text="{helpers:ResourceString Key=fan_lbl_gpu}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=fan_lbl_gpu}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal" Spacing="4" Visibility="{Binding MonitorMotherboard, Converter={StaticResource BoolToVisConverter}}">
                                     <Ellipse Width="8" Height="8" Fill="#D83B01" />
-                                    <TextBlock Text="{helpers:ResourceString Key=fan_lbl_mb}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=fan_lbl_mb}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal" Spacing="4" Visibility="{Binding MonitorMemory, Converter={StaticResource BoolToVisConverter}}">
                                     <Ellipse Width="8" Height="8" Fill="#8764B8" />
-                                    <TextBlock Text="{helpers:ResourceString Key=fan_lbl_ram}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=fan_lbl_ram}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                                 </StackPanel>
                             </StackPanel>
 
@@ -247,11 +247,11 @@
 
                         <!-- X-Axis Labels (Temp °C) -->
                         <Canvas Grid.Row="1" Grid.Column="1" Width="400" Height="20" Margin="0,4,0,0">
-                            <TextBlock Text="20°C" Canvas.Left="-10" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                            <TextBlock Text="40°C" Canvas.Left="90" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                            <TextBlock Text="60°C" Canvas.Left="190" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                            <TextBlock Text="80°C" Canvas.Left="290" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                            <TextBlock Text="100°C" Canvas.Left="382" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="20°C" Canvas.Left="-10" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="40°C" Canvas.Left="90" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="60°C" Canvas.Left="190" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="80°C" Canvas.Left="290" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="100°C" Canvas.Left="382" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                         </Canvas>
 
                         <StackPanel Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" Spacing="16" Margin="16,0,0,0">
@@ -282,12 +282,12 @@
             </Grid.RowDefinitions>
 
             <Grid Grid.Row="0" Margin="42,24,42,16">
-                <TextBlock x:Name="HeaderTitle" Text="{helpers:ResourceString Key=fan_title_system_fan_control}" Style="{ThemeResource TitleTextBlockStyle}" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="HeaderTitle" Text="{helpers:ResourceString Key=fan_title_system_fan_control}" Style="{ThemeResource TitleTextBlockStyle}" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Left"/>
 
                 <Button x:Name="ToggleViewBtn" Click="ToggleView_Click" HorizontalAlignment="Right" VerticalAlignment="Center" Background="Transparent" BorderThickness="1" BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}" Padding="12,6">
                     <StackPanel Orientation="Horizontal" Spacing="8">
                         <FontIcon Glyph="&#xE713;" FontSize="14"/>
-                        <TextBlock x:Name="ToggleViewText" Text="{helpers:ResourceString Key=fan_btn_thermal_settings}"/>
+                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="ToggleViewText" Text="{helpers:ResourceString Key=fan_btn_thermal_settings}"/>
                     </StackPanel>
                 </Button>
             </Grid>
@@ -313,30 +313,30 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <FontIcon Grid.Column="0" Glyph="&#xE7BA;" Foreground="{ThemeResource SystemFillColorCautionBrush}" VerticalAlignment="Center" />
-                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=fan_warning_thermal_throttling}" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorPrimaryBrush}" VerticalAlignment="Center"/>
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Grid.Column="1" Text="{helpers:ResourceString Key=fan_warning_thermal_throttling}" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorPrimaryBrush}" VerticalAlignment="Center"/>
                         </Grid>
                     </Border>
 
                     <!-- Global Preset Buttons -->
                     <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="12" Margin="42,0,0,16" Width="700" HorizontalAlignment="Left">
-                        <TextBlock Text="{helpers:ResourceString Key=fan_lbl_global_presets}" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                        <Button Content="{helpers:ResourceString Key=fan_btn_silent}" Click="PresetSilent_Click" Style="{ThemeResource DefaultButtonStyle}" Padding="16,4" ToolTipService.ToolTip="{helpers:ResourceString Key=fan_tooltip_silent}"/>
-                        <Button Content="{helpers:ResourceString Key=fan_btn_balanced}" Click="PresetBalanced_Click" Style="{ThemeResource DefaultButtonStyle}" Padding="16,4" ToolTipService.ToolTip="{helpers:ResourceString Key=fan_tooltip_balanced}"/>
-                        <Button Content="{helpers:ResourceString Key=fan_btn_performance}" Click="PresetExtreme_Click" Style="{ThemeResource DefaultButtonStyle}" Padding="16,4" ToolTipService.ToolTip="{helpers:ResourceString Key=fan_tooltip_performance}"/>
+                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=fan_lbl_global_presets}" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                        <Button FontFamily="{ThemeResource AppCustomFont}" Content="{helpers:ResourceString Key=fan_btn_silent}" Click="PresetSilent_Click" Style="{ThemeResource DefaultButtonStyle}" Padding="16,4" ToolTipService.ToolTip="{helpers:ResourceString Key=fan_tooltip_silent}"/>
+                        <Button FontFamily="{ThemeResource AppCustomFont}" Content="{helpers:ResourceString Key=fan_btn_balanced}" Click="PresetBalanced_Click" Style="{ThemeResource DefaultButtonStyle}" Padding="16,4" ToolTipService.ToolTip="{helpers:ResourceString Key=fan_tooltip_balanced}"/>
+                        <Button FontFamily="{ThemeResource AppCustomFont}" Content="{helpers:ResourceString Key=fan_btn_performance}" Click="PresetExtreme_Click" Style="{ThemeResource DefaultButtonStyle}" Padding="16,4" ToolTipService.ToolTip="{helpers:ResourceString Key=fan_tooltip_performance}"/>
                     </StackPanel>
 
                     <ScrollViewer Grid.Row="2" Padding="42,0,42,0" HorizontalScrollBarVisibility="Disabled">
                         <StackPanel Spacing="16">
-                            <TextBlock Text="{helpers:ResourceString Key=fan_lbl_cpu_fans}" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Visibility="{Binding CpuFans.Count, Converter={StaticResource IntToVisConverter}}" />
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=fan_lbl_cpu_fans}" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Visibility="{Binding CpuFans.Count, Converter={StaticResource IntToVisConverter}}" />
                             <ItemsControl ItemsSource="{Binding CpuFans}" ItemTemplate="{StaticResource FanCardTemplate}" />
 
-                            <TextBlock Text="{helpers:ResourceString Key=fan_lbl_water_pumps}" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Visibility="{Binding WaterPumps.Count, Converter={StaticResource IntToVisConverter}}" />
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=fan_lbl_water_pumps}" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Visibility="{Binding WaterPumps.Count, Converter={StaticResource IntToVisConverter}}" />
                             <ItemsControl ItemsSource="{Binding WaterPumps}" ItemTemplate="{StaticResource FanCardTemplate}" />
 
-                            <TextBlock Text="{helpers:ResourceString Key=fan_lbl_chassis_fans}" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=fan_lbl_chassis_fans}" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                             <ItemsControl ItemsSource="{Binding CaseFans}" ItemTemplate="{StaticResource FanCardTemplate}" />
 
-                            <TextBlock Text="{helpers:ResourceString Key=fan_lbl_gpu_fans}" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Visibility="{Binding GpuFans.Count, Converter={StaticResource IntToVisConverter}}" />
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=fan_lbl_gpu_fans}" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Visibility="{Binding GpuFans.Count, Converter={StaticResource IntToVisConverter}}" />
                             <ItemsControl ItemsSource="{Binding GpuFans}" ItemTemplate="{StaticResource FanCardTemplate}" />
                         </StackPanel>
                     </ScrollViewer>
@@ -350,29 +350,29 @@
 
                     <ScrollViewer Padding="42,0,42,0" HorizontalScrollBarVisibility="Disabled">
                         <StackPanel Spacing="16" Width="700" HorizontalAlignment="Left" Margin="0,0,0,24">
-                            <TextBlock Text="{helpers:ResourceString Key=thermal_dialog_description}" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=thermal_dialog_description}" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
 
                             <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" CornerRadius="8" BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}" BorderThickness="1" Padding="20">
                                 <StackPanel Spacing="16">
                                     <Grid ColumnDefinitions="*,*" RowDefinitions="Auto, Auto" RowSpacing="20" ColumnSpacing="24">
-                                        <ToggleSwitch x:Name="ToggleWarnings" Grid.Row="0" Grid.Column="0" Header="{helpers:ResourceString Key=thermal_dialog_header_notifications}" VerticalAlignment="Bottom"/>
+                                        <ToggleSwitch FontFamily="{ThemeResource AppCustomFont}" x:Name="ToggleWarnings" Grid.Row="0" Grid.Column="0" Header="{helpers:ResourceString Key=thermal_dialog_header_notifications}" VerticalAlignment="Bottom"/>
                                         <StackPanel Grid.Row="0" Grid.Column="1" Spacing="4">
-                                            <TextBlock Text="{helpers:ResourceString Key=thermal_dialog_lbl_cooldown}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="12"/>
+                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=thermal_dialog_lbl_cooldown}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="12"/>
                                             <NumberBox x:Name="NumCooldown" SpinButtonPlacementMode="Compact" Minimum="1" Maximum="60"/>
                                         </StackPanel>
 
-                                        <ToggleSwitch x:Name="ToggleAlarms" Grid.Row="1" Grid.Column="0" Header="{helpers:ResourceString Key=thermal_dialog_header_alarm}" VerticalAlignment="Top"/>
-                                        <ToggleSwitch x:Name="ToggleLogging" Grid.Row="1" Grid.Column="1" Header="{helpers:ResourceString Key=thermal_dialog_header_logging}" VerticalAlignment="Top"/>
+                                        <ToggleSwitch FontFamily="{ThemeResource AppCustomFont}" x:Name="ToggleAlarms" Grid.Row="1" Grid.Column="0" Header="{helpers:ResourceString Key=thermal_dialog_header_alarm}" VerticalAlignment="Top"/>
+                                        <ToggleSwitch FontFamily="{ThemeResource AppCustomFont}" x:Name="ToggleLogging" Grid.Row="1" Grid.Column="1" Header="{helpers:ResourceString Key=thermal_dialog_header_logging}" VerticalAlignment="Top"/>
                                     </Grid>
 
                                     <Border Height="1" Background="{ThemeResource SurfaceStrokeColorDefaultBrush}" Margin="0,8"/>
 
                                     <Grid ColumnDefinitions="*,*" RowDefinitions="Auto, Auto" RowSpacing="16" ColumnSpacing="24">
-                                        <ToggleSwitch x:Name="ToggleShutdown" Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Header="{helpers:ResourceString Key=thermal_dialog_header_shutdown}" VerticalAlignment="Center"/>
+                                        <ToggleSwitch FontFamily="{ThemeResource AppCustomFont}" x:Name="ToggleShutdown" Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Header="{helpers:ResourceString Key=thermal_dialog_header_shutdown}" VerticalAlignment="Center"/>
 
                                         <StackPanel Grid.Row="0" Grid.Column="1" Spacing="4">
-                                            <TextBlock Text="{helpers:ResourceString Key=thermal_dialog_lbl_action}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="12"/>
-                                            <ComboBox x:Name="ComboEmergencyAction" HorizontalAlignment="Stretch">
+                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=thermal_dialog_lbl_action}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="12"/>
+                                            <ComboBox FontFamily="{ThemeResource AppCustomFont}" x:Name="ComboEmergencyAction" HorizontalAlignment="Stretch">
                                                 <ComboBoxItem Content="{helpers:ResourceString Key=thermal_dialog_action_shutdown}" Tag="0"/>
                                                 <ComboBoxItem Content="{helpers:ResourceString Key=thermal_dialog_action_hibernate}" Tag="1"/>
                                                 <ComboBoxItem Content="{helpers:ResourceString Key=thermal_dialog_action_sniper}" Tag="2"/>
@@ -380,42 +380,42 @@
                                         </StackPanel>
 
                                         <StackPanel Grid.Row="1" Grid.Column="1" Spacing="4">
-                                            <TextBlock Text="{helpers:ResourceString Key=thermal_dialog_lbl_delay}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="12"/>
+                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=thermal_dialog_lbl_delay}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="12"/>
                                             <NumberBox x:Name="NumEmergencyDelay" SpinButtonPlacementMode="Compact" Minimum="1" Maximum="120"/>
                                         </StackPanel>
                                     </Grid>
                                 </StackPanel>
                             </Border>
 
-                            <TextBlock Text="{helpers:ResourceString Key=thermal_dialog_header_thresholds}" FontWeight="SemiBold" Margin="0,8,0,0"/>
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=thermal_dialog_header_thresholds}" FontWeight="SemiBold" Margin="0,8,0,0"/>
 
                             <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" CornerRadius="8" BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}" BorderThickness="1" Padding="20">
                                 <StackPanel Spacing="16">
                                     <Grid ColumnDefinitions="120, *, *">
-                                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=thermal_dialog_header_warning}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="12" Margin="0,0,16,0" VerticalAlignment="Bottom"/>
-                                        <TextBlock Grid.Column="2" Text="{helpers:ResourceString Key=thermal_dialog_header_shutdown_limit}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="12" VerticalAlignment="Bottom"/>
+                                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" Grid.Column="1" Text="{helpers:ResourceString Key=thermal_dialog_header_warning}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="12" Margin="0,0,16,0" VerticalAlignment="Bottom"/>
+                                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" Grid.Column="2" Text="{helpers:ResourceString Key=thermal_dialog_header_shutdown_limit}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="12" VerticalAlignment="Bottom"/>
                                     </Grid>
 
                                     <Grid ColumnDefinitions="120, *, *">
-                                        <TextBlock Text="{helpers:ResourceString Key=thermal_dialog_lbl_cpu}" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=thermal_dialog_lbl_cpu}" VerticalAlignment="Center" FontWeight="SemiBold"/>
                                         <NumberBox x:Name="NumCpuWarn" Grid.Column="1" Margin="0,0,16,0" SpinButtonPlacementMode="Compact"/>
                                         <NumberBox x:Name="NumCpuMax" Grid.Column="2" SpinButtonPlacementMode="Compact"/>
                                     </Grid>
 
                                     <Grid ColumnDefinitions="120, *, *">
-                                        <TextBlock Text="{helpers:ResourceString Key=thermal_dialog_lbl_gpu}" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=thermal_dialog_lbl_gpu}" VerticalAlignment="Center" FontWeight="SemiBold"/>
                                         <NumberBox x:Name="NumGpuWarn" Grid.Column="1" Margin="0,0,16,0" SpinButtonPlacementMode="Compact"/>
                                         <NumberBox x:Name="NumGpuMax" Grid.Column="2" SpinButtonPlacementMode="Compact"/>
                                     </Grid>
 
                                     <Grid ColumnDefinitions="120, *, *">
-                                        <TextBlock Text="{helpers:ResourceString Key=thermal_dialog_lbl_ram}" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=thermal_dialog_lbl_ram}" VerticalAlignment="Center" FontWeight="SemiBold"/>
                                         <NumberBox x:Name="NumRamWarn" Grid.Column="1" Margin="0,0,16,0" SpinButtonPlacementMode="Compact"/>
                                         <NumberBox x:Name="NumRamMax" Grid.Column="2" SpinButtonPlacementMode="Compact"/>
                                     </Grid>
 
                                     <Grid ColumnDefinitions="120, *, *">
-                                        <TextBlock Text="{helpers:ResourceString Key=thermal_dialog_lbl_system}" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=thermal_dialog_lbl_system}" VerticalAlignment="Center" FontWeight="SemiBold"/>
                                         <NumberBox x:Name="NumMoboWarn" Grid.Column="1" Margin="0,0,16,0" SpinButtonPlacementMode="Compact"/>
                                         <NumberBox x:Name="NumMoboMax" Grid.Column="2" SpinButtonPlacementMode="Compact"/>
                                     </Grid>
@@ -423,8 +423,8 @@
                             </Border>
 
                             <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Right" Margin="0,8,0,0">
-                                <Button Content="{helpers:ResourceString Key=thermal_dialog_secondary_btn}" Click="ResetThermalBtn_Click" Background="Transparent" />
-                                <Button Content="{helpers:ResourceString Key=thermal_dialog_primary_btn}" Click="SaveThermalBtn_Click" Style="{ThemeResource AccentButtonStyle}"/>
+                                <Button FontFamily="{ThemeResource AppCustomFont}" Content="{helpers:ResourceString Key=thermal_dialog_secondary_btn}" Click="ResetThermalBtn_Click" Background="Transparent" />
+                                <Button FontFamily="{ThemeResource AppCustomFont}" Content="{helpers:ResourceString Key=thermal_dialog_primary_btn}" Click="SaveThermalBtn_Click" Style="{ThemeResource AccentButtonStyle}"/>
                             </StackPanel>
                         </StackPanel>
                     </ScrollViewer>
@@ -432,7 +432,7 @@
             </Grid>
 
             <Grid Grid.Row="2" Width="700" Margin="42,16,0,24" HorizontalAlignment="Left">
-                <Button Content="{helpers:ResourceString Key=diag_close}" Click="CloseButton_Click" Style="{ThemeResource DefaultButtonStyle}" HorizontalAlignment="Center" MinWidth="150" />
+                <Button FontFamily="{ThemeResource AppCustomFont}" Content="{helpers:ResourceString Key=diag_close}" Click="CloseButton_Click" Style="{ThemeResource DefaultButtonStyle}" HorizontalAlignment="Center" MinWidth="150" />
             </Grid>
         </Grid>
     </Grid>

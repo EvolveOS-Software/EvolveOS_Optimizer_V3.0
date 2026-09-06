@@ -49,12 +49,12 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Text="{helpers:ResourceString Key=cme_window_title}" Style="{ThemeResource TitleTextBlockStyle}" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=cme_window_title}" Style="{ThemeResource TitleTextBlockStyle}" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Left"/>
 
                 <!-- View Switcher -->
                 <StackPanel Grid.Column="1" Orientation="Horizontal" Background="{ThemeResource ControlFillColorDefaultBrush}" CornerRadius="6" Padding="4">
-                    <ToggleButton x:Name="EditorViewButton" Content="{helpers:ResourceString Key=cme_view_editor}" IsChecked="True" Checked="ViewMode_Checked" Width="130"/>
-                    <ToggleButton x:Name="CleanerViewButton" Content="{helpers:ResourceString Key=cme_view_cleaner}" Checked="ViewMode_Checked" Width="130"/>
+                    <ToggleButton FontFamily="{ThemeResource AppCustomFont}" x:Name="EditorViewButton" Content="{helpers:ResourceString Key=cme_view_editor}" IsChecked="True" Checked="ViewMode_Checked" Width="130"/>
+                    <ToggleButton FontFamily="{ThemeResource AppCustomFont}" x:Name="CleanerViewButton" Content="{helpers:ResourceString Key=cme_view_cleaner}" Checked="ViewMode_Checked" Width="130"/>
                 </StackPanel>
             </Grid>
 
@@ -71,10 +71,10 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <StackPanel VerticalAlignment="Center">
-                                    <TextBlock Text="{helpers:ResourceString Key=cme_modern_toggle_title}" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
-                                    <TextBlock Text="{helpers:ResourceString Key=cme_modern_toggle_desc}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap"/>
+                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=cme_modern_toggle_title}" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=cme_modern_toggle_desc}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap"/>
                                 </StackPanel>
-                                <ToggleSwitch x:Name="ModernMenuToggle" Grid.Column="1" VerticalAlignment="Center" />
+                                <ToggleSwitch FontFamily="{ThemeResource AppCustomFont}" x:Name="ModernMenuToggle" Grid.Column="1" VerticalAlignment="Center" />
                             </Grid>
                         </Border>
 
@@ -85,10 +85,10 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <StackPanel VerticalAlignment="Center">
-                                    <TextBlock Text="{helpers:ResourceString Key=cme_classic_toggle_title}" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
-                                    <TextBlock Text="{helpers:ResourceString Key=cme_classic_toggle_desc}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap"/>
+                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=cme_classic_toggle_title}" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=cme_classic_toggle_desc}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap"/>
                                 </StackPanel>
-                                <ToggleSwitch x:Name="ClassicMenuToggle" Grid.Column="1" VerticalAlignment="Center" />
+                                <ToggleSwitch FontFamily="{ThemeResource AppCustomFont}" x:Name="ClassicMenuToggle" Grid.Column="1" VerticalAlignment="Center" />
                             </Grid>
                         </Border>
 
@@ -99,12 +99,12 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <StackPanel VerticalAlignment="Center">
-                                    <TextBlock Text="{helpers:ResourceString Key=cme_engine_title}" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
-                                    <TextBlock Text="{helpers:ResourceString Key=cme_engine_desc}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=cme_engine_title}" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=cme_engine_desc}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                                 </StackPanel>
-                                <ComboBox x:Name="MenuTypeSelector" Grid.Column="1" SelectedIndex="0" Width="220" VerticalAlignment="Center" SelectionChanged="MenuTypeSelector_SelectionChanged">
-                                    <ComboBoxItem Content="{helpers:ResourceString Key=cme_engine_modern}"/>
-                                    <ComboBoxItem Content="{helpers:ResourceString Key=cme_engine_classic}"/>
+                                <ComboBox FontFamily="{ThemeResource AppCustomFont}" x:Name="MenuTypeSelector" Grid.Column="1" SelectedIndex="0" Width="220" VerticalAlignment="Center" SelectionChanged="MenuTypeSelector_SelectionChanged">
+                                    <ComboBoxItem FontFamily="{ThemeResource AppCustomFont}" Content="{helpers:ResourceString Key=cme_engine_modern}"/>
+                                    <ComboBoxItem FontFamily="{ThemeResource AppCustomFont}" Content="{helpers:ResourceString Key=cme_engine_classic}"/>
                                 </ComboBox>
                             </Grid>
                         </Border>
@@ -122,8 +122,8 @@
                                     <FontIcon Glyph="&#xE710;" FontSize="16" Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}"/>
                                 </Border>
                                 <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="0,0,12,0">
-                                    <TextBlock Text="{helpers:ResourceString Key=cme_add_new_action}" FontSize="15" FontWeight="SemiBold" Margin="0,0,0,2"/>
-                                    <TextBlock Text="{helpers:ResourceString Key=cme_add_new_action_desc}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=cme_add_new_action}" FontSize="15" FontWeight="SemiBold" Margin="0,0,0,2"/>
+                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=cme_add_new_action_desc}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                                 </StackPanel>
                             </Grid>
                         </Expander.Header>
@@ -141,39 +141,39 @@
                                         <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
 
-                                    <ComboBox x:Name="QuickTemplatesComboBox" Grid.Row="0" Grid.Column="0" Header="{helpers:ResourceString Key=cme_quick_templates_header}" PlaceholderText="{helpers:ResourceString Key=cme_quick_templates_placeholder}" HorizontalAlignment="Stretch" SelectionChanged="QuickTemplatesComboBox_SelectionChanged">
+                                    <ComboBox FontFamily="{ThemeResource AppCustomFont}" x:Name="QuickTemplatesComboBox" Grid.Row="0" Grid.Column="0" Header="{helpers:ResourceString Key=cme_quick_templates_header}" PlaceholderText="{helpers:ResourceString Key=cme_quick_templates_placeholder}" HorizontalAlignment="Stretch" SelectionChanged="QuickTemplatesComboBox_SelectionChanged">
                                         <ComboBox.ItemTemplate>
                                             <DataTemplate>
                                                 <StackPanel Margin="0,6,0,6" Spacing="2">
-                                                    <TextBlock Text="{Binding Title}" FontWeight="SemiBold"/>
+                                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{Binding Title}" FontWeight="SemiBold"/>
                                                     <StackPanel Orientation="Horizontal" Spacing="4">
-                                                        <TextBlock Text="{helpers:ResourceString Key=cme_applies_to}" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                                                        <TextBlock Text="{Binding TargetName}" FontSize="11" FontWeight="SemiBold" Foreground="{ThemeResource SystemControlForegroundAccentBrush}"/>
+                                                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=cme_applies_to}" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{Binding TargetName}" FontSize="11" FontWeight="SemiBold" Foreground="{ThemeResource SystemControlForegroundAccentBrush}"/>
                                                     </StackPanel>
-                                                    <TextBlock Text="{Binding Description}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" Margin="0,2,0,0"/>
+                                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{Binding Description}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" Margin="0,2,0,0"/>
                                                 </StackPanel>
                                             </DataTemplate>
                                         </ComboBox.ItemTemplate>
                                     </ComboBox>
 
-                                    <ComboBox x:Name="TargetInput" Grid.Row="0" Grid.Column="1" Header="{helpers:ResourceString Key=cme_target_menu_header}" SelectedIndex="0" HorizontalAlignment="Stretch">
-                                        <ComboBoxItem Content="{helpers:ResourceString Key=cme_target_files}"/>
-                                        <ComboBoxItem Content="{helpers:ResourceString Key=cme_target_folders}"/>
-                                        <ComboBoxItem Content="{helpers:ResourceString Key=cme_target_background}"/>
+                                    <ComboBox FontFamily="{ThemeResource AppCustomFont}" x:Name="TargetInput" Grid.Row="0" Grid.Column="1" Header="{helpers:ResourceString Key=cme_target_menu_header}" SelectedIndex="0" HorizontalAlignment="Stretch">
+                                        <ComboBoxItem FontFamily="{ThemeResource AppCustomFont}" Content="{helpers:ResourceString Key=cme_target_files}"/>
+                                        <ComboBoxItem FontFamily="{ThemeResource AppCustomFont}" Content="{helpers:ResourceString Key=cme_target_folders}"/>
+                                        <ComboBoxItem FontFamily="{ThemeResource AppCustomFont}" Content="{helpers:ResourceString Key=cme_target_background}"/>
                                     </ComboBox>
 
-                                    <TextBox x:Name="TitleInput" Grid.Row="1" Grid.Column="0" Header="{helpers:ResourceString Key=cme_display_name_header}" PlaceholderText="{helpers:ResourceString Key=cme_display_name_placeholder}"/>
+                                    <TextBox FontFamily="{ThemeResource AppCustomFont}" x:Name="TitleInput" Grid.Row="1" Grid.Column="0" Header="{helpers:ResourceString Key=cme_display_name_header}" PlaceholderText="{helpers:ResourceString Key=cme_display_name_placeholder}"/>
 
                                     <Grid Grid.Row="1" Grid.Column="1" ColumnSpacing="8">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-                                        <TextBox x:Name="ExePathInput" Header="{helpers:ResourceString Key=cme_exe_path_header}" PlaceholderText="{helpers:ResourceString Key=cme_exe_path_placeholder}"/>
+                                        <TextBox FontFamily="{ThemeResource AppCustomFont}" x:Name="ExePathInput" Header="{helpers:ResourceString Key=cme_exe_path_header}" PlaceholderText="{helpers:ResourceString Key=cme_exe_path_placeholder}"/>
                                         <Button Grid.Column="1" Content="&#xE8E5;" FontFamily="{ThemeResource SymbolThemeFontFamily}" VerticalAlignment="Bottom" Height="32" Click="BrowseExe_Click" ToolTipService.ToolTip="{helpers:ResourceString Key=cme_browse_tooltip}"/>
                                     </Grid>
 
-                                    <TextBox x:Name="ArgsInput" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Header="{helpers:ResourceString Key=cme_arguments_header}" Text="" PlaceholderText="{helpers:ResourceString Key=cme_arguments_placeholder}" />
+                                    <TextBox FontFamily="{ThemeResource AppCustomFont}" x:Name="ArgsInput" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Header="{helpers:ResourceString Key=cme_arguments_header}" Text="" PlaceholderText="{helpers:ResourceString Key=cme_arguments_placeholder}" />
 
                                     <Expander x:Name="VisualAppearanceExpander" Grid.Row="3" Grid.Column="0" Header="{helpers:ResourceString Key=cme_visual_appearance_header}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalAlignment="Top" Expanding="Expander_Expanding">
                                         <StackPanel Spacing="12" Padding="0,4,0,0">
@@ -182,39 +182,39 @@
                                                     <ColumnDefinition Width="*"/>
                                                     <ColumnDefinition Width="Auto"/>
                                                 </Grid.ColumnDefinitions>
-                                                <TextBox x:Name="IconPathInput" Header="{helpers:ResourceString Key=cme_icon_path_header}" PlaceholderText="{helpers:ResourceString Key=cme_icon_path_placeholder}"/>
+                                                <TextBox FontFamily="{ThemeResource AppCustomFont}" x:Name="IconPathInput" Header="{helpers:ResourceString Key=cme_icon_path_header}" PlaceholderText="{helpers:ResourceString Key=cme_icon_path_placeholder}"/>
                                                 <Button Grid.Column="1" Content="&#xE8E5;" FontFamily="{ThemeResource SymbolThemeFontFamily}" VerticalAlignment="Bottom" Height="32" Click="BrowseIcon_Click" ToolTipService.ToolTip="{helpers:ResourceString Key=cme_browse_icon_tooltip}"/>
                                             </Grid>
-                                            <ComboBox x:Name="PositionInput" Header="{helpers:ResourceString Key=cme_menu_position_header}" SelectedIndex="0" HorizontalAlignment="Stretch">
-                                                <ComboBoxItem Content="{helpers:ResourceString Key=cme_position_default}"/>
-                                                <ComboBoxItem Content="{helpers:ResourceString Key=cme_position_top}"/>
-                                                <ComboBoxItem Content="{helpers:ResourceString Key=cme_position_bottom}"/>
+                                            <ComboBox FontFamily="{ThemeResource AppCustomFont}" x:Name="PositionInput" Header="{helpers:ResourceString Key=cme_menu_position_header}" SelectedIndex="0" HorizontalAlignment="Stretch">
+                                                <ComboBoxItem FontFamily="{ThemeResource AppCustomFont}" Content="{helpers:ResourceString Key=cme_position_default}"/>
+                                                <ComboBoxItem FontFamily="{ThemeResource AppCustomFont}" Content="{helpers:ResourceString Key=cme_position_top}"/>
+                                                <ComboBoxItem FontFamily="{ThemeResource AppCustomFont}" Content="{helpers:ResourceString Key=cme_position_bottom}"/>
                                             </ComboBox>
                                         </StackPanel>
                                     </Expander>
 
                                     <Expander x:Name="AdvancedTargetingExpander" Grid.Row="3" Grid.Column="1" Header="{helpers:ResourceString Key=cme_advanced_targeting_header}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalAlignment="Top" Expanding="Expander_Expanding">
                                         <StackPanel Spacing="12" Padding="0,4,0,0">
-                                            <TextBox x:Name="SpecificExtInput" Header="{helpers:ResourceString Key=cme_specific_ext_header}" PlaceholderText="{helpers:ResourceString Key=cme_specific_ext_placeholder}"/>
-                                            <ToggleSwitch x:Name="ExtendedToggle" Header="{helpers:ResourceString Key=cme_hide_shift_header}"/>
-                                            <ToggleSwitch x:Name="RunAsAdminToggle" Header="{helpers:ResourceString Key=cme_run_admin_header}"/>
-                                            <ToggleSwitch x:Name="HiddenWindowToggle" Header="{helpers:ResourceString Key=cme_run_hidden_header}"/>
+                                            <TextBox FontFamily="{ThemeResource AppCustomFont}" x:Name="SpecificExtInput" Header="{helpers:ResourceString Key=cme_specific_ext_header}" PlaceholderText="{helpers:ResourceString Key=cme_specific_ext_placeholder}"/>
+                                            <ToggleSwitch FontFamily="{ThemeResource AppCustomFont}" x:Name="ExtendedToggle" Header="{helpers:ResourceString Key=cme_hide_shift_header}"/>
+                                            <ToggleSwitch FontFamily="{ThemeResource AppCustomFont}" x:Name="RunAsAdminToggle" Header="{helpers:ResourceString Key=cme_run_admin_header}"/>
+                                            <ToggleSwitch FontFamily="{ThemeResource AppCustomFont}" x:Name="HiddenWindowToggle" Header="{helpers:ResourceString Key=cme_run_hidden_header}"/>
                                         </StackPanel>
                                     </Expander>
                                 </Grid>
 
                                 <StackPanel x:Name="AdvancedPresetsContainer" Margin="16,0,16,0" Spacing="12" Visibility="Collapsed">
                                     <Border BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}" BorderThickness="0,1,0,0" Margin="0,4,0,4" />
-                                    <TextBlock Text="{helpers:ResourceString Key=cme_advanced_presets_title}" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                                    <ComboBox x:Name="PresetsComboBox" Header="{helpers:ResourceString Key=cme_presets_header}" PlaceholderText="{helpers:ResourceString Key=cme_presets_placeholder}" HorizontalAlignment="Stretch" DisplayMemberPath="Name" SelectionChanged="PresetsComboBox_SelectionChanged"/>
-                                    <ToggleSwitch x:Name="PresetToggleSwitch" OffContent="{helpers:ResourceString Key=cme_preset_disabled}" OnContent="{helpers:ResourceString Key=cme_preset_enabled}" IsEnabled="False" Toggled="PresetToggleSwitch_Toggled"/>
-                                    <TextBlock x:Name="PresetDescriptionText" TextWrapping="Wrap" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=cme_advanced_presets_title}" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                    <ComboBox FontFamily="{ThemeResource AppCustomFont}" x:Name="PresetsComboBox" Header="{helpers:ResourceString Key=cme_presets_header}" PlaceholderText="{helpers:ResourceString Key=cme_presets_placeholder}" HorizontalAlignment="Stretch" DisplayMemberPath="Name" SelectionChanged="PresetsComboBox_SelectionChanged"/>
+                                    <ToggleSwitch FontFamily="{ThemeResource AppCustomFont}" x:Name="PresetToggleSwitch" OffContent="{helpers:ResourceString Key=cme_preset_disabled}" OnContent="{helpers:ResourceString Key=cme_preset_enabled}" IsEnabled="False" Toggled="PresetToggleSwitch_Toggled"/>
+                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" x:Name="PresetDescriptionText" TextWrapping="Wrap" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                                 </StackPanel>
 
                                 <Border BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}" BorderThickness="0,1,0,0" Padding="16" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="0,0,8,8">
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="12">
-                                        <Button Content="{helpers:ResourceString Key=cme_add_separator_btn}" MinWidth="140" Click="AddSeparator_Click"/>
-                                        <Button Content="{helpers:ResourceString Key=cme_add_to_menu_btn}" Style="{StaticResource AccentButtonStyle}" MinWidth="200" Click="AddItem_Click"/>
+                                        <Button FontFamily="{ThemeResource AppCustomFont}" Content="{helpers:ResourceString Key=cme_add_separator_btn}" MinWidth="140" Click="AddSeparator_Click"/>
+                                        <Button FontFamily="{ThemeResource AppCustomFont}" Content="{helpers:ResourceString Key=cme_add_to_menu_btn}" Style="{StaticResource AccentButtonStyle}" MinWidth="200" Click="AddItem_Click"/>
                                     </StackPanel>
                                 </Border>
                             </StackPanel>
@@ -238,14 +238,14 @@
 
                                 <!-- Title and Description -->
                                 <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="0,0,12,0">
-                                    <TextBlock Text="{helpers:ResourceString Key=cme_active_items}" FontSize="15" FontWeight="SemiBold" Margin="0,0,0,2"/>
-                                    <TextBlock Text="{helpers:ResourceString Key=cme_active_items_desc}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=cme_active_items}" FontSize="15" FontWeight="SemiBold" Margin="0,0,0,2"/>
+                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=cme_active_items_desc}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                                 </StackPanel>
 
                                 <!-- Export / Import Buttons -->
                                 <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
-                                    <Button Content="{helpers:ResourceString Key=cme_export_config}" Click="ExportConfig_Click" Height="32"/>
-                                    <Button Content="{helpers:ResourceString Key=cme_import_config}" Click="ImportConfig_Click" Height="32"/>
+                                    <Button FontFamily="{ThemeResource AppCustomFont}" Content="{helpers:ResourceString Key=cme_export_config}" Click="ExportConfig_Click" Height="32"/>
+                                    <Button FontFamily="{ThemeResource AppCustomFont}" Content="{helpers:ResourceString Key=cme_import_config}" Click="ImportConfig_Click" Height="32"/>
                                 </StackPanel>
                             </Grid>
                         </Expander.Header>
@@ -287,16 +287,16 @@
                                                 </Border>
 
                                                 <StackPanel Grid.Column="2" VerticalAlignment="Center" Margin="0,0,12,0">
-                                                    <TextBlock Text="{Binding Title}" FontSize="15" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" Margin="0,0,0,2"/>
+                                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{Binding Title}" FontSize="15" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" Margin="0,0,0,2"/>
 
                                                     <StackPanel Orientation="Horizontal" Spacing="6" Margin="0,2,0,2" Visibility="{Binding IsSeparator, Converter={StaticResource InverseBoolToVis}, FallbackValue=Visible}">
-                                                        <TextBlock Text="{helpers:ResourceString Key=cme_applies_to}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" VerticalAlignment="Center"/>
+                                                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=cme_applies_to}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" VerticalAlignment="Center"/>
                                                         <Border Style="{StaticResource BadgePreferenceStyle}">
-                                                            <TextBlock Text="{Binding Target}" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgePreferenceForeground}"/>
+                                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{Binding Target}" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgePreferenceForeground}"/>
                                                         </Border>
                                                     </StackPanel>
 
-                                                    <TextBlock Text="{Binding ExePath}" FontSize="11" Foreground="{ThemeResource TextFillColorTertiaryBrush}" TextTrimming="CharacterEllipsis" HorizontalAlignment="Left" Margin="-2,6,0,0" MaxWidth="500" Visibility="{Binding IsSeparator, Converter={StaticResource InverseBoolToVis}, FallbackValue=Visible}"/>
+                                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{Binding ExePath}" FontSize="11" Foreground="{ThemeResource TextFillColorTertiaryBrush}" TextTrimming="CharacterEllipsis" HorizontalAlignment="Left" Margin="-2,6,0,0" MaxWidth="500" Visibility="{Binding IsSeparator, Converter={StaticResource InverseBoolToVis}, FallbackValue=Visible}"/>
                                                 </StackPanel>
 
                                                 <Button Grid.Column="3" Background="Transparent" BorderThickness="0" Padding="8" ToolTipService.ToolTip="{helpers:ResourceString Key=cme_remove_item}" Click="RemoveItem_Click" Tag="{Binding}" VerticalAlignment="Center">
@@ -323,8 +323,8 @@
                         </Grid.RowDefinitions>
 
                         <StackPanel Padding="20,16" BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}" BorderThickness="0,0,0,1">
-                            <TextBlock Text="{helpers:ResourceString Key=cme_cleaner_title}" FontWeight="SemiBold" FontSize="16"/>
-                            <TextBlock Text="{helpers:ResourceString Key=cme_cleaner_desc}" FontSize="13" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Margin="0,4,0,0"/>
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=cme_cleaner_title}" FontWeight="SemiBold" FontSize="16"/>
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=cme_cleaner_desc}" FontSize="13" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Margin="0,4,0,0"/>
                         </StackPanel>
 
                         <ListView x:Name="CleanerListView" Grid.Row="1" Padding="0,8" SelectionMode="None">
@@ -336,10 +336,10 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <StackPanel VerticalAlignment="Center">
-                                            <TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold"/>
-                                            <TextBlock Text="{Binding TargetPathDisplay}" FontSize="11" Foreground="{ThemeResource TextFillColorTertiaryBrush}" Margin="0,2,0,0"/>
+                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{Binding DisplayName}" FontWeight="SemiBold"/>
+                                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{Binding TargetPathDisplay}" FontSize="11" Foreground="{ThemeResource TextFillColorTertiaryBrush}" Margin="0,2,0,0"/>
                                         </StackPanel>
-                                        <ToggleSwitch Grid.Column="1" IsOn="{Binding IsEnabled, Mode=TwoWay}" Toggled="CleanerToggle_Toggled" Tag="{Binding}" Margin="0" MinWidth="0" OffContent="{helpers:ResourceString Key=cme_cleaner_hidden}" OnContent="{helpers:ResourceString Key=cme_cleaner_visible}"/>
+                                        <ToggleSwitch FontFamily="{ThemeResource AppCustomFont}" Grid.Column="1" IsOn="{Binding IsEnabled, Mode=TwoWay}" Toggled="CleanerToggle_Toggled" Tag="{Binding}" Margin="0" MinWidth="0" OffContent="{helpers:ResourceString Key=cme_cleaner_hidden}" OnContent="{helpers:ResourceString Key=cme_cleaner_visible}"/>
                                     </Grid>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
@@ -350,7 +350,7 @@
 
             <!-- Footer / Close Button -->
             <Grid Grid.Row="2" Margin="42,16,42,24" HorizontalAlignment="Stretch">
-                <Button Content="{helpers:ResourceString Key=cme_close_btn}" Click="CloseButton_Click" Style="{ThemeResource DefaultButtonStyle}" HorizontalAlignment="Center" MinWidth="150" />
+                <Button FontFamily="{ThemeResource AppCustomFont}" Content="{helpers:ResourceString Key=cme_close_btn}" Click="CloseButton_Click" Style="{ThemeResource DefaultButtonStyle}" HorizontalAlignment="Center" MinWidth="150" />
             </Grid>
         </Grid>
     </Grid>

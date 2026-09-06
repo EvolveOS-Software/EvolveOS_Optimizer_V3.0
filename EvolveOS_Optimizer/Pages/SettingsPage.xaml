@@ -22,7 +22,7 @@
                      IsOpen="True"
                      IsClosable="True"
                      Severity="Warning"
-                     FontFamily="{ThemeResource Jura}"
+                     FontFamily="{ThemeResource AppCustomFont}"
                      Title="{x:Bind GetText('Settings_Donation_Title'), Mode=OneWay}"
                      Message="{x:Bind GetText('Settings_Donation_Message'), Mode=OneWay}">
                 <InfoBar.Content>
@@ -32,11 +32,11 @@
                                 Click="Link_Donate">
                             <StackPanel Orientation="Horizontal" Padding="-3" Spacing="8">
                                 <Image Source="ms-appx:///Assets/PngImages/PayPal_Logo.svg" Width="25" Height="25" VerticalAlignment="Center" />
-                                <TextBlock Text="{x:Bind GetText('Settings_Donation_SupportBtn'), Mode=OneWay}" FontFamily="{ThemeResource Jura}" VerticalAlignment="Center" />
+                                <TextBlock Text="{x:Bind GetText('Settings_Donation_SupportBtn'), Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}" VerticalAlignment="Center" />
                             </StackPanel>
                         </Button>
 
-                        <Button Content="{x:Bind GetText('Settings_Donation_DismissBtn'), Mode=OneWay}" FontFamily="{ThemeResource Jura}"
+                        <Button Content="{x:Bind GetText('Settings_Donation_DismissBtn'), Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}"
                                 Click="DonationBanner_Dismiss" />
                     </StackPanel>
                 </InfoBar.Content>
@@ -55,18 +55,18 @@
                 <StackPanel VerticalAlignment="Center" Spacing="2">
                     <TextBlock Text="{x:Bind GetText('Settings_Title'), Mode=OneWay, FallbackValue='Settings'}"
                                Style="{StaticResource TitleTextBlockStyle}"
-                               FontFamily="{ThemeResource Jura-SemiBold}"
+                               FontFamily="{ThemeResource AppCustomFont}"
                                FontSize="28"/>
 
                     <TextBlock Text="{x:Bind GetText('Settings_Description'), Mode=OneWay, FallbackValue='Manage your application preferences, behavior, and personalization.'}"
-                               FontFamily="{ThemeResource Jura}"
+                               FontFamily="{ThemeResource AppCustomFont}"
                                FontSize="13"
                                Opacity="0.6"/>
                 </StackPanel>
             </StackPanel>
 
             <StackPanel Spacing="12">
-                <TextBlock Text="{x:Bind GetText('Settings_Appearance_Title'), Mode=OneWay}"
+                <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_Appearance_Title'), Mode=OneWay}"
                            FontWeight="Bold" FontSize="18" Margin="0,12,0,0"/>
 
                 <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
@@ -76,8 +76,8 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <StackPanel VerticalAlignment="Center" Spacing="2">
-                            <TextBlock Text="{x:Bind GetText('Settings_Language_Title'), Mode=OneWay}" FontWeight="SemiBold"/>
-                            <TextBlock Text="{x:Bind GetText('Settings_Language_Subtitle'), Mode=OneWay}"
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_Language_Title'), Mode=OneWay}" FontWeight="SemiBold"/>
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_Language_Subtitle'), Mode=OneWay}"
                                        Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
                         </StackPanel>
                         <ComboBox x:Name="LanguageSelector" Grid.Column="1" Width="200" SelectionChanged="LanguageSelector_SelectionChanged">
@@ -91,6 +91,28 @@
                 </Border>
 
                 <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel VerticalAlignment="Center" Spacing="2">
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_Font_Title'), Mode=OneWay}" FontWeight="SemiBold"/>
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_Font_Subtitle'), Mode=OneWay}"
+                                       Style="{StaticResource CaptionTextBlockStyle}"
+                                       Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                        </StackPanel>
+
+                        <ComboBox x:Name="FontSelectionBox"
+                                  Grid.Column="1"
+                                  Width="200"
+                                  VerticalAlignment="Center"
+                                  SelectionChanged="FontSelectionBox_SelectionChanged" />
+                    </Grid>
+                </Border>
+
+                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
                     <StackPanel Spacing="12">
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -98,9 +120,9 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel VerticalAlignment="Center" Spacing="2">
-                                <TextBlock Text="{x:Bind GetText('Settings_Backdrop_Title'), Mode=OneWay}"
+                                <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_Backdrop_Title'), Mode=OneWay}"
                                            FontWeight="SemiBold"/>
-                                <TextBlock Text="{x:Bind GetText('Settings_Backdrop_Subtitle'), Mode=OneWay}"
+                                <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_Backdrop_Subtitle'), Mode=OneWay}"
                                            Style="{StaticResource CaptionTextBlockStyle}"
                                            Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
                             </StackPanel>
@@ -138,9 +160,9 @@
 
                             <StackPanel Spacing="4">
                                 <Grid>
-                                    <TextBlock Text="{x:Bind GetText('Settings_TintOpacity_Title'), Mode=OneWay, FallbackValue='Tint Opacity'}"
+                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_TintOpacity_Title'), Mode=OneWay, FallbackValue='Tint Opacity'}"
                                                Style="{StaticResource CaptionTextBlockStyle}"/>
-                                    <TextBlock Text="{x:Bind TintOpacitySlider.Value, Mode=OneWay}"
+                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind TintOpacitySlider.Value, Mode=OneWay}"
                                                HorizontalAlignment="Right"
                                                Style="{StaticResource CaptionTextBlockStyle}"/>
                                 </Grid>
@@ -152,9 +174,9 @@
 
                             <StackPanel Spacing="4">
                                 <Grid>
-                                    <TextBlock Text="{x:Bind GetText('Settings_LuminosityOpacity_Title'), Mode=OneWay, FallbackValue='Luminosity Opacity'}"
+                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_LuminosityOpacity_Title'), Mode=OneWay, FallbackValue='Luminosity Opacity'}"
                                                Style="{StaticResource CaptionTextBlockStyle}"/>
-                                    <TextBlock Text="{x:Bind LuminositySlider.Value, Mode=OneWay}"
+                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind LuminositySlider.Value, Mode=OneWay}"
                                                HorizontalAlignment="Right"
                                                Style="{StaticResource CaptionTextBlockStyle}"/>
                                 </Grid>
@@ -166,7 +188,7 @@
                             </StackPanel>
 
                             <StackPanel Spacing="4">
-                                <TextBlock Text="{x:Bind GetText('Settings_TintColor_Title'), Mode=OneWay, FallbackValue='Tint Color'}"
+                                <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_TintColor_Title'), Mode=OneWay, FallbackValue='Tint Color'}"
                                            Style="{StaticResource CaptionTextBlockStyle}"/>
                                 <DropDownButton x:Name="AcrylicColorButton" HorizontalAlignment="Stretch">
                                     <StackPanel Orientation="Horizontal" Spacing="8">
@@ -176,7 +198,7 @@
                                                 Background="{ThemeResource Brush_Accent}"
                                                 BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                                                 BorderThickness="1"/>
-                                        <TextBlock Text="{x:Bind GetText('Settings_ChangeTintColor_Button'), Mode=OneWay, FallbackValue='Change Tint Color'}"/>
+                                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_ChangeTintColor_Button'), Mode=OneWay, FallbackValue='Change Tint Color'}"/>
                                     </StackPanel>
                                     <DropDownButton.Flyout>
                                         <Flyout Placement="Bottom">
@@ -205,8 +227,8 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel VerticalAlignment="Center" Spacing="2">
-                                <TextBlock Text="{x:Bind GetText('Settings_Theme_Title'), Mode=OneWay}" FontWeight="SemiBold"/>
-                                <TextBlock Text="{x:Bind GetText('Settings_Theme_Subtitle'), Mode=OneWay}"
+                                <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_Theme_Title'), Mode=OneWay}" FontWeight="SemiBold"/>
+                                <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_Theme_Subtitle'), Mode=OneWay}"
                                            Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
                             </StackPanel>
                             <ComboBox x:Name="ThemeSelector" Grid.Column="1" Width="200" VerticalAlignment="Center" SelectionChanged="ThemeSelector_SelectionChanged" IsEnabled="{x:Bind IsManualThemeEnabled, Mode=OneWay}">
@@ -224,8 +246,8 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel VerticalAlignment="Center" Spacing="2">
-                                <TextBlock Text="{x:Bind GetText('Settings_Theme_SyncOsTitle'), Mode=OneWay}" FontWeight="SemiBold"/>
-                                <TextBlock Text="{x:Bind GetText('Settings_Theme_SyncOsSubtitle'), Mode=OneWay}"
+                                <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_Theme_SyncOsTitle'), Mode=OneWay}" FontWeight="SemiBold"/>
+                                <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_Theme_SyncOsSubtitle'), Mode=OneWay}"
                                            Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                             </StackPanel>
                             <ToggleSwitch Grid.Column="1"
@@ -245,8 +267,8 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel VerticalAlignment="Center" Spacing="2">
-                                <TextBlock Text="{x:Bind GetText('Settings_AutoTheme_Title'), Mode=OneWay}" FontWeight="SemiBold"/>
-                                <TextBlock Text="{x:Bind GetText('Settings_AutoTheme_Subtitle'), Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                                <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_AutoTheme_Title'), Mode=OneWay}" FontWeight="SemiBold"/>
+                                <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_AutoTheme_Subtitle'), Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                             </StackPanel>
                             <ToggleSwitch Grid.Column="1"
                                           IsOn="{x:Bind IsAutoThemeEnabled, Mode=TwoWay}"
@@ -263,7 +285,7 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <StackPanel VerticalAlignment="Center" Spacing="2">
-                                    <TextBlock Text="{x:Bind GetText('Settings_AutoTheme_LightTime'), Mode=OneWay}" FontWeight="SemiBold"/>
+                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_AutoTheme_LightTime'), Mode=OneWay}" FontWeight="SemiBold"/>
                                 </StackPanel>
                                 <TimePicker Grid.Column="1" Time="{x:Bind LightThemeTime, Mode=TwoWay}" HorizontalAlignment="Right"/>
                             </Grid>
@@ -274,7 +296,7 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <StackPanel VerticalAlignment="Center" Spacing="2">
-                                    <TextBlock Text="{x:Bind GetText('Settings_AutoTheme_DarkTime'), Mode=OneWay}" FontWeight="SemiBold"/>
+                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_AutoTheme_DarkTime'), Mode=OneWay}" FontWeight="SemiBold"/>
                                 </StackPanel>
                                 <TimePicker Grid.Column="1" Time="{x:Bind DarkThemeTime, Mode=TwoWay}" HorizontalAlignment="Right"/>
                             </Grid>
@@ -289,8 +311,8 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <StackPanel VerticalAlignment="Center" Spacing="2">
-                            <TextBlock Text="{x:Bind GetText('Settings_WindowBorder_Title'), Mode=OneWay}" FontWeight="SemiBold"/>
-                            <TextBlock Text="{x:Bind GetText('Settings_WindowBorder_Subtitle'), Mode=OneWay}"
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_WindowBorder_Title'), Mode=OneWay}" FontWeight="SemiBold"/>
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_WindowBorder_Subtitle'), Mode=OneWay}"
                                        Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                         </StackPanel>
                         <ToggleSwitch Grid.Column="1"
@@ -303,8 +325,8 @@
                 <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
                     <StackPanel Spacing="16">
                         <StackPanel Spacing="2">
-                            <TextBlock Text="{x:Bind GetText('Settings_AccentColor_Title'), Mode=OneWay}" FontWeight="SemiBold"/>
-                            <TextBlock Text="{x:Bind GetText('Settings_AccentColor_Subtitle'), Mode=OneWay}"
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_AccentColor_Title'), Mode=OneWay}" FontWeight="SemiBold"/>
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_AccentColor_Subtitle'), Mode=OneWay}"
                                        Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
                         </StackPanel>
 
@@ -420,7 +442,7 @@
             </StackPanel>
 
             <StackPanel Spacing="12">
-                <TextBlock Text="{x:Bind GetText('Settings_System_Title'), Mode=OneWay}" FontWeight="Bold" FontSize="18" Margin="0,12,0,0"/>
+                <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_System_Title'), Mode=OneWay}" FontWeight="Bold" FontSize="18" Margin="0,12,0,0"/>
 
                 <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
                     <Grid>
@@ -429,8 +451,8 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <StackPanel VerticalAlignment="Center" Spacing="2">
-                            <TextBlock Text="{x:Bind GetText('Settings_Startup_Title'), Mode=OneWay}" FontWeight="SemiBold"/>
-                            <TextBlock Text="{x:Bind GetText('Settings_Startup_Subtitle'), Mode=OneWay}"
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_Startup_Title'), Mode=OneWay}" FontWeight="SemiBold"/>
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_Startup_Subtitle'), Mode=OneWay}"
                                        Style="{StaticResource CaptionTextBlockStyle}"
                                        Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
                                        TextWrapping="Wrap"/>
@@ -446,8 +468,8 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <StackPanel VerticalAlignment="Center" Spacing="2">
-                            <TextBlock Text="{x:Bind GetText('Settings_StartupMonitor_Title'), Mode=OneWay, FallbackValue='Startup Monitor'}" FontWeight="SemiBold"/>
-                            <TextBlock Text="{x:Bind GetText('Settings_StartupMonitor_Subtitle'), Mode=OneWay, FallbackValue='Alerts you if a new application adds itself to your startup sequence in the background.'}"
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_StartupMonitor_Title'), Mode=OneWay, FallbackValue='Startup Monitor'}" FontWeight="SemiBold"/>
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_StartupMonitor_Subtitle'), Mode=OneWay, FallbackValue='Alerts you if a new application adds itself to your startup sequence in the background.'}"
                                        Style="{StaticResource CaptionTextBlockStyle}"
                                        Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
                                        TextWrapping="Wrap"/>
@@ -467,8 +489,8 @@
                         </Grid.ColumnDefinitions>
 
                         <StackPanel VerticalAlignment="Center" Spacing="2">
-                            <TextBlock Text="{x:Bind GetText('Settings_CloseToTray_Title'), Mode=OneWay}" FontWeight="SemiBold"/>
-                            <TextBlock Text="{x:Bind GetText('Settings_CloseToTray_Subtitle'), Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_CloseToTray_Title'), Mode=OneWay}" FontWeight="SemiBold"/>
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_CloseToTray_Subtitle'), Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                         </StackPanel>
 
                         <ToggleSwitch Grid.Column="1" IsOn="{x:Bind IsCloseToTray, Mode=TwoWay}" OnContent="{x:Bind GetText('Settings_ToggleOn'), Mode=OneWay}" OffContent="{x:Bind GetText('Settings_ToggleOff'), Mode=OneWay}"/>
@@ -482,8 +504,8 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <StackPanel VerticalAlignment="Center" Spacing="2">
-                            <TextBlock Text="{x:Bind GetText('Settings_StartMinimized_Title'), Mode=OneWay}" FontWeight="SemiBold"/>
-                            <TextBlock Text="{x:Bind GetText('Settings_StartMinimized_Subtitle'), Mode=OneWay}" 
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_StartMinimized_Title'), Mode=OneWay}" FontWeight="SemiBold"/>
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_StartMinimized_Subtitle'), Mode=OneWay}" 
                                        Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                         </StackPanel>
                         <ToggleSwitch Grid.Column="1" IsOn="{x:Bind IsStartMinimized, Mode=TwoWay}" OnContent="{x:Bind GetText('Settings_ToggleOn'), Mode=OneWay, FallbackValue='On'}" OffContent="{x:Bind GetText('Settings_ToggleOff'), Mode=OneWay, FallbackValue='Off'}"/>
@@ -497,8 +519,8 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <StackPanel VerticalAlignment="Center" Spacing="2">
-                            <TextBlock Text="{x:Bind GetText('Settings_HighPerformance_Title'), Mode=OneWay, FallbackValue='High Performance Mode'}" FontWeight="SemiBold"/>
-                            <TextBlock Text="{x:Bind GetText('Settings_HighPerformance_Subtitle'), Mode=OneWay, FallbackValue='Keeps pages in memory for instant switching. Disabling this saves RAM but increases loading times.'}" 
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_HighPerformance_Title'), Mode=OneWay, FallbackValue='High Performance Mode'}" FontWeight="SemiBold"/>
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_HighPerformance_Subtitle'), Mode=OneWay, FallbackValue='Keeps pages in memory for instant switching. Disabling this saves RAM but increases loading times.'}" 
                        Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                         </StackPanel>
                         <ToggleSwitch Grid.Column="1" 
@@ -510,20 +532,20 @@
             </StackPanel>
 
             <StackPanel Spacing="12">
-                <TextBlock Text="{x:Bind GetText('Settings_AI_SectionTitle'), Mode=OneWay}" FontWeight="Bold" FontSize="18" Margin="0,12,0,0"/>
+                <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_AI_SectionTitle'), Mode=OneWay}" FontWeight="Bold" FontSize="18" Margin="0,12,0,0"/>
 
                 <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
                     <StackPanel Spacing="16">
 
                         <StackPanel Spacing="6">
                             <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-                                <TextBlock Text="{x:Bind GetText('Settings_AI_Title'), Mode=OneWay}" FontWeight="SemiBold" VerticalAlignment="Center" />
+                                <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_AI_Title'), Mode=OneWay}" FontWeight="SemiBold" VerticalAlignment="Center" />
                                 <Border Background="{ThemeResource SystemFillColorSuccessBrush}" CornerRadius="3" Padding="4,1" VerticalAlignment="Center">
-                                    <TextBlock Text="{x:Bind GetText('Settings_AI_BadgeOptIn'), Mode=OneWay}" FontSize="10" Foreground="White" />
+                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_AI_BadgeOptIn'), Mode=OneWay}" FontSize="10" Foreground="White" />
                                 </Border>
                             </StackPanel>
 
-                            <TextBlock TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Style="{StaticResource CaptionTextBlockStyle}">
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Style="{StaticResource CaptionTextBlockStyle}">
                                 <Run Text="{x:Bind GetText('Settings_AI_DescPart1'), Mode=OneWay}" />
                                 <Run FontWeight="SemiBold" Text="{x:Bind GetText('Settings_AI_DescPart2'), Mode=OneWay}" />
                                 <Run Text="{x:Bind GetText('Settings_AI_DescPart3'), Mode=OneWay}" />
@@ -535,7 +557,7 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="{x:Bind GetText('Settings_AI_ProviderLabel'), Mode=OneWay}" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_AI_ProviderLabel'), Mode=OneWay}" VerticalAlignment="Center" FontWeight="SemiBold"/>
                             <ComboBox x:Name="CbAiProvider" Grid.Column="1" Width="200" SelectionChanged="CbAiProvider_SelectionChanged">
                                 <ComboBoxItem Content="Groq (Llama 3.3)" Tag="Groq"/>
                                 <ComboBoxItem Content="Google Gemini (1.5 Flash)" Tag="Gemini"/>
@@ -553,8 +575,8 @@
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
                             <StackPanel Spacing="4" VerticalAlignment="Center" Margin="0,0,20,0">
-                                <TextBlock Text="{x:Bind GetText('Settings_AI_LocalizationTitle'), Mode=OneWay}" FontWeight="SemiBold"/>
-                                <TextBlock Text="{x:Bind GetText('Settings_AI_LocalizationDesc'), Mode=OneWay}" FontSize="12" Opacity="0.7" TextWrapping="Wrap"/>
+                                <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_AI_LocalizationTitle'), Mode=OneWay}" FontWeight="SemiBold"/>
+                                <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_AI_LocalizationDesc'), Mode=OneWay}" FontSize="12" Opacity="0.7" TextWrapping="Wrap"/>
                             </StackPanel>
 
                             <ToggleSwitch Grid.Column="1"
@@ -576,7 +598,7 @@
                             <Border Grid.Column="0" Width="36" Height="36" CornerRadius="6" Background="{ThemeResource SubtleFillColorSecondaryBrush}" VerticalAlignment="Center">
                                 <FontIcon Glyph="&#xE899;" FontSize="18" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" />
                             </Border>
-                            <PasswordBox Grid.Column="1" x:Name="TxtGroqKey" PasswordRevealMode="Hidden" PlaceholderText="{x:Bind GetText('Settings_AI_GroqPlaceholder'), Mode=OneWay}" FontFamily="Consolas" FontSize="12" VerticalAlignment="Center" />
+                            <PasswordBox Grid.Column="1" x:Name="TxtGroqKey" PasswordRevealMode="Hidden" PlaceholderText="{x:Bind GetText('Settings_AI_GroqPlaceholder'), Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}" FontSize="12" VerticalAlignment="Center" />
                             <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
                                 <Button x:Name="BtnRevealGroq" Content="&#xE7B3;" FontSize="18" Height="32" Width="32" Padding="0" FontFamily="Segoe MDL2 Assets" Click="BtnRevealGroq_Click" ToolTipService.ToolTip="{x:Bind GetText('Settings_AI_RevealTooltip'), Mode=OneWay}"/>
                                 <Button Content="{x:Bind GetText('Settings_AI_SaveBtn'), Mode=OneWay}" Style="{StaticResource AccentButtonStyle}" Click="BtnSaveGroqKey_Click" />
@@ -596,7 +618,7 @@
                             <Border Grid.Column="0" Width="36" Height="36" CornerRadius="6" Background="{ThemeResource SubtleFillColorSecondaryBrush}" VerticalAlignment="Center">
                                 <FontIcon Glyph="&#xE899;" FontSize="18" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" />
                             </Border>
-                            <PasswordBox Grid.Column="1" x:Name="TxtGeminiKey" PasswordRevealMode="Hidden" PlaceholderText="{x:Bind GetText('Settings_AI_GeminiPlaceholder'), Mode=OneWay}" FontFamily="Consolas" FontSize="12" VerticalAlignment="Center" />
+                            <PasswordBox Grid.Column="1" x:Name="TxtGeminiKey" PasswordRevealMode="Hidden" PlaceholderText="{x:Bind GetText('Settings_AI_GeminiPlaceholder'), Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}" FontSize="12" VerticalAlignment="Center" />
                             <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
                                 <Button x:Name="BtnRevealGemini" Content="&#xE7B3;" FontSize="18" Height="32" Width="32" Padding="0" FontFamily="Segoe MDL2 Assets" Click="BtnRevealGemini_Click" ToolTipService.ToolTip="{x:Bind GetText('Settings_AI_RevealTooltip'), Mode=OneWay}"/>
                                 <Button Content="{x:Bind GetText('Settings_AI_SaveBtn'), Mode=OneWay}" Style="{StaticResource AccentButtonStyle}" Click="BtnSaveGeminiKey_Click" />
@@ -616,7 +638,7 @@
                             <Border Grid.Column="0" Width="36" Height="36" CornerRadius="6" Background="{ThemeResource SubtleFillColorSecondaryBrush}" VerticalAlignment="Center">
                                 <FontIcon Glyph="&#xE899;" FontSize="18" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" />
                             </Border>
-                            <PasswordBox Grid.Column="1" x:Name="TxtOpenRouterKey" PasswordRevealMode="Hidden" PlaceholderText="{x:Bind GetText('Settings_AI_OpenRouterPlaceholder'), Mode=OneWay}" FontFamily="Consolas" FontSize="12" VerticalAlignment="Center" />
+                            <PasswordBox Grid.Column="1" x:Name="TxtOpenRouterKey" PasswordRevealMode="Hidden" PlaceholderText="{x:Bind GetText('Settings_AI_OpenRouterPlaceholder'), Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}" FontSize="12" VerticalAlignment="Center" />
                             <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
                                 <Button x:Name="BtnRevealOpenRouter" Content="&#xE7B3;" FontSize="18" Height="32" Width="32" Padding="0" FontFamily="Segoe MDL2 Assets" Click="BtnRevealOpenRouter_Click" ToolTipService.ToolTip="{x:Bind GetText('Settings_AI_RevealTooltip'), Mode=OneWay}"/>
                                 <Button Content="{x:Bind GetText('Settings_AI_SaveBtn'), Mode=OneWay}" Style="{StaticResource AccentButtonStyle}" Click="BtnSaveOpenRouterKey_Click" />
@@ -636,7 +658,7 @@
                             <Border Grid.Column="0" Width="36" Height="36" CornerRadius="6" Background="{ThemeResource SubtleFillColorSecondaryBrush}" VerticalAlignment="Center">
                                 <FontIcon Glyph="&#xE899;" FontSize="18" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" />
                             </Border>
-                            <PasswordBox Grid.Column="1" x:Name="TxtCohereKey" PasswordRevealMode="Hidden" PlaceholderText="{x:Bind GetText('Settings_AI_CoherePlaceholder'), Mode=OneWay}" FontFamily="Consolas" FontSize="12" VerticalAlignment="Center" />
+                            <PasswordBox Grid.Column="1" x:Name="TxtCohereKey" PasswordRevealMode="Hidden" PlaceholderText="{x:Bind GetText('Settings_AI_CoherePlaceholder'), Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}" FontSize="12" VerticalAlignment="Center" />
                             <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
                                 <Button x:Name="BtnRevealCohere" Content="&#xE7B3;" FontSize="18" Height="32" Width="32" Padding="0" FontFamily="Segoe MDL2 Assets" Click="BtnRevealCohere_Click" ToolTipService.ToolTip="{x:Bind GetText('Settings_AI_RevealTooltip'), Mode=OneWay}"/>
                                 <Button Content="{x:Bind GetText('Settings_AI_SaveBtn'), Mode=OneWay}" Style="{StaticResource AccentButtonStyle}" Click="BtnSaveCohereKey_Click" />
@@ -656,7 +678,7 @@
                             <Border Grid.Column="0" Width="36" Height="36" CornerRadius="6" Background="{ThemeResource SubtleFillColorSecondaryBrush}" VerticalAlignment="Center">
                                 <FontIcon Glyph="&#xE899;" FontSize="18" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" />
                             </Border>
-                            <PasswordBox Grid.Column="1" x:Name="TxtMistralKey" PasswordRevealMode="Hidden" PlaceholderText="{x:Bind GetText('Settings_AI_MistralPlaceholder'), Mode=OneWay}" FontFamily="Consolas" FontSize="12" VerticalAlignment="Center" />
+                            <PasswordBox Grid.Column="1" x:Name="TxtMistralKey" PasswordRevealMode="Hidden" PlaceholderText="{x:Bind GetText('Settings_AI_MistralPlaceholder'), Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}" FontSize="12" VerticalAlignment="Center" />
                             <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
                                 <Button x:Name="BtnRevealMistral" Content="&#xE7B3;" FontSize="18" Height="32" Width="32" Padding="0" FontFamily="Segoe MDL2 Assets" Click="BtnRevealMistral_Click" ToolTipService.ToolTip="{x:Bind GetText('Settings_AI_RevealTooltip'), Mode=OneWay}"/>
                                 <Button Content="{x:Bind GetText('Settings_AI_SaveBtn'), Mode=OneWay}" Style="{StaticResource AccentButtonStyle}" Click="BtnSaveMistralKey_Click" />
@@ -666,13 +688,13 @@
                             <HyperlinkButton Grid.Column="3" Content="{x:Bind GetText('Settings_AI_GetKeyLink'), Mode=OneWay}" NavigateUri="https://console.mistral.ai/api-keys/" VerticalAlignment="Center" />
                         </Grid>
 
-                        <TextBlock x:Name="LblApiTestResult" FontSize="12" TextWrapping="Wrap" Margin="0,6,0,0" Visibility="Collapsed" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                        <TextBlock x:Name="LblApiTestResult" FontFamily="{ThemeResource AppCustomFont}" FontSize="12" TextWrapping="Wrap" Margin="0,6,0,0" Visibility="Collapsed" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                     </StackPanel>
                 </Border>
             </StackPanel>
 
             <StackPanel x:Name="SecurityPrivacy" Spacing="12" Visibility="{x:Bind IsAdmin, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <TextBlock Text="Security &amp; Privacy" FontWeight="Bold" FontSize="18" Margin="0,12,0,0"/>
+                <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="Security &amp; Privacy" FontWeight="Bold" FontSize="18" Margin="0,12,0,0"/>
 
                 <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
                     <StackPanel Spacing="16">
@@ -683,8 +705,8 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel VerticalAlignment="Center" Spacing="2">
-                                <TextBlock Text="{x:Bind GetText('lbl_autologin_header'), Mode=OneWay}" FontWeight="SemiBold"/>
-                                <TextBlock Text="Bypass the login screen and encrypt your session securely." 
+                                <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('lbl_autologin_header'), Mode=OneWay}" FontWeight="SemiBold"/>
+                                <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="Bypass the login screen and encrypt your session securely." 
                                            Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
                             </StackPanel>
                             <ToggleSwitch x:Name="CbEnableAutoLogin" Grid.Column="1" 
@@ -697,12 +719,12 @@
 
                             <StackPanel Spacing="4">
                                 <Grid>
-                                    <TextBlock Text="{x:Bind GetText('lbl_session_duration'), Mode=OneWay}" 
+                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('lbl_session_duration'), Mode=OneWay}" 
                                                Style="{StaticResource CaptionTextBlockStyle}"/>
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="4">
-                                        <TextBlock Text="{x:Bind SliderSessionHours.Value, Mode=OneWay}" 
+                                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind SliderSessionHours.Value, Mode=OneWay}" 
                                                    Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemAccentColor}" FontWeight="Bold"/>
-                                        <TextBlock Text="{x:Bind GetText('lbl_unit_hours'), Mode=OneWay}" 
+                                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('lbl_unit_hours'), Mode=OneWay}" 
                                                    Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemAccentColor}" FontWeight="Bold"/>
                                     </StackPanel>
                                 </Grid>
@@ -717,6 +739,7 @@
                                 <StackPanel Orientation="Horizontal" Spacing="8">
                                     <FontIcon Glyph="&#xE823;" Foreground="{ThemeResource SystemAccentColor}" FontSize="16"/>
                                     <TextBlock x:Name="LblSessionExpiry" 
+                                               FontFamily="{ThemeResource AppCustomFont}"
                                                Text="{x:Bind GetText('lbl_session_expiry_default'), Mode=OneWay}" 
                                                FontSize="12" VerticalAlignment="Center" Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
                                 </StackPanel>
@@ -731,15 +754,15 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel VerticalAlignment="Center" Spacing="2">
-                                <TextBlock Text="{x:Bind GetText('btgl_developer_mode_main'), Mode=OneWay}" FontWeight="SemiBold"/>
-                                <TextBlock Text="{x:Bind GetText('btgl_developer_mode_subtitle'), Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                                <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('btgl_developer_mode_main'), Mode=OneWay}" FontWeight="SemiBold"/>
+                                <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('btgl_developer_mode_subtitle'), Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
                             </StackPanel>
                             <ToggleSwitch x:Name="BtnDeveloperMode" Grid.Column="1" Toggled="BtnDeveloperMode_ChangedState" OnContent="{x:Bind GetText('Settings_ToggleOn'), Mode=OneWay}" OffContent="{x:Bind GetText('Settings_ToggleOff'), Mode=OneWay}"/>
                         </Grid>
 
                         <StackPanel Visibility="{x:Bind BtnDeveloperMode.IsOn, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" Spacing="12" Margin="0,8,0,0">
                             <MenuFlyoutSeparator/>
-                            <TextBlock Text="{x:Bind GetText('Settings_DevTools_Title'), Mode=OneWay}" FontWeight="SemiBold" FontSize="14" Foreground="{ThemeResource SystemAccentColor}"/>
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_DevTools_Title'), Mode=OneWay}" FontWeight="SemiBold" FontSize="14" Foreground="{ThemeResource SystemAccentColor}"/>
 
                             <Grid>
                                 <Grid.ColumnDefinitions>
@@ -747,8 +770,8 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <StackPanel VerticalAlignment="Center" Spacing="2">
-                                    <TextBlock Text="{x:Bind GetText('Settings_DevTools_TranslationHotkey_Title'), Mode=OneWay}" FontWeight="SemiBold"/>
-                                    <TextBlock Text="{x:Bind GetText('Settings_DevTools_TranslationHotkey_Subtitle'), Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_DevTools_TranslationHotkey_Title'), Mode=OneWay}" FontWeight="SemiBold"/>
+                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_DevTools_TranslationHotkey_Subtitle'), Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                                 </StackPanel>
                                 <ToggleSwitch x:Name="BtnTranslationHotkey" Grid.Column="1" IsOn="{x:Bind IsTranslationHotkeyEnabled, Mode=TwoWay}" OnContent="{x:Bind GetText('Settings_ToggleOn'), Mode=OneWay}" OffContent="{x:Bind GetText('Settings_ToggleOff'), Mode=OneWay}"/>
                             </Grid>
@@ -761,7 +784,7 @@
                                     </Grid.ColumnDefinitions>
                                     <StackPanel Orientation="Horizontal" Grid.Column="1" Spacing="8">
                                         <ComboBox x:Name="CbTranslationModifier" Width="140" SelectionChanged="CbTranslationModifier_SelectionChanged"/>
-                                        <TextBlock Text="+" VerticalAlignment="Center" FontWeight="Bold"/>
+                                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="+" VerticalAlignment="Center" FontWeight="Bold"/>
                                         <ComboBox x:Name="CbTranslationKey" Width="100" SelectionChanged="CbTranslationKey_SelectionChanged"/>
                                     </StackPanel>
                                 </Grid>
@@ -774,8 +797,8 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <StackPanel VerticalAlignment="Center" Spacing="2">
-                                    <TextBlock Text="{x:Bind GetText('Settings_DevTools_ViewLog_Title'), Mode=OneWay}" FontWeight="SemiBold"/>
-                                    <TextBlock Text="{x:Bind GetText('Settings_DevTools_ViewLog_Subtitle'), Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_DevTools_ViewLog_Title'), Mode=OneWay}" FontWeight="SemiBold"/>
+                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_DevTools_ViewLog_Subtitle'), Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                                 </StackPanel>
                                 <Button Grid.Column="1" Content="{x:Bind GetText('Settings_DevTools_ViewLog_Button'), Mode=OneWay}" Click="OpenMissingStringsJson_Click" MinWidth="150"/>
                             </Grid>
@@ -787,8 +810,8 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <StackPanel VerticalAlignment="Center" Spacing="2">
-                                    <TextBlock Text="{x:Bind GetText('Settings_DevTools_LocateFile_Title'), Mode=OneWay}" FontWeight="SemiBold"/>
-                                    <TextBlock Text="{x:Bind GetText('Settings_DevTools_LocateFile_Subtitle'), Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_DevTools_LocateFile_Title'), Mode=OneWay}" FontWeight="SemiBold"/>
+                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_DevTools_LocateFile_Subtitle'), Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                                 </StackPanel>
                                 <Button Grid.Column="1" Content="{x:Bind GetText('Settings_DevTools_LocateFile_Button'), Mode=OneWay}" Click="LocateLanguageFile_Click" MinWidth="150"/>
                             </Grid>
@@ -800,12 +823,12 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <StackPanel VerticalAlignment="Center" Spacing="2">
-                                    <TextBlock Text="{x:Bind GetText('Settings_DevTools_CreateTemplate_Title'), Mode=OneWay}" FontWeight="SemiBold"/>
-                                    <TextBlock Text="{x:Bind GetText('Settings_DevTools_CreateTemplate_Subtitle'), Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_DevTools_CreateTemplate_Title'), Mode=OneWay}" FontWeight="SemiBold"/>
+                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_DevTools_CreateTemplate_Subtitle'), Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
-                                    <TextBox x:Name="TxtNewLangCode" PlaceholderText="es-es" Width="80" MaxLength="5" VerticalAlignment="Center"/>
+                                    <TextBox x:Name="TxtNewLangCode" FontFamily="{ThemeResource AppCustomFont}" PlaceholderText="es-es" Width="80" MaxLength="5" VerticalAlignment="Center"/>
                                     <Button Content="{x:Bind GetText('Settings_DevTools_CreateTemplate_Button'), Mode=OneWay}" Click="CreateNewLanguage_Click" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Grid>
@@ -817,8 +840,8 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <StackPanel VerticalAlignment="Center" Spacing="2">
-                                    <TextBlock Text="{x:Bind GetText('Settings_DevTools_Merge_Title'), Mode=OneWay}" FontWeight="SemiBold"/>
-                                    <TextBlock Text="{x:Bind GetText('Settings_DevTools_Merge_Subtitle'), Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_DevTools_Merge_Title'), Mode=OneWay}" FontWeight="SemiBold"/>
+                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_DevTools_Merge_Subtitle'), Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                                 </StackPanel>
                                 <Button Grid.Column="1" Content="{x:Bind GetText('Settings_DevTools_Merge_Button'), Mode=OneWay}" Click="MergeStrings_Click" Style="{StaticResource AccentButtonStyle}" MinWidth="150"/>
                             </Grid>
@@ -828,7 +851,7 @@
             </StackPanel>
 
             <StackPanel Spacing="12" Visibility="{x:Bind IsAdmin, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <TextBlock Text="{x:Bind GetText('Settings_DbBackup_SectionTitle'), Mode=OneWay}" FontWeight="Bold" FontSize="18" Margin="0,12,0,0"/>
+                <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_DbBackup_SectionTitle'), Mode=OneWay}" FontWeight="Bold" FontSize="18" Margin="0,12,0,0"/>
 
                 <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
                     <StackPanel Spacing="16">
@@ -839,8 +862,8 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel VerticalAlignment="Center" Spacing="2">
-                                <TextBlock Text="{x:Bind GetText('Settings_DbBackup_AutoTitle'), Mode=OneWay}" FontWeight="SemiBold"/>
-                                <TextBlock Text="{x:Bind GetText('Settings_DbBackup_AutoSubtitle'), Mode=OneWay}"
+                                <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_DbBackup_AutoTitle'), Mode=OneWay}" FontWeight="SemiBold"/>
+                                <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_DbBackup_AutoSubtitle'), Mode=OneWay}"
                                            Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                             </StackPanel>
                             <ToggleSwitch x:Name="CbPerformDbBackup" Grid.Column="1"
@@ -858,8 +881,8 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <StackPanel VerticalAlignment="Center" Spacing="2">
-                                    <TextBlock Text="{x:Bind GetText('Settings_DbBackup_PersistentTitle'), Mode=OneWay}" FontWeight="SemiBold"/>
-                                    <TextBlock Text="{x:Bind GetText('Settings_DbBackup_PersistentSubtitle'), Mode=OneWay}"
+                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_DbBackup_PersistentTitle'), Mode=OneWay}" FontWeight="SemiBold"/>
+                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_DbBackup_PersistentSubtitle'), Mode=OneWay}"
                                                Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                                 </StackPanel>
                                 <ToggleSwitch Grid.Column="1"
@@ -876,8 +899,8 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <StackPanel VerticalAlignment="Center" Spacing="2">
-                                    <TextBlock Text="{x:Bind GetText('Settings_DbBackup_EncryptTitle'), Mode=OneWay}" FontWeight="SemiBold"/>
-                                    <TextBlock Text="{x:Bind GetText('Settings_DbBackup_EncryptSubtitle'), Mode=OneWay}"
+                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_DbBackup_EncryptTitle'), Mode=OneWay}" FontWeight="SemiBold"/>
+                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_DbBackup_EncryptSubtitle'), Mode=OneWay}"
                                                Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                                 </StackPanel>
                                 <ToggleSwitch Grid.Column="1"
@@ -894,13 +917,13 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <StackPanel VerticalAlignment="Center" Spacing="2" Margin="0,0,16,0">
-                                    <TextBlock Text="{x:Bind GetText('Settings_DbBackup_LocationTitle'), Mode=OneWay}" FontWeight="SemiBold"/>
-                                    <TextBlock Text="{x:Bind GetText('Settings_DbBackup_LocationSubtitle'), Mode=OneWay}"
+                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_DbBackup_LocationTitle'), Mode=OneWay}" FontWeight="SemiBold"/>
+                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_DbBackup_LocationSubtitle'), Mode=OneWay}"
                                                Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
-                                    <TextBox Text="{x:Bind DatabaseBackupPath, Mode=OneWay}" IsReadOnly="True" Width="220" VerticalAlignment="Center" PlaceholderText="{x:Bind GetText('Settings_DbBackup_SelectFolder'), Mode=OneWay}"/>
+                                    <TextBox FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind DatabaseBackupPath, Mode=OneWay}" IsReadOnly="True" Width="220" VerticalAlignment="Center" PlaceholderText="{x:Bind GetText('Settings_DbBackup_SelectFolder'), Mode=OneWay}"/>
                                     <Button Content="{x:Bind GetText('Settings_DbBackup_BrowseButton'), Mode=OneWay}" Click="BrowseBackupFolder_Click" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Grid>
@@ -913,15 +936,15 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <StackPanel VerticalAlignment="Center" Spacing="2" Margin="0,0,16,0">
-                                    <TextBlock Text="{x:Bind GetText('Settings_DbRestore_Title'), Mode=OneWay, FallbackValue='Restore Database'}" FontWeight="SemiBold"/>
-                                    <TextBlock Text="{x:Bind GetText('Settings_DbRestore_Subtitle'), Mode=OneWay, FallbackValue='Restore your settings from a previous .bak or .dat file. The app will restart upon success.'}"
+                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_DbRestore_Title'), Mode=OneWay, FallbackValue='Restore Database'}" FontWeight="SemiBold"/>
+                                    <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_DbRestore_Subtitle'), Mode=OneWay, FallbackValue='Restore your settings from a previous .bak or .dat file. The app will restart upon success.'}"
                                                Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                                 </StackPanel>
 
                                 <Button Grid.Column="1" Click="RestoreDatabase_Click" VerticalAlignment="Center">
                                     <StackPanel Orientation="Horizontal" Spacing="8">
                                         <FontIcon Glyph="&#xE8B5;" FontSize="14"/>
-                                        <TextBlock Text="{x:Bind GetText('Settings_DbRestore_Button'), Mode=OneWay, FallbackValue='Restore Backup'}"/>
+                                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_DbRestore_Button'), Mode=OneWay, FallbackValue='Restore Backup'}"/>
                                     </StackPanel>
                                 </Button>
                             </Grid>
@@ -932,35 +955,35 @@
             </StackPanel>
 
             <StackPanel Spacing="12" Visibility="{x:Bind IsAdmin, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
-               <TextBlock Text="{x:Bind GetText('Settings_Recovery_SectionTitle'), Mode=OneWay}" FontWeight="Bold" FontSize="18" Margin="0,12,0,0"/>
+                <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_Recovery_SectionTitle'), Mode=OneWay}" FontWeight="Bold" FontSize="18" Margin="0,12,0,0"/>
 
                 <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
 
-                            <StackPanel VerticalAlignment="Center" Spacing="2">
-                                <TextBlock Text="{x:Bind GetText('Settings_RevertTitle'), Mode=OneWay}" FontWeight="SemiBold"/>
-                                <TextBlock Text="{x:Bind GetText('Settings_RevertDesc'), Mode=OneWay}"
+                        <StackPanel VerticalAlignment="Center" Spacing="2">
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_RevertTitle'), Mode=OneWay}" FontWeight="SemiBold"/>
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_RevertDesc'), Mode=OneWay}"
                                            Style="{StaticResource CaptionTextBlockStyle}"
                                            Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
                                            TextWrapping="Wrap"
                                            MaxWidth="800"
                                            HorizontalAlignment="Left"/>
-                            </StackPanel>
+                        </StackPanel>
 
-                            <Button Grid.Column="1"
+                        <Button Grid.Column="1"
                                     Click="BtnRevertToDefault_Click"
                                     Padding="16,8"
                                     VerticalAlignment="Center">
-                                <StackPanel Orientation="Horizontal" Spacing="8">
-                                    <FontIcon Glyph="&#xE7A7;" FontSize="16"/>
-                                    <TextBlock Text="{x:Bind GetText('Settings_RevertButton'), Mode=OneWay}"/>
-                                </StackPanel>
-                            </Button>
-                        </Grid>
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <FontIcon Glyph="&#xE7A7;" FontSize="16"/>
+                                <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_RevertButton'), Mode=OneWay}"/>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
                 </Border>
 
                 <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
@@ -971,9 +994,9 @@
                         </Grid.ColumnDefinitions>
 
                         <StackPanel VerticalAlignment="Center" Spacing="2">
-                            <TextBlock Text="{x:Bind GetText('Settings_ShowRestorePointOnStart'), Mode=OneWay, FallbackValue='Prompt to create a restore point on startup'}"
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_ShowRestorePointOnStart'), Mode=OneWay, FallbackValue='Prompt to create a restore point on startup'}"
                                        FontWeight="SemiBold"/>
-                            <TextBlock Text="{x:Bind GetText('Settings_ShowRestorePointOnStartDesc'), Mode=OneWay, FallbackValue='Shows a prompt to create a system restore point every time you launch the application.'}"
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_ShowRestorePointOnStartDesc'), Mode=OneWay, FallbackValue='Shows a prompt to create a system restore point every time you launch the application.'}"
                                        Style="{StaticResource CaptionTextBlockStyle}"
                                        Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
                                        TextWrapping="Wrap"/>
@@ -987,7 +1010,7 @@
                                 VerticalAlignment="Center">
                             <StackPanel Orientation="Horizontal" Spacing="8">
                                 <FontIcon Glyph="&#xE72C;" FontSize="16"/>
-                                <TextBlock x:Name="TxtResetRestorePrompt" Text="{x:Bind GetText('Settings_RestorePrompt_Button'), Mode=OneWay, FallbackValue='Re-enable Prompt'}"/>
+                                <TextBlock x:Name="TxtResetRestorePrompt" FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_RestorePrompt_Button'), Mode=OneWay, FallbackValue='Re-enable Prompt'}"/>
                             </StackPanel>
                         </Button>
                     </Grid>
@@ -1001,9 +1024,9 @@
                         </Grid.ColumnDefinitions>
 
                         <StackPanel VerticalAlignment="Center" Spacing="2">
-                            <TextBlock Text="{x:Bind GetText('Settings_PitrConfig_Title'), Mode=OneWay, FallbackValue='Point-in-Time Restore Configuration'}"
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_PitrConfig_Title'), Mode=OneWay, FallbackValue='Point-in-Time Restore Configuration'}"
                                        FontWeight="SemiBold"/>
-                            <TextBlock Text="{x:Bind GetText('Settings_PitrConfig_Desc'), Mode=OneWay, FallbackValue='Configure advanced automated snapshots, storage limits, and recovery options (Windows 11 25H2+).'}"
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_PitrConfig_Desc'), Mode=OneWay, FallbackValue='Configure advanced automated snapshots, storage limits, and recovery options (Windows 11 25H2+).'}"
                                        Style="{StaticResource CaptionTextBlockStyle}"
                                        Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
                                        TextWrapping="Wrap"/>
@@ -1016,7 +1039,7 @@
                                 VerticalAlignment="Center">
                             <StackPanel Orientation="Horizontal" Spacing="8">
                                 <FontIcon Glyph="&#xE81C;" FontSize="16"/>
-                                <TextBlock Text="{x:Bind GetText('Settings_PitrConfig_Button'), Mode=OneWay, FallbackValue='Configure PITR'}"/>
+                                <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_PitrConfig_Button'), Mode=OneWay, FallbackValue='Configure PITR'}"/>
                             </StackPanel>
                         </Button>
                     </Grid>
@@ -1024,7 +1047,7 @@
             </StackPanel>
 
             <StackPanel Spacing="12">
-                <TextBlock Text="{x:Bind GetText('Settings_Update_SectionTitle'), Mode=OneWay}" FontWeight="Bold" FontSize="18" Margin="0,12,0,0"/>
+                <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_Update_SectionTitle'), Mode=OneWay}" FontWeight="Bold" FontSize="18" Margin="0,12,0,0"/>
 
                 <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
                     <StackPanel Spacing="16">
@@ -1034,8 +1057,8 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel VerticalAlignment="Center" Spacing="2">
-                                <TextBlock Text="{x:Bind GetText('Settings_Update_AutoTitle'), Mode=OneWay}" FontWeight="SemiBold"/>
-                                <TextBlock Text="{x:Bind GetText('Settings_Update_AutoSubtitle'), Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                                <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_Update_AutoTitle'), Mode=OneWay}" FontWeight="SemiBold"/>
+                                <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_Update_AutoSubtitle'), Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
                             </StackPanel>
                             <ToggleSwitch Grid.Column="1" IsOn="{x:Bind IsUpdateCheckRequired, Mode=TwoWay}" OnContent="{x:Bind GetText('Settings_Update_ToggleOn'), Mode=OneWay}" OffContent="{x:Bind GetText('Settings_Update_ToggleOff'), Mode=OneWay}"/>
                         </Grid>
@@ -1048,8 +1071,8 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel VerticalAlignment="Center" Spacing="2">
-                                <TextBlock Text="{x:Bind GetText('Settings_Update_ManualTitle'), Mode=OneWay}" FontWeight="SemiBold"/>
-                                <TextBlock Text="{x:Bind GetText('Settings_Update_ManualSubtitle'), Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                                <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_Update_ManualTitle'), Mode=OneWay}" FontWeight="SemiBold"/>
+                                <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_Update_ManualSubtitle'), Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
                             </StackPanel>
                             <Button Grid.Column="1" Content="{x:Bind GetText('Settings_Update_CheckButton'), Mode=OneWay}" Width="200" Click="ManualUpdateCheck_Click"/>
                         </Grid>
@@ -1058,8 +1081,8 @@
             </StackPanel>
 
             <StackPanel HorizontalAlignment="Right" Margin="0,10,5,0" Opacity="0.6">
-                <TextBlock Text="EvolveOS Optimizer" FontFamily="{StaticResource Jura-Bold}" HorizontalAlignment="Center" Style="{StaticResource CaptionTextBlockStyle}"/>
-                <TextBlock Text="{Binding DisplayTweakVersion}" FontFamily="{StaticResource Jura}" HorizontalAlignment="Center" Style="{StaticResource CaptionTextBlockStyle}"/>
+                <TextBlock Text="EvolveOS Optimizer" FontFamily="{ThemeResource AppCustomFont}" HorizontalAlignment="Center" Style="{StaticResource CaptionTextBlockStyle}"/>
+                <TextBlock Text="{Binding DisplayTweakVersion}" FontFamily="{ThemeResource AppCustomFont}" HorizontalAlignment="Center" Style="{StaticResource CaptionTextBlockStyle}"/>
             </StackPanel>
 
         </StackPanel>

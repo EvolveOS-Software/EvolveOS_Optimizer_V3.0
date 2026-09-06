@@ -239,7 +239,7 @@
                                                                     <Button.Flyout>
                                                                         <Flyout Placement="LeftEdgeAlignedTop">
                                                                             <StackPanel Width="320" Spacing="8">
-                                                                                <TextBlock Text="AI Explainer" FontFamily="{StaticResource Jura-SemiBold}" FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                                                                <TextBlock Text="AI Explainer" FontFamily="{ThemeResource AppCustomFont}" FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                                                 <TextBlock x:Name="AiExplanationText" TextWrapping="Wrap" FontSize="12" Opacity="0.9"/>
                                                                             </StackPanel>
                                                                         </Flyout>
@@ -277,7 +277,7 @@
                                                             <TextBlock Text="{Binding Policy.ValueName}" FontSize="12" Grid.Row="1" Grid.Column="1"/>
 
                                                             <TextBlock helpers:Loc.Key="GroupPolicyPage_RawRegSystemValue" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="12" Grid.Row="2" Grid.Column="0"/>
-                                                            <TextBlock Text="{Binding CurrentValueDisplay}" FontFamily="Consolas" Foreground="{ThemeResource SystemFillColorSuccessBrush}" FontSize="12" Grid.Row="2" Grid.Column="1"/>
+                                                            <TextBlock Text="{Binding CurrentValueDisplay}" FontFamily="{ThemeResource AppCustomFont}" Foreground="{ThemeResource SystemFillColorSuccessBrush}" FontSize="12" Grid.Row="2" Grid.Column="1"/>
                                                         </Grid>
                                                     </StackPanel>
                                                 </Expander>
