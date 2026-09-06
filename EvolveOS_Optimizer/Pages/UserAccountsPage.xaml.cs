@@ -14,8 +14,15 @@ namespace EvolveOS_Optimizer.Pages
             this.InitializeComponent();
 
             ViewModel = new UserAccountsViewModel();
-
             this.DataContext = ViewModel;
+
+            this.Unloaded += UserAccountsPage_Unloaded;
+        }
+
+        private void UserAccountsPage_Unloaded(object sender, RoutedEventArgs e)
+        {
+            this.Unloaded -= UserAccountsPage_Unloaded;
+            ViewModel.Cleanup();
         }
 
         private void FormUsername_PreviewKeyDown(object sender, KeyRoutedEventArgs e)

@@ -19,7 +19,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
     public class UserAccountsViewModel : ViewModelBase
     {
         private readonly string _connectionString = SqlConnectionHelper.connectReturn();
-        private DispatcherTimer _timer;
+        private DispatcherTimer? _timer;
 
         private readonly PasswordValidator _passwordValidator = new PasswordValidator();
         public PasswordViewModel PasswordValidation { get; } = new PasswordViewModel();
@@ -732,5 +732,14 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private static extern bool GetOpenFileName([In, Out] OpenFileName ofn);
 
         #endregion
+
+        public void Cleanup()
+        {
+            if (_timer != null)
+            {
+                _timer.Stop();
+                _timer = null;
+            }
+        }
     }
 }
