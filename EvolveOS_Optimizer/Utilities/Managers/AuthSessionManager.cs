@@ -1,9 +1,8 @@
 // Copyright (c) 2026 EvolveOS Software
-//
-// Licensed under the MIT License. 
-// See the LICENSE file in the project root for more information.
+// Licensed under the MIT License.
 
 using Microsoft.Win32;
+using EvolveOS_Optimizer.Core.Model;
 
 namespace EvolveOS_Optimizer.Utilities.Managers
 {
@@ -18,6 +17,8 @@ namespace EvolveOS_Optimizer.Utilities.Managers
 
             Registry.SetValue(FullRegistryPath, "SessionExpiry", expiry.ToString("o"), RegistryValueKind.String);
             Registry.SetValue(FullRegistryPath, "IsAutoLoginEnabled", "True", RegistryValueKind.String);
+
+            Registry.SetValue(FullRegistryPath, "UserType", UserSession.UserType ?? "Guest", RegistryValueKind.String);
         }
 
         public static void ClearSession()
@@ -30,6 +31,7 @@ namespace EvolveOS_Optimizer.Utilities.Managers
                     {
                         key.DeleteValue("IsAutoLoginEnabled", false);
                         key.DeleteValue("SessionExpiry", false);
+                        key.DeleteValue("UserType", false); // Clear the saved role
                     }
                 }
 
@@ -45,6 +47,7 @@ namespace EvolveOS_Optimizer.Utilities.Managers
 
             object? isEnabledObj = Registry.GetValue(FullRegistryPath, "IsAutoLoginEnabled", "False");
             object? expiryObj = Registry.GetValue(FullRegistryPath, "SessionExpiry", string.Empty);
+            object? userTypeObj = Registry.GetValue(FullRegistryPath, "UserType", "Guest");
 
             string isEnabled = isEnabledObj?.ToString() ?? "False";
             string expiryStr = expiryObj?.ToString() ?? string.Empty;
@@ -56,6 +59,9 @@ namespace EvolveOS_Optimizer.Utilities.Managers
                 if (DateTime.Now < expiry)
                 {
                     username = savedUsername;
+
+                    UserSession.UserType = userTypeObj?.ToString() ?? "Guest";
+
                     return !string.IsNullOrEmpty(username);
                 }
             }
