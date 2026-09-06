@@ -180,6 +180,9 @@
     <sys:String x:Key="Settings_AccentColor_Title">Accent Color</sys:String>
     <sys:String x:Key="Settings_AccentColor_Subtitle">Pick a color that matches your style</sys:String>
 
+    <sys:String x:Key="Settings_NavGlow_Title">Navigation Bar Glow</sys:String>
+    <sys:String x:Key="Settings_NavGlow_Subtitle">Enables a soft accent-colored halo effect around the active navigation indicator.</sys:String>
+
     <sys:String x:Key="Settings_CustomColor_Header">Custom Color</sys:String>
     <sys:String x:Key="Settings_ApplyColor_Button">Apply Custom Color</sys:String>
 

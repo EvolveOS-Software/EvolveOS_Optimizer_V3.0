@@ -98,6 +98,8 @@ namespace EvolveOS_Optimizer
             string savedBackdrop = SettingsEngine.Backdrop;
             UIHelper.ApplyBackdrop(this, savedBackdrop);
 
+            SmartNav.IsGlowEnabled = SettingsEngine.IsNavGlowEnabled;
+
             this.Title = "EvolveOS Optimizer";
 
             if (File.Exists(iconPath))
@@ -532,6 +534,14 @@ namespace EvolveOS_Optimizer
             TokenManager.DeleteToken();
 
             SettingsEngine.SelfReboot();
+        }
+
+        public void UpdateNavGlowState()
+        {
+            if (SmartNav != null)
+            {
+                SmartNav.IsGlowEnabled = SettingsEngine.IsNavGlowEnabled;
+            }
         }
         #endregion
 

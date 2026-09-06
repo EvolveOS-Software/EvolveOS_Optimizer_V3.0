@@ -439,6 +439,31 @@
                         </StackPanel>
                     </StackPanel>
                 </Border>
+
+                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel VerticalAlignment="Center" Spacing="2">
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}"
+                                       Text="{x:Bind GetText('Settings_NavGlow_Title'), Mode=OneWay, FallbackValue='Navigation Bar Glow'}"
+                                       FontWeight="SemiBold"/>
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}"
+                                       Text="{x:Bind GetText('Settings_NavGlow_Subtitle'), Mode=OneWay, FallbackValue='Enables a soft accent-colored halo effect around the active navigation indicator.'}"
+                                       Style="{StaticResource CaptionTextBlockStyle}"
+                                       Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                                       TextWrapping="Wrap"/>
+                        </StackPanel>
+                        <ToggleSwitch Grid.Column="1"
+                                      IsOn="{x:Bind IsNavGlowEnabled, Mode=TwoWay}"
+                                      Toggled="NavGlowToggle_Toggled"
+                                      OnContent="{x:Bind GetText('Settings_ToggleOn'), Mode=OneWay, FallbackValue='On'}"
+                                      OffContent="{x:Bind GetText('Settings_ToggleOff'), Mode=OneWay, FallbackValue='Off'}"/>
+                    </Grid>
+                </Border>
+
             </StackPanel>
 
             <StackPanel Spacing="12">

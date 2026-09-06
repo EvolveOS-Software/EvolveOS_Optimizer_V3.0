@@ -180,6 +180,9 @@
     <sys:String x:Key="Settings_AccentColor_Title">Accentkleur</sys:String>
     <sys:String x:Key="Settings_AccentColor_Subtitle">Kies een kleur die bij uw stijl past</sys:String>
 
+    <sys:String x:Key="Settings_NavGlow_Title">Navigatiebalk gloed</sys:String>
+    <sys:String x:Key="Settings_NavGlow_Subtitle">Schakelt een zacht, accentkleurig halo effect in rond de actieve navigatie-indicator.</sys:String>
+
     <sys:String x:Key="Settings_CustomColor_Header">Aangepaste kleur</sys:String>
     <sys:String x:Key="Settings_ApplyColor_Button">Kleur toepassen</sys:String>
 

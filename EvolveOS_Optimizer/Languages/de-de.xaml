@@ -180,6 +180,9 @@
     <sys:String x:Key="Settings_AccentColor_Title">Akzentfarbe</sys:String>
     <sys:String x:Key="Settings_AccentColor_Subtitle">Wählen Sie eine Farbe, die zu Ihrem Stil passt</sys:String>
 
+    <sys:String x:Key="Settings_NavGlow_Title">Navigationsleisten Leuchten</sys:String>
+    <sys:String x:Key="Settings_NavGlow_Subtitle">Aktiviert einen sanften, akzentfarbenen Halo Effekt um den aktiven Navigationsindikator.</sys:String>
+
     <sys:String x:Key="Settings_CustomColor_Header">Eigene Farbe</sys:String>
     <sys:String x:Key="Settings_ApplyColor_Button">Eigene Farbe anwenden</sys:String>
 

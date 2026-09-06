@@ -55,6 +55,12 @@ namespace EvolveOS_Optimizer.Pages
             set => SettingsEngine.IsUpdateCheckRequired = value;
         }
 
+        public bool IsNavGlowEnabled
+        {
+            get => SettingsEngine.IsNavGlowEnabled;
+            set => SettingsEngine.IsNavGlowEnabled = value;
+        }
+
         private bool _isAdmin;
         public bool IsAdmin
         {
@@ -416,6 +422,20 @@ namespace EvolveOS_Optimizer.Pages
             SettingsEngine.AccentColor = _pendingHexColor;
 
             ((App)Application.Current).UpdateGlobalAccentColor(_pendingHexColor);
+        }
+
+        private void NavGlowToggle_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (sender is ToggleSwitch toggleSwitch)
+            {
+                SettingsEngine.IsNavGlowEnabled = toggleSwitch.IsOn;
+                IsNavGlowEnabled = toggleSwitch.IsOn;
+
+                if (MainWindow.Instance != null)
+                {
+                    MainWindow.Instance.UpdateNavGlowState();
+                }
+            }
         }
         #endregion
 

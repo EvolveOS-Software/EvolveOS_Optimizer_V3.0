@@ -66,6 +66,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["Language"] = "en-us",
             ["EnableHoverGlow"] = true,
             ["EnableSelectionGlow"] = true,
+            ["EnableNavGlow"] = true,
             ["ScriptsPath"] = string.Empty,
             ["AllScriptsPaths"] = string.Empty,
             ["EnableIpBlur"] = true,
@@ -173,6 +174,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static string Language { get => (string)_cachedSettings["Language"]; set => ChangingParameters("Language", value); }
         internal static bool IsHoverGlowEnabled { get => (bool)_cachedSettings["EnableHoverGlow"]; set => ChangingParameters("EnableHoverGlow", value); }
         internal static bool IsSelectionGlowEnabled { get => (bool)_cachedSettings["EnableSelectionGlow"]; set => ChangingParameters("EnableSelectionGlow", value); }
+        internal static bool IsNavGlowEnabled { get => (bool)_cachedSettings["EnableNavGlow"]; set => ChangingParameters("EnableNavGlow", value); }
         internal static string UserScriptsPath { get => (string)_cachedSettings["ScriptsPath"]; set => ChangingParameters("ScriptsPath", value); }
         internal static string LastLocation { get => (string)_cachedSettings["LastLocation"]; set => ChangingParameters("LastLocation", value); }
         internal static bool IsRunOnStartUp { get => (bool)_cachedSettings["EnableRunOnStartup"]; set { if ((bool)_cachedSettings["EnableRunOnStartup"] != value) { ChangingParameters("EnableRunOnStartup", value); ToggleStartup(value, IsStartMinimized); } } }

@@ -100,21 +100,8 @@
                                 </VisualStateGroup>
 
                                 <VisualStateGroup x:Name="CheckStates">
-                                    <VisualState x:Name="Checked">
-                                        <Storyboard>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
-                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource MyDynamicAccentBrush}"/>
-                                            </ObjectAnimationUsingKeyFrames>
-                                        </Storyboard>
-                                    </VisualState>
-
-                                    <VisualState x:Name="Unchecked">
-                                        <Storyboard>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
-                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlForeground}"/>
-                                            </ObjectAnimationUsingKeyFrames>
-                                        </Storyboard>
-                                    </VisualState>
+                                    <VisualState x:Name="Checked" />
+                                    <VisualState x:Name="Unchecked" />
                                 </VisualStateGroup>
                             </VisualStateManager.VisualStateGroups>
 
@@ -255,6 +242,12 @@
 
     <Grid Width="Auto" HorizontalAlignment="Left" Background="Transparent" SizeChanged="OnControlSizeChanged" Loaded="OnControlLoaded" PointerWheelChanged="RadialMenuContainer_PointerWheelChanged">
 
+        <ContentControl x:Name="ThemeBrushResolver" 
+                    Foreground="{ThemeResource TextFillColorPrimaryBrush}" 
+                    Background="{ThemeResource MyDynamicAccentBrush}" 
+                    BorderBrush="{ThemeResource TextControlForeground}" 
+                    Visibility="Collapsed"/>
+
         <Grid x:Name="RadialMenuHitBox" 
               Width="150" Height="200" 
               Margin="27,0,0,0" 
@@ -382,16 +375,35 @@
         </Border>
 
         <Grid x:Name="SlidingPillContainer" Margin="7.5,20,0,15" HorizontalAlignment="Left" Canvas.ZIndex="15" IsHitTestVisible="False">
-            <Border x:Name="ActiveSelectionPill"
-                    Width="34" Height="34"
-                    HorizontalAlignment="Left" VerticalAlignment="Top"
-                    Margin="3,3,0,0"
-                    CornerRadius="17"
-                    Background="{ThemeResource SystemListLowColor}">
-                <Border.RenderTransform>
+
+            <Grid x:Name="ActiveSelectionGroup" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="3,3,0,0">
+                <Grid.RenderTransform>
                     <TranslateTransform x:Name="ActiveSelectionTranslate" Y="0"/>
-                </Border.RenderTransform>
-            </Border>
+                </Grid.RenderTransform>
+
+                <Grid x:Name="ActiveSelectionGlow" Visibility="Visible">
+                    <Border Width="34" Height="34" CornerRadius="17" Background="{ThemeResource MyDynamicAccentBrush}" Opacity="0.05">
+                        <Border.RenderTransform>
+                            <ScaleTransform ScaleX="1.25" ScaleY="1.25" CenterX="17" CenterY="17"/>
+                        </Border.RenderTransform>
+                    </Border>
+                    <Border Width="34" Height="34" CornerRadius="17" Background="{ThemeResource MyDynamicAccentBrush}" Opacity="0.12">
+                        <Border.RenderTransform>
+                            <ScaleTransform ScaleX="1.15" ScaleY="1.15" CenterX="17" CenterY="17"/>
+                        </Border.RenderTransform>
+                    </Border>
+                    <Border Width="34" Height="34" CornerRadius="17" Background="{ThemeResource MyDynamicAccentBrush}" Opacity="0.20">
+                        <Border.RenderTransform>
+                            <ScaleTransform ScaleX="1.08" ScaleY="1.08" CenterX="17" CenterY="17"/>
+                        </Border.RenderTransform>
+                    </Border>
+                </Grid>
+
+                <Border x:Name="ActiveSelectionPill"
+                        Width="34" Height="34"
+                        CornerRadius="17"
+                        Background="{ThemeResource SystemListLowColor}"/>
+            </Grid>
         </Grid>
 
         <StackPanel x:Name="NavStackPanel" Orientation="Vertical" Margin="7.5,20,0,15" HorizontalAlignment="Left" Canvas.ZIndex="20">

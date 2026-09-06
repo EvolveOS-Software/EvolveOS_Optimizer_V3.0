@@ -180,6 +180,9 @@
     <sys:String x:Key="Settings_AccentColor_Title">Colore principale</sys:String>
     <sys:String x:Key="Settings_AccentColor_Subtitle">Scegli un colore che si adatta al tuo stile</sys:String>
 
+    <sys:String x:Key="Settings_NavGlow_Title">Bagliore della barra di navigazione</sys:String>
+    <sys:String x:Key="Settings_NavGlow_Subtitle">Abilita un leggero effetto alone con il colore di accento attorno all'indicatore di navigazione attivo.</sys:String>
+
     <sys:String x:Key="Settings_CustomColor_Header">Colore personalizzato</sys:String>
     <sys:String x:Key="Settings_ApplyColor_Button">Applica colore personalizzato</sys:String>
 

@@ -180,6 +180,9 @@
     <sys:String x:Key="Settings_AccentColor_Title">Couleur d'accentuation</sys:String>
     <sys:String x:Key="Settings_AccentColor_Subtitle">Choisissez une couleur qui correspond à votre style</sys:String>
 
+    <sys:String x:Key="Settings_NavGlow_Title">Lueur de la barre de navigation</sys:String>
+    <sys:String x:Key="Settings_NavGlow_Subtitle">Active un doux effet de halo de couleur d'accentuation autour de l'indicateur de navigation actif.</sys:String>
+
     <sys:String x:Key="Settings_CustomColor_Header">Couleur personnalisée</sys:String>
     <sys:String x:Key="Settings_ApplyColor_Button">Appliquer la couleur</sys:String>
 

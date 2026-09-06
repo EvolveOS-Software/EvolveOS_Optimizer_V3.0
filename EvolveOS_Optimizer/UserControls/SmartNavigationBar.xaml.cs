@@ -28,6 +28,19 @@ namespace EvolveOS_Optimizer.UserControls
         private double _lastHeight = 0;
         private double _currentRadialAngle = 0;
 
+        public bool IsGlowEnabled
+        {
+            get => ActiveSelectionGlow?.Visibility == Visibility.Visible;
+            set
+            {
+                if (ActiveSelectionGlow != null)
+                {
+                    ActiveSelectionGlow.Visibility = value ? Visibility.Visible : Visibility.Collapsed;
+                    UpdateNavIconColors();
+                }
+            }
+        }
+
         public SmartNavigationBar()
         {
             this.InitializeComponent();
@@ -67,6 +80,23 @@ namespace EvolveOS_Optimizer.UserControls
                 });
 
                 CloseRadialMenu();
+                UpdateNavIconColors();
+            }
+        }
+
+        private void UpdateNavIconColors()
+        {
+            if (NavStackPanel == null || ThemeBrushResolver == null) return;
+
+            var activeBrush = IsGlowEnabled ? ThemeBrushResolver.Foreground : ThemeBrushResolver.Background;
+            var unselectedBrush = ThemeBrushResolver.BorderBrush;
+
+            foreach (var child in NavStackPanel.Children)
+            {
+                if (child is RadioButton rb)
+                {
+                    rb.Foreground = (rb.IsChecked == true) ? activeBrush : unselectedBrush;
+                }
             }
         }
 
