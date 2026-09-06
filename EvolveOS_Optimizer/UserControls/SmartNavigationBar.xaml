@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <UserControl
     x:Class="EvolveOS_Optimizer.UserControls.SmartNavigationBar"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -26,7 +27,9 @@
                                         <Storyboard>
                                             <DoubleAnimation Storyboard.TargetName="TextTranslate" Storyboard.TargetProperty="X" To="-40" Duration="0:0:0.2"/>
                                             <DoubleAnimation Storyboard.TargetName="NavTextBox" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.1"/>
-                                            <DoubleAnimation Storyboard.TargetName="HoverPill" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.2"/>
+
+                                            <DoubleAnimation Storyboard.TargetName="HoverPillContainer" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.2"/>
+                                            <DoubleAnimation Storyboard.TargetName="HoverPillDarkOverlay" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.2"/>
 
                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="NavTextBox" Storyboard.TargetProperty="Visibility">
                                                 <DiscreteObjectKeyFrame KeyTime="0:0:0.2" Value="Collapsed"/>
@@ -47,7 +50,21 @@
                                             </ObjectAnimationUsingKeyFrames>
 
                                             <DoubleAnimation Storyboard.TargetName="NavTextBox" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.2"/>
-                                            <DoubleAnimation Storyboard.TargetName="HoverPill" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.2"/>
+
+                                            <DoubleAnimation Storyboard.TargetName="HoverPillContainer" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.2"/>
+
+                                            <!-- Breathing effect (Begins after 2 seconds) -->
+                                            <DoubleAnimation Storyboard.TargetName="HoverPillDarkOverlay" 
+                                                             Storyboard.TargetProperty="Opacity" 
+                                                             From="0.0" To="0.4" 
+                                                             Duration="0:0:1.2" 
+                                                             BeginTime="0:0:2" 
+                                                             AutoReverse="True" 
+                                                             RepeatBehavior="Forever">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <SineEase EasingMode="EaseInOut"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
                                         </Storyboard>
                                     </VisualState>
 
@@ -86,14 +103,22 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
 
-                                <Border x:Name="HoverPill" 
-                                        Grid.Column="0" 
-                                        Grid.ColumnSpan="2"
-                                        Margin="2,3,4,3"
-                                        CornerRadius="17" 
-                                        Opacity="0"
-                                        IsHitTestVisible="False"
-                                        Background="{ThemeResource SystemListLowColor}"/>
+                                <Grid x:Name="HoverPillContainer"
+                                      Grid.Column="0" 
+                                      Grid.ColumnSpan="2"
+                                      Margin="2,3,4,3"
+                                      Opacity="0"
+                                      IsHitTestVisible="False">
+
+                                    <Border x:Name="HoverPill" 
+                                            CornerRadius="17" 
+                                            Background="{ThemeResource SystemListLowColor}"/>
+
+                                    <Border x:Name="HoverPillDarkOverlay" 
+                                            CornerRadius="17" 
+                                            Opacity="0"
+                                            Background="{ThemeResource SystemControlBackgroundBaseMediumLowBrush}"/>
+                                </Grid>
 
                                 <Border x:Name="CheckedPill" 
                                         Grid.Column="0" 
@@ -200,7 +225,7 @@
             </Setter>
         </Style>
 
-       
+
     </UserControl.Resources>
 
     <Grid Width="Auto" HorizontalAlignment="Left" Background="Transparent" SizeChanged="OnControlSizeChanged" Loaded="OnControlLoaded" PointerWheelChanged="RadialMenuContainer_PointerWheelChanged">
