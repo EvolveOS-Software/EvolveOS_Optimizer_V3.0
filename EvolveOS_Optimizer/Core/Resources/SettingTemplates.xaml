@@ -40,7 +40,6 @@
                                 </VisualState>
                                 <VisualState x:Name="Unchecked">
                                     <VisualState.Setters>
-                                        <!-- Makes the border completely invisible when not selected -->
                                         <Setter Target="RootBorder.BorderBrush" Value="Transparent" />
                                     </VisualState.Setters>
                                 </VisualState>
@@ -167,7 +166,6 @@
         <StackPanel Visibility="{x:Bind IsVisible, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
                     Margin="0,0,0,2">
 
-            <!-- STANDARD SETTINGS CARD -->
             <Grid Visibility="{x:Bind IsCustomCard, Mode=OneWay, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
                 <Grid>
                     <controls:SettingsCard
@@ -241,7 +239,7 @@
                 <controls:SettingsExpander HeaderIcon="{x:Bind Converter={StaticResource IconConverter}}"
                                            CornerRadius="{x:Bind ChildCornerRadius, Mode=OneWay}"
                                            BorderThickness="1,0,1,1"
-                                           IsExpanded="False"
+                                           IsExpanded="True"
                                            HorizontalAlignment="Stretch"
                                            IsEnabled="{x:Bind EffectiveIsEnabled, Mode=OneWay}">
 

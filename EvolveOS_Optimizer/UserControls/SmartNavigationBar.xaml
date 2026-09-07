@@ -498,7 +498,7 @@
                          Tag="{x:Bind GetText('Nav_Customize'), Mode=OneTime}"
                          Checked="OnNavButtonChecked" RightTapped="OnNavButtonRightTapped">
                 <Viewbox Width="22" Height="22" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <PathIcon Data="{StaticResource CustomizeIconPath}"/>
+                    <fluentIcons:SymbolIcon Symbol="PaintBrush" />
                 </Viewbox>
             </RadioButton>
 

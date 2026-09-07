@@ -1897,6 +1897,7 @@
     <sys:String x:Key="AdvancedUtils_FileEncryptor_Btn">Open Versleuteling</sys:String>
     <sys:String x:Key="AdvancedUtils_PwdGen_Title">Wachtwoordgenerator</sys:String>
     <sys:String x:Key="AdvancedUtils_PwdGen_Desc">Open de wachtwoordgenerator snel met een globale sneltoets.</sys:String>
+    <sys:String x:Key="AdvancedUtils_PwdGen_OpenBtn">Open Generator</sys:String>
     <!-- endregion Advanced Utils Page -->
 
     <!--#region File/Folder Encryption/Decryption -->

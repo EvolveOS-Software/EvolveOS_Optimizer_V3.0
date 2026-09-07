@@ -77,7 +77,6 @@
                 </Grid>
             </Border>
 
-            <!-- NEW SECURE FILE SHREDDER CARD -->
             <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                     BorderThickness="1"
@@ -107,36 +106,41 @@
                 </Grid>
             </Border>
 
-            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                    BorderThickness="1"
-                    CornerRadius="4"
-                    Padding="20">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
+            <Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" MinHeight="90" IsExpanded="True">
+                <Expander.Header>
+                    <Grid Margin="4,8,0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
 
-                    <StackPanel VerticalAlignment="Center" Spacing="2">
-                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" helpers:Loc.Key="AdvancedUtils_PwdGen_Title" FontWeight="SemiBold"/>
-                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" helpers:Loc.Key="AdvancedUtils_PwdGen_Desc" 
-                                   Style="{StaticResource CaptionTextBlockStyle}"
-                                   Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" 
-                                   TextWrapping="Wrap"/>
-                    </StackPanel>
+                        <StackPanel VerticalAlignment="Center" Spacing="2">
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" helpers:Loc.Key="AdvancedUtils_PwdGen_Title" FontWeight="SemiBold"/>
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" helpers:Loc.Key="AdvancedUtils_PwdGen_Desc"
+                           Style="{StaticResource CaptionTextBlockStyle}"
+                           Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                           TextWrapping="Wrap"/>
+                        </StackPanel>
 
-                    <StackPanel Grid.Column="1" Orientation="Vertical" Spacing="16" VerticalAlignment="Center">
+                        <Button Grid.Column="1"
+                                Content= "{helpers:ResourceString Key=AdvancedUtils_PwdGen_OpenBtn}"
+                                VerticalAlignment="Center"
+                                Click="OpenPasswordGenerator_Click"
+                                FontFamily="{ThemeResource AppCustomFont}"/>
+                    </Grid>
+                </Expander.Header>
+
+                <Expander.Content>
+                    <StackPanel Orientation="Vertical" Spacing="16" Margin="0,8,0,0">
 
                         <ToggleSwitch IsOn="{x:Bind ViewModel.UseHotkey, Mode=TwoWay}"
-                                      OnContent="Hotkey Enabled"
-                                      OffContent="Hotkey Disabled"
-                                      Margin="0"
-                                      FontFamily="{ThemeResource AppCustomFont}"
-                                      HorizontalAlignment="Right"/>
+                          OnContent="Hotkey Enabled"
+                          OffContent="Hotkey Disabled"
+                          Margin="0"
+                          FontFamily="{ThemeResource AppCustomFont}"
+                          HorizontalAlignment="Left"/>
 
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
-
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="8">
                             <ComboBox FontFamily="{ThemeResource AppCustomFont}"
                                       ItemsSource="{x:Bind ViewModel.KeyboardModifiers, Mode=OneWay}"
                                       SelectedItem="{Binding PasswordGenModifier, Mode=TwoWay}"
@@ -166,11 +170,10 @@
                                     </DataTemplate>
                                 </ComboBox.ItemTemplate>
                             </ComboBox>
-
                         </StackPanel>
                     </StackPanel>
-                </Grid>
-            </Border>
+                </Expander.Content>
+            </Expander>
 
         </StackPanel>
     </Grid>

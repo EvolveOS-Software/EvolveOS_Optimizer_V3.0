@@ -62,7 +62,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["AcrylicLuminosity"] = 0.3,
             ["AcrylicTintColor"] = "#000000",
             ["EnableWindowBorder"] = false,
-            ["AppFont"] = "Segoe UI",
+            ["AppFont"] = "Jura",
             ["Language"] = "en-us",
             ["EnableHoverGlow"] = true,
             ["EnableSelectionGlow"] = true,

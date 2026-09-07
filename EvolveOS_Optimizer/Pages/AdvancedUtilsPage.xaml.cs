@@ -8,6 +8,7 @@ using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Animation;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
+using EvolveOS_Optimizer.Views;
 
 namespace EvolveOS_Optimizer.Pages
 {
@@ -39,6 +40,7 @@ namespace EvolveOS_Optimizer.Pages
             _ = Purge();
         }
 
+        #region Dialog Event Handlers
         private async void BtnOpenPasswordManager_Click(object sender, RoutedEventArgs e)
         {
             if (this.XamlRoot == null) return;
@@ -312,6 +314,14 @@ namespace EvolveOS_Optimizer.Pages
             };
 
             await dialog.ShowAsync();
+        }
+        #endregion
+
+        private void OpenPasswordGenerator_Click(object sender, RoutedEventArgs e)
+        {
+            var passwordWindow = new PasswordGeneratorWindow();
+
+            passwordWindow.Activate();
         }
 
         #region Purge Page

@@ -1904,6 +1904,7 @@
     <sys:String x:Key="AdvancedUtils_FileEncryptor_Btn">Apri Crittografia</sys:String>
     <sys:String x:Key="AdvancedUtils_PwdGen_Title">Generatore di Password</sys:String>
     <sys:String x:Key="AdvancedUtils_PwdGen_Desc">Apri rapidamente il generatore di password utilizzando una scorciatoia da tastiera globale.</sys:String>
+    <sys:String x:Key="AdvancedUtils_PwdGen_OpenBtn">Apri Generatore</sys:String>
     <!-- endregion Advanced Utils Page -->
 
     <!--#region File/Folder Encryption/Decryption -->

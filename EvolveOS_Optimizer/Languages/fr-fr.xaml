@@ -1897,6 +1897,7 @@
     <sys:String x:Key="AdvancedUtils_FileEncryptor_Btn">Ouvrir le Chiffrement</sys:String>
     <sys:String x:Key="AdvancedUtils_PwdGen_Title">Générateur de Mots de Passe</sys:String>
     <sys:String x:Key="AdvancedUtils_PwdGen_Desc">Ouvrez rapidement le générateur de mots de passe à l'aide d'un raccourci clavier global.</sys:String>
+    <sys:String x:Key="AdvancedUtils_PwdGen_OpenBtn">Ouvrir le Générateur</sys:String>
     <!-- endregion Advanced Utils Page -->
 
     <!--#region File/Folder Encryption/Decryption -->
