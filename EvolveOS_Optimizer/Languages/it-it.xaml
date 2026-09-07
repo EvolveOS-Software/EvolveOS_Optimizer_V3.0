@@ -1905,6 +1905,10 @@
     <sys:String x:Key="AdvancedUtils_PwdGen_Title">Generatore di Password</sys:String>
     <sys:String x:Key="AdvancedUtils_PwdGen_Desc">Apri rapidamente il generatore di password utilizzando una scorciatoia da tastiera globale.</sys:String>
     <sys:String x:Key="AdvancedUtils_PwdGen_OpenBtn">Apri Generatore</sys:String>
+    <sys:String x:Key="AdvancedUtils_FileShredder_Desc">Cancella permanentemente e in modo irrecuperabile file e cartelle dall'unità di archiviazione.</sys:String>
+    <sys:String x:Key="AdvancedUtils_FileShredder_Btn">Apri Distruttore</sys:String>
+    <sys:String x:Key="AdvancedUtils_Stego_Desc">Nascondi i file sensibili alla vista seppellendoli nei pixel delle normali foto.</sys:String>
+    <sys:String x:Key="AdvancedUtils_Stego_Btn">Apri Cassaforte</sys:String>
     <!-- endregion Advanced Utils Page -->
 
     <!--#region File/Folder Encryption/Decryption -->
@@ -5885,4 +5889,66 @@
     <sys:String x:Key="FileShredder_OverlayDesc">Scrittura di byte casuali sicuri in corso. Non chiudere l'applicazione.</sys:String>
 
     <!-- endregion File Shredder -->
+
+    <!-- region Steganography Page -->
+
+    <sys:String x:Key="Stego_PageTitle">Steganografia Immagini</sys:String>
+    <sys:String x:Key="Stego_InfoTitle">Cassaforte Nascosta</sys:String>
+    <sys:String x:Key="Stego_InfoMessage">Nascondi i file sensibili alla vista seppellendoli nei pixel delle normali foto. I dati nascosti sono crittografati in AES-256 e invisibili a occhio nudo.</sys:String>
+    <sys:String x:Key="Stego_AlgoTitle">Algoritmo: Manipolazione LSB + AES-256</sys:String>
+    <sys:String x:Key="Stego_AlgoStep1">1. Comprime e crittografa il file segreto utilizzando la tua Master Password.</sys:String>
+    <sys:String x:Key="Stego_AlgoStep2">2. Incorpora i byte crittografati nei bit meno significativi (LSB) dell'immagine host.</sys:String>
+    <sys:String x:Key="Stego_AlgoStep3">3. Restituisce un PNG visivamente identico e senza perdite contenente i tuoi dati.</sys:String>
+    <sys:String x:Key="Stego_ToolsHeader">Azioni Cassaforte</sys:String>
+    <sys:String x:Key="Stego_EmbedTitle">Nascondi dati (Incorpora)</sys:String>
+    <sys:String x:Key="Stego_EmbedDesc">Seleziona un'immagine host e un file segreto per generare una nuova immagine con il file nascosto al suo interno.</sys:String>
+    <sys:String x:Key="Stego_EmbedBtn">Seleziona file...</sys:String>
+    <sys:String x:Key="Stego_ExtractTitle">Estrai dati (Rivela)</sys:String>
+    <sys:String x:Key="Stego_ExtractDesc">Seleziona un'immagine precedentemente modificata per decrittografare ed estrarre il file nascosto.</sys:String>
+    <sys:String x:Key="Stego_ExtractBtn">Seleziona Immagine...</sys:String>
+    <sys:String x:Key="Stego_OverlayEmbedTitle">Incorporamento dati in corso...</sys:String>
+    <sys:String x:Key="Stego_OverlayExtractTitle">Analisi immagine in corso...</sys:String>
+    <sys:String x:Key="Stego_PickHost_Title">Seleziona immagine host (PNG/JPG)</sys:String>
+    <sys:String x:Key="Stego_PickSecret_Title">Seleziona file segreto da nascondere</sys:String>
+    <sys:String x:Key="Stego_SaveStego_Title">Salva immagine cassaforte</sys:String>
+    <sys:String x:Key="Stego_PickExtract_Title">Seleziona immagine con dati nascosti</sys:String>
+    <sys:String x:Key="Stego_SaveRevealed_Title">Salva file rivelato</sys:String>
+    <sys:String x:Key="Stego_Toast_EmbedSuccess">Dati nascosti in modo sicuro.</sys:String>
+    <sys:String x:Key="Stego_Toast_ExtractSuccess">File estratto e decrittografato con successo.</sys:String>
+
+    <sys:String x:Key="lbl_stego_title">Accesso alla Cassaforte Nascosta</sys:String>
+    <sys:String x:Key="lbl_login_stego">Inserisci le tue credenziali per accedere alla Cassaforte Nascosta.</sys:String>
+
+    <!-- Steganography Embed Wizard -->
+    <sys:String x:Key="Stego_Wizard_HostTitle">Passaggio 1: Seleziona immagine host</sys:String>
+    <sys:String x:Key="Stego_Wizard_HostDesc">Scegli una foto dall'aspetto normale (PNG o JPG). Questa immagine deve avere una risoluzione relativamente alta per contenere i tuoi dati segreti senza distorsioni visive.</sys:String>
+    <sys:String x:Key="Stego_Wizard_HostBtn">Seleziona immagine host</sys:String>
+
+    <sys:String x:Key="Stego_Wizard_SecretTitle">Passaggio 2: Seleziona file segreto</sys:String>
+    <sys:String x:Key="Stego_Wizard_SecretDesc">Scegli il file sensibile che desideri nascondere. Verrà crittografato in AES-256 utilizzando la tua Master Password prima di essere incorporato nell'immagine host.</sys:String>
+    <sys:String x:Key="Stego_Wizard_SecretBtn">Seleziona file segreto</sys:String>
+
+    <sys:String x:Key="Stego_Wizard_SaveTitle">Passaggio 3: Salva immagine cassaforte</sys:String>
+    <sys:String x:Key="Stego_Wizard_SaveDesc">Scegli un percorso in cui salvare la tua nuova cassaforte nascosta. Il file DEVE essere salvato come PNG per evitare che la compressione dell'immagine distrugga i dati nascosti.</sys:String>
+    <sys:String x:Key="Stego_Wizard_SaveBtn">Scegli percorso di salvataggio</sys:String>
+
+    <!-- Steganography Extract Wizard -->
+    <sys:String x:Key="Stego_Wizard_ExtractTitle">Passaggio 1: Seleziona immagine cassaforte</sys:String>
+    <sys:String x:Key="Stego_Wizard_ExtractDesc">Scegli l'immagine PNG che contiene i tuoi dati nascosti e crittografati.</sys:String>
+    <sys:String x:Key="Stego_Wizard_ExtractBtn">Seleziona immagine cassaforte</sys:String>
+
+    <sys:String x:Key="Stego_Wizard_FoundTitle">Payload decrittografato con successo</sys:String>
+    <sys:String x:Key="Stego_Wizard_FoundDesc">Abbiamo decrittografato con successo: {0}&#x0a;&#x0a;Scegli dove desideri salvare questo file estratto.</sys:String>
+    <sys:String x:Key="Stego_Wizard_FoundBtn">Salva file</sys:String>
+
+    <!-- Steganography Exception Toasts -->
+    <sys:String x:Key="Stego_Toast_DecryptFailTitle">Decrittografia non riuscita</sys:String>
+    <sys:String x:Key="Stego_Toast_DecryptFailMsg">La Master Password non è corretta o l'immagine è stata modificata.</sys:String>
+
+    <!-- Steganography Open Folder Prompt -->
+    <sys:String x:Key="Stego_SuccessOpen_Title">Processo completato</sys:String>
+    <sys:String x:Key="Stego_SuccessOpen_Desc">Il file è stato salvato con successo. Desideri visualizzarlo in Esplora file?</sys:String>
+    <sys:String x:Key="Stego_SuccessOpen_Btn">Apri cartella</sys:String>
+
+    <!-- endregion Steganography Page -->
 </ResourceDictionary>

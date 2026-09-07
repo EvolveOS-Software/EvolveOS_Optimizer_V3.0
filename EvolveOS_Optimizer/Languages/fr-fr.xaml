@@ -1898,6 +1898,11 @@
     <sys:String x:Key="AdvancedUtils_PwdGen_Title">Générateur de Mots de Passe</sys:String>
     <sys:String x:Key="AdvancedUtils_PwdGen_Desc">Ouvrez rapidement le générateur de mots de passe à l'aide d'un raccourci clavier global.</sys:String>
     <sys:String x:Key="AdvancedUtils_PwdGen_OpenBtn">Ouvrir le Générateur</sys:String>
+    <sys:String x:Key="AdvancedUtils_FileShredder_Desc">Effacez définitivement et de manière irréversible les fichiers et dossiers de votre disque de stockage.</sys:String>
+    <sys:String x:Key="AdvancedUtils_FileShredder_Btn">Ouvrir le Destructeur</sys:String>
+    <sys:String x:Key="AdvancedUtils_Stego_Desc">Cachez les fichiers sensibles de manière invisible en les enfouissant dans les pixels de photos normales.</sys:String>
+    <sys:String x:Key="AdvancedUtils_Stego_Btn">Ouvrir le Coffre</sys:String>
+    
     <!-- endregion Advanced Utils Page -->
 
     <!--#region File/Folder Encryption/Decryption -->
@@ -5874,4 +5879,66 @@
     <sys:String x:Key="FileShredder_OverlayDesc">Écriture d'octets aléatoires sécurisés. Ne fermez pas l'application.</sys:String>
 
     <!-- endregion File Shredder -->
+
+    <!-- region Steganography Page -->
+
+    <sys:String x:Key="Stego_PageTitle">Stéganographie d'image</sys:String>
+    <sys:String x:Key="Stego_InfoTitle">Coffre-fort Caché</sys:String>
+    <sys:String x:Key="Stego_InfoMessage">Cachez les fichiers sensibles de manière invisible en les enfouissant dans les pixels de photos normales. Les données cachées sont chiffrées en AES-256 et invisibles à l'œil nu.</sys:String>
+    <sys:String x:Key="Stego_AlgoTitle">Algorithme : Manipulation LSB + AES-256</sys:String>
+    <sys:String x:Key="Stego_AlgoStep1">1. Compresse et chiffre le fichier secret à l'aide de votre mot de passe principal.</sys:String>
+    <sys:String x:Key="Stego_AlgoStep2">2. Intègre les octets chiffrés dans les bits de poids faible de l'image hôte.</sys:String>
+    <sys:String x:Key="Stego_AlgoStep3">3. Produit un fichier PNG sans perte et visuellement identique contenant vos données cachées.</sys:String>
+    <sys:String x:Key="Stego_ToolsHeader">Actions du Coffre</sys:String>
+    <sys:String x:Key="Stego_EmbedTitle">Cacher les données (Intégrer)</sys:String>
+    <sys:String x:Key="Stego_EmbedDesc">Sélectionnez une image hôte et un fichier secret pour générer une nouvelle image contenant le fichier caché.</sys:String>
+    <sys:String x:Key="Stego_EmbedBtn">Sélectionner les fichiers...</sys:String>
+    <sys:String x:Key="Stego_ExtractTitle">Extraire les données (Révéler)</sys:String>
+    <sys:String x:Key="Stego_ExtractDesc">Sélectionnez une image précédemment modifiée pour déchiffrer et extraire le fichier secret caché.</sys:String>
+    <sys:String x:Key="Stego_ExtractBtn">Sélectionner une image...</sys:String>
+    <sys:String x:Key="Stego_OverlayEmbedTitle">Intégration des données...</sys:String>
+    <sys:String x:Key="Stego_OverlayExtractTitle">Analyse de l'image...</sys:String>
+    <sys:String x:Key="Stego_PickHost_Title">Sélectionner l'image hôte (PNG/JPG)</sys:String>
+    <sys:String x:Key="Stego_PickSecret_Title">Sélectionnez le fichier secret à cacher</sys:String>
+    <sys:String x:Key="Stego_SaveStego_Title">Enregistrer l'image du coffre-fort</sys:String>
+    <sys:String x:Key="Stego_PickExtract_Title">Sélectionner l'image contenant les données</sys:String>
+    <sys:String x:Key="Stego_SaveRevealed_Title">Enregistrer le fichier révélé</sys:String>
+    <sys:String x:Key="Stego_Toast_EmbedSuccess">Données cachées en toute sécurité.</sys:String>
+    <sys:String x:Key="Stego_Toast_ExtractSuccess">Fichier extrait et déchiffré avec succès.</sys:String>
+
+    <sys:String x:Key="lbl_stego_title">Connexion au Coffre-fort Caché</sys:String>
+    <sys:String x:Key="lbl_login_stego">Entrez vos identifiants pour accéder au Coffre-fort Caché.</sys:String>
+
+    <!-- Steganography Embed Wizard -->
+    <sys:String x:Key="Stego_Wizard_HostTitle">Étape 1 : Sélectionner l'image hôte</sys:String>
+    <sys:String x:Key="Stego_Wizard_HostDesc">Choisissez une photo d'apparence normale (PNG ou JPG). Cette image doit avoir une résolution relativement élevée pour contenir vos données secrètes sans distorsion visuelle.</sys:String>
+    <sys:String x:Key="Stego_Wizard_HostBtn">Sélectionner l'image hôte</sys:String>
+
+    <sys:String x:Key="Stego_Wizard_SecretTitle">Étape 2 : Sélectionner le fichier secret</sys:String>
+    <sys:String x:Key="Stego_Wizard_SecretDesc">Choisissez le fichier sensible que vous souhaitez cacher. Il sera chiffré en AES-256 avec votre mot de passe principal avant d'être intégré à l'image hôte.</sys:String>
+    <sys:String x:Key="Stego_Wizard_SecretBtn">Sélectionner le fichier secret</sys:String>
+
+    <sys:String x:Key="Stego_Wizard_SaveTitle">Étape 3 : Enregistrer l'image du coffre-fort</sys:String>
+    <sys:String x:Key="Stego_Wizard_SaveDesc">Choisissez un emplacement pour enregistrer votre nouveau coffre-fort caché. Le fichier DOIT être enregistré au format PNG pour éviter que la compression de l'image ne détruise les données cachées.</sys:String>
+    <sys:String x:Key="Stego_Wizard_SaveBtn">Choisir l'emplacement</sys:String>
+
+    <!-- Steganography Extract Wizard -->
+    <sys:String x:Key="Stego_Wizard_ExtractTitle">Étape 1 : Sélectionner l'image du coffre-fort</sys:String>
+    <sys:String x:Key="Stego_Wizard_ExtractDesc">Choisissez l'image PNG qui contient vos données cachées et chiffrées.</sys:String>
+    <sys:String x:Key="Stego_Wizard_ExtractBtn">Sélectionner l'image du coffre-fort</sys:String>
+
+    <sys:String x:Key="Stego_Wizard_FoundTitle">Charge utile déchiffrée avec succès</sys:String>
+    <sys:String x:Key="Stego_Wizard_FoundDesc">Nous avons déchiffré avec succès : {0}&#x0a;&#x0a;Choisissez où vous souhaitez enregistrer ce fichier extrait.</sys:String>
+    <sys:String x:Key="Stego_Wizard_FoundBtn">Enregistrer le fichier</sys:String>
+
+    <!-- Steganography Exception Toasts -->
+    <sys:String x:Key="Stego_Toast_DecryptFailTitle">Échec du déchiffrement</sys:String>
+    <sys:String x:Key="Stego_Toast_DecryptFailMsg">Le mot de passe principal est incorrect ou l'image a été modifiée.</sys:String>
+
+    <!-- Steganography Open Folder Prompt -->
+    <sys:String x:Key="Stego_SuccessOpen_Title">Processus terminé</sys:String>
+    <sys:String x:Key="Stego_SuccessOpen_Desc">Le fichier a été enregistré avec succès. Voulez-vous le voir dans l'Explorateur de fichiers ?</sys:String>
+    <sys:String x:Key="Stego_SuccessOpen_Btn">Ouvrir le dossier</sys:String>
+
+    <!-- endregion Steganography Page -->
 </ResourceDictionary>

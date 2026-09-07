@@ -1896,6 +1896,10 @@
     <sys:String x:Key="AdvancedUtils_PwdGen_Title">Passwortgenerator</sys:String>
     <sys:String x:Key="AdvancedUtils_PwdGen_Desc">Öffnen Sie den Passwortgenerator schnell mit einem globalen Tastaturkürzel.</sys:String>
     <sys:String x:Key="AdvancedUtils_PwdGen_OpenBtn">Generator Öffnen</sys:String>
+    <sys:String x:Key="AdvancedUtils_FileShredder_Desc">Löschen Sie Dateien und Ordner unwiderruflich und dauerhaft von Ihrem Speicherlaufwerk.</sys:String>
+    <sys:String x:Key="AdvancedUtils_FileShredder_Btn">Vernichter öffnen</sys:String>
+    <sys:String x:Key="AdvancedUtils_Stego_Desc">Verstecken Sie sensible Dateien völlig unsichtbar in den Pixeln normaler Fotos.</sys:String>
+    <sys:String x:Key="AdvancedUtils_Stego_Btn">Tresor öffnen</sys:String>
     <!-- endregion Advanced Utils Page -->
 
     <!--#region File/Folder Encryption/Decryption -->
@@ -5864,4 +5868,66 @@
     <sys:String x:Key="FileShredder_OverlayDesc">Écriture d'octets aléatoires sécurisés. Ne fermez pas l'application.</sys:String>
 
     <!-- endregion File Shredder -->
+
+    <!-- region Steganography Page -->
+
+    <sys:String x:Key="Stego_PageTitle">Bild-Steganografie</sys:String>
+    <sys:String x:Key="Stego_InfoTitle">Versteckter Tresor</sys:String>
+    <sys:String x:Key="Stego_InfoMessage">Verstecken Sie sensible Dateien völlig unsichtbar in den Pixeln normaler Fotos. Die versteckten Daten sind AES-256 verschlüsselt und für das bloße Auge unsichtbar.</sys:String>
+    <sys:String x:Key="Stego_AlgoTitle">Algorithmus: LSB-Manipulation + AES-256</sys:String>
+    <sys:String x:Key="Stego_AlgoStep1">1. Komprimiert und verschlüsselt die geheime Datei mit Ihrem Master-Passwort.</sys:String>
+    <sys:String x:Key="Stego_AlgoStep2">2. Bettet die verschlüsselten Bytes in die niederwertigsten Bits (LSB) des Host-Bildes ein.</sys:String>
+    <sys:String x:Key="Stego_AlgoStep3">3. Gibt ein optisch identisches, verlustfreies PNG mit Ihren Daten aus.</sys:String>
+    <sys:String x:Key="Stego_ToolsHeader">Tresor-Aktionen</sys:String>
+    <sys:String x:Key="Stego_EmbedTitle">Daten verstecken (Einbetten)</sys:String>
+    <sys:String x:Key="Stego_EmbedDesc">Wählen Sie ein Trägerbild und eine geheime Datei, um ein Bild mit der Datei darin zu erstellen.</sys:String>
+    <sys:String x:Key="Stego_EmbedBtn">Dateien auswählen...</sys:String>
+    <sys:String x:Key="Stego_ExtractTitle">Daten extrahieren (Aufdecken)</sys:String>
+    <sys:String x:Key="Stego_ExtractDesc">Wählen Sie ein zuvor geändertes Bild aus, um die geheime Datei zu entschlüsseln und zu extrahieren.</sys:String>
+    <sys:String x:Key="Stego_ExtractBtn">Bild auswählen...</sys:String>
+    <sys:String x:Key="Stego_OverlayEmbedTitle">Daten werden eingebettet...</sys:String>
+    <sys:String x:Key="Stego_OverlayExtractTitle">Bild wird analysiert...</sys:String>
+    <sys:String x:Key="Stego_PickHost_Title">Trägerbild auswählen (PNG/JPG)</sys:String>
+    <sys:String x:Key="Stego_PickSecret_Title">Geheime Datei zum Verstecken auswählen</sys:String>
+    <sys:String x:Key="Stego_SaveStego_Title">Tresor-Bild speichern</sys:String>
+    <sys:String x:Key="Stego_PickExtract_Title">Bild mit versteckten Daten auswählen</sys:String>
+    <sys:String x:Key="Stego_SaveRevealed_Title">Enthüllte Datei speichern</sys:String>
+    <sys:String x:Key="Stego_Toast_EmbedSuccess">Daten sicher im Bild versteckt.</sys:String>
+    <sys:String x:Key="Stego_Toast_ExtractSuccess">Datei erfolgreich extrahiert und entschlüsselt.</sys:String>
+
+    <sys:String x:Key="lbl_stego_title">Login für versteckten Tresor</sys:String>
+    <sys:String x:Key="lbl_login_stego">Geben Sie Ihre Anmeldedaten ein, um auf den versteckten Tresor zuzugreifen.</sys:String>
+
+    <!-- Steganography Embed Wizard -->
+    <sys:String x:Key="Stego_Wizard_HostTitle">Schritt 1: Trägerbild auswählen</sys:String>
+    <sys:String x:Key="Stego_Wizard_HostDesc">Wählen Sie ein normal aussehendes Foto (PNG oder JPG). Dieses Bild muss eine relativ hohe Auflösung haben, um Ihre geheimen Daten ohne visuelle Verzerrung aufzunehmen.</sys:String>
+    <sys:String x:Key="Stego_Wizard_HostBtn">Trägerbild auswählen</sys:String>
+
+    <sys:String x:Key="Stego_Wizard_SecretTitle">Schritt 2: Geheime Datei auswählen</sys:String>
+    <sys:String x:Key="Stego_Wizard_SecretDesc">Wählen Sie die sensible Datei, die Sie verstecken möchten. Sie wird mit Ihrem Master-Passwort (AES-256) verschlüsselt, bevor sie in das Trägerbild eingebettet wird.</sys:String>
+    <sys:String x:Key="Stego_Wizard_SecretBtn">Geheime Datei auswählen</sys:String>
+
+    <sys:String x:Key="Stego_Wizard_SaveTitle">Schritt 3: Tresor-Bild speichern</sys:String>
+    <sys:String x:Key="Stego_Wizard_SaveDesc">Wählen Sie einen Speicherort für Ihren neuen versteckten Tresor. Die Datei MUSS als PNG gespeichert werden, damit die Bildkomprimierung die versteckten Daten nicht zerstört.</sys:String>
+    <sys:String x:Key="Stego_Wizard_SaveBtn">Speicherort auswählen</sys:String>
+
+    <!-- Steganography Extract Wizard -->
+    <sys:String x:Key="Stego_Wizard_ExtractTitle">Schritt 1: Tresor-Bild auswählen</sys:String>
+    <sys:String x:Key="Stego_Wizard_ExtractDesc">Wählen Sie das PNG-Bild, das Ihre versteckten, verschlüsselten Daten enthält.</sys:String>
+    <sys:String x:Key="Stego_Wizard_ExtractBtn">Tresor-Bild auswählen</sys:String>
+
+    <sys:String x:Key="Stego_Wizard_FoundTitle">Nutzdaten erfolgreich entschlüsselt</sys:String>
+    <sys:String x:Key="Stego_Wizard_FoundDesc">Wir haben erfolgreich entschlüsselt: {0}&#x0a;&#x0a;Wählen Sie aus, wo Sie diese extrahierte Datei speichern möchten.</sys:String>
+    <sys:String x:Key="Stego_Wizard_FoundBtn">Datei speichern</sys:String>
+
+    <!-- Steganography Exception Toasts -->
+    <sys:String x:Key="Stego_Toast_DecryptFailTitle">Entschlüsselung fehlgeschlagen</sys:String>
+    <sys:String x:Key="Stego_Toast_DecryptFailMsg">Das Master-Passwort ist falsch oder das Bild wurde verändert.</sys:String>
+
+    <!-- Steganography Open Folder Prompt -->
+    <sys:String x:Key="Stego_SuccessOpen_Title">Vorgang abgeschlossen</sys:String>
+    <sys:String x:Key="Stego_SuccessOpen_Desc">Die Datei wurde erfolgreich gespeichert. Möchten Sie sie im Datei-Explorer anzeigen?</sys:String>
+    <sys:String x:Key="Stego_SuccessOpen_Btn">Ordner öffnen</sys:String>
+
+    <!-- endregion Steganography Page -->
 </ResourceDictionary>

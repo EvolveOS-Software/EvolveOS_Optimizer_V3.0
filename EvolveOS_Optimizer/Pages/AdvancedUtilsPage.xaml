@@ -89,8 +89,41 @@
                     </Grid.ColumnDefinitions>
 
                     <StackPanel VerticalAlignment="Center" Spacing="2">
-                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="Secure File Shredder" FontWeight="SemiBold"/>
-                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="Permanently wipe files and folders from your storage drive beyond recovery."
+                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" 
+                       Text="{helpers:ResourceString Key=FileShredder_PageTitle}" 
+                       FontWeight="SemiBold"/>
+
+                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" 
+                       Text="{helpers:ResourceString Key=AdvancedUtils_FileShredder_Desc}"
+                       Style="{StaticResource CaptionTextBlockStyle}"
+                       Foreground="{ThemeResource TextFillColorSecondaryBrush}" 
+                       TextWrapping="Wrap"/>
+                    </StackPanel>
+
+                    <Button Grid.Column="1" 
+                FontFamily="{ThemeResource AppCustomFont}"
+                Content="{helpers:ResourceString Key=AdvancedUtils_FileShredder_Btn}"
+                Style="{StaticResource AccentButtonStyle}"
+                Click="BtnOpenFileShredder_Click"
+                VerticalAlignment="Center"
+                MinWidth="120"/>
+                </Grid>
+            </Border>
+
+            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1"
+                    CornerRadius="4"
+                    Padding="20">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel VerticalAlignment="Center" Spacing="2">
+                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=Stego_PageTitle}" FontWeight="SemiBold"/>
+                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=AdvancedUtils_Stego_Desc}"
                                    Style="{StaticResource CaptionTextBlockStyle}"
                                    Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" 
                                    TextWrapping="Wrap"/>
@@ -98,9 +131,9 @@
 
                     <Button Grid.Column="1" 
                             FontFamily="{ThemeResource AppCustomFont}"
-                            Content="Open Shredder"
+                            Content="{helpers:ResourceString Key=AdvancedUtils_Stego_Btn}"
                             Style="{StaticResource AccentButtonStyle}"
-                            Click="BtnOpenFileShredder_Click"
+                            Click="BtnOpenSteganography_Click"
                             VerticalAlignment="Center"
                             MinWidth="120"/>
                 </Grid>

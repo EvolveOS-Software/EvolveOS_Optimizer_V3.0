@@ -1898,6 +1898,10 @@
     <sys:String x:Key="AdvancedUtils_PwdGen_Title">Wachtwoordgenerator</sys:String>
     <sys:String x:Key="AdvancedUtils_PwdGen_Desc">Open de wachtwoordgenerator snel met een globale sneltoets.</sys:String>
     <sys:String x:Key="AdvancedUtils_PwdGen_OpenBtn">Open Generator</sys:String>
+    <sys:String x:Key="AdvancedUtils_FileShredder_Desc">Wis bestanden en mappen permanent en onherstelbaar van uw opslagschijf.</sys:String>
+    <sys:String x:Key="AdvancedUtils_FileShredder_Btn">Open Vernietiger</sys:String>
+    <sys:String x:Key="AdvancedUtils_Stego_Desc">Verberg gevoelige bestanden volledig uit het zicht door ze in de pixels van normale foto's te begraven.</sys:String>
+    <sys:String x:Key="AdvancedUtils_Stego_Btn">Open Kluis</sys:String>
     <!-- endregion Advanced Utils Page -->
 
     <!--#region File/Folder Encryption/Decryption -->
@@ -5888,4 +5892,66 @@
     <sys:String x:Key="FileShredder_OverlayDesc">Veilige willekeurige bytes schrijven. Sluit de applicatie niet af.</sys:String>
 
     <!-- endregion File Shredder -->
+
+    <!-- region Steganography Page -->
+
+    <sys:String x:Key="Stego_PageTitle">Afbeelding Steganografie</sys:String>
+    <sys:String x:Key="Stego_InfoTitle">Verborgen Kluis</sys:String>
+    <sys:String x:Key="Stego_InfoMessage">Verberg gevoelige bestanden volledig uit het zicht door ze te begraven in de pixels van normale foto's. De verborgen gegevens zijn AES-256 versleuteld en onzichtbaar voor het blote oog.</sys:String>
+    <sys:String x:Key="Stego_AlgoTitle">Algoritme: LSB Manipulatie + AES-256</sys:String>
+    <sys:String x:Key="Stego_AlgoStep1">1. Comprimeert en versleutelt het geheime bestand met behulp van uw Hoofdwachtwoord.</sys:String>
+    <sys:String x:Key="Stego_AlgoStep2">2. Sluit de versleutelde bytes in de minst significante bits van de hostafbeelding in.</sys:String>
+    <sys:String x:Key="Stego_AlgoStep3">3. Voert een visueel identieke, verliesvrije PNG uit met uw verborgen gegevens.</sys:String>
+    <sys:String x:Key="Stego_ToolsHeader">Kluis Acties</sys:String>
+    <sys:String x:Key="Stego_EmbedTitle">Gegevens Verbergen (Insluiten)</sys:String>
+    <sys:String x:Key="Stego_EmbedDesc">Selecteer een hostafbeelding en een geheim bestand om een nieuwe afbeelding te genereren met het bestand erin verborgen.</sys:String>
+    <sys:String x:Key="Stego_EmbedBtn">Selecteer Bestanden...</sys:String>
+    <sys:String x:Key="Stego_ExtractTitle">Gegevens Extraheren (Onthullen)</sys:String>
+    <sys:String x:Key="Stego_ExtractDesc">Selecteer een eerder bewerkte afbeelding om het verborgen geheime bestand te decoderen en te extraheren.</sys:String>
+    <sys:String x:Key="Stego_ExtractBtn">Selecteer Afbeelding...</sys:String>
+    <sys:String x:Key="Stego_OverlayEmbedTitle">Gegevens Insluiten...</sys:String>
+    <sys:String x:Key="Stego_OverlayExtractTitle">Afbeelding Analyseren...</sys:String>
+    <sys:String x:Key="Stego_PickHost_Title">Selecteer Hostafbeelding (PNG/JPG)</sys:String>
+    <sys:String x:Key="Stego_PickSecret_Title">Selecteer Geheim Bestand om te Verbergen</sys:String>
+    <sys:String x:Key="Stego_SaveStego_Title">Bewaar Verborgen Kluis Afbeelding</sys:String>
+    <sys:String x:Key="Stego_PickExtract_Title">Selecteer Afbeelding met Verborgen Gegevens</sys:String>
+    <sys:String x:Key="Stego_SaveRevealed_Title">Bewaar Onthuld Bestand</sys:String>
+    <sys:String x:Key="Stego_Toast_EmbedSuccess">Gegevens veilig verborgen in afbeelding.</sys:String>
+    <sys:String x:Key="Stego_Toast_ExtractSuccess">Bestand succesvol geëxtraheerd en ontsleuteld.</sys:String>
+
+    <sys:String x:Key="lbl_stego_title">Verborgen Kluis Login</sys:String>
+    <sys:String x:Key="lbl_login_stego">Voer uw inloggegevens in om toegang te krijgen tot de Verborgen Kluis.</sys:String>
+
+    <!-- Steganography Embed Wizard -->
+    <sys:String x:Key="Stego_Wizard_HostTitle">Stap 1: Selecteer Hostafbeelding</sys:String>
+    <sys:String x:Key="Stego_Wizard_HostDesc">Kies een normaal uitziende foto (PNG of JPG). Deze afbeelding moet een relatief hoge resolutie hebben om uw geheime gegevens zonder visuele vervorming te bevatten.</sys:String>
+    <sys:String x:Key="Stego_Wizard_HostBtn">Selecteer Hostafbeelding</sys:String>
+
+    <sys:String x:Key="Stego_Wizard_SecretTitle">Stap 2: Selecteer Geheim Bestand</sys:String>
+    <sys:String x:Key="Stego_Wizard_SecretDesc">Kies het gevoelige bestand dat u wilt verbergen. Het wordt AES-256 versleuteld met uw Hoofdwachtwoord voordat het in de hostafbeelding wordt ingesloten.</sys:String>
+    <sys:String x:Key="Stego_Wizard_SecretBtn">Selecteer Geheim Bestand</sys:String>
+
+    <sys:String x:Key="Stego_Wizard_SaveTitle">Stap 3: Bewaar Kluisafbeelding</sys:String>
+    <sys:String x:Key="Stego_Wizard_SaveDesc">Kies een locatie om uw nieuwe verborgen kluis op te slaan. Het bestand MOET worden opgeslagen als een PNG om te voorkomen dat afbeeldingscompressie de verborgen gegevens vernietigt.</sys:String>
+    <sys:String x:Key="Stego_Wizard_SaveBtn">Kies Opslaglocatie</sys:String>
+
+    <!-- Steganography Extract Wizard -->
+    <sys:String x:Key="Stego_Wizard_ExtractTitle">Stap 1: Selecteer Kluisafbeelding</sys:String>
+    <sys:String x:Key="Stego_Wizard_ExtractDesc">Kies de PNG-afbeelding die uw verborgen, versleutelde gegevens bevat.</sys:String>
+    <sys:String x:Key="Stego_Wizard_ExtractBtn">Selecteer Kluisafbeelding</sys:String>
+
+    <sys:String x:Key="Stego_Wizard_FoundTitle">Payload Succesvol Ontsleuteld</sys:String>
+    <sys:String x:Key="Stego_Wizard_FoundDesc">We hebben succesvol ontsleuteld: {0}&#x0a;&#x0a;Kies waar u dit geëxtraheerde bestand wilt opslaan.</sys:String>
+    <sys:String x:Key="Stego_Wizard_FoundBtn">Bestand Opslaan</sys:String>
+
+    <!-- Steganography Exception Toasts -->
+    <sys:String x:Key="Stego_Toast_DecryptFailTitle">Ontsleuteling Mislukt</sys:String>
+    <sys:String x:Key="Stego_Toast_DecryptFailMsg">Het hoofdwachtwoord is onjuist of de afbeelding is gewijzigd.</sys:String>
+
+    <!-- Steganography Open Folder Prompt -->
+    <sys:String x:Key="Stego_SuccessOpen_Title">Proces Voltooid</sys:String>
+    <sys:String x:Key="Stego_SuccessOpen_Desc">Het bestand is succesvol opgeslagen. Wilt u het bekijken in de Bestandsverkenner?</sys:String>
+    <sys:String x:Key="Stego_SuccessOpen_Btn">Open Map</sys:String>
+
+    <!-- endregion Steganography Page -->
 </ResourceDictionary>

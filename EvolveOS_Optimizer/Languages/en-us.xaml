@@ -1887,6 +1887,10 @@
     <sys:String x:Key="AdvancedUtils_PwdGen_Title">Password Generator</sys:String>
     <sys:String x:Key="AdvancedUtils_PwdGen_Desc">Quickly open the password generator using a global keyboard shortcut.</sys:String>
     <sys:String x:Key="AdvancedUtils_PwdGen_OpenBtn">Open Generator</sys:String>
+    <sys:String x:Key="AdvancedUtils_FileShredder_Desc">Permanently wipe files and folders from your storage drive beyond recovery.</sys:String>
+    <sys:String x:Key="AdvancedUtils_FileShredder_Btn">Open Shredder</sys:String>
+    <sys:String x:Key="AdvancedUtils_Stego_Desc">Hide sensitive files entirely out of sight by burying them inside the pixels of normal photos.</sys:String>
+    <sys:String x:Key="AdvancedUtils_Stego_Btn">Open Vault</sys:String>
     <!-- endregion Advanced Utils Page (Privacy & Security) -->
 
     <!-- region File/Folder Encryption/Decryption -->
@@ -5988,5 +5992,66 @@
 
     <!-- endregion File Shredder -->
 
+    <!-- region Steganography Page -->
+
+    <sys:String x:Key="Stego_PageTitle">Image Steganography</sys:String>
+    <sys:String x:Key="Stego_InfoTitle">Hidden Vault</sys:String>
+    <sys:String x:Key="Stego_InfoMessage">Hide sensitive files entirely out of sight by burying them inside the pixels of normal photos. The hidden data is AES-256 encrypted and invisible to the naked eye.</sys:String>
+    <sys:String x:Key="Stego_AlgoTitle">Algorithm: LSB Manipulation + AES-256</sys:String>
+    <sys:String x:Key="Stego_AlgoStep1">1. Compresses and encrypts the secret file using your Master Password.</sys:String>
+    <sys:String x:Key="Stego_AlgoStep2">2. Embeds the encrypted bytes into the Least Significant Bits of the host image.</sys:String>
+    <sys:String x:Key="Stego_AlgoStep3">3. Outputs a visually identical, lossless PNG containing your hidden data.</sys:String>
+    <sys:String x:Key="Stego_ToolsHeader">Vault Actions</sys:String>
+    <sys:String x:Key="Stego_EmbedTitle">Hide Data (Embed)</sys:String>
+    <sys:String x:Key="Stego_EmbedDesc">Select a host image and a secret file to generate a new image with the file hidden inside.</sys:String>
+    <sys:String x:Key="Stego_EmbedBtn">Select Files...</sys:String>
+    <sys:String x:Key="Stego_ExtractTitle">Extract Data (Reveal)</sys:String>
+    <sys:String x:Key="Stego_ExtractDesc">Select a previously modified image to decrypt and extract the hidden secret file.</sys:String>
+    <sys:String x:Key="Stego_ExtractBtn">Select Image...</sys:String>
+    <sys:String x:Key="Stego_OverlayEmbedTitle">Embedding Data...</sys:String>
+    <sys:String x:Key="Stego_OverlayExtractTitle">Analyzing Image...</sys:String>
+    <sys:String x:Key="Stego_PickHost_Title">Select Host Image (PNG/JPG)</sys:String>
+    <sys:String x:Key="Stego_PickSecret_Title">Select Secret File to Hide</sys:String>
+    <sys:String x:Key="Stego_SaveStego_Title">Save Hidden Vault Image</sys:String>
+    <sys:String x:Key="Stego_PickExtract_Title">Select Image with Hidden Data</sys:String>
+    <sys:String x:Key="Stego_SaveRevealed_Title">Save Revealed File</sys:String>
+    <sys:String x:Key="Stego_Toast_EmbedSuccess">Data securely hidden inside image.</sys:String>
+    <sys:String x:Key="Stego_Toast_ExtractSuccess">File successfully extracted and decrypted.</sys:String>
+
+    <sys:String x:Key="lbl_stego_title">Hidden Vault Login</sys:String>
+    <sys:String x:Key="lbl_login_stego">Enter your credentials to access the Hidden Vault.</sys:String>
+
+    <!-- Steganography Embed Wizard -->
+    <sys:String x:Key="Stego_Wizard_HostTitle">Step 1: Select Host Image</sys:String>
+    <sys:String x:Key="Stego_Wizard_HostDesc">Choose a normal-looking photo (PNG or JPG). This image needs to be relatively large in resolution to hold your secret data without visual distortion.</sys:String>
+    <sys:String x:Key="Stego_Wizard_HostBtn">Select Host Image</sys:String>
+
+    <sys:String x:Key="Stego_Wizard_SecretTitle">Step 2: Select Secret File</sys:String>
+    <sys:String x:Key="Stego_Wizard_SecretDesc">Choose the sensitive file you want to hide. It will be AES-256 encrypted using your Master Password before being embedded into the host image.</sys:String>
+    <sys:String x:Key="Stego_Wizard_SecretBtn">Select Secret File</sys:String>
+
+    <sys:String x:Key="Stego_Wizard_SaveTitle">Step 3: Save Vault Image</sys:String>
+    <sys:String x:Key="Stego_Wizard_SaveDesc">Choose a location to save your new hidden vault. The file MUST be saved as a PNG to prevent image compression from destroying the hidden data.</sys:String>
+    <sys:String x:Key="Stego_Wizard_SaveBtn">Choose Save Location</sys:String>
+
+    <!-- Steganography Extract Wizard -->
+    <sys:String x:Key="Stego_Wizard_ExtractTitle">Step 1: Select Vault Image</sys:String>
+    <sys:String x:Key="Stego_Wizard_ExtractDesc">Choose the PNG image that contains your hidden, encrypted data.</sys:String>
+    <sys:String x:Key="Stego_Wizard_ExtractBtn">Select Vault Image</sys:String>
+
+    <sys:String x:Key="Stego_Wizard_FoundTitle">Payload Decrypted Successfully</sys:String>
+    <sys:String x:Key="Stego_Wizard_FoundDesc">We successfully decrypted: {0}&#x0a;&#x0a;Choose where you would like to save this extracted file.</sys:String>
+    <sys:String x:Key="Stego_Wizard_FoundBtn">Save File</sys:String>
+
+    <!-- Steganography Exception Toasts -->
+    <sys:String x:Key="Stego_Toast_DecryptFailTitle">Decryption Failed</sys:String>
+    <sys:String x:Key="Stego_Toast_DecryptFailMsg">The master password is incorrect or the image has been modified.</sys:String>
+
+    <!-- Steganography Open Folder Prompt -->
+    <sys:String x:Key="Stego_SuccessOpen_Title">Process Complete</sys:String>
+    <sys:String x:Key="Stego_SuccessOpen_Desc">The file has been successfully saved. Would you like to view it in File Explorer?</sys:String>
+    <sys:String x:Key="Stego_SuccessOpen_Btn">Open Folder</sys:String>
+
+    <!-- endregion Steganography Page -->
 
 </ResourceDictionary>
