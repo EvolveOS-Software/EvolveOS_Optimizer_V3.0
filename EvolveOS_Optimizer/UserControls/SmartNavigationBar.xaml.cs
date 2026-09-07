@@ -22,6 +22,7 @@ namespace EvolveOS_Optimizer.UserControls
         private RadioButton? _selectedButton;
 
         private bool _isRadialMenuOpen = false;
+        private bool _isNavLockActive = false;
 
         private string _currentRadialMenuTarget = "";
 
@@ -48,6 +49,32 @@ namespace EvolveOS_Optimizer.UserControls
 
         public string GetText(string key) => LocalizationService.Instance[key];
 
+        #region Navigation Debounce Engine (Fixes WinUI 3 Frame Lockups)
+
+        private async void ApplyNavigationDebounce()
+        {
+            if (_isNavLockActive || NavStackPanel == null) return;
+
+            try
+            {
+                _isNavLockActive = true;
+
+                NavStackPanel.IsHitTestVisible = false;
+
+                await Task.Delay(250); // 400ms is default
+            }
+            finally
+            {
+                if (NavStackPanel != null && !_isRadialMenuOpen)
+                {
+                    NavStackPanel.IsHitTestVisible = true;
+                }
+                _isNavLockActive = false;
+            }
+        }
+
+        #endregion
+
         private void OnControlLoaded(object sender, RoutedEventArgs e)
         {
             UpdateCutoutPosition(false);
@@ -72,6 +99,8 @@ namespace EvolveOS_Optimizer.UserControls
         {
             if (sender is RadioButton rb)
             {
+                ApplyNavigationDebounce();
+
                 _selectedButton = rb;
 
                 this.DispatcherQueue.TryEnqueue(() =>
@@ -160,6 +189,8 @@ namespace EvolveOS_Optimizer.UserControls
 
         private void NavButton_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
+            if (_isNavLockActive) return;
+
             if (sender is UIElement element)
             {
                 var visual = ElementCompositionPreview.GetElementVisual(element);
@@ -246,6 +277,8 @@ namespace EvolveOS_Optimizer.UserControls
 
         private void OnNavButtonRightTapped(object sender, RightTappedRoutedEventArgs e)
         {
+            if (_isNavLockActive) return;
+
             if (sender is RadioButton rb)
             {
                 string target = rb.CommandParameter?.ToString() ?? "";
@@ -348,7 +381,6 @@ namespace EvolveOS_Optimizer.UserControls
 
         private void BeginRadialAnimation(int buttonCount)
         {
-            // Define final coordinates for each button count
             (double X, double Y)[] coords = buttonCount switch
             {
                 2 => new[] { (61.0, -35.0), (61.0, 35.0) },
@@ -406,7 +438,7 @@ namespace EvolveOS_Optimizer.UserControls
                 this.XamlRoot.Content.PointerPressed -= XamlRoot_PointerPressed;
             }
 
-            if (NavStackPanel != null)
+            if (NavStackPanel != null && !_isNavLockActive)
             {
                 NavStackPanel.IsHitTestVisible = true;
             }
@@ -432,7 +464,11 @@ namespace EvolveOS_Optimizer.UserControls
 
         private void SubMenuBtn_Click(object sender, RoutedEventArgs e)
         {
+            if (_isNavLockActive) return;
+
             CloseRadialMenu();
+
+            ApplyNavigationDebounce();
 
             if (sender is Button btn && btn.Tag is string requestedPane)
             {
