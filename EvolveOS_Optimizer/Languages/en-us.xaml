@@ -5940,6 +5940,43 @@
     <sys:String x:Key="cme_cancel">Cancel</sys:String>
 
     <!-- endregion Context Menu Editor -->
-    
-    
+
+    <!-- region File Shredder -->
+
+    <!-- C# Code-Behind (Pickers & Toasts) -->
+    <sys:String x:Key="FileShredder_FilePicker_Title">Select a File to Shred</sys:String>
+    <sys:String x:Key="FileShredder_FolderPicker_Title">Select a Folder to Shred</sys:String>
+    <sys:String x:Key="FileShredder_Toast_FileShredSuccess">File securely shredded and destroyed.</sys:String>
+    <sys:String x:Key="FileShredder_Toast_FolderShredSuccess">Folder securely shredded and destroyed.</sys:String>
+
+    <!-- Login Dialog (AdvancedUtilsPage) -->
+    <sys:String x:Key="lbl_shredder_title">Secure File Shredder Login</sys:String>
+    <sys:String x:Key="lbl_login_shredder">Enter your credentials to access the Secure File Shredder.</sys:String>
+
+    <!-- XAML UI Elements -->
+    <sys:String x:Key="FileShredder_PageTitle">Secure File Shredder</sys:String>
+    <sys:String x:Key="FileShredder_WarningTitle">Irreversible Action Warning</sys:String>
+    <sys:String x:Key="FileShredder_WarningMessage">Data destroyed using this tool cannot be recovered by any commercial software or hardware forensics. Please ensure you have selected the correct files before proceeding.</sys:String>
+
+    <sys:String x:Key="FileShredder_AlgoTitle">Algorithm: DoD 5220.22-M (3-Pass Wipe)</sys:String>
+    <sys:String x:Key="FileShredder_AlgoStep1">1. Overwrites original file data with cryptographically secure random bytes.</sys:String>
+    <sys:String x:Key="FileShredder_AlgoStep2">2. Scrambles the filename to purge metadata from the Master File Table (MFT).</sys:String>
+    <sys:String x:Key="FileShredder_AlgoStep3">3. Physically zeroes out and deletes the scrambled file cluster.</sys:String>
+
+    <sys:String x:Key="FileShredder_ToolsHeader">Shredding Tools</sys:String>
+
+    <sys:String x:Key="FileShredder_SingleFileTitle">Shred a Single File</sys:String>
+    <sys:String x:Key="FileShredder_SingleFileDesc">Select an individual file to securely overwrite and permanently destroy.</sys:String>
+    <sys:String x:Key="FileShredder_SingleFileBtn">Select File...</sys:String>
+
+    <sys:String x:Key="FileShredder_FolderTitle">Shred a Directory</sys:String>
+    <sys:String x:Key="FileShredder_FolderDesc">Recursively wipe all files, subdirectories, and contents within a selected folder.</sys:String>
+    <sys:String x:Key="FileShredder_FolderBtn">Select Folder...</sys:String>
+
+    <sys:String x:Key="FileShredder_OverlayTitle">Destroying Data...</sys:String>
+    <sys:String x:Key="FileShredder_OverlayDesc">Writing secure random bytes. Do not close the application.</sys:String>
+
+    <!-- endregion File Shredder -->
+
+
 </ResourceDictionary>

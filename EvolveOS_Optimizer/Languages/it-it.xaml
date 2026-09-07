@@ -5838,4 +5838,41 @@
     <sys:String x:Key="cme_cancel">Annulla</sys:String>
 
     <!-- endregion Context Menu Editor -->
+
+    <!-- region File Shredder -->
+
+    <!-- C# Code-Behind (Pickers & Toasts) -->
+    <sys:String x:Key="FileShredder_FilePicker_Title">Seleziona un file da distruggere</sys:String>
+    <sys:String x:Key="FileShredder_FolderPicker_Title">Seleziona una cartella da distruggere</sys:String>
+    <sys:String x:Key="FileShredder_Toast_FileShredSuccess">File distrutto in modo sicuro.</sys:String>
+    <sys:String x:Key="FileShredder_Toast_FolderShredSuccess">Cartella distrutta in modo sicuro.</sys:String>
+
+    <!-- Login Dialog (AdvancedUtilsPage) -->
+    <sys:String x:Key="lbl_shredder_title">Accesso al Distruttore di File Sicuro</sys:String>
+    <sys:String x:Key="lbl_login_shredder">Inserisci le tue credenziali per accedere al Distruttore di File Sicuro.</sys:String>
+
+    <!-- XAML UI Elements -->
+    <sys:String x:Key="FileShredder_PageTitle">Distruttore di File Sicuro</sys:String>
+    <sys:String x:Key="FileShredder_WarningTitle">Avviso di azione irreversibile</sys:String>
+    <sys:String x:Key="FileShredder_WarningMessage">I dati distrutti utilizzando questo strumento non possono essere recuperati da alcun software commerciale o analisi forense hardware. Assicurati di aver selezionato i file corretti prima di procedere.</sys:String>
+
+    <sys:String x:Key="FileShredder_AlgoTitle">Algoritmo: DoD 5220.22-M (Cancellazione a 3 passaggi)</sys:String>
+    <sys:String x:Key="FileShredder_AlgoStep1">1. Sovrascrive i dati del file originale con byte casuali crittograficamente sicuri.</sys:String>
+    <sys:String x:Key="FileShredder_AlgoStep2">2. Codifica il nome del file per eliminare i metadati dalla Master File Table (MFT).</sys:String>
+    <sys:String x:Key="FileShredder_AlgoStep3">3. Azzera fisicamente ed elimina il cluster del file codificato.</sys:String>
+
+    <sys:String x:Key="FileShredder_ToolsHeader">Strumenti di distruzione</sys:String>
+
+    <sys:String x:Key="FileShredder_SingleFileTitle">Distruggi un singolo file</sys:String>
+    <sys:String x:Key="FileShredder_SingleFileDesc">Seleziona un singolo file per sovrascriverlo in modo sicuro e distruggerlo permanentemente.</sys:String>
+    <sys:String x:Key="FileShredder_SingleFileBtn">Seleziona file...</sys:String>
+
+    <sys:String x:Key="FileShredder_FolderTitle">Distruggi una directory</sys:String>
+    <sys:String x:Key="FileShredder_FolderDesc">Cancella in modo ricorsivo tutti i file, le sottocartelle e i contenuti all'interno di una cartella selezionata.</sys:String>
+    <sys:String x:Key="FileShredder_FolderBtn">Seleziona cartella...</sys:String>
+
+    <sys:String x:Key="FileShredder_OverlayTitle">Distruzione dati in corso...</sys:String>
+    <sys:String x:Key="FileShredder_OverlayDesc">Scrittura di byte casuali sicuri in corso. Non chiudere l'applicazione.</sys:String>
+
+    <!-- endregion File Shredder -->
 </ResourceDictionary>

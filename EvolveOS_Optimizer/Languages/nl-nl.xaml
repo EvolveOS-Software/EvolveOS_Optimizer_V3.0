@@ -5841,4 +5841,41 @@
     <sys:String x:Key="cme_cancel">Annuleren</sys:String>
 
     <!-- endregion Context Menu Editor -->
+
+    <!-- region File Shredder -->
+
+    <!-- C# Code-Behind (Pickers & Toasts) -->
+    <sys:String x:Key="FileShredder_FilePicker_Title">Selecteer een bestand om te vernietigen</sys:String>
+    <sys:String x:Key="FileShredder_FolderPicker_Title">Selecteer een map om te vernietigen</sys:String>
+    <sys:String x:Key="FileShredder_Toast_FileShredSuccess">Bestand veilig vernietigd.</sys:String>
+    <sys:String x:Key="FileShredder_Toast_FolderShredSuccess">Map veilig vernietigd.</sys:String>
+
+    <!-- Login Dialog (AdvancedUtilsPage) -->
+    <sys:String x:Key="lbl_shredder_title">Veilige Bestandsvernietiger Login</sys:String>
+    <sys:String x:Key="lbl_login_shredder">Voer uw inloggegevens in om toegang te krijgen tot de Veilige Bestandsvernietiger.</sys:String>
+
+    <!-- XAML UI Elements -->
+    <sys:String x:Key="FileShredder_PageTitle">Veilige Bestandsvernietiger</sys:String>
+    <sys:String x:Key="FileShredder_WarningTitle">Waarschuwing Onomkeerbare Actie</sys:String>
+    <sys:String x:Key="FileShredder_WarningMessage">Gegevens die met dit hulpprogramma zijn vernietigd, kunnen niet worden hersteld met commerciële software of hardwareforensica. Zorg ervoor dat u de juiste bestanden hebt geselecteerd voordat u doorgaat.</sys:String>
+
+    <sys:String x:Key="FileShredder_AlgoTitle">Algoritme: DoD 5220.22-M (3-voudige overschrijving)</sys:String>
+    <sys:String x:Key="FileShredder_AlgoStep1">1. Overschrijft originele bestandsgegevens met cryptografisch veilige willekeurige bytes.</sys:String>
+    <sys:String x:Key="FileShredder_AlgoStep2">2. Versleutelt de bestandsnaam om metagegevens uit de Master File Table (MFT) te wissen.</sys:String>
+    <sys:String x:Key="FileShredder_AlgoStep3">3. Maakt het versleutelde bestandscluster fysiek leeg en verwijdert het.</sys:String>
+
+    <sys:String x:Key="FileShredder_ToolsHeader">Vernietigingshulpmiddelen</sys:String>
+
+    <sys:String x:Key="FileShredder_SingleFileTitle">Vernietig een enkel bestand</sys:String>
+    <sys:String x:Key="FileShredder_SingleFileDesc">Selecteer een individueel bestand om het veilig te overschrijven en permanent te vernietigen.</sys:String>
+    <sys:String x:Key="FileShredder_SingleFileBtn">Selecteer bestand...</sys:String>
+
+    <sys:String x:Key="FileShredder_FolderTitle">Vernietig een map</sys:String>
+    <sys:String x:Key="FileShredder_FolderDesc">Wis alle bestanden, submappen en inhoud binnen een geselecteerde map recursief.</sys:String>
+    <sys:String x:Key="FileShredder_FolderBtn">Selecteer map...</sys:String>
+
+    <sys:String x:Key="FileShredder_OverlayTitle">Gegevens vernietigen...</sys:String>
+    <sys:String x:Key="FileShredder_OverlayDesc">Veilige willekeurige bytes schrijven. Sluit de applicatie niet af.</sys:String>
+
+    <!-- endregion File Shredder -->
 </ResourceDictionary>
