@@ -69,7 +69,7 @@
                 <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_Appearance_Title'), Mode=OneWay}"
                            FontWeight="Bold" FontSize="18" Margin="0,12,0,0"/>
 
-                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="4" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -90,7 +90,7 @@
                     </Grid>
                 </Border>
 
-                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="4" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -112,7 +112,7 @@
                     </Grid>
                 </Border>
 
-                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="4" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
                     <StackPanel Spacing="12">
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -219,7 +219,7 @@
                     </StackPanel>
                 </Border>
 
-                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="4" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
                     <StackPanel Spacing="16">
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -259,7 +259,7 @@
                     </StackPanel>
                 </Border>
 
-                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="4" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
                     <StackPanel Spacing="16">
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -304,7 +304,7 @@
                     </StackPanel>
                 </Border>
 
-                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="4" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -322,7 +322,7 @@
                     </Grid>
                 </Border>
 
-                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="4" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
                     <StackPanel Spacing="16">
                         <StackPanel Spacing="2">
                             <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_AccentColor_Title'), Mode=OneWay}" FontWeight="SemiBold"/>
@@ -440,7 +440,7 @@
                     </StackPanel>
                 </Border>
 
-                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="4" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -469,7 +469,7 @@
             <StackPanel Spacing="12">
                 <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_System_Title'), Mode=OneWay}" FontWeight="Bold" FontSize="18" Margin="0,12,0,0"/>
 
-                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="4" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -486,7 +486,7 @@
                     </Grid>
                 </Border>
 
-                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="4" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -506,7 +506,7 @@
                     </Grid>
                 </Border>
 
-                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="4" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -522,7 +522,7 @@
                     </Grid>
                 </Border>
 
-                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="4" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -537,7 +537,7 @@
                     </Grid>
                 </Border>
 
-                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="4" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -559,7 +559,7 @@
             <StackPanel Spacing="12">
                 <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_AI_SectionTitle'), Mode=OneWay}" FontWeight="Bold" FontSize="18" Margin="0,12,0,0"/>
 
-                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="4" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
                     <StackPanel Spacing="16">
 
                         <StackPanel Spacing="6">
@@ -620,7 +620,7 @@
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
-                            <Border Grid.Column="0" Width="36" Height="36" CornerRadius="6" Background="{ThemeResource SubtleFillColorSecondaryBrush}" VerticalAlignment="Center">
+                            <Border Grid.Column="0" Width="36" Height="36" CornerRadius="4" Background="{ThemeResource SubtleFillColorSecondaryBrush}" VerticalAlignment="Center">
                                 <FontIcon Glyph="&#xE899;" FontSize="18" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" />
                             </Border>
                             <PasswordBox Grid.Column="1" x:Name="TxtGroqKey" PasswordRevealMode="Hidden" PlaceholderText="{x:Bind GetText('Settings_AI_GroqPlaceholder'), Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}" FontSize="12" VerticalAlignment="Center" />
@@ -640,7 +640,7 @@
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
-                            <Border Grid.Column="0" Width="36" Height="36" CornerRadius="6" Background="{ThemeResource SubtleFillColorSecondaryBrush}" VerticalAlignment="Center">
+                            <Border Grid.Column="0" Width="36" Height="36" CornerRadius="4" Background="{ThemeResource SubtleFillColorSecondaryBrush}" VerticalAlignment="Center">
                                 <FontIcon Glyph="&#xE899;" FontSize="18" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" />
                             </Border>
                             <PasswordBox Grid.Column="1" x:Name="TxtGeminiKey" PasswordRevealMode="Hidden" PlaceholderText="{x:Bind GetText('Settings_AI_GeminiPlaceholder'), Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}" FontSize="12" VerticalAlignment="Center" />
@@ -660,7 +660,7 @@
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
-                            <Border Grid.Column="0" Width="36" Height="36" CornerRadius="6" Background="{ThemeResource SubtleFillColorSecondaryBrush}" VerticalAlignment="Center">
+                            <Border Grid.Column="0" Width="36" Height="36" CornerRadius="4" Background="{ThemeResource SubtleFillColorSecondaryBrush}" VerticalAlignment="Center">
                                 <FontIcon Glyph="&#xE899;" FontSize="18" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" />
                             </Border>
                             <PasswordBox Grid.Column="1" x:Name="TxtOpenRouterKey" PasswordRevealMode="Hidden" PlaceholderText="{x:Bind GetText('Settings_AI_OpenRouterPlaceholder'), Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}" FontSize="12" VerticalAlignment="Center" />
@@ -680,7 +680,7 @@
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
-                            <Border Grid.Column="0" Width="36" Height="36" CornerRadius="6" Background="{ThemeResource SubtleFillColorSecondaryBrush}" VerticalAlignment="Center">
+                            <Border Grid.Column="0" Width="36" Height="36" CornerRadius="4" Background="{ThemeResource SubtleFillColorSecondaryBrush}" VerticalAlignment="Center">
                                 <FontIcon Glyph="&#xE899;" FontSize="18" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" />
                             </Border>
                             <PasswordBox Grid.Column="1" x:Name="TxtCohereKey" PasswordRevealMode="Hidden" PlaceholderText="{x:Bind GetText('Settings_AI_CoherePlaceholder'), Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}" FontSize="12" VerticalAlignment="Center" />
@@ -700,7 +700,7 @@
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
-                            <Border Grid.Column="0" Width="36" Height="36" CornerRadius="6" Background="{ThemeResource SubtleFillColorSecondaryBrush}" VerticalAlignment="Center">
+                            <Border Grid.Column="0" Width="36" Height="36" CornerRadius="4" Background="{ThemeResource SubtleFillColorSecondaryBrush}" VerticalAlignment="Center">
                                 <FontIcon Glyph="&#xE899;" FontSize="18" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" />
                             </Border>
                             <PasswordBox Grid.Column="1" x:Name="TxtMistralKey" PasswordRevealMode="Hidden" PlaceholderText="{x:Bind GetText('Settings_AI_MistralPlaceholder'), Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}" FontSize="12" VerticalAlignment="Center" />
@@ -721,7 +721,7 @@
             <StackPanel x:Name="SecurityPrivacy" Spacing="12" Visibility="{x:Bind IsAdmin, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="Security &amp; Privacy" FontWeight="Bold" FontSize="18" Margin="0,12,0,0"/>
 
-                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="4" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
                     <StackPanel Spacing="16">
 
                         <Grid>
@@ -878,7 +878,7 @@
             <StackPanel Spacing="12" Visibility="{x:Bind IsAdmin, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_DbBackup_SectionTitle'), Mode=OneWay}" FontWeight="Bold" FontSize="18" Margin="0,12,0,0"/>
 
-                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="4" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
                     <StackPanel Spacing="16">
 
                         <Grid>
@@ -982,7 +982,7 @@
             <StackPanel Spacing="12" Visibility="{x:Bind IsAdmin, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_Recovery_SectionTitle'), Mode=OneWay}" FontWeight="Bold" FontSize="18" Margin="0,12,0,0"/>
 
-                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="4" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -1011,7 +1011,7 @@
                     </Grid>
                 </Border>
 
-                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="4" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -1041,7 +1041,7 @@
                     </Grid>
                 </Border>
 
-                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="4" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -1074,7 +1074,7 @@
             <StackPanel Spacing="12">
                 <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_Update_SectionTitle'), Mode=OneWay}" FontWeight="Bold" FontSize="18" Margin="0,12,0,0"/>
 
-                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="4" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
                     <StackPanel Spacing="16">
                         <Grid>
                             <Grid.ColumnDefinitions>

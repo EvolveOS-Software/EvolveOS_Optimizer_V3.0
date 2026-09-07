@@ -22,7 +22,7 @@
             <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                     BorderThickness="1"
-                    CornerRadius="8"
+                    CornerRadius="4"
                     Padding="20">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -30,12 +30,12 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
-                    <StackPanel VerticalAlignment="Center">
-                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" helpers:Loc.Key="AdvancedUtils_PwdManager_Title" FontWeight="SemiBold" FontSize="16"/>
+                    <StackPanel VerticalAlignment="Center" Spacing="2">
+                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" helpers:Loc.Key="AdvancedUtils_PwdManager_Title" FontWeight="SemiBold"/>
                         <TextBlock FontFamily="{ThemeResource AppCustomFont}" helpers:Loc.Key="AdvancedUtils_PwdManager_Desc" 
-                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}" 
-                                   TextWrapping="Wrap" 
-                                   Margin="0,4,0,0"/>
+                                   Style="{StaticResource CaptionTextBlockStyle}"
+                                   Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" 
+                                   TextWrapping="Wrap"/>
                     </StackPanel>
 
                     <Button Grid.Column="1" 
@@ -51,7 +51,7 @@
             <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                     BorderThickness="1"
-                    CornerRadius="8"
+                    CornerRadius="4"
                     Padding="20">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -59,12 +59,12 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
-                    <StackPanel VerticalAlignment="Center">
-                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" helpers:Loc.Key="AdvancedUtils_FileEncryptor_Title" FontWeight="SemiBold" FontSize="16"/>
+                    <StackPanel VerticalAlignment="Center" Spacing="2">
+                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" helpers:Loc.Key="AdvancedUtils_FileEncryptor_Title" FontWeight="SemiBold"/>
                         <TextBlock FontFamily="{ThemeResource AppCustomFont}" helpers:Loc.Key="AdvancedUtils_FileEncryptor_Desc"
-                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}" 
-                                   TextWrapping="Wrap" 
-                                   Margin="0,4,0,0"/>
+                                   Style="{StaticResource CaptionTextBlockStyle}"
+                                   Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" 
+                                   TextWrapping="Wrap"/>
                     </StackPanel>
 
                     <Button Grid.Column="1" 
@@ -80,7 +80,7 @@
             <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                     BorderThickness="1"
-                    CornerRadius="8"
+                    CornerRadius="4"
                     Padding="20">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -88,12 +88,12 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
-                    <StackPanel VerticalAlignment="Center">
-                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" helpers:Loc.Key="AdvancedUtils_PwdGen_Title" FontWeight="SemiBold" FontSize="16"/>
+                    <StackPanel VerticalAlignment="Center" Spacing="2">
+                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" helpers:Loc.Key="AdvancedUtils_PwdGen_Title" FontWeight="SemiBold"/>
                         <TextBlock FontFamily="{ThemeResource AppCustomFont}" helpers:Loc.Key="AdvancedUtils_PwdGen_Desc" 
-                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}" 
-                                   TextWrapping="Wrap" 
-                                   Margin="0,4,0,0"/>
+                                   Style="{StaticResource CaptionTextBlockStyle}"
+                                   Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" 
+                                   TextWrapping="Wrap"/>
                     </StackPanel>
 
                     <StackPanel Grid.Column="1" Orientation="Vertical" Spacing="16" VerticalAlignment="Center">

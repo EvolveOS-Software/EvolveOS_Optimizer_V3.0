@@ -110,7 +110,7 @@
 
         <Style x:Key="MaintenanceCardStyle" TargetType="Border">
             <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="CornerRadius" Value="4"/>
             <Setter Property="Padding" Value="16"/>
             <Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}"/>
             <Setter Property="BorderThickness" Value="1"/>
@@ -332,7 +332,7 @@
                                         <Grid>
                                             <panels:SecurityFlowPanel HorizontalSpacing="10" VerticalSpacing="10" HorizontalAlignment="Stretch">
 
-                                                <Button Style="{StaticResource SecurityCardStyle}" Width="450" Height="155" Padding="10" Command="{x:Bind ViewModel.OpenWindowsSecurityCommand}" CommandParameter="windowsdefender://threatsettings/">
+                                                <Button Style="{StaticResource SecurityCardStyle}" Width="450" Height="155" CornerRadius="4" Padding="10" Command="{x:Bind ViewModel.OpenWindowsSecurityCommand}" CommandParameter="windowsdefender://threatsettings/">
                                                     <Grid>
                                                         <FontIcon Glyph="&#xEA18;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                         <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
@@ -348,7 +348,7 @@
                                                     </Grid>
                                                 </Button>
 
-                                                <Button Style="{StaticResource SecurityCardStyle}" Width="450" Height="155" Padding="10" Command="{x:Bind ViewModel.OpenWindowsSecurityCommand}" CommandParameter="windowsdefender://network/">
+                                                <Button Style="{StaticResource SecurityCardStyle}" Width="450" Height="155" CornerRadius="4" Padding="10" Command="{x:Bind ViewModel.OpenWindowsSecurityCommand}" CommandParameter="windowsdefender://network/">
                                                     <Grid>
                                                         <FontIcon Glyph="&#xE964;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                         <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
@@ -363,7 +363,7 @@
                                                     </Grid>
                                                 </Button>
 
-                                                <Button Style="{StaticResource SecurityCardStyle}" Width="450" Height="155" Padding="10" Command="{x:Bind ViewModel.OpenWindowsSecurityCommand}" CommandParameter="windowsdefender://account/">
+                                                <Button Style="{StaticResource SecurityCardStyle}" Width="450" Height="155" CornerRadius="4" Padding="10" Command="{x:Bind ViewModel.OpenWindowsSecurityCommand}" CommandParameter="windowsdefender://account/">
                                                     <Grid>
                                                         <FontIcon Glyph="&#xE77B;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                         <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
@@ -378,7 +378,7 @@
                                                     </Grid>
                                                 </Button>
 
-                                                <Button Style="{StaticResource SecurityCardStyle}" Width="450" Height="155" Padding="10" Command="{x:Bind ViewModel.OpenWindowsSecurityCommand}" CommandParameter="ms-settings:windowsupdate">
+                                                <Button Style="{StaticResource SecurityCardStyle}" Width="450" Height="155" CornerRadius="4" Padding="10" Command="{x:Bind ViewModel.OpenWindowsSecurityCommand}" CommandParameter="ms-settings:windowsupdate">
                                                     <Grid>
                                                         <FontIcon Glyph="&#xE895;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                         <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
@@ -393,7 +393,7 @@
                                                     </Grid>
                                                 </Button>
 
-                                                <Button Style="{StaticResource SecurityCardStyle}" Width="450" Height="155" Padding="10" Command="{x:Bind ViewModel.OpenWindowsSecurityCommand}" CommandParameter="windowsdefender://smartapp/">
+                                                <Button Style="{StaticResource SecurityCardStyle}" Width="450" Height="155" CornerRadius="4" Padding="10" Command="{x:Bind ViewModel.OpenWindowsSecurityCommand}" CommandParameter="windowsdefender://smartapp/">
                                                     <Grid>
                                                         <FontIcon Glyph="&#xE8A5;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                         <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10" Spacing="6">
@@ -411,7 +411,7 @@
                                                     </Grid>
                                                 </Button>
 
-                                                <Button Style="{StaticResource SecurityCardStyle}" Width="450" Height="155" Padding="10" Command="{x:Bind ViewModel.OpenWindowsSecurityCommand}" CommandParameter="windowsdefender://threatsettings/">
+                                                <Button Style="{StaticResource SecurityCardStyle}" Width="450" Height="155" CornerRadius="4" Padding="10" Command="{x:Bind ViewModel.OpenWindowsSecurityCommand}" CommandParameter="windowsdefender://threatsettings/">
                                                     <Grid>
                                                         <FontIcon Glyph="&#xE7EF;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                         <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
@@ -426,7 +426,7 @@
                                                     </Grid>
                                                 </Button>
 
-                                                <Button Style="{StaticResource SecurityCardStyle}" Width="450" Height="155" Padding="10" Command="{x:Bind ViewModel.OpenWindowsSecurityCommand}" CommandParameter="windowsdefender://threatsettings/">
+                                                <Button Style="{StaticResource SecurityCardStyle}" Width="450" Height="155" CornerRadius="4" Padding="10" Command="{x:Bind ViewModel.OpenWindowsSecurityCommand}" CommandParameter="windowsdefender://threatsettings/">
                                                     <Grid>
                                                         <FontIcon Glyph="&#xE72E;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                         <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
@@ -441,7 +441,7 @@
                                                     </Grid>
                                                 </Button>
 
-                                                <Button Style="{StaticResource SecurityCardStyle}" Width="450" Height="155" Padding="10" Command="{x:Bind ViewModel.OpenWindowsSecurityCommand}" CommandParameter="windowsdefender://coreisolation/">
+                                                <Button Style="{StaticResource SecurityCardStyle}" Width="450" Height="155" CornerRadius="4" Padding="10" Command="{x:Bind ViewModel.OpenWindowsSecurityCommand}" CommandParameter="windowsdefender://coreisolation/">
                                                     <Grid>
                                                         <FontIcon Glyph="&#xEA39;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                         <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
@@ -456,7 +456,7 @@
                                                     </Grid>
                                                 </Button>
 
-                                                <Button Style="{StaticResource SecurityCardStyle}" Width="450" Height="155" Padding="10" Command="{x:Bind ViewModel.OpenWindowsSecurityCommand}" CommandParameter="ms-settings:deviceencryption">
+                                                <Button Style="{StaticResource SecurityCardStyle}" Width="450" Height="155" CornerRadius="4" Padding="10" Command="{x:Bind ViewModel.OpenWindowsSecurityCommand}" CommandParameter="ms-settings:deviceencryption">
                                                     <Grid>
                                                         <FontIcon Glyph="&#xE8D7;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                         <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
@@ -471,7 +471,7 @@
                                                     </Grid>
                                                 </Button>
 
-                                                <Button Style="{StaticResource SecurityCardStyle}" Width="450" Height="155" Padding="10" Command="{x:Bind ViewModel.OpenWindowsSecurityCommand}" CommandParameter="windowsdefender://ransomwareprotection/">
+                                                <Button Style="{StaticResource SecurityCardStyle}" Width="450" Height="155" CornerRadius="4" Padding="10" Command="{x:Bind ViewModel.OpenWindowsSecurityCommand}" CommandParameter="windowsdefender://ransomwareprotection/">
                                                     <Grid>
                                                         <FontIcon Glyph="&#xE8B7;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                         <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
@@ -486,7 +486,7 @@
                                                     </Grid>
                                                 </Button>
 
-                                                <Button Style="{StaticResource SecurityCardStyle}" Width="450" Height="155" Padding="10" Command="{x:Bind ViewModel.OpenWindowsSecurityCommand}" CommandParameter="windowsdefender://smartscreenpua/">
+                                                <Button Style="{StaticResource SecurityCardStyle}" Width="450" Height="155" CornerRadius="4" Padding="10" Command="{x:Bind ViewModel.OpenWindowsSecurityCommand}" CommandParameter="windowsdefender://smartscreenpua/">
                                                     <Grid>
                                                         <FontIcon Glyph="&#xF8A5;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                         <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
@@ -501,7 +501,7 @@
                                                     </Grid>
                                                 </Button>
 
-                                                <Button Style="{StaticResource SecurityCardStyle}" Width="450" Height="155" Padding="10" Command="{x:Bind ViewModel.OpenWindowsSecurityCommand}" CommandParameter="windowsdefender://threatsettings/">
+                                                <Button Style="{StaticResource SecurityCardStyle}" Width="450" Height="155" CornerRadius="4" Padding="10" Command="{x:Bind ViewModel.OpenWindowsSecurityCommand}" CommandParameter="windowsdefender://threatsettings/">
                                                     <Grid>
                                                         <FontIcon Glyph="&#xE9F5;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                         <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
@@ -516,7 +516,7 @@
                                                     </Grid>
                                                 </Button>
 
-                                                <Button Style="{StaticResource SecurityCardStyle}" Width="450" Height="155" Padding="10" Command="{x:Bind ViewModel.OpenWindowsSecurityCommand}" CommandParameter="windowsdefender://coreisolation/">
+                                                <Button Style="{StaticResource SecurityCardStyle}" Width="450" Height="155" CornerRadius="4" Padding="10" Command="{x:Bind ViewModel.OpenWindowsSecurityCommand}" CommandParameter="windowsdefender://coreisolation/">
                                                     <Grid>
                                                         <FontIcon Glyph="&#xEC06;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                         <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
@@ -531,7 +531,7 @@
                                                     </Grid>
                                                 </Button>
 
-                                                <Button Style="{StaticResource SecurityCardStyle}" Width="450" Height="155" Padding="10" Command="{x:Bind ViewModel.OpenWindowsSecurityCommand}" CommandParameter="ms-settings:remotedesktop">
+                                                <Button Style="{StaticResource SecurityCardStyle}" Width="450" Height="155" CornerRadius="4" Padding="10" Command="{x:Bind ViewModel.OpenWindowsSecurityCommand}" CommandParameter="ms-settings:remotedesktop">
                                                     <Grid>
                                                         <Viewbox Width="25" Height="25" Margin="10,8,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">
                                                             <PathIcon Data="M3,2 A2,2,0,0,0,1,4 L1,16 C1,17.11,1.9,18,3,18 L10,18 L10,20 L8,20 L8,22 L16,22 L16,20 L14,20 L14,18 L21,18 A2,2,0,0,0,23,16 L23,4 A2,2,0,0,0,21,2 M3,4 L21,4 L21,16 L3,16 M15,5 L11.5,8.5 L15,12 L16.4,10.6 L14.3,8.5 L16.4,6.4 M9,8 L7.6,9.4 L9.7,11.5 L7.6,13.6 L9,15 L12.5,11.5" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
@@ -548,7 +548,7 @@
                                                     </Grid>
                                                 </Button>
 
-                                                <Button Style="{StaticResource SecurityCardStyle}" Width="450" Height="155" Padding="10" Command="{x:Bind ViewModel.OpenWindowsSecurityCommand}" CommandParameter="msra.exe">
+                                                <Button Style="{StaticResource SecurityCardStyle}" Width="450" Height="155" CornerRadius="4" Padding="10" Command="{x:Bind ViewModel.OpenWindowsSecurityCommand}" CommandParameter="msra.exe">
                                                     <Grid>
                                                         <Viewbox Width="25" Height="25" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,0,0">
                                                             <PathIcon Data="M12,2A5,5,0,1,0,17,7,5,5,0,0,0,12,2m0,8A3,3,0,1,1,15,7,3,3,0,0,1,12,10M12,12c-4.42,0-8,1.79-8,4v2H20V16c0-2.21-3.58-4-8-4m6,4H6v-.5c0-.83,2.69-2.5,6-2.5s6,1.67,6,2.5ZM21,2h-2v3L16,5v2h3v3h2V7h3V5H21Z" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
@@ -565,7 +565,7 @@
                                                     </Grid>
                                                 </Button>
 
-                                                <Button Style="{StaticResource SecurityCardStyle}" Width="450" Height="155" Padding="10" Command="{x:Bind ViewModel.OpenWindowsSecurityCommand}" CommandParameter="ms-settings:developers">
+                                                <Button Style="{StaticResource SecurityCardStyle}" Width="450" Height="155" CornerRadius="4" Padding="10" Command="{x:Bind ViewModel.OpenWindowsSecurityCommand}" CommandParameter="ms-settings:developers">
                                                     <Grid>
                                                         <Viewbox Width="25" Height="25" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,0,0">
                                                             <PathIcon Data="M 9.4 16.6 L 4.8 12 L 9.4 7.4 L 8 6 L 2 12 L 8 18 L 9.4 16.6 Z M 14.6 16.6 L 19.2 12 L 14.6 7.4 L 16 6 L 22 12 L 16 18 L 14.6 16.6 Z" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
@@ -582,7 +582,7 @@
                                                     </Grid>
                                                 </Button>
 
-                                                <Button Style="{StaticResource SecurityCardStyle}" Width="450" Height="155" Padding="14" Command="{x:Bind ViewModel.OpenWindowsSecurityCommand}" CommandParameter="UserAccountControlSettings.exe">
+                                                <Button Style="{StaticResource SecurityCardStyle}" Width="450" Height="155" CornerRadius="4" Padding="14" Command="{x:Bind ViewModel.OpenWindowsSecurityCommand}" CommandParameter="UserAccountControlSettings.exe">
                                                     <Grid>
                                                         <Grid.RowDefinitions>
                                                             <RowDefinition Height="Auto"/>
@@ -612,6 +612,7 @@
                                                 <Button Style="{StaticResource SecurityCardStyle}"
                                                         Width="450"
                                                         Height="155"
+                                                        CornerRadius="4"
                                                         Padding="10"
                                                         Click="OpenPortScanner_Click"
                                                         HorizontalAlignment="Stretch">
@@ -649,7 +650,7 @@
                                                     </Grid>
                                                 </Button>
 
-                                                <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Width="450" Height="155" Padding="14">
+                                                <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="4" Width="450" Height="155" Padding="14">
                                                     <Grid>
                                                         <FontIcon Glyph="&#xE756;" FontSize="22" Margin="5,5,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                         <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
@@ -741,7 +742,7 @@
                                                 </StackPanel>
                                             </Border>
 
-                                            <Expander Expanding="Expander_Expanding" IsExpanded="False" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" CornerRadius="8">
+                                            <Expander Expanding="Expander_Expanding" IsExpanded="False" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" CornerRadius="4">
                                                 <Expander.Header>
                                                     <StackPanel Orientation="Horizontal" Spacing="8">
                                                         <FontIcon Glyph="&#xE964;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
@@ -777,7 +778,7 @@
                                                 </StackPanel>
                                             </Expander>
 
-                                            <Expander Expanding="Expander_Expanding" IsExpanded="False" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" CornerRadius="8">
+                                            <Expander Expanding="Expander_Expanding" IsExpanded="False" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" CornerRadius="4">
                                                 <Expander.Header>
                                                     <StackPanel Orientation="Horizontal" Spacing="8">
                                                         <FontIcon Glyph="&#xECE4;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
@@ -820,7 +821,7 @@
                                                 </StackPanel>
                                             </Expander>
 
-                                            <Expander Expanding="Expander_Expanding" IsExpanded="False" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" CornerRadius="8">
+                                            <Expander Expanding="Expander_Expanding" IsExpanded="False" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" CornerRadius="4">
                                                 <Expander.Header>
                                                     <StackPanel Orientation="Horizontal" Spacing="8">
                                                         <FontIcon Glyph="&#xE762;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
@@ -842,7 +843,7 @@
                                                 </StackPanel>
                                             </Expander>
 
-                                            <Expander Expanding="Expander_Expanding" IsExpanded="False" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" CornerRadius="8"
+                                            <Expander Expanding="Expander_Expanding" IsExpanded="False" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" CornerRadius="4"
                                                       Visibility="{x:Bind ViewModel.Computer.OperatingSystem.HasHotkeyManager, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}">
                                                 <Expander.Header>
                                                     <StackPanel Orientation="Horizontal" Spacing="8">
@@ -886,7 +887,7 @@
                                                 </StackPanel>
                                             </Expander>
 
-                                            <Expander Expanding="Expander_Expanding" IsExpanded="False" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" CornerRadius="8">
+                                            <Expander Expanding="Expander_Expanding" IsExpanded="False" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" CornerRadius="4">
                                                 <Expander.Header>
                                                     <StackPanel Orientation="Horizontal" Spacing="8">
                                                         <FontIcon Glyph="&#xE74D;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
@@ -905,7 +906,7 @@
                                                 </StackPanel>
                                             </Expander>
 
-                                            <Expander Expanding="Expander_Expanding" IsExpanded="False" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" CornerRadius="8">
+                                            <Expander Expanding="Expander_Expanding" IsExpanded="False" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" CornerRadius="4">
                                                 <Expander.Header>
                                                     <StackPanel Orientation="Horizontal" Spacing="8">
                                                         <FontIcon Glyph="&#xE90F;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
@@ -988,7 +989,7 @@
                                                 </StackPanel>
                                             </Expander>
 
-                                            <Expander Expanding="Expander_Expanding" IsExpanded="False" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" CornerRadius="8">
+                                            <Expander Expanding="Expander_Expanding" IsExpanded="False" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" CornerRadius="4">
                                                 <Expander.Header>
                                                     <StackPanel Orientation="Horizontal" Spacing="8">
                                                         <FontIcon Glyph="&#xE9D9;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
@@ -1047,7 +1048,7 @@
                                                 </StackPanel>
                                             </Expander>
 
-                                            <Expander Expanding="Expander_Expanding" IsExpanded="False" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" CornerRadius="8">
+                                            <Expander Expanding="Expander_Expanding" IsExpanded="False" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" CornerRadius="4">
                                                 <Expander.Header>
                                                     <StackPanel Orientation="Horizontal" Spacing="8">
                                                         <FontIcon Glyph="&#xE713;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
@@ -1263,7 +1264,7 @@
                                                                        Style="{StaticResource TitleTextBlockStyle}"
                                                                        Foreground="{ThemeResource MyDynamicAccentBrush}"/>
 
-                                                            <Expander Expanding="Expander_Expanding" IsExpanded="False" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" CornerRadius="8">
+                                                            <Expander Expanding="Expander_Expanding" IsExpanded="False" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" CornerRadius="4">
                                                                 <Expander.Header>
                                                                     <Grid ColumnSpacing="8">
                                                                         <Grid.ColumnDefinitions>
@@ -1311,7 +1312,7 @@
                                                                 </StackPanel>
                                                             </Expander>
 
-                                                            <Expander Expanding="Expander_Expanding" IsExpanded="False" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" CornerRadius="8">
+                                                            <Expander Expanding="Expander_Expanding" IsExpanded="False" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" CornerRadius="4">
                                                                 <Expander.Header>
                                                                     <Grid ColumnSpacing="8">
                                                                         <Grid.ColumnDefinitions>
@@ -1363,7 +1364,7 @@
                                                                 </StackPanel>
                                                             </Expander>
 
-                                                            <Expander Expanding="Expander_Expanding" IsExpanded="False" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" CornerRadius="8">
+                                                            <Expander Expanding="Expander_Expanding" IsExpanded="False" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" CornerRadius="4">
                                                                 <Expander.Header>
                                                                     <Grid ColumnSpacing="8">
                                                                         <Grid.ColumnDefinitions>
@@ -2452,7 +2453,7 @@
                         Background="{ThemeResource LayerFillColorDefaultBrush}"
                         BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                         BorderThickness="1"
-                        CornerRadius="8">
+                        CornerRadius="4">
 
                     <Grid>
                         <Grid.RowDefinitions>
@@ -2464,7 +2465,7 @@
                                 BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                                 BorderThickness="0,0,0,1"
                                 Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                                CornerRadius="8,8,0,0"
+                                CornerRadius="4,4,0,0"
                                 Padding="12,10,24,10">
                             <Grid ColumnSpacing="16">
                                 <Grid.ColumnDefinitions>
@@ -2576,7 +2577,7 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <Border Grid.Row="0" Background="#10FFFFFF" Padding="15" CornerRadius="8" Margin="0,0,0,15">
+                <Border Grid.Row="0" Background="#10FFFFFF" Padding="15" CornerRadius="4" Margin="0,0,0,15">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
