@@ -34,6 +34,70 @@ namespace EvolveOS_Optimizer.Pages
             }
         }
 
+        #region Dialog Helper (Premium UX Wizard)
+
+        private async Task<bool> ShowStepDialogAsync(string titleKey, string defaultTitle, string messageKey, string defaultMessage, string primaryBtnKey, string defaultPrimaryBtn)
+        {
+            if (this.XamlRoot == null) return false;
+
+            var dialog = new ContentDialog
+            {
+                Title = ResourceString.GetString(titleKey) ?? defaultTitle,
+                Content = new TextBlock
+                {
+                    Text = ResourceString.GetString(messageKey) ?? defaultMessage,
+                    TextWrapping = TextWrapping.Wrap
+                },
+                PrimaryButtonText = ResourceString.GetString(primaryBtnKey) ?? defaultPrimaryBtn,
+                CloseButtonText = ResourceString.GetString("btn_cancel") ?? "Cancel",
+                DefaultButton = ContentDialogButton.Primary,
+                XamlRoot = this.XamlRoot
+            };
+
+            var result = await dialog.ShowAsync();
+            return result == ContentDialogResult.Primary;
+        }
+
+        private async Task ShowOpenFolderDialogAsync(string filePath)
+        {
+            if (this.XamlRoot == null) return;
+
+            var dialog = new ContentDialog
+            {
+                Title = ResourceString.GetString("Encryptor_SuccessOpen_Title") ?? "Process Complete",
+                Content = new TextBlock
+                {
+                    Text = ResourceString.GetString("Encryptor_SuccessOpen_Desc") ?? "The operation was successful. Would you like to view the output in File Explorer?",
+                    TextWrapping = TextWrapping.Wrap
+                },
+                PrimaryButtonText = ResourceString.GetString("Encryptor_SuccessOpen_Btn") ?? "Open Folder",
+                CloseButtonText = ResourceString.GetString("btn_close") ?? "Close",
+                DefaultButton = ContentDialogButton.Primary,
+                XamlRoot = this.XamlRoot
+            };
+
+            var result = await dialog.ShowAsync();
+            if (result == ContentDialogResult.Primary)
+            {
+                try
+                {
+                    string argument = File.Exists(filePath) ? $"/select,\"{filePath}\"" : $"\"{filePath}\"";
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = "explorer.exe",
+                        Arguments = argument,
+                        UseShellExecute = true
+                    });
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Failed to open explorer: {ex.Message}");
+                }
+            }
+        }
+
+        #endregion
+
         #region Core Encryption/Decryption Logic (Runs on Background Threads)
 
         private async Task ProcessFileEncryptionAsync(string sourceFilePath, string destinationFilePath)
@@ -108,10 +172,21 @@ namespace EvolveOS_Optimizer.Pages
         {
             try
             {
+                bool continueStep1 = await ShowStepDialogAsync(
+                    "Encryptor_Wizard_EncFileTitle", "Step 1: Select File",
+                    "Encryptor_Wizard_EncFileDesc", "Choose the file you want to securely encrypt with your Master Password.",
+                    "Encryptor_Wizard_EncFileBtn", "Select File");
+                if (!continueStep1) return;
+
                 string openTitle = ResourceString.GetString("FileEncryptor_OpenFile_Title") ?? "Select a File to Encrypt";
                 string? fileToEncryptPath = Win32FileDialogHelper.ShowOpenFilePicker(App.MainWindow!, openTitle, "All Files", "*.*");
-
                 if (string.IsNullOrEmpty(fileToEncryptPath)) return;
+
+                bool continueStep2 = await ShowStepDialogAsync(
+                    "Encryptor_Wizard_EncSaveTitle", "Step 2: Save Encrypted File",
+                    "Encryptor_Wizard_EncSaveDesc", "Choose where to save your newly encrypted .evo file.",
+                    "Encryptor_Wizard_EncSaveBtn", "Choose Save Location");
+                if (!continueStep2) return;
 
                 string encryptedFileType = ResourceString.GetString("FileEncryptor_FileType_Encrypted") ?? "EvolveOS Encrypted File";
                 string saveTitle = ResourceString.GetString("FileEncryptor_SaveFile_Title") ?? "Save Encrypted File";
@@ -135,6 +210,9 @@ namespace EvolveOS_Optimizer.Pages
 
                 await ProcessFileEncryptionAsync(fileToEncryptPath, destinationFilePath);
 
+                LoadingOverlay.Visibility = Visibility.Collapsed;
+                UIHelper.SetOverlay(false);
+
                 string successTitle = ResourceString.GetString("Toast_Success_Title");
                 string successMsg = ResourceString.GetString("FileEncryptor_Toast_FileEncryptSuccess");
 
@@ -142,6 +220,84 @@ namespace EvolveOS_Optimizer.Pages
                                          string.IsNullOrEmpty(successMsg) ? "File encrypted successfully." : successMsg)
                                    .WithSeverity(NotificationManager.NoticeSeverity.Success)
                                    .Create();
+
+                await ShowOpenFolderDialogAsync(destinationFilePath);
+            }
+            catch (Exception ex)
+            {
+                string errorTitle = ResourceString.GetString("FileEncryptor_Toast_EncryptionErrorTitle");
+                NotificationManager.Show(string.IsNullOrEmpty(errorTitle) ? "Encryption Error" : errorTitle, ex.Message)
+                                   .WithSeverity(NotificationManager.NoticeSeverity.Error)
+                                   .Create();
+            }
+            finally
+            {
+                LoadingOverlay.Visibility = Visibility.Collapsed;
+                UIHelper.SetOverlay(false);
+
+                EfficiencyModeHelper.IsUIWakeLockActive = false;
+                if (LocalMachineSettingsEngine.RunOnPriority == Core.Enums.Priority.Low)
+                {
+                    EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(true);
+                }
+            }
+        }
+
+        private async void BtnEncryptFolder_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                bool continueStep1 = await ShowStepDialogAsync(
+                    "Encryptor_Wizard_EncFolderTitle", "Step 1: Select Folder",
+                    "Encryptor_Wizard_EncFolderDesc", "Choose the folder you want to compress and securely encrypt.",
+                    "Encryptor_Wizard_EncFolderBtn", "Select Folder");
+                if (!continueStep1) return;
+
+                string folderTitle = ResourceString.GetString("FileEncryptor_SelectFolder_Title") ?? "Select Folder to Encrypt";
+                string? folderToEncryptPath = Win32FileDialogHelper.ShowFolderPicker(App.MainWindow!, folderTitle);
+                if (string.IsNullOrEmpty(folderToEncryptPath)) return;
+
+                bool continueStep2 = await ShowStepDialogAsync(
+                    "Encryptor_Wizard_EncFolderSaveTitle", "Step 2: Save Encrypted Archive",
+                    "Encryptor_Wizard_EncFolderSaveDesc", "Choose where to save your encrypted .evo folder archive.",
+                    "Encryptor_Wizard_EncFolderSaveBtn", "Choose Save Location");
+                if (!continueStep2) return;
+
+                string folderName = new DirectoryInfo(folderToEncryptPath).Name;
+                string encryptedFolderType = ResourceString.GetString("FileEncryptor_FileType_EncryptedFolder") ?? "EvolveOS Encrypted Folder";
+                string saveTitle = ResourceString.GetString("FileEncryptor_SaveFolder_Title") ?? "Save Encrypted Folder Archive";
+                string suggestedName = folderName + "_Archive" + EncryptedExtension;
+
+                string? destinationFilePath = Win32FileDialogHelper.ShowSaveFilePicker(
+                    App.MainWindow!,
+                    saveTitle,
+                    encryptedFolderType,
+                    "*" + EncryptedExtension,
+                    suggestedName,
+                    EncryptedExtension);
+
+                if (string.IsNullOrEmpty(destinationFilePath)) return;
+
+                EfficiencyModeHelper.IsUIWakeLockActive = true;
+                EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(false);
+
+                UIHelper.SetOverlay(true);
+                LoadingOverlay.Visibility = Visibility.Visible;
+
+                await ProcessFolderEncryptionAsync(folderToEncryptPath, destinationFilePath);
+
+                LoadingOverlay.Visibility = Visibility.Collapsed;
+                UIHelper.SetOverlay(false);
+
+                string successTitle = ResourceString.GetString("Toast_Success_Title");
+                string successMsg = ResourceString.GetString("FileEncryptor_Toast_FolderEncryptSuccess");
+
+                NotificationManager.Show(string.IsNullOrEmpty(successTitle) ? "Success" : successTitle,
+                                         string.IsNullOrEmpty(successMsg) ? "Folder encrypted successfully." : successMsg)
+                                   .WithSeverity(NotificationManager.NoticeSeverity.Success)
+                                   .Create();
+
+                await ShowOpenFolderDialogAsync(destinationFilePath);
             }
             catch (Exception ex)
             {
@@ -167,35 +323,51 @@ namespace EvolveOS_Optimizer.Pages
         {
             try
             {
+                bool continueStep1 = await ShowStepDialogAsync(
+                    "Encryptor_Wizard_DecTitle", "Step 1: Select Encrypted File",
+                    "Encryptor_Wizard_DecDesc", "Choose the .evo file you want to decrypt.",
+                    "Encryptor_Wizard_DecBtn", "Select Encrypted File");
+                if (!continueStep1) return;
+
                 string openTitle = ResourceString.GetString("FileEncryptor_OpenDecrypt_Title") ?? "Select Encrypted File";
                 string? fileToDecryptPath = Win32FileDialogHelper.ShowOpenFilePicker(App.MainWindow!, openTitle, "EvolveOS Encrypted File", "*" + EncryptedExtension);
-
                 if (string.IsNullOrEmpty(fileToDecryptPath)) return;
 
                 string originalName = Path.GetFileName(fileToDecryptPath).Replace(EncryptedExtension, "");
                 bool isFolderArchive = !Path.HasExtension(originalName);
 
-                UIHelper.SetOverlay(true);
+                string outputFilePath = string.Empty;
 
                 if (isFolderArchive)
                 {
+                    bool continueStep2 = await ShowStepDialogAsync(
+                        "Encryptor_Wizard_DecFolderTitle", "Step 2: Select Extraction Folder",
+                        "Encryptor_Wizard_DecFolderDesc", "Choose where you want to extract the decrypted folder contents.",
+                        "Encryptor_Wizard_DecFolderBtn", "Select Destination");
+                    if (!continueStep2) return;
+
                     string folderTitle = ResourceString.GetString("FileEncryptor_SelectDestFolder_Title") ?? "Select Destination Folder";
                     string? destFolderPath = Win32FileDialogHelper.ShowFolderPicker(App.MainWindow!, folderTitle);
 
-                    if (string.IsNullOrEmpty(destFolderPath))
-                    {
-                        UIHelper.SetOverlay(false);
-                        return;
-                    }
+                    if (string.IsNullOrEmpty(destFolderPath)) return;
+
+                    outputFilePath = destFolderPath;
 
                     EfficiencyModeHelper.IsUIWakeLockActive = true;
                     EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(false);
-
+                    UIHelper.SetOverlay(true);
                     LoadingOverlay.Visibility = Visibility.Visible;
+
                     await ProcessFolderDecryptionAsync(fileToDecryptPath, destFolderPath);
                 }
                 else
                 {
+                    bool continueStep2 = await ShowStepDialogAsync(
+                        "Encryptor_Wizard_DecSaveTitle", "Step 2: Save Decrypted File",
+                        "Encryptor_Wizard_DecSaveDesc", "Choose where you want to save the original, decrypted file.",
+                        "Encryptor_Wizard_DecSaveBtn", "Choose Save Location");
+                    if (!continueStep2) return;
+
                     string originalExtension = Path.GetExtension(originalName);
                     if (string.IsNullOrEmpty(originalExtension)) originalExtension = ".*";
 
@@ -210,18 +382,20 @@ namespace EvolveOS_Optimizer.Pages
                         originalName,
                         originalExtension);
 
-                    if (string.IsNullOrEmpty(destFilePath))
-                    {
-                        UIHelper.SetOverlay(false);
-                        return;
-                    }
+                    if (string.IsNullOrEmpty(destFilePath)) return;
+
+                    outputFilePath = destFilePath;
 
                     EfficiencyModeHelper.IsUIWakeLockActive = true;
                     EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(false);
-
+                    UIHelper.SetOverlay(true);
                     LoadingOverlay.Visibility = Visibility.Visible;
+
                     await ProcessFileDecryptionAsync(fileToDecryptPath, destFilePath);
                 }
+
+                LoadingOverlay.Visibility = Visibility.Collapsed;
+                UIHelper.SetOverlay(false);
 
                 string successTitle = ResourceString.GetString("Toast_Success_Title");
                 string successMsg = ResourceString.GetString("FileEncryptor_Toast_DecryptSuccess");
@@ -230,6 +404,8 @@ namespace EvolveOS_Optimizer.Pages
                                          string.IsNullOrEmpty(successMsg) ? "Decrypted successfully." : successMsg)
                                    .WithSeverity(NotificationManager.NoticeSeverity.Success)
                                    .Create();
+
+                await ShowOpenFolderDialogAsync(outputFilePath);
             }
             catch (CryptographicException)
             {
@@ -261,84 +437,26 @@ namespace EvolveOS_Optimizer.Pages
             }
         }
 
-        private async void BtnEncryptFolder_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                string folderTitle = ResourceString.GetString("FileEncryptor_SelectFolder_Title") ?? "Select Folder to Encrypt";
-                string? folderToEncryptPath = Win32FileDialogHelper.ShowFolderPicker(App.MainWindow!, folderTitle);
-
-                if (string.IsNullOrEmpty(folderToEncryptPath)) return;
-
-                string folderName = new DirectoryInfo(folderToEncryptPath).Name;
-                string encryptedFolderType = ResourceString.GetString("FileEncryptor_FileType_EncryptedFolder") ?? "EvolveOS Encrypted Folder";
-                string saveTitle = ResourceString.GetString("FileEncryptor_SaveFolder_Title") ?? "Save Encrypted Folder Archive";
-                string suggestedName = folderName + "_Archive" + EncryptedExtension;
-
-                string? destinationFilePath = Win32FileDialogHelper.ShowSaveFilePicker(
-                    App.MainWindow!,
-                    saveTitle,
-                    encryptedFolderType,
-                    "*" + EncryptedExtension,
-                    suggestedName,
-                    EncryptedExtension);
-
-                if (string.IsNullOrEmpty(destinationFilePath)) return;
-
-                EfficiencyModeHelper.IsUIWakeLockActive = true;
-                EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(false);
-
-                UIHelper.SetOverlay(true);
-                LoadingOverlay.Visibility = Visibility.Visible;
-
-                await ProcessFolderEncryptionAsync(folderToEncryptPath, destinationFilePath);
-
-                string successTitle = ResourceString.GetString("Toast_Success_Title");
-                string successMsg = ResourceString.GetString("FileEncryptor_Toast_FolderEncryptSuccess");
-
-                NotificationManager.Show(string.IsNullOrEmpty(successTitle) ? "Success" : successTitle,
-                                         string.IsNullOrEmpty(successMsg) ? "Folder encrypted successfully." : successMsg)
-                                   .WithSeverity(NotificationManager.NoticeSeverity.Success)
-                                   .Create();
-            }
-            catch (Exception ex)
-            {
-                string errorTitle = ResourceString.GetString("FileEncryptor_Toast_EncryptionErrorTitle");
-                NotificationManager.Show(string.IsNullOrEmpty(errorTitle) ? "Encryption Error" : errorTitle, ex.Message)
-                                   .WithSeverity(NotificationManager.NoticeSeverity.Error)
-                                   .Create();
-            }
-            finally
-            {
-                LoadingOverlay.Visibility = Visibility.Collapsed;
-                UIHelper.SetOverlay(false);
-
-                EfficiencyModeHelper.IsUIWakeLockActive = false;
-                if (LocalMachineSettingsEngine.RunOnPriority == Core.Enums.Priority.Low)
-                {
-                    EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(true);
-                }
-            }
-        }
+        #endregion
 
         #region Navigation
 
         private void BtnBack_Click(object sender, RoutedEventArgs e)
         {
-            if (this.Frame != null && this.Frame.CanGoBack)
+            if (this.Frame != null)
             {
-                this.Frame.GoBack();
+                this.Frame.Navigate(typeof(AdvancedUtilsPage));
+
+                this.Frame.BackStack.Clear();
             }
         }
-
-        #endregion
-
-        #endregion
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
             _masterPassword?.Dispose();
         }
+
+        #endregion
     }
 }

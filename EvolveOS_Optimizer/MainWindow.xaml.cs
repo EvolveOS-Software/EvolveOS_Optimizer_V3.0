@@ -692,7 +692,7 @@ namespace EvolveOS_Optimizer
                 "RegistryEditor" => typeof(Pages.RegistryEditorPage),
                 "Optimize" => typeof(WinOptimizePage),
                 "Customize" => typeof(Pages.WinCustomizePage),
-                "Utilities" => typeof(Pages.UtilitiesPage),
+                "Utilities" => typeof(Pages.AdvancedUtilsPage),
                 "Scripts" => typeof(Pages.ScriptsPage),
                 "Settings" => typeof(Pages.SettingsPage),
                 "ProfileBuilder" => typeof(Pages.ProfileBuilderPage),

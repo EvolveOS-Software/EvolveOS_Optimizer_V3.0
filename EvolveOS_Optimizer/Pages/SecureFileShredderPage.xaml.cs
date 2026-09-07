@@ -33,6 +33,32 @@ namespace EvolveOS_Optimizer.Pages
             }
         }
 
+        #region Dialog Helper (Premium UX Wizard)
+
+        private async Task<bool> ShowStepDialogAsync(string titleKey, string defaultTitle, string messageKey, string defaultMessage, string primaryBtnKey, string defaultPrimaryBtn)
+        {
+            if (this.XamlRoot == null) return false;
+
+            var dialog = new ContentDialog
+            {
+                Title = ResourceString.GetString(titleKey) ?? defaultTitle,
+                Content = new TextBlock
+                {
+                    Text = ResourceString.GetString(messageKey) ?? defaultMessage,
+                    TextWrapping = TextWrapping.Wrap
+                },
+                PrimaryButtonText = ResourceString.GetString(primaryBtnKey) ?? defaultPrimaryBtn,
+                CloseButtonText = ResourceString.GetString("btn_cancel") ?? "Cancel",
+                DefaultButton = ContentDialogButton.Primary,
+                XamlRoot = this.XamlRoot
+            };
+
+            var result = await dialog.ShowAsync();
+            return result == ContentDialogResult.Primary;
+        }
+
+        #endregion
+
         #region Core Shredding Logic (Runs on Background Threads)
 
         private async Task ProcessFileShreddingAsync(string filePath, int passes)
@@ -94,6 +120,12 @@ namespace EvolveOS_Optimizer.Pages
         {
             try
             {
+                bool continueStep = await ShowStepDialogAsync(
+                    "Shredder_Wizard_FileTitle", "Step 1: Select File to Destroy",
+                    "Shredder_Wizard_FileDesc", "Choose the individual file you want to permanently wipe. WARNING: This action cannot be undone.",
+                    "Shredder_Wizard_FileBtn", "Select File");
+                if (!continueStep) return;
+
                 string title = ResourceString.GetString("FileShredder_FilePicker_Title") ?? "Select a File to Shred";
 
                 string? filePath = Win32FileDialogHelper.ShowOpenFilePicker(
@@ -145,6 +177,12 @@ namespace EvolveOS_Optimizer.Pages
         {
             try
             {
+                bool continueStep = await ShowStepDialogAsync(
+                    "Shredder_Wizard_FolderTitle", "Step 1: Select Folder to Destroy",
+                    "Shredder_Wizard_FolderDesc", "Choose the directory you want to completely wipe. All files and subfolders inside will be permanently destroyed.",
+                    "Shredder_Wizard_FolderBtn", "Select Folder");
+                if (!continueStep) return;
+
                 string title = ResourceString.GetString("FileShredder_FolderPicker_Title") ?? "Select a Folder to Shred";
 
                 string? folderPath = Win32FileDialogHelper.ShowFolderPicker(
@@ -196,9 +234,11 @@ namespace EvolveOS_Optimizer.Pages
 
         private void BtnBack_Click(object sender, RoutedEventArgs e)
         {
-            if (this.Frame != null && this.Frame.CanGoBack)
+            if (this.Frame != null)
             {
-                this.Frame.GoBack();
+                this.Frame.Navigate(typeof(AdvancedUtilsPage));
+
+                this.Frame.BackStack.Clear();
             }
         }
 

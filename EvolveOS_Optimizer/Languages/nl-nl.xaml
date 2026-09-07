@@ -1889,6 +1889,7 @@
 
     <!--#region Advanced Utils Page -->
     <sys:String x:Key="AdvancedUtils_PageTitle">Privacy &amp; Beveiliging</sys:String>
+    <sys:String x:Key="AdvancedUtils_PageDesc">Premium tools voor beveiliging, privacy en bestandsbeheer.</sys:String>
     <sys:String x:Key="AdvancedUtils_PwdManager_Title">Wachtwoordbeheerder</sys:String>
     <sys:String x:Key="AdvancedUtils_PwdManager_Desc">Sla al uw wachtwoorden veilig op, bewerk ze en organiseer ze op één plek. Versleutel en genereer sterke wachtwoorden.</sys:String>
     <sys:String x:Key="AdvancedUtils_PwdManager_Btn">Open Beheerder</sys:String>
@@ -1940,6 +1941,35 @@
     <sys:String x:Key="FileEncryptor_SaveDecrypt_Title">Ontsleuteld bestand opslaan</sys:String>
     <sys:String x:Key="FileEncryptor_SelectFolder_Title">Selecteer map om te versleutelen</sys:String>
     <sys:String x:Key="FileEncryptor_SaveFolder_Title">Versleuteld maparchief opslaan</sys:String>
+
+    <!-- File Encryptor: Wizards -->
+    <sys:String x:Key="Encryptor_Wizard_EncFileTitle">Stap 1: Selecteer Bestand</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_EncFileDesc">Kies het bestand dat u veilig wilt versleutelen met uw Hoofdwachtwoord.</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_EncFileBtn">Selecteer Bestand</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_EncSaveTitle">Stap 2: Bewaar Versleuteld Bestand</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_EncSaveDesc">Kies waar u uw nieuw versleutelde .evo-bestand wilt opslaan.</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_EncSaveBtn">Kies Opslaglocatie</sys:String>
+
+    <sys:String x:Key="Encryptor_Wizard_EncFolderTitle">Stap 1: Selecteer Map</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_EncFolderDesc">Kies de map die u wilt comprimeren en veilig wilt versleutelen.</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_EncFolderBtn">Selecteer Map</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_EncFolderSaveTitle">Stap 2: Bewaar Versleuteld Archief</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_EncFolderSaveDesc">Kies waar u uw versleutelde .evo maparchief wilt opslaan.</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_EncFolderSaveBtn">Kies Opslaglocatie</sys:String>
+
+    <sys:String x:Key="Encryptor_Wizard_DecTitle">Stap 1: Selecteer Versleuteld Bestand</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_DecDesc">Kies het .evo-bestand dat u wilt ontsleutelen.</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_DecBtn">Selecteer Versleuteld Bestand</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_DecFolderTitle">Stap 2: Selecteer Extractiemap</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_DecFolderDesc">Kies waar u de ontsleutelde mapinhoud wilt uitpakken.</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_DecFolderBtn">Selecteer Bestemming</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_DecSaveTitle">Stap 2: Bewaar Ontsleuteld Bestand</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_DecSaveDesc">Kies waar u het originele, ontsleutelde bestand wilt opslaan.</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_DecSaveBtn">Kies Opslaglocatie</sys:String>
+
+    <sys:String x:Key="Encryptor_SuccessOpen_Title">Proces Voltooid</sys:String>
+    <sys:String x:Key="Encryptor_SuccessOpen_Desc">De bewerking was succesvol. Wilt u de uitvoer bekijken in de Bestandsverkenner?</sys:String>
+    <sys:String x:Key="Encryptor_SuccessOpen_Btn">Open Map</sys:String>
     <!-- endregion File/Folder Encryption/Decryption -->
 
     <!-- region GamingMode Card -->
@@ -5890,6 +5920,15 @@
 
     <sys:String x:Key="FileShredder_OverlayTitle">Gegevens vernietigen...</sys:String>
     <sys:String x:Key="FileShredder_OverlayDesc">Veilige willekeurige bytes schrijven. Sluit de applicatie niet af.</sys:String>
+
+    <!-- File Shredder: Wizards -->
+    <sys:String x:Key="Shredder_Wizard_FileTitle">Stap 1: Selecteer Bestand om te Vernietigen</sys:String>
+    <sys:String x:Key="Shredder_Wizard_FileDesc">Kies het individuele bestand dat u permanent wilt wissen. WAARSCHUWING: Deze actie kan niet ongedaan worden gemaakt.</sys:String>
+    <sys:String x:Key="Shredder_Wizard_FileBtn">Selecteer Bestand</sys:String>
+
+    <sys:String x:Key="Shredder_Wizard_FolderTitle">Stap 1: Selecteer Map om te Vernietigen</sys:String>
+    <sys:String x:Key="Shredder_Wizard_FolderDesc">Kies de directory die u volledig wilt wissen. Alle bestanden en submappen erin worden permanent vernietigd.</sys:String>
+    <sys:String x:Key="Shredder_Wizard_FolderBtn">Selecteer Map</sys:String>
 
     <!-- endregion File Shredder -->
 

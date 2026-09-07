@@ -1896,6 +1896,7 @@
 
     <!--#region Advanced Utils Page -->
     <sys:String x:Key="AdvancedUtils_PageTitle">Privacy &amp; Sicurezza</sys:String>
+    <sys:String x:Key="AdvancedUtils_PageDesc">Strumenti premium per la sicurezza, la privacy e la gestione dei file.</sys:String>
     <sys:String x:Key="AdvancedUtils_PwdManager_Title">Gestore Password</sys:String>
     <sys:String x:Key="AdvancedUtils_PwdManager_Desc">Archivia, modifica e organizza in modo sicuro tutte le tue password in un unico posto. Crittografa e genera password complesse.</sys:String>
     <sys:String x:Key="AdvancedUtils_PwdManager_Btn">Apri Gestore</sys:String>
@@ -1947,6 +1948,35 @@
     <sys:String x:Key="FileEncryptor_SaveDecrypt_Title">Salva file decrittografato</sys:String>
     <sys:String x:Key="FileEncryptor_SelectFolder_Title">Seleziona cartella da crittografare</sys:String>
     <sys:String x:Key="FileEncryptor_SaveFolder_Title">Salva archivio cartella crittografato</sys:String>
+
+    <!-- File Encryptor: Wizards -->
+    <sys:String x:Key="Encryptor_Wizard_EncFileTitle">Passaggio 1: Seleziona file</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_EncFileDesc">Scegli il file che desideri crittografare in modo sicuro con la tua Master Password.</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_EncFileBtn">Seleziona file</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_EncSaveTitle">Passaggio 2: Salva file crittografato</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_EncSaveDesc">Scegli dove salvare il tuo nuovo file .evo crittografato.</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_EncSaveBtn">Scegli percorso di salvataggio</sys:String>
+
+    <sys:String x:Key="Encryptor_Wizard_EncFolderTitle">Passaggio 1: Seleziona cartella</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_EncFolderDesc">Scegli la cartella che desideri comprimere e crittografare in modo sicuro.</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_EncFolderBtn">Seleziona cartella</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_EncFolderSaveTitle">Passaggio 2: Salva archivio crittografato</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_EncFolderSaveDesc">Scegli dove salvare l'archivio della tua cartella .evo crittografata.</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_EncFolderSaveBtn">Scegli percorso di salvataggio</sys:String>
+
+    <sys:String x:Key="Encryptor_Wizard_DecTitle">Passaggio 1: Seleziona file crittografato</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_DecDesc">Scegli il file .evo che desideri decrittografare.</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_DecBtn">Seleziona file crittografato</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_DecFolderTitle">Passaggio 2: Seleziona cartella di estrazione</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_DecFolderDesc">Scegli dove desideri estrarre il contenuto della cartella decrittografata.</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_DecFolderBtn">Seleziona destinazione</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_DecSaveTitle">Passaggio 2: Salva file decrittografato</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_DecSaveDesc">Scegli dove desideri salvare il file originale decrittografato.</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_DecSaveBtn">Scegli percorso di salvataggio</sys:String>
+
+    <sys:String x:Key="Encryptor_SuccessOpen_Title">Processo completato</sys:String>
+    <sys:String x:Key="Encryptor_SuccessOpen_Desc">L'operazione è andata a buon fine. Desideri visualizzare l'output in Esplora file?</sys:String>
+    <sys:String x:Key="Encryptor_SuccessOpen_Btn">Apri cartella</sys:String>
     <!-- endregion File/Folder Encryption/Decryption -->
 
     <!-- region GamingMode Card -->
@@ -5887,6 +5917,15 @@
 
     <sys:String x:Key="FileShredder_OverlayTitle">Distruzione dati in corso...</sys:String>
     <sys:String x:Key="FileShredder_OverlayDesc">Scrittura di byte casuali sicuri in corso. Non chiudere l'applicazione.</sys:String>
+
+    <!-- File Shredder: Wizards -->
+    <sys:String x:Key="Shredder_Wizard_FileTitle">Passaggio 1: Seleziona file da distruggere</sys:String>
+    <sys:String x:Key="Shredder_Wizard_FileDesc">Scegli il singolo file che desideri cancellare permanentemente. ATTENZIONE: questa azione non può essere annullata.</sys:String>
+    <sys:String x:Key="Shredder_Wizard_FileBtn">Seleziona file</sys:String>
+
+    <sys:String x:Key="Shredder_Wizard_FolderTitle">Passaggio 1: Seleziona cartella da distruggere</sys:String>
+    <sys:String x:Key="Shredder_Wizard_FolderDesc">Scegli la directory che desideri cancellare completamente. Tutti i file e le sottocartelle all'interno verranno distrutti permanentemente.</sys:String>
+    <sys:String x:Key="Shredder_Wizard_FolderBtn">Seleziona cartella</sys:String>
 
     <!-- endregion File Shredder -->
 

@@ -418,9 +418,11 @@ namespace EvolveOS_Optimizer.Pages
 
         private void BtnBack_Click(object sender, RoutedEventArgs e)
         {
-            if (this.Frame != null && this.Frame.CanGoBack)
+            if (this.Frame != null)
             {
-                this.Frame.GoBack();
+                this.Frame.Navigate(typeof(AdvancedUtilsPage));
+
+                this.Frame.BackStack.Clear();
             }
         }
 

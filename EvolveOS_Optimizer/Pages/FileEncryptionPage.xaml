@@ -10,135 +10,146 @@
     Background="Transparent">
 
     <Grid>
-        <Grid Padding="30,30,30,0" VerticalAlignment="Top">
-            <Button Click="BtnBack_Click" 
-                    Background="Transparent" 
-                    BorderThickness="0" 
-                    Padding="8,6" 
-                    CornerRadius="4"
-                    HorizontalAlignment="Left">
-                <FontIcon Glyph="&#xE72B;" FontSize="16" />
-            </Button>
-        </Grid>
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <StackPanel Spacing="24" Padding="5,0,24,24">
 
-        <Grid Padding="30">
-            <StackPanel Spacing="32" MaxWidth="850" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,40,0,0">
-
-                <StackPanel Spacing="8">
-                    <TextBlock helpers:Loc.Key="FileEncryptor_Title" 
-                               FontSize="28" 
-                               FontWeight="SemiBold" 
-                               FontFamily="{ThemeResource AppCustomFont}" 
-                               VerticalAlignment="Center"
-                               HorizontalAlignment="Center"/>
-
-                    <TextBlock helpers:Loc.Key="FileEncryptor_Description" 
-                               Foreground="{ThemeResource TextFillColorSecondaryBrush}" 
-                               TextWrapping="Wrap"
-                               HorizontalAlignment="Center"
-                               TextAlignment="Center"/>
+                <!-- Header & Back Button -->
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <Button Click="BtnBack_Click" Background="Transparent" BorderThickness="0" Width="40" Height="40" VerticalAlignment="Center">
+                        <FontIcon Glyph="&#xE72B;" FontSize="16"/>
+                    </Button>
+                    <TextBlock Text="{helpers:ResourceString Key=FileEncryptor_Title}" FontSize="26" FontWeight="SemiBold" FontFamily="{ThemeResource AppCustomFont}" VerticalAlignment="Center"/>
                 </StackPanel>
 
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="24"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
+                <!-- Info Banner -->
+                <InfoBar IsOpen="True" IsClosable="False" Severity="Informational" CornerRadius="4"
+                         Message="{helpers:ResourceString Key=FileEncryptor_Description}"
+                         FontFamily="{ThemeResource AppCustomFont}"/>
 
-                    <StackPanel Grid.Column="0" Spacing="16">
-                        <TextBlock helpers:Loc.Key="FileEncryptor_SecureDataHeader" FontWeight="SemiBold" FontSize="16" Margin="0,0,0,4"/>
+                <!-- Warning Banner -->
+                <InfoBar IsOpen="True" IsClosable="False" Severity="Warning" CornerRadius="4"
+                         Message="{helpers:ResourceString Key=FileEncryptor_WarningBanner}"
+                         FontFamily="{ThemeResource AppCustomFont}"/>
 
-                        <Button Click="BtnEncryptFile_Click" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Padding="0" Background="Transparent" BorderThickness="0">
-                            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                                    BorderThickness="1" CornerRadius="8" Padding="16" HorizontalAlignment="Stretch">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
+                <TextBlock Text="{helpers:ResourceString Key=FileEncryptor_SecureDataHeader}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="Bold" FontSize="18" Margin="0,8,0,-10"/>
 
-                                    <FontIcon Grid.Column="0" Glyph="&#xE8E5;" FontSize="28" Foreground="{StaticResource MyDynamicAccentBrush}" VerticalAlignment="Center" Margin="0,0,16,0"/>
-
-                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                        <TextBlock helpers:Loc.Key="FileEncryptor_EncryptFile_Title" FontWeight="SemiBold" FontSize="15"/>
-                                        <TextBlock helpers:Loc.Key="FileEncryptor_EncryptFile_Desc" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" Margin="0,4,0,0"/>
-                                    </StackPanel>
-                                </Grid>
-                            </Border>
-                        </Button>
-
-                        <Button Click="BtnEncryptFolder_Click" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Padding="0" Background="Transparent" BorderThickness="0">
-                            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                                    BorderThickness="1" CornerRadius="8" Padding="16" HorizontalAlignment="Stretch">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-
-                                    <FontIcon Grid.Column="0" Glyph="&#xE8D5;" FontSize="28" Foreground="{StaticResource MyDynamicAccentBrush}" VerticalAlignment="Center" Margin="0,0,16,0"/>
-
-                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                        <TextBlock helpers:Loc.Key="FileEncryptor_EncryptFolder_Title" FontWeight="SemiBold" FontSize="15"/>
-                                        <TextBlock helpers:Loc.Key="FileEncryptor_EncryptFolder_Desc" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" Margin="0,4,0,0"/>
-                                    </StackPanel>
-                                </Grid>
-                            </Border>
-                        </Button>
-                    </StackPanel>
-
-                    <StackPanel Grid.Column="2" Spacing="16">
-                        <TextBlock helpers:Loc.Key="FileEncryptor_RestoreDataHeader" FontWeight="SemiBold" FontSize="16" Margin="0,0,0,4"/>
-
-                        <Button Click="BtnDecrypt_Click" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Padding="0" Background="Transparent" BorderThickness="0">
-                            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                                    BorderThickness="1" CornerRadius="8" Padding="16" HorizontalAlignment="Stretch">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-
-                                    <FontIcon Grid.Column="0" Glyph="&#xE785;" FontSize="28" Foreground="{ThemeResource SystemFillColorSuccessBrush}" VerticalAlignment="Center" Margin="0,0,16,0"/>
-
-                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                        <TextBlock helpers:Loc.Key="FileEncryptor_Decrypt_Title" FontWeight="SemiBold" FontSize="15"/>
-                                        <TextBlock helpers:Loc.Key="FileEncryptor_Decrypt_Desc" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" Margin="0,4,0,0"/>
-                                    </StackPanel>
-                                </Grid>
-                            </Border>
-                        </Button>
-                    </StackPanel>
-                </Grid>
-
-                <Border Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}" 
+                <!-- Encrypt File Card -->
+                <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                         BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                         BorderThickness="1"
-                        CornerRadius="6" Padding="12" Margin="0,10,0,0">
+                        CornerRadius="4"
+                        Padding="20">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
-                        <FontIcon Grid.Column="0" Glyph="&#xE946;" FontSize="16" Foreground="{ThemeResource TextFillColorSecondaryBrush}" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                        <StackPanel VerticalAlignment="Center" Spacing="2">
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=FileEncryptor_EncryptFile_Title}" FontWeight="SemiBold"/>
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=FileEncryptor_EncryptFile_Desc}" 
+                                       Style="{StaticResource CaptionTextBlockStyle}"
+                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}" 
+                                       TextWrapping="Wrap"/>
+                        </StackPanel>
 
-                        <TextBlock Grid.Column="1" helpers:Loc.Key="FileEncryptor_WarningBanner" 
-                                   FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" VerticalAlignment="Center" TextWrapping="Wrap"/>
+                        <Button Grid.Column="1" 
+                                FontFamily="{ThemeResource AppCustomFont}"
+                                Style="{StaticResource AccentButtonStyle}"
+                                Click="BtnEncryptFile_Click"
+                                VerticalAlignment="Center"
+                                MinWidth="140"
+                                Height="36">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <FontIcon Glyph="&#xE8E5;" FontSize="14"/>
+                                <TextBlock Text="Select File..."/>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                </Border>
+
+                <!-- Encrypt Folder Card -->
+                <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                        BorderThickness="1"
+                        CornerRadius="4"
+                        Padding="20">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel VerticalAlignment="Center" Spacing="2">
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=FileEncryptor_EncryptFolder_Title}" FontWeight="SemiBold"/>
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=FileEncryptor_EncryptFolder_Desc}" 
+                                       Style="{StaticResource CaptionTextBlockStyle}"
+                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}" 
+                                       TextWrapping="Wrap"/>
+                        </StackPanel>
+
+                        <Button Grid.Column="1" 
+                                FontFamily="{ThemeResource AppCustomFont}"
+                                Style="{StaticResource AccentButtonStyle}"
+                                Click="BtnEncryptFolder_Click"
+                                VerticalAlignment="Center"
+                                MinWidth="140"
+                                Height="36">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <FontIcon Glyph="&#xE8D5;" FontSize="14"/>
+                                <TextBlock Text="Select Folder..."/>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                </Border>
+
+                <TextBlock Text="{helpers:ResourceString Key=FileEncryptor_RestoreDataHeader}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="Bold" FontSize="18" Margin="0,8,0,-10"/>
+
+                <!-- Decrypt Data Card -->
+                <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                        BorderThickness="1"
+                        CornerRadius="4"
+                        Padding="20">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel VerticalAlignment="Center" Spacing="2">
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=FileEncryptor_Decrypt_Title}" FontWeight="SemiBold"/>
+                            <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=FileEncryptor_Decrypt_Desc}"
+                                       Style="{StaticResource CaptionTextBlockStyle}"
+                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}" 
+                                       TextWrapping="Wrap"/>
+                        </StackPanel>
+
+                        <Button Grid.Column="1" 
+                                FontFamily="{ThemeResource AppCustomFont}"
+                                Click="BtnDecrypt_Click"
+                                VerticalAlignment="Center"
+                                MinWidth="140"
+                                Height="36">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <FontIcon Glyph="&#xE785;" FontSize="14" Foreground="{ThemeResource SystemFillColorSuccessBrush}"/>
+                                <TextBlock Text="Select File..."/>
+                            </StackPanel>
+                        </Button>
                     </Grid>
                 </Border>
 
             </StackPanel>
-        </Grid>
+        </ScrollViewer>
 
-        <Grid x:Name="LoadingOverlay" Background="Transparent" Visibility="Collapsed" Canvas.ZIndex="100">
-            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="16">
-                <ProgressRing IsActive="True" Width="60" Height="60" Foreground="{StaticResource MyDynamicAccentBrush}"/>
-                <TextBlock helpers:Loc.Key="FileEncryptor_Processing" FontSize="16" FontWeight="SemiBold" HorizontalAlignment="Center" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+        <!-- Loading Overlay -->
+        <Grid x:Name="LoadingOverlay" Visibility="Collapsed" CornerRadius="8" Background="{ThemeResource LayerFillColorDefaultBrush}" Opacity="0.95" Canvas.ZIndex="100">
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="20">
+                <ProgressRing IsActive="True" Width="70" Height="70" Foreground="{ThemeResource SystemAccentColor}"/>
+                <StackPanel Spacing="4">
+                    <TextBlock Text="{helpers:ResourceString Key=FileEncryptor_Processing}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="Bold" FontSize="20" HorizontalAlignment="Center"/>
+                    <TextBlock Text="Please wait while the operation completes. Do not close the application." FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource CaptionTextBlockStyle}" HorizontalAlignment="Center" Opacity="0.7"/>
+                </StackPanel>
             </StackPanel>
         </Grid>
 

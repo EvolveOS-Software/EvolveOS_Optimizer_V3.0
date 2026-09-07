@@ -1889,6 +1889,7 @@
 
     <!--#region Advanced Utils Page -->
     <sys:String x:Key="AdvancedUtils_PageTitle">Confidentialité &amp; Sécurité</sys:String>
+    <sys:String x:Key="AdvancedUtils_PageDesc">Outils premium de sécurité, de confidentialité et de gestion de fichiers.</sys:String>
     <sys:String x:Key="AdvancedUtils_PwdManager_Title">Gestionnaire de Mots de Passe</sys:String>
     <sys:String x:Key="AdvancedUtils_PwdManager_Desc">Stockez, modifiez et organisez tous vos mots de passe en toute sécurité en un seul endroit. Chiffrez et générez des mots de passe forts.</sys:String>
     <sys:String x:Key="AdvancedUtils_PwdManager_Btn">Ouvrir le Gestionnaire</sys:String>
@@ -1941,6 +1942,35 @@
     <sys:String x:Key="FileEncryptor_SaveDecrypt_Title">Enregistrer le fichier déchiffré</sys:String>
     <sys:String x:Key="FileEncryptor_SelectFolder_Title">Sélectionnez le dossier à chiffrer</sys:String>
     <sys:String x:Key="FileEncryptor_SaveFolder_Title">Enregistrer l'archive du dossier chiffré</sys:String>
+
+    <!-- File Encryptor: Wizards -->
+    <sys:String x:Key="Encryptor_Wizard_EncFileTitle">Étape 1 : Sélectionner le fichier</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_EncFileDesc">Choisissez le fichier que vous souhaitez chiffrer en toute sécurité avec votre mot de passe principal.</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_EncFileBtn">Sélectionner le fichier</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_EncSaveTitle">Étape 2 : Enregistrer le fichier chiffré</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_EncSaveDesc">Choisissez où enregistrer votre nouveau fichier .evo chiffré.</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_EncSaveBtn">Choisir l'emplacement</sys:String>
+
+    <sys:String x:Key="Encryptor_Wizard_EncFolderTitle">Étape 1 : Sélectionner le dossier</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_EncFolderDesc">Choisissez le dossier que vous souhaitez compresser et chiffrer en toute sécurité.</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_EncFolderBtn">Sélectionner le dossier</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_EncFolderSaveTitle">Étape 2 : Enregistrer l'archive chiffrée</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_EncFolderSaveDesc">Choisissez où enregistrer votre archive de dossier .evo chiffrée.</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_EncFolderSaveBtn">Choisir l'emplacement</sys:String>
+
+    <sys:String x:Key="Encryptor_Wizard_DecTitle">Étape 1 : Sélectionner le fichier chiffré</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_DecDesc">Choisissez le fichier .evo que vous souhaitez déchiffrer.</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_DecBtn">Sélectionner le fichier chiffré</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_DecFolderTitle">Étape 2 : Sélectionner le dossier d'extraction</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_DecFolderDesc">Choisissez où vous souhaitez extraire le contenu du dossier déchiffré.</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_DecFolderBtn">Sélectionner la destination</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_DecSaveTitle">Étape 2 : Enregistrer le fichier déchiffré</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_DecSaveDesc">Choisissez où vous souhaitez enregistrer le fichier original déchiffré.</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_DecSaveBtn">Choisir l'emplacement</sys:String>
+
+    <sys:String x:Key="Encryptor_SuccessOpen_Title">Processus terminé</sys:String>
+    <sys:String x:Key="Encryptor_SuccessOpen_Desc">L'opération a réussi. Voulez-vous afficher le résultat dans l'Explorateur de fichiers ?</sys:String>
+    <sys:String x:Key="Encryptor_SuccessOpen_Btn">Ouvrir le dossier</sys:String>
     <!-- endregion File/Folder Encryption/Decryption -->
 
     <!-- region GamingMode Card -->
@@ -5877,6 +5907,15 @@
 
     <sys:String x:Key="FileShredder_OverlayTitle">Destruction des données...</sys:String>
     <sys:String x:Key="FileShredder_OverlayDesc">Écriture d'octets aléatoires sécurisés. Ne fermez pas l'application.</sys:String>
+
+    <!-- File Shredder: Wizards -->
+    <sys:String x:Key="Shredder_Wizard_FileTitle">Étape 1 : Sélectionner le fichier à détruire</sys:String>
+    <sys:String x:Key="Shredder_Wizard_FileDesc">Choisissez le fichier individuel que vous souhaitez effacer définitivement. AVERTISSEMENT : Cette action est irréversible.</sys:String>
+    <sys:String x:Key="Shredder_Wizard_FileBtn">Sélectionner le fichier</sys:String>
+
+    <sys:String x:Key="Shredder_Wizard_FolderTitle">Étape 1 : Sélectionner le dossier à détruire</sys:String>
+    <sys:String x:Key="Shredder_Wizard_FolderDesc">Choisissez le répertoire que vous souhaitez effacer complètement. Tous les fichiers et sous-dossiers à l'intérieur seront définitivement détruits.</sys:String>
+    <sys:String x:Key="Shredder_Wizard_FolderBtn">Sélectionner le dossier</sys:String>
 
     <!-- endregion File Shredder -->
 

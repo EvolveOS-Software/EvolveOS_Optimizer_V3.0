@@ -7,6 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:conv="using:EvolveOS_Optimizer.Utilities.Converters"
     xmlns:helpers="using:EvolveOS_Optimizer.Utilities.Helpers"
+    xmlns:fluentIcons="using:FluentIcons.WinUI"
     mc:Ignorable="d"
     Background="Transparent">
 
@@ -14,11 +15,19 @@
         <conv:KeyDisplayConverter x:Key="KeyDisplayConverter"/>
     </Page.Resources>
 
-    <Grid Padding="5,0,24,0">
+    <Grid Padding="5,24,24,0">
         <StackPanel Spacing="10">
 
-            <TextBlock helpers:Loc.Key="AdvancedUtils_PageTitle" FontSize="26" FontFamily="{ThemeResource AppCustomFont}"/>
+            <!-- Beautiful Header -->
+            <StackPanel Orientation="Horizontal" Spacing="12" Margin="0,0,0,10">
+                <FontIcon Glyph="&#xEC7A;" FontSize="48" Foreground="{ThemeResource MyDynamicAccentBrush}" VerticalAlignment="Center"/>
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock helpers:Loc.Key="AdvancedUtils_PageTitle" FontFamily="{ThemeResource AppCustomFont}" FontSize="24" />
+                    <TextBlock helpers:Loc.Key="AdvancedUtils_PageDesc" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" Opacity="0.6"/>
+                </StackPanel>
+            </StackPanel>
 
+            <!-- Password Manager Card -->
             <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                     BorderThickness="1"
@@ -26,11 +35,14 @@
                     Padding="20">
                 <Grid>
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
-                    <StackPanel VerticalAlignment="Center" Spacing="2">
+                    <fluentIcons:SymbolIcon Grid.Column="0" Symbol="Key" FontSize="20" Foreground="{ThemeResource TextFillColorPrimaryBrush}" VerticalAlignment="Center" Margin="0,0,16,0" />
+
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
                         <TextBlock FontFamily="{ThemeResource AppCustomFont}" helpers:Loc.Key="AdvancedUtils_PwdManager_Title" FontWeight="SemiBold"/>
                         <TextBlock FontFamily="{ThemeResource AppCustomFont}" helpers:Loc.Key="AdvancedUtils_PwdManager_Desc" 
                                    Style="{StaticResource CaptionTextBlockStyle}"
@@ -38,7 +50,7 @@
                                    TextWrapping="Wrap"/>
                     </StackPanel>
 
-                    <Button Grid.Column="1" 
+                    <Button Grid.Column="2" 
                             FontFamily="{ThemeResource AppCustomFont}"
                             helpers:Loc.Key="AdvancedUtils_PwdManager_Btn" 
                             Style="{StaticResource AccentButtonStyle}"
@@ -48,6 +60,7 @@
                 </Grid>
             </Border>
 
+            <!-- File Encryptor Card -->
             <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                     BorderThickness="1"
@@ -55,11 +68,14 @@
                     Padding="20">
                 <Grid>
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
-                    <StackPanel VerticalAlignment="Center" Spacing="2">
+                    <fluentIcons:SymbolIcon Grid.Column="0" Symbol="LockClosed" FontSize="20" Foreground="{ThemeResource TextFillColorPrimaryBrush}" VerticalAlignment="Center" Margin="0,0,16,0" />
+
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
                         <TextBlock FontFamily="{ThemeResource AppCustomFont}" helpers:Loc.Key="AdvancedUtils_FileEncryptor_Title" FontWeight="SemiBold"/>
                         <TextBlock FontFamily="{ThemeResource AppCustomFont}" helpers:Loc.Key="AdvancedUtils_FileEncryptor_Desc"
                                    Style="{StaticResource CaptionTextBlockStyle}"
@@ -67,7 +83,7 @@
                                    TextWrapping="Wrap"/>
                     </StackPanel>
 
-                    <Button Grid.Column="1" 
+                    <Button Grid.Column="2" 
                             FontFamily="{ThemeResource AppCustomFont}"
                             helpers:Loc.Key="AdvancedUtils_FileEncryptor_Btn" 
                             Style="{StaticResource AccentButtonStyle}"
@@ -77,6 +93,7 @@
                 </Grid>
             </Border>
 
+            <!-- Secure File Shredder Card -->
             <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                     BorderThickness="1"
@@ -84,32 +101,32 @@
                     Padding="20">
                 <Grid>
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
-                    <StackPanel VerticalAlignment="Center" Spacing="2">
-                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" 
-                       Text="{helpers:ResourceString Key=FileShredder_PageTitle}" 
-                       FontWeight="SemiBold"/>
+                    <fluentIcons:SymbolIcon Grid.Column="0" Symbol="Delete" FontSize="20" Foreground="{ThemeResource TextFillColorPrimaryBrush}" VerticalAlignment="Center" Margin="0,0,16,0" />
 
-                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" 
-                       Text="{helpers:ResourceString Key=AdvancedUtils_FileShredder_Desc}"
-                       Style="{StaticResource CaptionTextBlockStyle}"
-                       Foreground="{ThemeResource TextFillColorSecondaryBrush}" 
-                       TextWrapping="Wrap"/>
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
+                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=FileShredder_PageTitle}" FontWeight="SemiBold"/>
+                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=AdvancedUtils_FileShredder_Desc}"
+                                   Style="{StaticResource CaptionTextBlockStyle}"
+                                   Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" 
+                                   TextWrapping="Wrap"/>
                     </StackPanel>
 
-                    <Button Grid.Column="1" 
-                FontFamily="{ThemeResource AppCustomFont}"
-                Content="{helpers:ResourceString Key=AdvancedUtils_FileShredder_Btn}"
-                Style="{StaticResource AccentButtonStyle}"
-                Click="BtnOpenFileShredder_Click"
-                VerticalAlignment="Center"
-                MinWidth="120"/>
+                    <Button Grid.Column="2" 
+                            FontFamily="{ThemeResource AppCustomFont}"
+                            Content="{helpers:ResourceString Key=AdvancedUtils_FileShredder_Btn}"
+                            Style="{StaticResource AccentButtonStyle}"
+                            Click="BtnOpenFileShredder_Click"
+                            VerticalAlignment="Center"
+                            MinWidth="120"/>
                 </Grid>
             </Border>
 
+            <!-- Image Steganography (Hidden Vault) Card -->
             <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                     BorderThickness="1"
@@ -117,11 +134,14 @@
                     Padding="20">
                 <Grid>
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
-                    <StackPanel VerticalAlignment="Center" Spacing="2">
+                    <fluentIcons:SymbolIcon Grid.Column="0" Symbol="Image" FontSize="20" Foreground="{ThemeResource TextFillColorPrimaryBrush}" VerticalAlignment="Center" Margin="0,0,16,0" />
+
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
                         <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=Stego_PageTitle}" FontWeight="SemiBold"/>
                         <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=AdvancedUtils_Stego_Desc}"
                                    Style="{StaticResource CaptionTextBlockStyle}"
@@ -129,7 +149,7 @@
                                    TextWrapping="Wrap"/>
                     </StackPanel>
 
-                    <Button Grid.Column="1" 
+                    <Button Grid.Column="2" 
                             FontFamily="{ThemeResource AppCustomFont}"
                             Content="{helpers:ResourceString Key=AdvancedUtils_Stego_Btn}"
                             Style="{StaticResource AccentButtonStyle}"
@@ -139,23 +159,27 @@
                 </Grid>
             </Border>
 
+            <!-- Password Generator Expander -->
             <Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" MinHeight="90" IsExpanded="True">
                 <Expander.Header>
                     <Grid Margin="4,8,0,8">
                         <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
 
-                        <StackPanel VerticalAlignment="Center" Spacing="2">
+                        <fluentIcons:SymbolIcon Grid.Column="0" Symbol="Keyboard" FontSize="20" Foreground="{ThemeResource TextFillColorPrimaryBrush}" VerticalAlignment="Center" Margin="0,0,16,0" />
+
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
                             <TextBlock FontFamily="{ThemeResource AppCustomFont}" helpers:Loc.Key="AdvancedUtils_PwdGen_Title" FontWeight="SemiBold"/>
                             <TextBlock FontFamily="{ThemeResource AppCustomFont}" helpers:Loc.Key="AdvancedUtils_PwdGen_Desc"
-                           Style="{StaticResource CaptionTextBlockStyle}"
-                           Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
-                           TextWrapping="Wrap"/>
+                                       Style="{StaticResource CaptionTextBlockStyle}"
+                                       Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                                       TextWrapping="Wrap"/>
                         </StackPanel>
 
-                        <Button Grid.Column="1"
+                        <Button Grid.Column="2"
                                 Content= "{helpers:ResourceString Key=AdvancedUtils_PwdGen_OpenBtn}"
                                 VerticalAlignment="Center"
                                 Click="OpenPasswordGenerator_Click"
@@ -167,11 +191,11 @@
                     <StackPanel Orientation="Vertical" Spacing="16" Margin="0,8,0,0">
 
                         <ToggleSwitch IsOn="{x:Bind ViewModel.UseHotkey, Mode=TwoWay}"
-                          OnContent="Hotkey Enabled"
-                          OffContent="Hotkey Disabled"
-                          Margin="0"
-                          FontFamily="{ThemeResource AppCustomFont}"
-                          HorizontalAlignment="Left"/>
+                                      OnContent="Hotkey Enabled"
+                                      OffContent="Hotkey Disabled"
+                                      Margin="0"
+                                      FontFamily="{ThemeResource AppCustomFont}"
+                                      HorizontalAlignment="Left"/>
 
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="8">
                             <ComboBox FontFamily="{ThemeResource AppCustomFont}"

@@ -1878,6 +1878,7 @@
 
     <!-- region Advanced Utils Page (Privacy & Security) -->
     <sys:String x:Key="AdvancedUtils_PageTitle">Privacy &amp; Security</sys:String>
+    <sys:String x:Key="AdvancedUtils_PageDesc">Premium security, privacy, and file management tools.</sys:String>
     <sys:String x:Key="AdvancedUtils_PwdManager_Title">Password Manager</sys:String>
     <sys:String x:Key="AdvancedUtils_PwdManager_Desc">Securely store, edit, and organize all your passwords in one place. Encrypt and generate strong passwords.</sys:String>
     <sys:String x:Key="AdvancedUtils_PwdManager_Btn">Open Manager</sys:String>
@@ -1929,6 +1930,35 @@
     <sys:String x:Key="FileEncryptor_SaveDecrypt_Title">Save Decrypted File</sys:String>
     <sys:String x:Key="FileEncryptor_SelectFolder_Title">Select Folder to Encrypt</sys:String>
     <sys:String x:Key="FileEncryptor_SaveFolder_Title">Save Encrypted Folder Archive</sys:String>
+
+    <!-- File Encryptor: Wizards -->
+    <sys:String x:Key="Encryptor_Wizard_EncFileTitle">Step 1: Select File</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_EncFileDesc">Choose the file you want to securely encrypt with your Master Password.</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_EncFileBtn">Select File</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_EncSaveTitle">Step 2: Save Encrypted File</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_EncSaveDesc">Choose where to save your newly encrypted .evo file.</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_EncSaveBtn">Choose Save Location</sys:String>
+
+    <sys:String x:Key="Encryptor_Wizard_EncFolderTitle">Step 1: Select Folder</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_EncFolderDesc">Choose the folder you want to compress and securely encrypt.</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_EncFolderBtn">Select Folder</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_EncFolderSaveTitle">Step 2: Save Encrypted Archive</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_EncFolderSaveDesc">Choose where to save your encrypted .evo folder archive.</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_EncFolderSaveBtn">Choose Save Location</sys:String>
+
+    <sys:String x:Key="Encryptor_Wizard_DecTitle">Step 1: Select Encrypted File</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_DecDesc">Choose the .evo file you want to decrypt.</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_DecBtn">Select Encrypted File</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_DecFolderTitle">Step 2: Select Extraction Folder</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_DecFolderDesc">Choose where you want to extract the decrypted folder contents.</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_DecFolderBtn">Select Destination</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_DecSaveTitle">Step 2: Save Decrypted File</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_DecSaveDesc">Choose where you want to save the original, decrypted file.</sys:String>
+    <sys:String x:Key="Encryptor_Wizard_DecSaveBtn">Choose Save Location</sys:String>
+
+    <sys:String x:Key="Encryptor_SuccessOpen_Title">Process Complete</sys:String>
+    <sys:String x:Key="Encryptor_SuccessOpen_Desc">The operation was successful. Would you like to view the output in File Explorer?</sys:String>
+    <sys:String x:Key="Encryptor_SuccessOpen_Btn">Open Folder</sys:String>
     <!-- endregion File/Folder Encryption/Decryption -->
 
     <!-- region GamingMode Card -->
@@ -5989,6 +6019,15 @@
 
     <sys:String x:Key="FileShredder_OverlayTitle">Destroying Data...</sys:String>
     <sys:String x:Key="FileShredder_OverlayDesc">Writing secure random bytes. Do not close the application.</sys:String>
+
+    <!-- File Shredder: Wizards -->
+    <sys:String x:Key="Shredder_Wizard_FileTitle">Step 1: Select File to Destroy</sys:String>
+    <sys:String x:Key="Shredder_Wizard_FileDesc">Choose the individual file you want to permanently wipe. WARNING: This action cannot be undone.</sys:String>
+    <sys:String x:Key="Shredder_Wizard_FileBtn">Select File</sys:String>
+
+    <sys:String x:Key="Shredder_Wizard_FolderTitle">Step 1: Select Folder to Destroy</sys:String>
+    <sys:String x:Key="Shredder_Wizard_FolderDesc">Choose the directory you want to completely wipe. All files and subfolders inside will be permanently destroyed.</sys:String>
+    <sys:String x:Key="Shredder_Wizard_FolderBtn">Select Folder</sys:String>
 
     <!-- endregion File Shredder -->
 
