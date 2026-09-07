@@ -1933,6 +1933,15 @@
     <sys:String x:Key="FileEncryptor_Toast_EncryptionErrorTitle">Errore di crittografia</sys:String>
     <sys:String x:Key="FileEncryptor_Toast_DecryptFailTitle">Decrittografia non riuscita</sys:String>
     <sys:String x:Key="FileEncryptor_Toast_DecryptFailMsg">La password non è corretta o il file è stato manomesso.</sys:String>
+
+    <!-- File Encryptor: Native Dialog Titles -->
+    <sys:String x:Key="FileEncryptor_OpenFile_Title">Seleziona un file da crittografare</sys:String>
+    <sys:String x:Key="FileEncryptor_SaveFile_Title">Salva file crittografato</sys:String>
+    <sys:String x:Key="FileEncryptor_OpenDecrypt_Title">Seleziona file crittografato</sys:String>
+    <sys:String x:Key="FileEncryptor_SelectDestFolder_Title">Seleziona cartella di destinazione</sys:String>
+    <sys:String x:Key="FileEncryptor_SaveDecrypt_Title">Salva file decrittografato</sys:String>
+    <sys:String x:Key="FileEncryptor_SelectFolder_Title">Seleziona cartella da crittografare</sys:String>
+    <sys:String x:Key="FileEncryptor_SaveFolder_Title">Salva archivio cartella crittografato</sys:String>
     <!-- endregion File/Folder Encryption/Decryption -->
 
     <!-- region GamingMode Card -->

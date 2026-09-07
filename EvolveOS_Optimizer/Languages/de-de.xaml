@@ -1924,6 +1924,15 @@
     <sys:String x:Key="FileEncryptor_Toast_EncryptionErrorTitle">Verschlüsselungsfehler</sys:String>
     <sys:String x:Key="FileEncryptor_Toast_DecryptFailTitle">Entschlüsselung fehlgeschlagen</sys:String>
     <sys:String x:Key="FileEncryptor_Toast_DecryptFailMsg">Das Passwort ist falsch oder die Datei wurde manipuliert.</sys:String>
+
+    <!-- File Encryptor: Native Dialog Titles -->
+    <sys:String x:Key="FileEncryptor_OpenFile_Title">Datei zum Verschlüsseln auswählen</sys:String>
+    <sys:String x:Key="FileEncryptor_SaveFile_Title">Verschlüsselte Datei speichern</sys:String>
+    <sys:String x:Key="FileEncryptor_OpenDecrypt_Title">Verschlüsselte Datei auswählen</sys:String>
+    <sys:String x:Key="FileEncryptor_SelectDestFolder_Title">Zielordner auswählen</sys:String>
+    <sys:String x:Key="FileEncryptor_SaveDecrypt_Title">Entschlüsselte Datei speichern</sys:String>
+    <sys:String x:Key="FileEncryptor_SelectFolder_Title">Ordner zum Verschlüsseln auswählen</sys:String>
+    <sys:String x:Key="FileEncryptor_SaveFolder_Title">Verschlüsseltes Ordner-Archiv speichern</sys:String>
     <!-- endregion File/Folder Encryption/Decryption -->
 
     <!-- region GamingMode Card -->

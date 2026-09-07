@@ -8,7 +8,6 @@ using System.Security.Cryptography;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Managers;
-using Windows.Storage.Pickers;
 
 namespace EvolveOS_Optimizer.Pages
 {
@@ -109,25 +108,24 @@ namespace EvolveOS_Optimizer.Pages
         {
             try
             {
-                var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindow);
+                string openTitle = ResourceString.GetString("FileEncryptor_OpenFile_Title") ?? "Select a File to Encrypt";
+                string? fileToEncryptPath = Win32FileDialogHelper.ShowOpenFilePicker(App.MainWindow!, openTitle, "All Files", "*.*");
 
-                var openPicker = new FileOpenPicker();
-                WinRT.Interop.InitializeWithWindow.Initialize(openPicker, hwnd);
-                openPicker.FileTypeFilter.Add("*");
+                if (string.IsNullOrEmpty(fileToEncryptPath)) return;
 
-                var fileToEncrypt = await openPicker.PickSingleFileAsync();
-                if (fileToEncrypt == null) return;
+                string encryptedFileType = ResourceString.GetString("FileEncryptor_FileType_Encrypted") ?? "EvolveOS Encrypted File";
+                string saveTitle = ResourceString.GetString("FileEncryptor_SaveFile_Title") ?? "Save Encrypted File";
+                string suggestedName = Path.GetFileName(fileToEncryptPath) + EncryptedExtension;
 
-                var savePicker = new FileSavePicker();
-                WinRT.Interop.InitializeWithWindow.Initialize(savePicker, hwnd);
-                savePicker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
+                string? destinationFilePath = Win32FileDialogHelper.ShowSaveFilePicker(
+                    App.MainWindow!,
+                    saveTitle,
+                    encryptedFileType,
+                    "*" + EncryptedExtension,
+                    suggestedName,
+                    EncryptedExtension);
 
-                string encryptedFileType = ResourceString.GetString("FileEncryptor_FileType_Encrypted");
-                savePicker.FileTypeChoices.Add(string.IsNullOrEmpty(encryptedFileType) ? "EvolveOS Encrypted File" : encryptedFileType, new[] { EncryptedExtension });
-                savePicker.SuggestedFileName = fileToEncrypt.Name + EncryptedExtension;
-
-                var destinationFile = await savePicker.PickSaveFileAsync();
-                if (destinationFile == null) return;
+                if (string.IsNullOrEmpty(destinationFilePath)) return;
 
                 EfficiencyModeHelper.IsUIWakeLockActive = true;
                 EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(false);
@@ -135,7 +133,7 @@ namespace EvolveOS_Optimizer.Pages
                 UIHelper.SetOverlay(true);
                 LoadingOverlay.Visibility = Visibility.Visible;
 
-                await ProcessFileEncryptionAsync(fileToEncrypt.Path, destinationFile.Path);
+                await ProcessFileEncryptionAsync(fileToEncryptPath, destinationFilePath);
 
                 string successTitle = ResourceString.GetString("Toast_Success_Title");
                 string successMsg = ResourceString.GetString("FileEncryptor_Toast_FileEncryptSuccess");
@@ -169,29 +167,22 @@ namespace EvolveOS_Optimizer.Pages
         {
             try
             {
-                var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindow);
+                string openTitle = ResourceString.GetString("FileEncryptor_OpenDecrypt_Title") ?? "Select Encrypted File";
+                string? fileToDecryptPath = Win32FileDialogHelper.ShowOpenFilePicker(App.MainWindow!, openTitle, "EvolveOS Encrypted File", "*" + EncryptedExtension);
 
-                var openPicker = new FileOpenPicker();
-                WinRT.Interop.InitializeWithWindow.Initialize(openPicker, hwnd);
-                openPicker.FileTypeFilter.Add(EncryptedExtension);
+                if (string.IsNullOrEmpty(fileToDecryptPath)) return;
 
-                var fileToDecrypt = await openPicker.PickSingleFileAsync();
-                if (fileToDecrypt == null) return;
-
-                string originalName = fileToDecrypt.Name.Replace(EncryptedExtension, "");
+                string originalName = Path.GetFileName(fileToDecryptPath).Replace(EncryptedExtension, "");
                 bool isFolderArchive = !Path.HasExtension(originalName);
 
                 UIHelper.SetOverlay(true);
 
                 if (isFolderArchive)
                 {
-                    var folderPicker = new FolderPicker();
-                    WinRT.Interop.InitializeWithWindow.Initialize(folderPicker, hwnd);
-                    folderPicker.FileTypeFilter.Add("*");
+                    string folderTitle = ResourceString.GetString("FileEncryptor_SelectDestFolder_Title") ?? "Select Destination Folder";
+                    string? destFolderPath = Win32FileDialogHelper.ShowFolderPicker(App.MainWindow!, folderTitle);
 
-                    var destFolder = await folderPicker.PickSingleFolderAsync();
-
-                    if (destFolder == null)
+                    if (string.IsNullOrEmpty(destFolderPath))
                     {
                         UIHelper.SetOverlay(false);
                         return;
@@ -201,28 +192,35 @@ namespace EvolveOS_Optimizer.Pages
                     EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(false);
 
                     LoadingOverlay.Visibility = Visibility.Visible;
-                    await ProcessFolderDecryptionAsync(fileToDecrypt.Path, destFolder.Path);
+                    await ProcessFolderDecryptionAsync(fileToDecryptPath, destFolderPath);
                 }
                 else
                 {
-                    var savePicker = new FileSavePicker();
-                    WinRT.Interop.InitializeWithWindow.Initialize(savePicker, hwnd);
                     string originalExtension = Path.GetExtension(originalName);
+                    if (string.IsNullOrEmpty(originalExtension)) originalExtension = ".*";
 
-                    string originalFileType = ResourceString.GetString("FileEncryptor_FileType_Original");
-                    savePicker.FileTypeChoices.Add(string.IsNullOrEmpty(originalFileType) ? "Original File" : originalFileType, new[] { originalExtension });
-                    savePicker.SuggestedFileName = originalName;
+                    string originalFileType = ResourceString.GetString("FileEncryptor_FileType_Original") ?? "Original File";
+                    string saveTitle = ResourceString.GetString("FileEncryptor_SaveDecrypt_Title") ?? "Save Decrypted File";
 
-                    var destFile = await savePicker.PickSaveFileAsync();
+                    string? destFilePath = Win32FileDialogHelper.ShowSaveFilePicker(
+                        App.MainWindow!,
+                        saveTitle,
+                        originalFileType,
+                        "*" + originalExtension,
+                        originalName,
+                        originalExtension);
 
-                    if (destFile == null)
+                    if (string.IsNullOrEmpty(destFilePath))
                     {
                         UIHelper.SetOverlay(false);
                         return;
                     }
 
+                    EfficiencyModeHelper.IsUIWakeLockActive = true;
+                    EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(false);
+
                     LoadingOverlay.Visibility = Visibility.Visible;
-                    await ProcessFileDecryptionAsync(fileToDecrypt.Path, destFile.Path);
+                    await ProcessFileDecryptionAsync(fileToDecryptPath, destFilePath);
                 }
 
                 string successTitle = ResourceString.GetString("Toast_Success_Title");
@@ -267,24 +265,25 @@ namespace EvolveOS_Optimizer.Pages
         {
             try
             {
-                var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindow);
+                string folderTitle = ResourceString.GetString("FileEncryptor_SelectFolder_Title") ?? "Select Folder to Encrypt";
+                string? folderToEncryptPath = Win32FileDialogHelper.ShowFolderPicker(App.MainWindow!, folderTitle);
 
-                var folderPicker = new FolderPicker();
-                WinRT.Interop.InitializeWithWindow.Initialize(folderPicker, hwnd);
-                folderPicker.FileTypeFilter.Add("*");
+                if (string.IsNullOrEmpty(folderToEncryptPath)) return;
 
-                var folderToEncrypt = await folderPicker.PickSingleFolderAsync();
-                if (folderToEncrypt == null) return;
+                string folderName = new DirectoryInfo(folderToEncryptPath).Name;
+                string encryptedFolderType = ResourceString.GetString("FileEncryptor_FileType_EncryptedFolder") ?? "EvolveOS Encrypted Folder";
+                string saveTitle = ResourceString.GetString("FileEncryptor_SaveFolder_Title") ?? "Save Encrypted Folder Archive";
+                string suggestedName = folderName + "_Archive" + EncryptedExtension;
 
-                var savePicker = new FileSavePicker();
-                WinRT.Interop.InitializeWithWindow.Initialize(savePicker, hwnd);
+                string? destinationFilePath = Win32FileDialogHelper.ShowSaveFilePicker(
+                    App.MainWindow!,
+                    saveTitle,
+                    encryptedFolderType,
+                    "*" + EncryptedExtension,
+                    suggestedName,
+                    EncryptedExtension);
 
-                string encryptedFolderType = ResourceString.GetString("FileEncryptor_FileType_EncryptedFolder");
-                savePicker.FileTypeChoices.Add(string.IsNullOrEmpty(encryptedFolderType) ? "EvolveOS Encrypted Folder" : encryptedFolderType, new[] { EncryptedExtension });
-                savePicker.SuggestedFileName = folderToEncrypt.Name + "_Archive" + EncryptedExtension;
-
-                var destinationFile = await savePicker.PickSaveFileAsync();
-                if (destinationFile == null) return;
+                if (string.IsNullOrEmpty(destinationFilePath)) return;
 
                 EfficiencyModeHelper.IsUIWakeLockActive = true;
                 EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(false);
@@ -292,7 +291,7 @@ namespace EvolveOS_Optimizer.Pages
                 UIHelper.SetOverlay(true);
                 LoadingOverlay.Visibility = Visibility.Visible;
 
-                await ProcessFolderEncryptionAsync(folderToEncrypt.Path, destinationFile.Path);
+                await ProcessFolderEncryptionAsync(folderToEncryptPath, destinationFilePath);
 
                 string successTitle = ResourceString.GetString("Toast_Success_Title");
                 string successMsg = ResourceString.GetString("FileEncryptor_Toast_FolderEncryptSuccess");
