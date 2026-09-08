@@ -519,7 +519,7 @@ namespace EvolveOS_Optimizer.Pages
 
                 _ = Task.Run(async () =>
                 {
-                    await Task.Delay(350);
+                    await Task.Delay(800);
 
                     DispatcherQueue?.TryEnqueue(() =>
                     {

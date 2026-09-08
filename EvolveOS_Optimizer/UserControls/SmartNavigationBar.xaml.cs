@@ -65,7 +65,7 @@ namespace EvolveOS_Optimizer.UserControls
 
                 NavStackPanel.IsHitTestVisible = false;
 
-                await Task.Delay(250); // 400ms is default
+                await Task.Delay(300); // 400ms is default
             }
             finally
             {
