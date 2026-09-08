@@ -52,6 +52,12 @@
                                             <DoubleAnimation Storyboard.TargetName="TextTranslate" Storyboard.TargetProperty="X" To="-40" Duration="0:0:0.2"/>
                                             <DoubleAnimation Storyboard.TargetName="NavTextBox" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.1"/>
 
+                                            <DoubleAnimation Storyboard.TargetName="TextShadowTranslate" Storyboard.TargetProperty="X" To="-39" Duration="0:0:0.2"/>
+                                            <DoubleAnimation Storyboard.TargetName="NavTextShadow" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.1"/>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="NavTextShadow" Storyboard.TargetProperty="Visibility">
+                                                <DiscreteObjectKeyFrame KeyTime="0:0:0.2" Value="Collapsed"/>
+                                            </ObjectAnimationUsingKeyFrames>
+
                                             <DoubleAnimation Storyboard.TargetName="HoverPillContainer" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.2"/>
                                             <DoubleAnimation Storyboard.TargetName="HoverPillDarkOverlay" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.2"/>
 
@@ -80,6 +86,16 @@
                                                 </DoubleAnimation.EasingFunction>
                                             </DoubleAnimation>
 
+                                            <DoubleAnimation Storyboard.TargetName="TextShadowTranslate" Storyboard.TargetProperty="X" To="1" Duration="0:0:0.3">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <CubicEase EasingMode="EaseOut"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="NavTextShadow" Storyboard.TargetProperty="Visibility">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="Visible"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <DoubleAnimation Storyboard.TargetName="NavTextShadow" Storyboard.TargetProperty="Opacity" To="0.9" Duration="0:0:0.2"/>
+
                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="NavTextBox" Storyboard.TargetProperty="Visibility">
                                                 <DiscreteObjectKeyFrame KeyTime="0" Value="Visible"/>
                                             </ObjectAnimationUsingKeyFrames>
@@ -91,7 +107,7 @@
                                                              Storyboard.TargetProperty="Opacity" 
                                                              From="0.0" To="0.4" 
                                                              Duration="0:0:1.2" 
-                                                             BeginTime="0:0:4" 
+                                                             BeginTime="0:0:2" 
                                                              AutoReverse="True" 
                                                              RepeatBehavior="Forever">
                                                 <DoubleAnimation.EasingFunction>
@@ -146,6 +162,22 @@
                                                   VerticalAlignment="Center"
                                                   Margin="0">
                                 </ContentPresenter>
+
+                                <TextBlock x:Name="NavTextShadow"
+                                           Grid.Column="1"
+                                           Text="{TemplateBinding Tag}"
+                                           Opacity="0"
+                                           Visibility="Collapsed"
+                                           IsHitTestVisible="False"
+                                           VerticalAlignment="Center"
+                                           Margin="7,1,15,-1"
+                                           FontSize="13"
+                                           FontWeight="SemiBold"
+                                           Foreground="#FF000000">
+                                    <TextBlock.RenderTransform>
+                                        <TranslateTransform x:Name="TextShadowTranslate" X="-39" Y="1"/>
+                                    </TextBlock.RenderTransform>
+                                </TextBlock>
 
                                 <TextBlock x:Name="NavTextBox" 
                                            Grid.Column="1" 

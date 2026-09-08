@@ -475,6 +475,15 @@ namespace EvolveOS_Optimizer.UserControls
             return new SolidColorBrush(Color.FromArgb(25, 128, 128, 128));
         }
 
+        private Brush GetDarkOverlayBrush()
+        {
+            if (Application.Current.Resources.TryGetValue("SystemControlBackgroundBaseMediumLowBrush", out var res) && res is Brush brush)
+            {
+                return brush;
+            }
+            return new SolidColorBrush(Color.FromArgb(50, 128, 128, 128));
+        }
+
         private void SetupRadialButton(Button btn, string tag, string tooltip, FrameworkElement? iconElement, bool isVisible = true)
         {
             btn.Tag = tag;
@@ -529,6 +538,35 @@ namespace EvolveOS_Optimizer.UserControls
                     };
                     textWrapper.Children.Add(hoverPill);
 
+                    var hoverPillDarkOverlay = new Border
+                    {
+                        Name = "RadialHoverPillDarkOverlay",
+                        Background = GetDarkOverlayBrush(),
+                        CornerRadius = new CornerRadius(12.5),
+                        Height = 25,
+                        HorizontalAlignment = HorizontalAlignment.Stretch,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Opacity = 0,
+                        IsHitTestVisible = false
+                    };
+                    textWrapper.Children.Add(hoverPillDarkOverlay);
+
+                    var shadowTb = new TextBlock
+                    {
+                        Name = "RadialTextShadow",
+                        Text = tooltip,
+                        FontFamily = GetAppCustomFont(),
+                        FontSize = 13,
+                        FontWeight = FontWeights.SemiBold,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Margin = new Thickness(32, 1, 16, -1),
+                        TextWrapping = TextWrapping.NoWrap,
+                        Opacity = 0,
+                        Foreground = new SolidColorBrush(Color.FromArgb(255, 0, 0, 0)),
+                        RenderTransform = new TranslateTransform { X = -10, Y = 1 }
+                    };
+                    textWrapper.Children.Add(shadowTb);
+
                     var tb = new TextBlock
                     {
                         Name = "RadialTextBlock",
@@ -537,7 +575,7 @@ namespace EvolveOS_Optimizer.UserControls
                         FontSize = 13,
                         FontWeight = FontWeights.SemiBold,
                         VerticalAlignment = VerticalAlignment.Center,
-                        Margin = new Thickness(41, 0, 16, 0),
+                        Margin = new Thickness(31, 0, 16, 0),
                         TextWrapping = TextWrapping.NoWrap,
                         Opacity = 0,
                         RenderTransform = new TranslateTransform { X = -10 }
@@ -557,11 +595,14 @@ namespace EvolveOS_Optimizer.UserControls
 
                 var wrapper = container.Children.OfType<Grid>().FirstOrDefault(g => g.Name == "RadialTextWrapper");
                 var pillBg = wrapper?.Children.OfType<Border>().FirstOrDefault(b => b.Name == "RadialHoverPill");
+                var pillDarkOverlay = wrapper?.Children.OfType<Border>().FirstOrDefault(b => b.Name == "RadialHoverPillDarkOverlay");
                 var tb = wrapper?.Children.OfType<TextBlock>().FirstOrDefault(t => t.Name == "RadialTextBlock");
+                var shadowTb = wrapper?.Children.OfType<TextBlock>().FirstOrDefault(t => t.Name == "RadialTextShadow");
 
                 if (pillBg != null) pillBg.Opacity = 1;
+                if (pillDarkOverlay != null) pillDarkOverlay.Opacity = 0;
 
-                if (wrapper != null && tb != null && pillBg != null && tb.RenderTransform is TranslateTransform trans)
+                if (wrapper != null && tb != null && pillBg != null && pillDarkOverlay != null && tb.RenderTransform is TranslateTransform trans)
                 {
                     var sb = new Storyboard();
 
@@ -586,9 +627,38 @@ namespace EvolveOS_Optimizer.UserControls
                     Storyboard.SetTarget(animX, trans);
                     Storyboard.SetTargetProperty(animX, "X");
 
+                    if (shadowTb != null && shadowTb.RenderTransform is TranslateTransform shadowTrans)
+                    {
+                        var animShadowOp = new DoubleAnimation { To = 0.9, Duration = TimeSpan.FromSeconds(0.2) };
+                        Storyboard.SetTarget(animShadowOp, shadowTb);
+                        Storyboard.SetTargetProperty(animShadowOp, "Opacity");
+
+                        var animShadowX = new DoubleAnimation { To = 1, Duration = TimeSpan.FromSeconds(0.25), EasingFunction = new QuarticEase { EasingMode = EasingMode.EaseOut } };
+                        Storyboard.SetTarget(animShadowX, shadowTrans);
+                        Storyboard.SetTargetProperty(animShadowX, "X");
+
+                        sb.Children.Add(animShadowOp);
+                        sb.Children.Add(animShadowX);
+                    }
+
+                    var breathingAnim = new DoubleAnimation
+                    {
+                        From = 0.0,
+                        To = 0.4,
+                        Duration = TimeSpan.FromSeconds(1.2),
+                        BeginTime = TimeSpan.FromSeconds(2),
+                        AutoReverse = true,
+                        RepeatBehavior = RepeatBehavior.Forever,
+                        EasingFunction = new SineEase { EasingMode = EasingMode.EaseInOut },
+                        EnableDependentAnimation = true
+                    };
+                    Storyboard.SetTarget(breathingAnim, pillDarkOverlay);
+                    Storyboard.SetTargetProperty(breathingAnim, "Opacity");
+
                     sb.Children.Add(animTextWidth);
                     sb.Children.Add(animOp);
                     sb.Children.Add(animX);
+                    sb.Children.Add(breathingAnim);
                     sb.Begin();
                 }
             }
@@ -602,7 +672,11 @@ namespace EvolveOS_Optimizer.UserControls
 
                 var wrapper = container.Children.OfType<Grid>().FirstOrDefault(g => g.Name == "RadialTextWrapper");
                 var pillBg = wrapper?.Children.OfType<Border>().FirstOrDefault(b => b.Name == "RadialHoverPill");
+                var pillDarkOverlay = wrapper?.Children.OfType<Border>().FirstOrDefault(b => b.Name == "RadialHoverPillDarkOverlay");
                 var tb = wrapper?.Children.OfType<TextBlock>().FirstOrDefault(t => t.Name == "RadialTextBlock");
+                var shadowTb = wrapper?.Children.OfType<TextBlock>().FirstOrDefault(t => t.Name == "RadialTextShadow");
+
+                if (pillDarkOverlay != null) pillDarkOverlay.Opacity = 0;
 
                 if (wrapper != null && tb != null && tb.RenderTransform is TranslateTransform trans)
                 {
@@ -625,6 +699,20 @@ namespace EvolveOS_Optimizer.UserControls
                     var animX = new DoubleAnimation { To = -10, Duration = TimeSpan.FromSeconds(0.2) };
                     Storyboard.SetTarget(animX, trans);
                     Storyboard.SetTargetProperty(animX, "X");
+
+                    if (shadowTb != null && shadowTb.RenderTransform is TranslateTransform shadowTrans)
+                    {
+                        var animShadowOp = new DoubleAnimation { To = 0, Duration = TimeSpan.FromSeconds(0.15) };
+                        Storyboard.SetTarget(animShadowOp, shadowTb);
+                        Storyboard.SetTargetProperty(animShadowOp, "Opacity");
+
+                        var animShadowX = new DoubleAnimation { To = -10, Duration = TimeSpan.FromSeconds(0.2) };
+                        Storyboard.SetTarget(animShadowX, shadowTrans);
+                        Storyboard.SetTargetProperty(animShadowX, "X");
+
+                        sb.Children.Add(animShadowOp);
+                        sb.Children.Add(animShadowX);
+                    }
 
                     sb.Children.Add(animTextWidth);
                     sb.Children.Add(animOp);
