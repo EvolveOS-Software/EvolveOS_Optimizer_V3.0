@@ -260,6 +260,7 @@
                                            Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                             </StackPanel>
                             <ToggleSwitch Grid.Column="2"
+                                          HorizontalAlignment="Right" FlowDirection="RightToLeft"
                                           IsOn="{x:Bind SyncOsThemeWithApp, Mode=TwoWay}"
                                           IsEnabled="{x:Bind IsManualThemeEnabled, Mode=OneWay}"
                                           OnContent="{x:Bind GetText('Settings_ToggleOn'), Mode=OneWay, FallbackValue='On'}"
@@ -282,6 +283,7 @@
                                 <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_AutoTheme_Subtitle'), Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                             </StackPanel>
                             <ToggleSwitch Grid.Column="2"
+                                          HorizontalAlignment="Right" FlowDirection="RightToLeft"
                                           IsOn="{x:Bind IsAutoThemeEnabled, Mode=TwoWay}"
                                           OnContent="{x:Bind GetText('Settings_ToggleOn'), Mode=OneWay, FallbackValue='On'}"
                                           OffContent="{x:Bind GetText('Settings_ToggleOff'), Mode=OneWay, FallbackValue='Off'}"/>
@@ -333,6 +335,7 @@
                                        Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                         </StackPanel>
                         <ToggleSwitch Grid.Column="2"
+                                      HorizontalAlignment="Right" FlowDirection="RightToLeft"
                                       IsOn="{x:Bind IsWindowBorderEnabled, Mode=TwoWay}"
                                       OnContent="{x:Bind GetText('Settings_ToggleOn'), Mode=OneWay, FallbackValue='On'}"
                                       OffContent="{x:Bind GetText('Settings_ToggleOff'), Mode=OneWay, FallbackValue='Off'}"/>
@@ -483,6 +486,7 @@
                                        TextWrapping="Wrap"/>
                         </StackPanel>
                         <ToggleSwitch Grid.Column="2"
+                                      HorizontalAlignment="Right" FlowDirection="RightToLeft"
                                       IsOn="{x:Bind IsNavGlowEnabled, Mode=TwoWay}"
                                       Toggled="NavGlowToggle_Toggled"
                                       OnContent="{x:Bind GetText('Settings_ToggleOn'), Mode=OneWay, FallbackValue='On'}"
@@ -510,7 +514,7 @@
                                        Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
                                        TextWrapping="Wrap"/>
                         </StackPanel>
-                        <ToggleSwitch Grid.Column="2" IsOn="{x:Bind IsRunOnStartUp, Mode=TwoWay}" OnContent="{x:Bind GetText('Settings_ToggleOn'), Mode=OneWay, FallbackValue='On'}" OffContent="{x:Bind GetText('Settings_ToggleOff'), Mode=OneWay, FallbackValue='Off'}"/>
+                        <ToggleSwitch Grid.Column="2" HorizontalAlignment="Right" FlowDirection="RightToLeft" IsOn="{x:Bind IsRunOnStartUp, Mode=TwoWay}" OnContent="{x:Bind GetText('Settings_ToggleOn'), Mode=OneWay, FallbackValue='On'}" OffContent="{x:Bind GetText('Settings_ToggleOff'), Mode=OneWay, FallbackValue='Off'}"/>
                     </Grid>
                 </Border>
 
@@ -529,7 +533,7 @@
                                        Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
                                        TextWrapping="Wrap"/>
                         </StackPanel>
-                        <ToggleSwitch Grid.Column="2" 
+                        <ToggleSwitch Grid.Column="2" HorizontalAlignment="Right" FlowDirection="RightToLeft" 
                                       IsOn="{x:Bind EnableStartupMonitor, Mode=TwoWay}" 
                                       OnContent="{x:Bind GetText('Settings_ToggleOn'), Mode=OneWay, FallbackValue='On'}" 
                                       OffContent="{x:Bind GetText('Settings_ToggleOff'), Mode=OneWay, FallbackValue='Off'}"/>
@@ -549,7 +553,7 @@
                             <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_CloseToTray_Subtitle'), Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                         </StackPanel>
 
-                        <ToggleSwitch Grid.Column="2" IsOn="{x:Bind IsCloseToTray, Mode=TwoWay}" OnContent="{x:Bind GetText('Settings_ToggleOn'), Mode=OneWay}" OffContent="{x:Bind GetText('Settings_ToggleOff'), Mode=OneWay}"/>
+                        <ToggleSwitch Grid.Column="2" HorizontalAlignment="Right" FlowDirection="RightToLeft" IsOn="{x:Bind IsCloseToTray, Mode=TwoWay}" OnContent="{x:Bind GetText('Settings_ToggleOn'), Mode=OneWay}" OffContent="{x:Bind GetText('Settings_ToggleOff'), Mode=OneWay}"/>
                     </Grid>
                 </Border>
 
@@ -566,7 +570,7 @@
                             <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_StartMinimized_Subtitle'), Mode=OneWay}" 
                                        Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                         </StackPanel>
-                        <ToggleSwitch Grid.Column="2" IsOn="{x:Bind IsStartMinimized, Mode=TwoWay}" OnContent="{x:Bind GetText('Settings_ToggleOn'), Mode=OneWay, FallbackValue='On'}" OffContent="{x:Bind GetText('Settings_ToggleOff'), Mode=OneWay, FallbackValue='Off'}"/>
+                        <ToggleSwitch Grid.Column="2" HorizontalAlignment="Right" FlowDirection="RightToLeft" IsOn="{x:Bind IsStartMinimized, Mode=TwoWay}" OnContent="{x:Bind GetText('Settings_ToggleOn'), Mode=OneWay, FallbackValue='On'}" OffContent="{x:Bind GetText('Settings_ToggleOff'), Mode=OneWay, FallbackValue='Off'}"/>
                     </Grid>
                 </Border>
 
@@ -583,7 +587,7 @@
                             <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_HighPerformance_Subtitle'), Mode=OneWay, FallbackValue='Keeps pages in memory for instant switching. Disabling this saves RAM but increases loading times.'}" 
                        Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                         </StackPanel>
-                        <ToggleSwitch Grid.Column="2" 
+                        <ToggleSwitch Grid.Column="2" HorizontalAlignment="Right" FlowDirection="RightToLeft" 
                       IsOn="{x:Bind IsHighPerformanceModeEnabled, Mode=TwoWay}" 
                       OnContent="{x:Bind GetText('Settings_ToggleOn'), Mode=OneWay, FallbackValue='On'}" 
                       OffContent="{x:Bind GetText('Settings_ToggleOff'), Mode=OneWay, FallbackValue='Off'}"/>
@@ -650,7 +654,7 @@
                                 <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_AI_LocalizationDesc'), Mode=OneWay}" FontSize="12" Opacity="0.7" TextWrapping="Wrap"/>
                             </StackPanel>
 
-                            <ToggleSwitch Grid.Column="2"
+                            <ToggleSwitch Grid.Column="2" HorizontalAlignment="Right" FlowDirection="RightToLeft"
                                           IsOn="{x:Bind AiUseLocalization, Mode=TwoWay}"
                                           OnContent="{x:Bind GetText('Settings_Toggle_On'), Mode=OneWay}"
                                           OffContent="{x:Bind GetText('Settings_Toggle_Off'), Mode=OneWay}"
@@ -782,7 +786,7 @@
                                 <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="Bypass the login screen and encrypt your session securely." 
                                            Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
                             </StackPanel>
-                            <ToggleSwitch x:Name="CbEnableAutoLogin" Grid.Column="2" 
+                            <ToggleSwitch x:Name="CbEnableAutoLogin" Grid.Column="2" HorizontalAlignment="Right" FlowDirection="RightToLeft" 
                                           Toggled="BtnAutoLogin_Checked" 
                                           OnContent="Enabled" OffContent="Disabled"/>
                         </Grid>
@@ -838,7 +842,7 @@
                                 <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('btgl_developer_mode_main'), Mode=OneWay}" FontWeight="SemiBold"/>
                                 <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('btgl_developer_mode_subtitle'), Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
                             </StackPanel>
-                            <ToggleSwitch x:Name="BtnDeveloperMode" Grid.Column="2" Toggled="BtnDeveloperMode_ChangedState" OnContent="{x:Bind GetText('Settings_ToggleOn'), Mode=OneWay}" OffContent="{x:Bind GetText('Settings_ToggleOff'), Mode=OneWay}"/>
+                            <ToggleSwitch x:Name="BtnDeveloperMode" Grid.Column="2" HorizontalAlignment="Right" FlowDirection="RightToLeft" Toggled="BtnDeveloperMode_ChangedState" OnContent="{x:Bind GetText('Settings_ToggleOn'), Mode=OneWay}" OffContent="{x:Bind GetText('Settings_ToggleOff'), Mode=OneWay}"/>
                         </Grid>
 
                         <StackPanel Visibility="{x:Bind BtnDeveloperMode.IsOn, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" Spacing="12" Margin="0,8,0,0">
@@ -856,7 +860,7 @@
                                     <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_DevTools_TranslationHotkey_Title'), Mode=OneWay}" FontWeight="SemiBold"/>
                                     <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_DevTools_TranslationHotkey_Subtitle'), Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                                 </StackPanel>
-                                <ToggleSwitch x:Name="BtnTranslationHotkey" Grid.Column="2" IsOn="{x:Bind IsTranslationHotkeyEnabled, Mode=TwoWay}" OnContent="{x:Bind GetText('Settings_ToggleOn'), Mode=OneWay}" OffContent="{x:Bind GetText('Settings_ToggleOff'), Mode=OneWay}"/>
+                                <ToggleSwitch x:Name="BtnTranslationHotkey" Grid.Column="2" HorizontalAlignment="Right" FlowDirection="RightToLeft" IsOn="{x:Bind IsTranslationHotkeyEnabled, Mode=TwoWay}" OnContent="{x:Bind GetText('Settings_ToggleOn'), Mode=OneWay}" OffContent="{x:Bind GetText('Settings_ToggleOff'), Mode=OneWay}"/>
                             </Grid>
 
                             <StackPanel Visibility="{x:Bind BtnTranslationHotkey.IsOn, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0,0,0,8">
@@ -959,7 +963,7 @@
                                 <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_DbBackup_AutoSubtitle'), Mode=OneWay}"
                                            Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                             </StackPanel>
-                            <ToggleSwitch x:Name="CbPerformDbBackup" Grid.Column="2"
+                            <ToggleSwitch x:Name="CbPerformDbBackup" Grid.Column="2" HorizontalAlignment="Right" FlowDirection="RightToLeft"
                                           IsOn="{x:Bind PerformDbBackup, Mode=TwoWay}"
                                           OnContent="{x:Bind GetText('Settings_ToggleOn'), Mode=OneWay, FallbackValue='On'}"
                                           OffContent="{x:Bind GetText('Settings_ToggleOff'), Mode=OneWay, FallbackValue='Off'}"/>
@@ -980,7 +984,7 @@
                                     <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_DbBackup_PersistentSubtitle'), Mode=OneWay}"
                                                Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                                 </StackPanel>
-                                <ToggleSwitch Grid.Column="2"
+                                <ToggleSwitch Grid.Column="2" HorizontalAlignment="Right" FlowDirection="RightToLeft"
                                               IsOn="{x:Bind KeepBackupEnabled, Mode=TwoWay}"
                                               OnContent="{x:Bind GetText('Settings_ToggleOn'), Mode=OneWay}"
                                               OffContent="{x:Bind GetText('Settings_ToggleOff'), Mode=OneWay}"/>
@@ -1000,7 +1004,7 @@
                                     <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_DbBackup_EncryptSubtitle'), Mode=OneWay}"
                                                Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                                 </StackPanel>
-                                <ToggleSwitch Grid.Column="2"
+                                <ToggleSwitch Grid.Column="2" HorizontalAlignment="Right" FlowDirection="RightToLeft"
                                               IsOn="{x:Bind EncryptDbBackupCopies, Mode=TwoWay}"
                                               OnContent="{x:Bind GetText('Settings_ToggleOn'), Mode=OneWay, FallbackValue='On'}"
                                               OffContent="{x:Bind GetText('Settings_ToggleOff'), Mode=OneWay, FallbackValue='Off'}"/>
@@ -1166,7 +1170,7 @@
                                 <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_Update_AutoTitle'), Mode=OneWay}" FontWeight="SemiBold"/>
                                 <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_Update_AutoSubtitle'), Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
                             </StackPanel>
-                            <ToggleSwitch Grid.Column="2" IsOn="{x:Bind IsUpdateCheckRequired, Mode=TwoWay}" OnContent="{x:Bind GetText('Settings_Update_ToggleOn'), Mode=OneWay}" OffContent="{x:Bind GetText('Settings_Update_ToggleOff'), Mode=OneWay}"/>
+                            <ToggleSwitch Grid.Column="2" HorizontalAlignment="Right" FlowDirection="RightToLeft" IsOn="{x:Bind IsUpdateCheckRequired, Mode=TwoWay}" OnContent="{x:Bind GetText('Settings_Update_ToggleOn'), Mode=OneWay}" OffContent="{x:Bind GetText('Settings_Update_ToggleOff'), Mode=OneWay}"/>
                         </Grid>
 
                         <MenuFlyoutSeparator/>
