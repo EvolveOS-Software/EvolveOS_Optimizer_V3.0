@@ -6094,6 +6094,20 @@
     <sys:String x:Key="Stego_SuccessOpen_Desc">The file has been successfully saved. Would you like to view it in File Explorer?</sys:String>
     <sys:String x:Key="Stego_SuccessOpen_Btn">Open Folder</sys:String>
 
+    <!-- Steganography Telemetry Strings -->
+    <sys:String x:Key="Stego_Status_Prep">Preparing payload headers...</sys:String>
+    <sys:String x:Key="Stego_Status_Encrypt">Encrypting payload (AES-256)...</sys:String>
+    <sys:String x:Key="Stego_Status_Analyze">Analyzing host image capacity...</sys:String>
+    <sys:String x:Key="Stego_Status_Inject">Injecting cryptographic payload</sys:String>
+    <sys:String x:Key="Stego_Status_Encode">Rendering lossless vault image...</sys:String>
+    <sys:String x:Key="Stego_Status_Save">Writing to disk...</sys:String>
+
+    <sys:String x:Key="Stego_Status_ReadImg">Reading image matrix...</sys:String>
+    <sys:String x:Key="Stego_Status_Header">Locating payload header...</sys:String>
+    <sys:String x:Key="Stego_Status_Extract">Extracting encrypted blocks</sys:String>
+    <sys:String x:Key="Stego_Status_Decrypting">Decrypting payload (AES-256)...</sys:String>
+    <sys:String x:Key="Stego_Status_Reconstructing">Reconstructing file structure...</sys:String>
+
     <!-- endregion Steganography Page -->
 
     <!-- region Device Identity Manager (GDID) Strings -->

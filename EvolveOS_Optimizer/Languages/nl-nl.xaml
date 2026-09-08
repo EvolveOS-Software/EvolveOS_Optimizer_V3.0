@@ -5995,6 +5995,20 @@
     <sys:String x:Key="Stego_SuccessOpen_Desc">Het bestand is succesvol opgeslagen. Wilt u het bekijken in de Bestandsverkenner?</sys:String>
     <sys:String x:Key="Stego_SuccessOpen_Btn">Open Map</sys:String>
 
+    <!-- Steganography Telemetry Strings -->
+    <sys:String x:Key="Stego_Status_Prep">Payload headers voorbereiden...</sys:String>
+    <sys:String x:Key="Stego_Status_Encrypt">Payload versleutelen (AES-256)...</sys:String>
+    <sys:String x:Key="Stego_Status_Analyze">Capaciteit van hostafbeelding analyseren...</sys:String>
+    <sys:String x:Key="Stego_Status_Inject">Cryptografische payload injecteren</sys:String>
+    <sys:String x:Key="Stego_Status_Encode">Verliesvrije kluisafbeelding renderen...</sys:String>
+    <sys:String x:Key="Stego_Status_Save">Naar schijf schrijven...</sys:String>
+
+    <sys:String x:Key="Stego_Status_ReadImg">Afbeeldingsmatrix lezen...</sys:String>
+    <sys:String x:Key="Stego_Status_Header">Payload header lokaliseren...</sys:String>
+    <sys:String x:Key="Stego_Status_Extract">Versleutelde blokken uitpakken</sys:String>
+    <sys:String x:Key="Stego_Status_Decrypting">Payload ontsleutelen (AES-256)...</sys:String>
+    <sys:String x:Key="Stego_Status_Reconstructing">Bestandsstructuur reconstrueren...</sys:String>
+
     <!-- endregion Steganography Page -->
 
     <!-- region Device Identity Manager (GDID) Strings -->

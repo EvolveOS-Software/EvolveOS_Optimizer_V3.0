@@ -5992,6 +5992,20 @@
     <sys:String x:Key="Stego_SuccessOpen_Desc">Il file è stato salvato con successo. Desideri visualizzarlo in Esplora file?</sys:String>
     <sys:String x:Key="Stego_SuccessOpen_Btn">Apri cartella</sys:String>
 
+    <!-- Steganography Telemetry Strings -->
+    <sys:String x:Key="Stego_Status_Prep">Preparazione intestazioni del payload...</sys:String>
+    <sys:String x:Key="Stego_Status_Encrypt">Crittografia del payload (AES-256)...</sys:String>
+    <sys:String x:Key="Stego_Status_Analyze">Analisi della capacità dell'immagine host...</sys:String>
+    <sys:String x:Key="Stego_Status_Inject">Iniezione del payload crittografico</sys:String>
+    <sys:String x:Key="Stego_Status_Encode">Rendering dell'immagine cassaforte senza perdita...</sys:String>
+    <sys:String x:Key="Stego_Status_Save">Scrittura su disco in corso...</sys:String>
+
+    <sys:String x:Key="Stego_Status_ReadImg">Lettura della matrice dell'immagine...</sys:String>
+    <sys:String x:Key="Stego_Status_Header">Localizzazione dell'intestazione del payload...</sys:String>
+    <sys:String x:Key="Stego_Status_Extract">Estrazione dei blocchi crittografati</sys:String>
+    <sys:String x:Key="Stego_Status_Decrypting">Decrittografia del payload (AES-256)...</sys:String>
+    <sys:String x:Key="Stego_Status_Reconstructing">Ricostruzione della struttura del file...</sys:String>
+
     <!-- endregion Steganography Page -->
 
     <!-- region Device Identity Manager (GDID) Strings -->

@@ -5981,6 +5981,20 @@
     <sys:String x:Key="Stego_SuccessOpen_Desc">Le fichier a été enregistré avec succès. Voulez-vous le voir dans l'Explorateur de fichiers ?</sys:String>
     <sys:String x:Key="Stego_SuccessOpen_Btn">Ouvrir le dossier</sys:String>
 
+    <!-- Steganography Telemetry Strings -->
+    <sys:String x:Key="Stego_Status_Prep">Préparation des en-têtes de la charge utile...</sys:String>
+    <sys:String x:Key="Stego_Status_Encrypt">Chiffrement de la charge utile (AES-256)...</sys:String>
+    <sys:String x:Key="Stego_Status_Analyze">Analyse de la capacité de l'image hôte...</sys:String>
+    <sys:String x:Key="Stego_Status_Inject">Injection de la charge utile cryptographique</sys:String>
+    <sys:String x:Key="Stego_Status_Encode">Rendu de l'image coffre-fort sans perte...</sys:String>
+    <sys:String x:Key="Stego_Status_Save">Écriture sur le disque...</sys:String>
+
+    <sys:String x:Key="Stego_Status_ReadImg">Lecture de la matrice de l'image...</sys:String>
+    <sys:String x:Key="Stego_Status_Header">Localisation de l'en-tête de la charge utile...</sys:String>
+    <sys:String x:Key="Stego_Status_Extract">Extraction des blocs chiffrés</sys:String>
+    <sys:String x:Key="Stego_Status_Decrypting">Déchiffrement de la charge utile (AES-256)...</sys:String>
+    <sys:String x:Key="Stego_Status_Reconstructing">Reconstitution de la structure du fichier...</sys:String>
+
     <!-- endregion Steganography Page -->
 
     <!-- region Device Identity Manager (GDID) Strings -->

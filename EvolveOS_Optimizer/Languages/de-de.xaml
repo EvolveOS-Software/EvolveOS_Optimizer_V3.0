@@ -5971,6 +5971,20 @@
     <sys:String x:Key="Stego_SuccessOpen_Desc">Die Datei wurde erfolgreich gespeichert. Möchten Sie sie im Datei-Explorer anzeigen?</sys:String>
     <sys:String x:Key="Stego_SuccessOpen_Btn">Ordner öffnen</sys:String>
 
+    <!-- Steganography Telemetry Strings -->
+    <sys:String x:Key="Stego_Status_Prep">Payload Header werden vorbereitet...</sys:String>
+    <sys:String x:Key="Stego_Status_Encrypt">Payload wird verschlüsselt (AES-256)...</sys:String>
+    <sys:String x:Key="Stego_Status_Analyze">Kapazität des Host-Bildes wird analysiert...</sys:String>
+    <sys:String x:Key="Stego_Status_Inject">Kryptografische Payload wird injiziert</sys:String>
+    <sys:String x:Key="Stego_Status_Encode">Verlustfreies Tresor-Bild wird gerendert...</sys:String>
+    <sys:String x:Key="Stego_Status_Save">Auf Datenträger wird geschrieben...</sys:String>
+
+    <sys:String x:Key="Stego_Status_ReadImg">Bildmatrix wird gelesen...</sys:String>
+    <sys:String x:Key="Stego_Status_Header">Payload-Header wird lokalisiert...</sys:String>
+    <sys:String x:Key="Stego_Status_Extract">Verschlüsselte Blöcke werden extrahiert</sys:String>
+    <sys:String x:Key="Stego_Status_Decrypting">Payload wird entschlüsselt (AES-256)...</sys:String>
+    <sys:String x:Key="Stego_Status_Reconstructing">Dateistruktur wird rekonstruiert...</sys:String>
+
     <!-- endregion Steganography Page -->
 
     <!-- region Device Identity Manager (GDID) Strings -->

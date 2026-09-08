@@ -68,7 +68,7 @@ namespace EvolveOS_Optimizer.Pages
                 Title = ResourceString.GetString("Stego_SuccessOpen_Title") ?? "Process Complete",
                 Content = new TextBlock
                 {
-                    Text = ResourceString.GetString("Stego_SuccessOpen_Desc") ?? "The file has been successfully saved. Would you like to view it in File Explorer?",
+                    Text = ResourceString.GetString("Stego_SuccessOpen_Desc") ?? "The vault file has been successfully generated and secured. Would you like to view it in File Explorer?",
                     TextWrapping = TextWrapping.Wrap
                 },
                 PrimaryButtonText = ResourceString.GetString("Stego_SuccessOpen_Btn") ?? "Open Folder",
@@ -98,10 +98,11 @@ namespace EvolveOS_Optimizer.Pages
 
         #endregion
 
-        #region Core Steganography Logic (LSB + AES Encryption)
+        #region Core Steganography Logic (LSB + AES Encryption + Hardware Optimization)
 
-        private async Task ProcessEmbedAsync(string hostImagePath, string secretFilePath, string destImagePath)
+        private async Task ProcessEmbedAsync(string hostImagePath, string secretFilePath, string destImagePath, IProgress<string> progress)
         {
+            progress.Report(ResourceString.GetString("Stego_Status_Prep") ?? "Preparing payload headers...");
             string fileName = Path.GetFileName(secretFilePath);
             byte[] nameBytes = Encoding.UTF8.GetBytes(fileName);
             byte[] fileBytes = await File.ReadAllBytesAsync(secretFilePath);
@@ -116,8 +117,15 @@ namespace EvolveOS_Optimizer.Pages
                 rawData = ms.ToArray();
             }
 
+            Array.Clear(fileBytes, 0, fileBytes.Length);
+            Array.Clear(nameBytes, 0, nameBytes.Length);
+
+            progress.Report(ResourceString.GetString("Stego_Status_Encrypt") ?? "Encrypting payload (AES-256)...");
             byte[] encryptedData = await Task.Run(() => AesHelper.EncryptBytes(rawData, _masterPassword!));
 
+            Array.Clear(rawData, 0, rawData.Length);
+
+            progress.Report(ResourceString.GetString("Stego_Status_Analyze") ?? "Analyzing host image capacity...");
             StorageFile hostFile = await StorageFile.GetFileFromPathAsync(hostImagePath);
             using IRandomAccessStream stream = await hostFile.OpenReadAsync();
             BitmapDecoder decoder = await BitmapDecoder.CreateAsync(stream);
@@ -134,33 +142,57 @@ namespace EvolveOS_Optimizer.Pages
             int requiredBytes = 32 + (encryptedData.Length * 8);
             if (requiredBytes > pixels.Length)
             {
-                throw new Exception($"The host image is too small to hide this file. It needs at least {requiredBytes / 4} pixels.");
+                double maxKb = (pixels.Length / 8.0) / 1024.0;
+                double reqKb = encryptedData.Length / 1024.0;
+                Array.Clear(encryptedData, 0, encryptedData.Length);
+                Array.Clear(pixels, 0, pixels.Length);
+
+                throw new Exception($"Host image capacity exceeded.\n\nAvailable: {maxKb:F2} KB\nRequired: {reqKb:F2} KB\n\nPlease select a higher-resolution image or a smaller secret file.");
             }
 
             await Task.Run(() =>
             {
                 int length = encryptedData.Length;
                 int pixelIndex = 0;
+                int lastReportedPercent = -1;
+                int reportInterval = Math.Max(1, length / 100);
 
                 for (int i = 0; i < 32; i++)
                 {
                     int bit = (length >> i) & 1;
-                    pixels[pixelIndex] = (byte)((pixels[pixelIndex] & ~1) | bit);
+                    pixels[pixelIndex] = (byte)((pixels[pixelIndex] & 254) | bit);
                     pixelIndex++;
                 }
 
-                for (int i = 0; i < encryptedData.Length; i++)
+                for (int i = 0; i < length; i++)
                 {
                     byte b = encryptedData[i];
-                    for (int j = 0; j < 8; j++)
+
+                    pixels[pixelIndex] = (byte)((pixels[pixelIndex] & 254) | (b & 1));
+                    pixels[pixelIndex + 1] = (byte)((pixels[pixelIndex + 1] & 254) | ((b >> 1) & 1));
+                    pixels[pixelIndex + 2] = (byte)((pixels[pixelIndex + 2] & 254) | ((b >> 2) & 1));
+                    pixels[pixelIndex + 3] = (byte)((pixels[pixelIndex + 3] & 254) | ((b >> 3) & 1));
+                    pixels[pixelIndex + 4] = (byte)((pixels[pixelIndex + 4] & 254) | ((b >> 4) & 1));
+                    pixels[pixelIndex + 5] = (byte)((pixels[pixelIndex + 5] & 254) | ((b >> 5) & 1));
+                    pixels[pixelIndex + 6] = (byte)((pixels[pixelIndex + 6] & 254) | ((b >> 6) & 1));
+                    pixels[pixelIndex + 7] = (byte)((pixels[pixelIndex + 7] & 254) | ((b >> 7) & 1));
+
+                    pixelIndex += 8;
+
+                    if (i % reportInterval == 0)
                     {
-                        int bit = (b >> j) & 1;
-                        pixels[pixelIndex] = (byte)((pixels[pixelIndex] & ~1) | bit);
-                        pixelIndex++;
+                        int currentPercent = (int)((double)i / length * 100);
+                        if (currentPercent != lastReportedPercent)
+                        {
+                            lastReportedPercent = currentPercent;
+                            string localizedInject = ResourceString.GetString("Stego_Status_Inject") ?? "Injecting cryptographic payload";
+                            progress.Report($"{localizedInject}... {currentPercent}%");
+                        }
                     }
                 }
             });
 
+            progress.Report(ResourceString.GetString("Stego_Status_Encode") ?? "Rendering lossless vault image...");
             using var memStream = new InMemoryRandomAccessStream();
             var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, memStream);
 
@@ -180,11 +212,17 @@ namespace EvolveOS_Optimizer.Pages
             byte[] outBytes = new byte[memStream.Size];
             dataReader.ReadBytes(outBytes);
 
+            progress.Report(ResourceString.GetString("Stego_Status_Save") ?? "Writing to disk...");
             await File.WriteAllBytesAsync(destImagePath, outBytes);
+
+            Array.Clear(encryptedData, 0, encryptedData.Length);
+            Array.Clear(pixels, 0, pixels.Length);
+            Array.Clear(outBytes, 0, outBytes.Length);
         }
 
-        private async Task<(string OriginalFileName, byte[] FileBytes)> DecodeEncryptedPayloadAsync(string stegoImagePath)
+        private async Task<(string OriginalFileName, byte[] FileBytes)> DecodeEncryptedPayloadAsync(string stegoImagePath, IProgress<string> progress)
         {
+            progress.Report(ResourceString.GetString("Stego_Status_ReadImg") ?? "Reading image matrix...");
             StorageFile stegoFile = await StorageFile.GetFileFromPathAsync(stegoImagePath);
             using IRandomAccessStream stream = await stegoFile.OpenReadAsync();
             BitmapDecoder decoder = await BitmapDecoder.CreateAsync(stream);
@@ -203,6 +241,8 @@ namespace EvolveOS_Optimizer.Pages
                 int pixelIndex = 0;
                 int length = 0;
 
+                progress.Report(ResourceString.GetString("Stego_Status_Header") ?? "Locating payload header...");
+
                 for (int i = 0; i < 32; i++)
                 {
                     int bit = pixels[pixelIndex] & 1;
@@ -212,24 +252,48 @@ namespace EvolveOS_Optimizer.Pages
 
                 if (length <= 0 || length > (pixels.Length - 32) / 8)
                 {
+                    Array.Clear(pixels, 0, pixels.Length);
                     throw new Exception("No valid hidden data found in this image, or the image has been compressed/corrupted.");
                 }
 
                 byte[] encryptedData = new byte[length];
+                int lastReportedPercent = -1;
+                int reportInterval = Math.Max(1, length / 100);
+
                 for (int i = 0; i < length; i++)
                 {
-                    byte b = 0;
-                    for (int j = 0; j < 8; j++)
+                    int b = (pixels[pixelIndex] & 1) |
+                            ((pixels[pixelIndex + 1] & 1) << 1) |
+                            ((pixels[pixelIndex + 2] & 1) << 2) |
+                            ((pixels[pixelIndex + 3] & 1) << 3) |
+                            ((pixels[pixelIndex + 4] & 1) << 4) |
+                            ((pixels[pixelIndex + 5] & 1) << 5) |
+                            ((pixels[pixelIndex + 6] & 1) << 6) |
+                            ((pixels[pixelIndex + 7] & 1) << 7);
+
+                    encryptedData[i] = (byte)b;
+                    pixelIndex += 8;
+
+                    if (i % reportInterval == 0)
                     {
-                        int bit = pixels[pixelIndex] & 1;
-                        b |= (byte)(bit << j);
-                        pixelIndex++;
+                        int currentPercent = (int)((double)i / length * 100);
+                        if (currentPercent != lastReportedPercent)
+                        {
+                            lastReportedPercent = currentPercent;
+                            string localizedExtract = ResourceString.GetString("Stego_Status_Extract") ?? "Extracting encrypted blocks";
+                            progress.Report($"{localizedExtract}... {currentPercent}%");
+                        }
                     }
-                    encryptedData[i] = b;
                 }
 
+                Array.Clear(pixels, 0, pixels.Length);
+
+                progress.Report(ResourceString.GetString("Stego_Status_Decrypting") ?? "Decrypting payload (AES-256)...");
                 byte[] decryptedData = AesHelper.DecryptBytes(encryptedData, _masterPassword!);
 
+                Array.Clear(encryptedData, 0, encryptedData.Length);
+
+                progress.Report(ResourceString.GetString("Stego_Status_Reconstructing") ?? "Reconstructing file structure...");
                 using (var ms = new MemoryStream(decryptedData))
                 using (var br = new BinaryReader(ms))
                 {
@@ -239,6 +303,8 @@ namespace EvolveOS_Optimizer.Pages
 
                     int remainingBytes = (int)(ms.Length - ms.Position);
                     byte[] fileBytes = br.ReadBytes(remainingBytes);
+
+                    Array.Clear(decryptedData, 0, decryptedData.Length);
 
                     return (fileName, fileBytes);
                 }
@@ -286,11 +352,15 @@ namespace EvolveOS_Optimizer.Pages
                 EfficiencyModeHelper.IsUIWakeLockActive = true;
                 EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(false);
 
-                LoadingTitleText.Text = ResourceString.GetString("Stego_OverlayEmbedTitle") ?? "Embedding Data...";
+                var progress = new Progress<string>(status =>
+                {
+                    LoadingTitleText.Text = status;
+                });
+
                 UIHelper.SetOverlay(true);
                 LoadingOverlay.Visibility = Visibility.Visible;
 
-                await ProcessEmbedAsync(hostPath, secretPath, destPath);
+                await ProcessEmbedAsync(hostPath, secretPath, destPath, progress);
 
                 LoadingOverlay.Visibility = Visibility.Collapsed;
                 UIHelper.SetOverlay(false);
@@ -341,11 +411,15 @@ namespace EvolveOS_Optimizer.Pages
                 EfficiencyModeHelper.IsUIWakeLockActive = true;
                 EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(false);
 
-                LoadingTitleText.Text = ResourceString.GetString("Stego_OverlayExtractTitle") ?? "Analyzing Image...";
+                var progress = new Progress<string>(status =>
+                {
+                    LoadingTitleText.Text = status;
+                });
+
                 UIHelper.SetOverlay(true);
                 LoadingOverlay.Visibility = Visibility.Visible;
 
-                var result = await DecodeEncryptedPayloadAsync(stegoPath);
+                var result = await DecodeEncryptedPayloadAsync(stegoPath, progress);
 
                 LoadingOverlay.Visibility = Visibility.Collapsed;
                 UIHelper.SetOverlay(false);
@@ -364,13 +438,19 @@ namespace EvolveOS_Optimizer.Pages
                 string saveTitle = ResourceString.GetString("Stego_SaveRevealed_Title") ?? "Save Revealed File";
                 string? savePath = Win32FileDialogHelper.ShowSaveFilePicker(App.MainWindow!, saveTitle, "Original File", "*" + ext, result.OriginalFileName, ext);
 
-                if (string.IsNullOrEmpty(savePath)) return;
+                if (string.IsNullOrEmpty(savePath))
+                {
+                    Array.Clear(result.FileBytes, 0, result.FileBytes.Length);
+                    return;
+                }
 
-                LoadingTitleText.Text = ResourceString.GetString("Stego_OverlayExtractTitle") ?? "Saving File...";
+                LoadingTitleText.Text = ResourceString.GetString("Stego_OverlayExtractTitle") ?? "Saving Secure File to Disk...";
                 UIHelper.SetOverlay(true);
                 LoadingOverlay.Visibility = Visibility.Visible;
 
                 await File.WriteAllBytesAsync(savePath, result.FileBytes);
+
+                Array.Clear(result.FileBytes, 0, result.FileBytes.Length);
 
                 LoadingOverlay.Visibility = Visibility.Collapsed;
                 UIHelper.SetOverlay(false);
@@ -387,7 +467,7 @@ namespace EvolveOS_Optimizer.Pages
             {
                 NotificationManager.Show(
                     ResourceString.GetString("Stego_Toast_DecryptFailTitle") ?? "Decryption Failed",
-                    ResourceString.GetString("Stego_Toast_DecryptFailMsg") ?? "The master password is incorrect o il file è stato manomesso.") // Keeping Italian translated in case you see it!
+                    ResourceString.GetString("Stego_Toast_DecryptFailMsg") ?? "The master password is incorrect o il file è stato manomesso.")
                     .WithSeverity(NotificationManager.NoticeSeverity.Error)
                     .Create();
             }
@@ -421,7 +501,6 @@ namespace EvolveOS_Optimizer.Pages
             if (this.Frame != null)
             {
                 this.Frame.Navigate(typeof(AdvancedUtilsPage));
-
                 this.Frame.BackStack.Clear();
             }
         }
