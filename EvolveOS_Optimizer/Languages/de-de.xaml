@@ -1901,6 +1901,9 @@
     <sys:String x:Key="AdvancedUtils_FileShredder_Btn">Vernichter öffnen</sys:String>
     <sys:String x:Key="AdvancedUtils_Stego_Desc">Verstecken Sie sensible Dateien völlig unsichtbar in den Pixeln normaler Fotos.</sys:String>
     <sys:String x:Key="AdvancedUtils_Stego_Btn">Tresor öffnen</sys:String>
+    <sys:String x:Key="AdvancedUtils_Degdid_Title">Geräteidentitäts Manager</sys:String>
+    <sys:String x:Key="AdvancedUtils_Degdid_Desc">Wendet eine Dual-Stack-Hosts-Blockade an, aktualisiert die Defense-in-Depth-Regeln der Firewall und löscht globale Geräte-IDs und Wiederherstellungsquellen aus den Zielbenutzer-, .DEFAULT- und SYSTEM-Hives.</sys:String>
+    <sys:String x:Key="AdvancedUtils_Degdid_Btn">Manager öffnen</sys:String>
     <!-- endregion Advanced Utils Page -->
 
     <!--#region File/Folder Encryption/Decryption -->
@@ -5969,4 +5972,52 @@
     <sys:String x:Key="Stego_SuccessOpen_Btn">Ordner öffnen</sys:String>
 
     <!-- endregion Steganography Page -->
+
+    <!-- region Device Identity Manager (GDID) Strings -->
+
+    <sys:String x:Key="Degdid_PageTitle">Geräteidentitäts Manager</sys:String>
+    <sys:String x:Key="Degdid_InfoTitle">Hardware Telemetrie anonymisieren</sys:String>
+    <sys:String x:Key="Degdid_InfoMessage">Dieses Premium-Dienstprogramm verwaltet globale Geräte-IDs (GDID), indem es strenge Firewall-Regeln anwendet, die kanonische Hosts-Datei bearbeitet und Tracking-Einträge sicher aus Ihrer Registrierung entfernt.</sys:String>
+    <sys:String x:Key="Degdid_WarningTitle">Warnung: Unterbricht die Microsoft-Konto-Funktionalität</sys:String>
+    <sys:String x:Key="Degdid_WarningMessage">WICHTIG: Sie müssen sich von allen Microsoft-Konten abmelden und BitLocker deaktivieren, bevor Sie fortfahren. Das Blockieren von login.live.com beeinträchtigt absichtlich die Anmeldung bei Microsoft-Konten, Windows Store-Apps, Xbox Live, OneDrive und Smartphone-Link. Verwenden Sie dieses Tool nur, wenn absolute Privatsphäre Vorrang vor diesen Diensten hat.</sys:String>
+
+    <sys:String x:Key="Degdid_ToolsHeader">Identitätsoperationen</sys:String>
+    <sys:String x:Key="Degdid_StatusTitle">Diagnosestatus</sys:String>
+    <sys:String x:Key="Degdid_StatusDesc">Überprüfen Sie die Umgebung, den Zielbenutzer, die Hosts, die Firewall und die verbleibenden Registrierungs-Caches, ohne Änderungen vorzunehmen.</sys:String>
+    <sys:String x:Key="Degdid_StatusBtn">Diagnose ausführen</sys:String>
+    <sys:String x:Key="Degdid_Status_HostsActive">🛡️ Registrierungsschutz: AKTIV</sys:String>
+    <sys:String x:Key="Degdid_Status_HostsInactive">⚠️ Registrierungsschutz: NICHT KONFIGURIERT</sys:String>
+    <sys:String x:Key="Degdid_Status_HostsActiveDesc">Tracking-Endpunkte werden erfolgreich auf Loopback umgeleitet.</sys:String>
+    <sys:String x:Key="Degdid_Status_HostsInactiveDesc">Endpunkte sind derzeit für die standardmäßige Telemetrieerfassung geöffnet.</sys:String>
+    <sys:String x:Key="Degdid_Status_FoundCount">Entdeckte Identifikatoren ({0}):</sys:String>
+    <sys:String x:Key="Degdid_Status_CleanMessage">✨ Sauber! Es wurden keine aktiven globalen Geräte-IDs oder PUID-Token in den überprüften Registrierungs-Hives gefunden.</sys:String>
+    <sys:String x:Key="Degdid_Status_HiveLabel">Hive:</sys:String>
+    <sys:String x:Key="Degdid_Status_TypeLabel">Typ:</sys:String>
+
+    <sys:String x:Key="Degdid_WipeTitle">Identität schützen &amp; löschen</sys:String>
+    <sys:String x:Key="Degdid_WipeDesc">Wenden Sie strikte Host-/Firewall-Registrierungsblockaden an und löschen Sie dauerhaft alle Microsoft-Tracking-IDs aus Ihrem Profil.</sys:String>
+    <sys:String x:Key="Degdid_WipeBtn">Identität löschen</sys:String>
+
+    <sys:String x:Key="Degdid_DecoyTitle">Schützen &amp; Täuschung einsetzen</sys:String>
+    <sys:String x:Key="Degdid_DecoyDesc">Wenden Sie Registrierungsblockaden an, löschen Sie den alten Status und fügen Sie eine generierte gefälschte Täuschungs-ID in die Registrierung ein, um Telemetriedaten zu manipulieren.</sys:String>
+    <sys:String x:Key="Degdid_DecoyBtn">Täuschung einsetzen</sys:String>
+
+    <sys:String x:Key="Degdid_UnblockTitle">Netzwerkblockaden aufheben</sys:String>
+    <sys:String x:Key="Degdid_UnblockDesc">Entfernen Sie sicher alle verwalteten Firewall-Regeln und benutzerdefinierten Hosts-Einträge, um die standardmäßige Microsoft-Konto-Kommunikation wiederherzustellen.</sys:String>
+    <sys:String x:Key="Degdid_UnblockBtn">Netzwerk freigeben</sys:String>
+
+    <!-- Degdid Wizards -->
+    <sys:String x:Key="Degdid_Wizard_WipeTitle">Dauerhafte Identitätslöschung bestätigen</sys:String>
+    <sys:String x:Key="Degdid_Wizard_WipeDesc">Dies implementiert aggressive ausgehende Firewall-Regeln gegen login.live.com und löscht Ihre globalen Geräte-IDs (GDID) unwiderruflich aus der Registrierung. Bestimmte Funktionen des Microsoft-Kontos (Store, Xbox, Smartphone-Link) werden nicht mehr funktionieren.&#x0a;&#x0a;Möchten Sie fortfahren?</sys:String>
+    <sys:String x:Key="Degdid_Wizard_WipeBtn">Schützen &amp; löschen</sys:String>
+
+    <sys:String x:Key="Degdid_Wizard_DecoyTitle">Täuschungseinsatz bestätigen</sys:String>
+    <sys:String x:Key="Degdid_Wizard_DecoyDesc">Dies ist eine experimentelle Funktion. Sie wendet Registrierungsblockaden an und fügt eine dynamisch generierte gefälschte Kennung ein, um Telemetrieabfragen zu manipulieren. Microsoft-Dienste können instabil werden.&#x0a;&#x0a;Möchten Sie fortfahren?</sys:String>
+    <sys:String x:Key="Degdid_Wizard_DecoyBtn">Täuschung einsetzen</sys:String>
+
+    <sys:String x:Key="Degdid_Wizard_UnblockTitle">Netzwerkfreigabe bestätigen</sys:String>
+    <sys:String x:Key="Degdid_Wizard_UnblockDesc">Dadurch werden die benutzerdefinierten Einträge in der Hosts-Datei rückgängig gemacht und die Firewall-Blockaden gelöscht, sodass Windows wieder mit Microsoft-Tracking-Endpunkten kommunizieren kann. Ihre gelöschten Identifikatoren werden NICHT wiederhergestellt.&#x0a;&#x0a;Möchten Sie fortfahren?</sys:String>
+    <sys:String x:Key="Degdid_Wizard_UnblockBtn">Netzwerk freigeben</sys:String>
+
+    <!-- endregion Device Identity Manager (GDID) Strings -->
 </ResourceDictionary>

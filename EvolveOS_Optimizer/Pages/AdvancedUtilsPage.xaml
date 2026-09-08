@@ -159,6 +159,38 @@
                 </Grid>
             </Border>
 
+            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1"
+                    CornerRadius="4"
+                    Padding="20">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <fluentIcons:SymbolIcon Grid.Column="0" Symbol="Fingerprint" FontSize="20" Foreground="{ThemeResource TextFillColorPrimaryBrush}" VerticalAlignment="Center" Margin="0,0,16,0" />
+
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
+                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=Degdid_PageTitle}" FontWeight="SemiBold"/>
+                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{helpers:ResourceString Key=Degdid_InfoMessage}"
+                                   Style="{StaticResource CaptionTextBlockStyle}"
+                                   Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" 
+                                   TextWrapping="Wrap"/>
+                    </StackPanel>
+
+                    <Button Grid.Column="2" 
+                            FontFamily="{ThemeResource AppCustomFont}"
+                            Content="{helpers:ResourceString Key=Degdid_StatusBtn}"
+                            Style="{StaticResource AccentButtonStyle}"
+                            Click="BtnOpenDeviceIdentityManager_Click"
+                            VerticalAlignment="Center"
+                            MinWidth="120"/>
+                </Grid>
+            </Border>
+
             <!-- Password Generator Expander -->
             <Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" MinHeight="90" IsExpanded="True">
                 <Expander.Header>

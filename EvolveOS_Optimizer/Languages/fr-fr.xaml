@@ -1903,7 +1903,9 @@
     <sys:String x:Key="AdvancedUtils_FileShredder_Btn">Ouvrir le Destructeur</sys:String>
     <sys:String x:Key="AdvancedUtils_Stego_Desc">Cachez les fichiers sensibles de manière invisible en les enfouissant dans les pixels de photos normales.</sys:String>
     <sys:String x:Key="AdvancedUtils_Stego_Btn">Ouvrir le Coffre</sys:String>
-    
+    <sys:String x:Key="AdvancedUtils_Degdid_Title">Gestionnaire d'identité de l'appareil</sys:String>
+    <sys:String x:Key="AdvancedUtils_Degdid_Desc">Applique un blocage du fichier hosts en double pile (dual-stack), actualise les règles de défense en profondeur du pare-feu et purge les identifiants globaux d'appareil et les sources de restauration des ruches utilisateur cible, .DEFAULT et SYSTEM.</sys:String>
+    <sys:String x:Key="AdvancedUtils_Degdid_Btn">Ouvrir le gestionnaire</sys:String>
     <!-- endregion Advanced Utils Page -->
 
     <!--#region File/Folder Encryption/Decryption -->
@@ -5980,4 +5982,52 @@
     <sys:String x:Key="Stego_SuccessOpen_Btn">Ouvrir le dossier</sys:String>
 
     <!-- endregion Steganography Page -->
+
+    <!-- region Device Identity Manager (GDID) Strings -->
+
+    <sys:String x:Key="Degdid_PageTitle">Gestionnaire d'identité de l'appareil</sys:String>
+    <sys:String x:Key="Degdid_InfoTitle">Anonymiser la télémétrie matérielle</sys:String>
+    <sys:String x:Key="Degdid_InfoMessage">Cet utilitaire premium gère les identifiants globaux des appareils (GDID) en appliquant des règles de pare-feu strictes, en modifiant le fichier hosts canonique et en purgeant de manière sécurisée les entrées de suivi de votre registre.</sys:String>
+    <sys:String x:Key="Degdid_WarningTitle">Avertissement : Interrompt les fonctionnalités du compte Microsoft</sys:String>
+    <sys:String x:Key="Degdid_WarningMessage">IMPORTANT : Vous devez vous déconnecter de tous les comptes Microsoft et désactiver BitLocker avant de continuer. Bloquer login.live.com dégrade intentionnellement la connexion au compte Microsoft, les applications du Windows Store, Xbox Live, OneDrive et Mobile connecté. N'utilisez cet outil que si la confidentialité absolue prime sur ces services.</sys:String>
+
+    <sys:String x:Key="Degdid_ToolsHeader">Opérations d'identité</sys:String>
+    <sys:String x:Key="Degdid_StatusTitle">État des diagnostics</sys:String>
+    <sys:String x:Key="Degdid_StatusDesc">Inspectez l'environnement, l'utilisateur cible, le fichier hosts, le pare-feu et les caches résiduels du registre sans apporter de modifications.</sys:String>
+    <sys:String x:Key="Degdid_StatusBtn">Exécuter les diagnostics</sys:String>
+    <sys:String x:Key="Degdid_Status_HostsActive">🛡️ Protection de l'enregistrement : ACTIVE</sys:String>
+    <sys:String x:Key="Degdid_Status_HostsInactive">⚠️ Protection de l'enregistrement : NON CONFIGURÉE</sys:String>
+    <sys:String x:Key="Degdid_Status_HostsActiveDesc">Les points de terminaison de suivi sont redirigés avec succès vers le loopback (boucle locale).</sys:String>
+    <sys:String x:Key="Degdid_Status_HostsInactiveDesc">Les points de terminaison sont actuellement ouverts à la collecte de télémétrie standard.</sys:String>
+    <sys:String x:Key="Degdid_Status_FoundCount">Identifiants découverts ({0}) :</sys:String>
+    <sys:String x:Key="Degdid_Status_CleanMessage">✨ Propre ! Aucun identifiant global d'appareil ni jeton PUID actif n'a été trouvé dans les ruches du registre inspectées.</sys:String>
+    <sys:String x:Key="Degdid_Status_HiveLabel">Ruche :</sys:String>
+    <sys:String x:Key="Degdid_Status_TypeLabel">Type :</sys:String>
+
+    <sys:String x:Key="Degdid_WipeTitle">Protéger &amp; Effacer l'identité</sys:String>
+    <sys:String x:Key="Degdid_WipeDesc">Appliquez des blocages d'enregistrement stricts au niveau du pare-feu/hosts et effacez définitivement tous les identifiants de suivi Microsoft de votre profil.</sys:String>
+    <sys:String x:Key="Degdid_WipeBtn">Effacer l'identité</sys:String>
+
+    <sys:String x:Key="Degdid_DecoyTitle">Protéger &amp; Déployer un leurre</sys:String>
+    <sys:String x:Key="Degdid_DecoyDesc">Appliquez des blocages d'enregistrement, effacez l'ancien état et injectez un faux identifiant leurre généré dans le registre pour usurper la télémétrie.</sys:String>
+    <sys:String x:Key="Degdid_DecoyBtn">Déployer un leurre</sys:String>
+
+    <sys:String x:Key="Degdid_UnblockTitle">Supprimer les blocages réseau</sys:String>
+    <sys:String x:Key="Degdid_UnblockDesc">Supprimez en toute sécurité toutes les règles de pare-feu gérées et les entrées personnalisées du fichier hosts pour restaurer la communication par défaut du compte Microsoft.</sys:String>
+    <sys:String x:Key="Degdid_UnblockBtn">Débloquer le réseau</sys:String>
+
+    <!-- Degdid Wizards -->
+    <sys:String x:Key="Degdid_Wizard_WipeTitle">Confirmer l'effacement définitif de l'identité</sys:String>
+    <sys:String x:Key="Degdid_Wizard_WipeDesc">Cela mettra en œuvre des règles de pare-feu sortantes agressives contre login.live.com et effacera de manière irréversible vos identifiants globaux d'appareil (GDID) du registre. Certaines fonctionnalités du compte Microsoft (Store, Xbox, Mobile connecté) cesseront de fonctionner.&#x0a;&#x0a;Voulez-vous continuer ?</sys:String>
+    <sys:String x:Key="Degdid_Wizard_WipeBtn">Protéger &amp; Effacer</sys:String>
+
+    <sys:String x:Key="Degdid_Wizard_DecoyTitle">Confirmer le déploiement du leurre</sys:String>
+    <sys:String x:Key="Degdid_Wizard_DecoyDesc">Ceci est une fonctionnalité expérimentale. Elle appliquera des blocages d'enregistrement et injectera un faux identifiant généré dynamiquement pour usurper les requêtes de télémétrie. Les services Microsoft peuvent devenir instables.&#x0a;&#x0a;Voulez-vous continuer ?</sys:String>
+    <sys:String x:Key="Degdid_Wizard_DecoyBtn">Déployer un leurre</sys:String>
+
+    <sys:String x:Key="Degdid_Wizard_UnblockTitle">Confirmer le déblocage du réseau</sys:String>
+    <sys:String x:Key="Degdid_Wizard_UnblockDesc">Cela annulera les entrées personnalisées du fichier hosts et supprimera les blocages du pare-feu, permettant à Windows de communiquer à nouveau avec les points de terminaison de suivi de Microsoft. Vos identifiants effacés NE SERONT PAS restaurés.&#x0a;&#x0a;Voulez-vous continuer ?</sys:String>
+    <sys:String x:Key="Degdid_Wizard_UnblockBtn">Débloquer le réseau</sys:String>
+
+    <!-- endregion Device Identity Manager (GDID) Strings -->
 </ResourceDictionary>

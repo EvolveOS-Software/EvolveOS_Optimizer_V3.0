@@ -1903,6 +1903,9 @@
     <sys:String x:Key="AdvancedUtils_FileShredder_Btn">Open Vernietiger</sys:String>
     <sys:String x:Key="AdvancedUtils_Stego_Desc">Verberg gevoelige bestanden volledig uit het zicht door ze in de pixels van normale foto's te begraven.</sys:String>
     <sys:String x:Key="AdvancedUtils_Stego_Btn">Open Kluis</sys:String>
+    <sys:String x:Key="AdvancedUtils_Degdid_Title">Apparaat identiteits beheer</sys:String>
+    <sys:String x:Key="AdvancedUtils_Degdid_Desc">Past een dual-stack hosts-blokkade toe, vernieuwt firewall defense-in-depth regels en wist Global Device Identifiers en herstelbronnen uit doelgebruiker-, .DEFAULT- en SYSTEM-hives.</sys:String>
+    <sys:String x:Key="AdvancedUtils_Degdid_Btn">Beheer openen</sys:String>
     <!-- endregion Advanced Utils Page -->
 
     <!--#region File/Folder Encryption/Decryption -->
@@ -5993,4 +5996,52 @@
     <sys:String x:Key="Stego_SuccessOpen_Btn">Open Map</sys:String>
 
     <!-- endregion Steganography Page -->
+
+    <!-- region Device Identity Manager (GDID) Strings -->
+
+    <sys:String x:Key="Degdid_PageTitle">Apparaat identiteits beheer</sys:String>
+    <sys:String x:Key="Degdid_InfoTitle">Hardware telemetrie anonimiseren</sys:String>
+    <sys:String x:Key="Degdid_InfoMessage">Dit premium hulpprogramma beheert Global Device Identifiers (GDID) door strikte firewallregels toe te passen, het canonical hosts-bestand te bewerken en trackingvermeldingen veilig uit uw register te wissen.</sys:String>
+    <sys:String x:Key="Degdid_WarningTitle">Waarschuwing: Verbreekt de functionaliteit van Microsoft-accounts</sys:String>
+    <sys:String x:Key="Degdid_WarningMessage">BELANGRIJK: U moet zich afmelden bij alle Microsoft-accounts en BitLocker uitschakelen voordat u doorgaat. Het blokkeren van login.live.com verslechtert opzettelijk het aanmelden bij Microsoft-accounts, Windows Store-apps, Xbox Live, OneDrive en Telefoonkoppeling. Gebruik deze tool alleen als absolute privacy voorrang heeft op deze services.</sys:String>
+
+    <sys:String x:Key="Degdid_ToolsHeader">Identiteitsbewerkingen</sys:String>
+    <sys:String x:Key="Degdid_StatusTitle">Diagnostische status</sys:String>
+    <sys:String x:Key="Degdid_StatusDesc">Inspecteer de omgeving, doelgebruiker, hosts, firewall en resterende registercaches zonder wijzigingen aan te brengen.</sys:String>
+    <sys:String x:Key="Degdid_StatusBtn">Diagnostiek uitvoeren</sys:String>
+    <sys:String x:Key="Degdid_Status_HostsActive">🛡️ Registratiebeveiliging: ACTIEF</sys:String>
+    <sys:String x:Key="Degdid_Status_HostsInactive">⚠️ Registratiebeveiliging: NIET GECONFIGUREERD</sys:String>
+    <sys:String x:Key="Degdid_Status_HostsActiveDesc">Tracking-eindpunten worden succesvol omgeleid naar loopback.</sys:String>
+    <sys:String x:Key="Degdid_Status_HostsInactiveDesc">Eindpunten staan momenteel open voor standaard telemetrieverzameling.</sys:String>
+    <sys:String x:Key="Degdid_Status_FoundCount">Gevonden identificaties ({0}):</sys:String>
+    <sys:String x:Key="Degdid_Status_CleanMessage">✨ Schoon! Er zijn geen actieve Global Device Identifiers of PUID-tokens gevonden in de geïnspecteerde register-hives.</sys:String>
+    <sys:String x:Key="Degdid_Status_HiveLabel">Hive:</sys:String>
+    <sys:String x:Key="Degdid_Status_TypeLabel">Type:</sys:String>
+
+    <sys:String x:Key="Degdid_WipeTitle">Identiteit beschermen &amp; wissen</sys:String>
+    <sys:String x:Key="Degdid_WipeDesc">Pas strenge host-/firewall-registratieblokkades toe en wis permanent alle Microsoft-tracking-ID's uit uw profiel.</sys:String>
+    <sys:String x:Key="Degdid_WipeBtn">Identiteit wissen</sys:String>
+
+    <sys:String x:Key="Degdid_DecoyTitle">Beschermen &amp; Decoy inzetten</sys:String>
+    <sys:String x:Key="Degdid_DecoyDesc">Pas registratieblokkades toe, wis de oude status en injecteer een gegenereerde nep-decoy-ID in het register om telemetrie te spoofen.</sys:String>
+    <sys:String x:Key="Degdid_DecoyBtn">Decoy inzetten</sys:String>
+
+    <sys:String x:Key="Degdid_UnblockTitle">Netwerkblokkades verwijderen</sys:String>
+    <sys:String x:Key="Degdid_UnblockDesc">Verwijder veilig alle beheerde firewallregels en aangepaste hosts-vermeldingen om de standaard Microsoft-accountcommunicatie te herstellen.</sys:String>
+    <sys:String x:Key="Degdid_UnblockBtn">Netwerk deblokkeren</sys:String>
+
+    <!-- Degdid Wizards -->
+    <sys:String x:Key="Degdid_Wizard_WipeTitle">Definitieve identiteitswissing bevestigen</sys:String>
+    <sys:String x:Key="Degdid_Wizard_WipeDesc">Dit implementeert agressieve uitgaande firewallregels tegen login.live.com en wist onomkeerbaar uw Global Device Identifiers (GDID) uit het register. Bepaalde functies van het Microsoft-account (Store, Xbox, Telefoonkoppeling) zullen defect raken.&#x0a;&#x0a;Wilt u doorgaan?</sys:String>
+    <sys:String x:Key="Degdid_Wizard_WipeBtn">Beschermen &amp; wissen</sys:String>
+
+    <sys:String x:Key="Degdid_Wizard_DecoyTitle">Decoy-inzet bevestigen</sys:String>
+    <sys:String x:Key="Degdid_Wizard_DecoyDesc">Dit is een experimentele functie. Het zal registratieblokkades toepassen en een dynamisch gegenereerde nep-identificatie injecteren om telemetrie-query's te spoofen. Microsoft-services kunnen instabiel worden.&#x0a;&#x0a;Wilt u doorgaan?</sys:String>
+    <sys:String x:Key="Degdid_Wizard_DecoyBtn">Decoy inzetten</sys:String>
+
+    <sys:String x:Key="Degdid_Wizard_UnblockTitle">Netwerkdeblokkering bevestigen</sys:String>
+    <sys:String x:Key="Degdid_Wizard_UnblockDesc">Dit herstelt de aangepaste vermeldingen in het hosts-bestand en verwijdert de firewallblokkades, zodat Windows weer kan communiceren met Microsoft-tracking-eindpunten. Uw gewiste identificaties worden NIET hersteld.&#x0a;&#x0a;Wilt u doorgaan?</sys:String>
+    <sys:String x:Key="Degdid_Wizard_UnblockBtn">Netwerk deblokkeren</sys:String>
+
+    <!-- endregion Device Identity Manager (GDID) Strings -->
 </ResourceDictionary>

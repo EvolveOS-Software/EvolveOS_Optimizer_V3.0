@@ -1892,6 +1892,9 @@
     <sys:String x:Key="AdvancedUtils_FileShredder_Btn">Open Shredder</sys:String>
     <sys:String x:Key="AdvancedUtils_Stego_Desc">Hide sensitive files entirely out of sight by burying them inside the pixels of normal photos.</sys:String>
     <sys:String x:Key="AdvancedUtils_Stego_Btn">Open Vault</sys:String>
+    <sys:String x:Key="AdvancedUtils_Degdid_Title">Device Identity Manager</sys:String>
+    <sys:String x:Key="AdvancedUtils_Degdid_Desc">Applies a dual-stack hosts block, refreshes firewall defense-in-depth rules, and purges Global Device Identifiers and rehydrate sources from target user, .DEFAULT, and SYSTEM hives.</sys:String>
+    <sys:String x:Key="AdvancedUtils_Degdid_Btn">Open Manager</sys:String>
     <!-- endregion Advanced Utils Page (Privacy & Security) -->
 
     <!-- region File/Folder Encryption/Decryption -->
@@ -6092,5 +6095,54 @@
     <sys:String x:Key="Stego_SuccessOpen_Btn">Open Folder</sys:String>
 
     <!-- endregion Steganography Page -->
+
+    <!-- region Device Identity Manager (GDID) Strings -->
+    
+    <sys:String x:Key="Degdid_PageTitle">Device Identity Manager</sys:String>
+    <sys:String x:Key="Degdid_InfoTitle">Anonymize Hardware Telemetry</sys:String>
+    <sys:String x:Key="Degdid_InfoMessage">This premium utility manages Global Device Identifiers (GDID) by applying strict firewall rules, editing the canonical hosts file, and securely purging tracking entries from your registry.</sys:String>
+    <sys:String x:Key="Degdid_WarningTitle">Warning: Breaks Microsoft Account Functionality</sys:String>
+    <sys:String x:Key="Degdid_WarningMessage">IMPORTANT: You must log out of all Microsoft accounts and disable BitLocker before proceeding. Blocking login.live.com intentionally degrades Microsoft Account sign-in, Windows Store apps, Xbox Live, OneDrive, and Phone Link. Use this tool only if absolute privacy takes precedence over these services.</sys:String>
+
+    <sys:String x:Key="Degdid_ToolsHeader">Identity Operations</sys:String>
+    <sys:String x:Key="Degdid_StatusTitle">Diagnostic Status</sys:String>
+    <sys:String x:Key="Degdid_StatusDesc">Inspect the environment, target user, hosts, firewall, and residual registry caches without making any changes.</sys:String>
+    <sys:String x:Key="Degdid_StatusBtn">Run Diagnostics</sys:String>
+    <sys:String x:Key="Degdid_Status_HostsActive">🛡️ Registration Protection: ACTIVE</sys:String>
+    <sys:String x:Key="Degdid_Status_HostsInactive">⚠️ Registration Protection: NOT CONFIGURED</sys:String>
+    <sys:String x:Key="Degdid_Status_HostsActiveDesc">Tracking endpoints are successfully redirected to loopback.</sys:String>
+    <sys:String x:Key="Degdid_Status_HostsInactiveDesc">Endpoints are currently open to standard telemetry collection.</sys:String>
+    <sys:String x:Key="Degdid_Status_FoundCount">Discovered Identifiers ({0}):</sys:String>
+    <sys:String x:Key="Degdid_Status_CleanMessage">✨ Clean! No active Global Device Identifiers or PUID tokens were found in inspected registry hives.</sys:String>
+    <sys:String x:Key="Degdid_Status_HiveLabel">Hive:</sys:String>
+    <sys:String x:Key="Degdid_Status_TypeLabel">Type:</sys:String>
+
+    <sys:String x:Key="Degdid_WipeTitle">Protect &amp; Wipe Identity</sys:String>
+    <sys:String x:Key="Degdid_WipeDesc">Apply rigorous host/firewall registration blocks and permanently wipe all Microsoft tracking IDs from your profile.</sys:String>
+    <sys:String x:Key="Degdid_WipeBtn">Wipe Identity</sys:String>
+
+    <sys:String x:Key="Degdid_DecoyTitle">Protect &amp; Deploy Decoy</sys:String>
+    <sys:String x:Key="Degdid_DecoyDesc">Apply registration blocks, wipe old state, and inject a generated fake decoy ID into the registry to spoof telemetry.</sys:String>
+    <sys:String x:Key="Degdid_DecoyBtn">Deploy Decoy</sys:String>
+
+    <sys:String x:Key="Degdid_UnblockTitle">Remove Network Blocks</sys:String>
+    <sys:String x:Key="Degdid_UnblockDesc">Safely remove all managed firewall rules and custom hosts entries to restore default Microsoft account communication.</sys:String>
+    <sys:String x:Key="Degdid_UnblockBtn">Unblock Network</sys:String>
+    
+    
+    <!-- Degdid Wizards -->
+    <sys:String x:Key="Degdid_Wizard_WipeTitle">Confirm Permanent Identity Wipe</sys:String>
+    <sys:String x:Key="Degdid_Wizard_WipeDesc">This will implement aggressive outbound firewall rules against login.live.com and irreversibly wipe your Global Device Identifiers (GDID) from the registry. Certain Microsoft Account features (Store, Xbox, Phone Link) will break.&#x0a;&#x0a;Do you want to proceed?</sys:String>
+    <sys:String x:Key="Degdid_Wizard_WipeBtn">Protect &amp; Wipe</sys:String>
+
+    <sys:String x:Key="Degdid_Wizard_DecoyTitle">Confirm Decoy Deployment</sys:String>
+    <sys:String x:Key="Degdid_Wizard_DecoyDesc">This is an experimental feature. It will apply registration blocks and inject a dynamically generated fake identifier to spoof telemetry queries. Microsoft services may become unstable.&#x0a;&#x0a;Do you want to proceed?</sys:String>
+    <sys:String x:Key="Degdid_Wizard_DecoyBtn">Deploy Decoy</sys:String>
+
+    <sys:String x:Key="Degdid_Wizard_UnblockTitle">Confirm Network Unblock</sys:String>
+    <sys:String x:Key="Degdid_Wizard_UnblockDesc">This will revert the custom hosts file entries and delete the firewall blocks, allowing Windows to communicate with Microsoft tracking endpoints again. It will NOT restore your wiped identifiers.&#x0a;&#x0a;Do you want to proceed?</sys:String>
+    <sys:String x:Key="Degdid_Wizard_UnblockBtn">Unblock Network</sys:String>
+
+    <!-- endregion Device Identity Manager (GDID) Strings -->
 
 </ResourceDictionary>
