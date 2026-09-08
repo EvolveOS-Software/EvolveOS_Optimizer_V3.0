@@ -5935,6 +5935,12 @@
     <sys:String x:Key="Shredder_Wizard_FolderDesc">Kies de directory die u volledig wilt wissen. Alle bestanden en submappen erin worden permanent vernietigd.</sys:String>
     <sys:String x:Key="Shredder_Wizard_FolderBtn">Selecteer Map</sys:String>
 
+    <sys:String x:Key="FileShredder_SecurityLevel_Header">Vernietigingsalgoritme</sys:String>
+    <sys:String x:Key="FileShredder_SecurityLevel_Desc">Selecteer de overschrijfmethode die wordt gebruikt om de gegevens permanent te vernietigen.</sys:String>
+    <sys:String x:Key="FileShredder_Sec_Standard">Standaard (1-Pass Nul)</sys:String>
+    <sys:String x:Key="FileShredder_Sec_DoD">DoD 5220.22-M (3-Pass)</sys:String>
+    <sys:String x:Key="FileShredder_Sec_Crypto">Crypto-Shred (AES-256)</sys:String>
+
     <!-- endregion File Shredder -->
 
     <!-- region Steganography Page -->

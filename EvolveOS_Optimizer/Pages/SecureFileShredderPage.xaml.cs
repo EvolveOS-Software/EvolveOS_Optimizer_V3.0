@@ -12,10 +12,21 @@ namespace EvolveOS_Optimizer.Pages
 {
     public sealed partial class SecureFileShredderPage : Page
     {
+        #region Fields & Enums
+
         private string? _username;
         private SecureString? _masterPassword;
 
-        private const int DefaultShredPasses = 3;
+        private enum ShreddingMode
+        {
+            Standard, // 1-Pass Random
+            DoD,      // 3-Pass (Zeros, Ones, Random)
+            Crypto    // AES-256 In-Place Encryption
+        }
+
+        #endregion
+
+        #region Initialization
 
         public SecureFileShredderPage()
         {
@@ -32,6 +43,8 @@ namespace EvolveOS_Optimizer.Pages
                 _masterPassword = navParams.Item2;
             }
         }
+
+        #endregion
 
         #region Dialog Helper (Premium UX Wizard)
 
@@ -61,32 +74,89 @@ namespace EvolveOS_Optimizer.Pages
 
         #region Core Shredding Logic (Runs on Background Threads)
 
-        private async Task ProcessFileShreddingAsync(string filePath, int passes)
+        private ShreddingMode GetSelectedShreddingMode()
+        {
+            if (CmbShreddingLevel.SelectedItem is ComboBoxItem item && item.Tag is string tag)
+            {
+                if (Enum.TryParse<ShreddingMode>(tag, out var parsedMode))
+                {
+                    return parsedMode;
+                }
+            }
+            return ShreddingMode.DoD;
+        }
+
+        private async Task ProcessFileShreddingAsync(string filePath, ShreddingMode mode)
         {
             if (!File.Exists(filePath)) return;
 
             var fileInfo = new FileInfo(filePath);
             long length = fileInfo.Length;
 
+            File.SetAttributes(filePath, FileAttributes.Normal);
+
             await Task.Run(() =>
             {
+                int passes = mode == ShreddingMode.DoD ? 3 : 1;
+                bool isCrypto = mode == ShreddingMode.Crypto;
+
+                byte[] buffer = new byte[81920];
+
                 using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.Write, FileShare.None))
                 {
-                    byte[] buffer = new byte[4096];
-
-                    for (int pass = 0; pass < passes; pass++)
+                    if (isCrypto)
                     {
-                        fs.Position = 0;
-                        long bytesWritten = 0;
-
-                        while (bytesWritten < length)
+                        using (Aes aes = Aes.Create())
                         {
-                            RandomNumberGenerator.Fill(buffer);
-                            int toWrite = (int)Math.Min(buffer.Length, length - bytesWritten);
-                            fs.Write(buffer, 0, toWrite);
-                            bytesWritten += toWrite;
+                            aes.KeySize = 256;
+                            aes.GenerateKey();
+                            aes.GenerateIV();
+
+                            using (var encryptor = aes.CreateEncryptor())
+                            using (var cryptoStream = new CryptoStream(fs, encryptor, CryptoStreamMode.Write))
+                            {
+                                long bytesWritten = 0;
+                                byte[] zeroBuffer = new byte[81920];
+
+                                while (bytesWritten < length)
+                                {
+                                    int toWrite = (int)Math.Min(zeroBuffer.Length, length - bytesWritten);
+                                    cryptoStream.Write(zeroBuffer, 0, toWrite);
+                                    bytesWritten += toWrite;
+                                }
+                                cryptoStream.FlushFinalBlock();
+                            }
+
+                            Array.Clear(aes.Key, 0, aes.Key.Length);
+                            Array.Clear(aes.IV, 0, aes.IV.Length);
                         }
-                        fs.Flush();
+                    }
+                    else
+                    {
+                        for (int pass = 0; pass < passes; pass++)
+                        {
+                            fs.Position = 0;
+                            long bytesWritten = 0;
+
+                            while (bytesWritten < length)
+                            {
+                                if (mode == ShreddingMode.DoD)
+                                {
+                                    if (pass == 0) Array.Clear(buffer, 0, buffer.Length);
+                                    else if (pass == 1) Array.Fill(buffer, (byte)0xFF);
+                                    else RandomNumberGenerator.Fill(buffer);
+                                }
+                                else
+                                {
+                                    RandomNumberGenerator.Fill(buffer);
+                                }
+
+                                int toWrite = (int)Math.Min(buffer.Length, length - bytesWritten);
+                                fs.Write(buffer, 0, toWrite);
+                                bytesWritten += toWrite;
+                            }
+                            fs.Flush();
+                        }
                     }
                 }
 
@@ -98,7 +168,7 @@ namespace EvolveOS_Optimizer.Pages
             });
         }
 
-        private async Task ProcessFolderShreddingAsync(string folderPath, int passes)
+        private async Task ProcessFolderShreddingAsync(string folderPath, ShreddingMode mode)
         {
             if (!Directory.Exists(folderPath)) return;
 
@@ -106,7 +176,7 @@ namespace EvolveOS_Optimizer.Pages
 
             foreach (string file in files)
             {
-                await ProcessFileShreddingAsync(file, passes);
+                await ProcessFileShreddingAsync(file, mode);
             }
 
             await Task.Run(() => Directory.Delete(folderPath, true));
@@ -143,7 +213,11 @@ namespace EvolveOS_Optimizer.Pages
                 UIHelper.SetOverlay(true);
                 LoadingOverlay.Visibility = Visibility.Visible;
 
-                await ProcessFileShreddingAsync(filePath, DefaultShredPasses);
+                ShreddingMode selectedMode = GetSelectedShreddingMode();
+                await ProcessFileShreddingAsync(filePath, selectedMode);
+
+                LoadingOverlay.Visibility = Visibility.Collapsed;
+                UIHelper.SetOverlay(false);
 
                 string successTitle = ResourceString.GetString("Toast_Success_Title");
                 string successMsg = ResourceString.GetString("FileShredder_Toast_FileShredSuccess");
@@ -198,7 +272,11 @@ namespace EvolveOS_Optimizer.Pages
                 UIHelper.SetOverlay(true);
                 LoadingOverlay.Visibility = Visibility.Visible;
 
-                await ProcessFolderShreddingAsync(folderPath, DefaultShredPasses);
+                ShreddingMode selectedMode = GetSelectedShreddingMode();
+                await ProcessFolderShreddingAsync(folderPath, selectedMode);
+
+                LoadingOverlay.Visibility = Visibility.Collapsed;
+                UIHelper.SetOverlay(false);
 
                 string successTitle = ResourceString.GetString("Toast_Success_Title");
                 string successMsg = ResourceString.GetString("FileShredder_Toast_FolderShredSuccess");

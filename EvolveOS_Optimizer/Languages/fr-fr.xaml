@@ -5921,6 +5921,12 @@
     <sys:String x:Key="Shredder_Wizard_FolderDesc">Choisissez le répertoire que vous souhaitez effacer complètement. Tous les fichiers et sous-dossiers à l'intérieur seront définitivement détruits.</sys:String>
     <sys:String x:Key="Shredder_Wizard_FolderBtn">Sélectionner le dossier</sys:String>
 
+    <sys:String x:Key="FileShredder_SecurityLevel_Header">Algorithme de destruction</sys:String>
+    <sys:String x:Key="FileShredder_SecurityLevel_Desc">Sélectionnez la méthode d'écrasement utilisée pour détruire définitivement les données.</sys:String>
+    <sys:String x:Key="FileShredder_Sec_Standard">Standard (1 passe zéro)</sys:String>
+    <sys:String x:Key="FileShredder_Sec_DoD">DoD 5220.22-M (3 passes)</sys:String>
+    <sys:String x:Key="FileShredder_Sec_Crypto">Crypto-Shred (AES-256)</sys:String>
+
     <!-- endregion File Shredder -->
 
     <!-- region Steganography Page -->

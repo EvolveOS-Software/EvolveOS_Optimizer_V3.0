@@ -6034,6 +6034,12 @@
     <sys:String x:Key="Shredder_Wizard_FolderDesc">Choose the directory you want to completely wipe. All files and subfolders inside will be permanently destroyed.</sys:String>
     <sys:String x:Key="Shredder_Wizard_FolderBtn">Select Folder</sys:String>
 
+    <sys:String x:Key="FileShredder_SecurityLevel_Header">Destruction Algorithm</sys:String>
+    <sys:String x:Key="FileShredder_SecurityLevel_Desc">Select the overwrite method used to permanently destroy the data.</sys:String>
+    <sys:String x:Key="FileShredder_Sec_Standard">Standard (1-Pass Zero)</sys:String>
+    <sys:String x:Key="FileShredder_Sec_DoD">DoD 5220.22-M (3-Pass)</sys:String>
+    <sys:String x:Key="FileShredder_Sec_Crypto">Crypto-Shred (AES-256)</sys:String>
+
     <!-- endregion File Shredder -->
 
     <!-- region Steganography Page -->

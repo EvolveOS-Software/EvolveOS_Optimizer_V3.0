@@ -5932,6 +5932,12 @@
     <sys:String x:Key="Shredder_Wizard_FolderDesc">Scegli la directory che desideri cancellare completamente. Tutti i file e le sottocartelle all'interno verranno distrutti permanentemente.</sys:String>
     <sys:String x:Key="Shredder_Wizard_FolderBtn">Seleziona cartella</sys:String>
 
+    <sys:String x:Key="FileShredder_SecurityLevel_Header">Algoritmo di distruzione</sys:String>
+    <sys:String x:Key="FileShredder_SecurityLevel_Desc">Seleziona il metodo di sovrascrittura utilizzato per distruggere permanentemente i dati.</sys:String>
+    <sys:String x:Key="FileShredder_Sec_Standard">Standard (1 Passaggio Zero)</sys:String>
+    <sys:String x:Key="FileShredder_Sec_DoD">DoD 5220.22-M (3 Passaggi)</sys:String>
+    <sys:String x:Key="FileShredder_Sec_Crypto">Crypto-Shred (AES-256)</sys:String>
+
     <!-- endregion File Shredder -->
 
     <!-- region Steganography Page -->

@@ -5911,6 +5911,12 @@
     <sys:String x:Key="Shredder_Wizard_FolderDesc">Wählen Sie das Verzeichnis, das Sie vollständig löschen möchten. Alle darin enthaltenen Dateien und Unterordner werden dauerhaft zerstört.</sys:String>
     <sys:String x:Key="Shredder_Wizard_FolderBtn">Ordner auswählen</sys:String>
 
+    <sys:String x:Key="FileShredder_SecurityLevel_Header">Zerstörungsalgorithmus</sys:String>
+    <sys:String x:Key="FileShredder_SecurityLevel_Desc">Wählen Sie die Überschreibmethode, um die Daten dauerhaft zu zerstören.</sys:String>
+    <sys:String x:Key="FileShredder_Sec_Standard">Standard (1 Durchgang Null)</sys:String>
+    <sys:String x:Key="FileShredder_Sec_DoD">DoD 5220.22-M (3 Durchgänge)</sys:String>
+    <sys:String x:Key="FileShredder_Sec_Crypto">Crypto-Shred (AES-256)</sys:String>
+
     <!-- endregion File Shredder -->
 
     <!-- region Steganography Page -->
