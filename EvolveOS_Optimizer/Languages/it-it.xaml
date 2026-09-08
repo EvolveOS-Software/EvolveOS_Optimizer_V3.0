@@ -1980,6 +1980,8 @@
     <sys:String x:Key="Encryptor_SuccessOpen_Title">Processo completato</sys:String>
     <sys:String x:Key="Encryptor_SuccessOpen_Desc">L'operazione è andata a buon fine. Desideri visualizzare l'output in Esplora file?</sys:String>
     <sys:String x:Key="Encryptor_SuccessOpen_Btn">Apri cartella</sys:String>
+
+    <sys:String x:Key="FileEncryptor_SecurityLevel_Desc">Seleziona l'intensità di crittografia AES per i tuoi file.</sys:String>
     <!-- endregion File/Folder Encryption/Decryption -->
 
     <!-- region GamingMode Card -->

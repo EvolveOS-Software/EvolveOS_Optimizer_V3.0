@@ -5,6 +5,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Security;
 using System.Security.Cryptography;
+using EvolveOS_Optimizer.Utilities.Configuration;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Managers;
@@ -100,25 +101,40 @@ namespace EvolveOS_Optimizer.Pages
 
         #region Core Encryption/Decryption Logic (Runs on Background Threads)
 
-        private async Task ProcessFileEncryptionAsync(string sourceFilePath, string destinationFilePath)
+        private KeyDerivationConfig GetSelectedSecurityConfig()
+        {
+            var mode = KeyDerivationMode.Balanced;
+
+            if (CmbSecurityLevel.SelectedItem is ComboBoxItem item && item.Tag is string tag)
+            {
+                if (Enum.TryParse<KeyDerivationMode>(tag, out var parsedMode))
+                {
+                    mode = parsedMode;
+                }
+            }
+
+            return KeyDerivationConfig.Create(mode);
+        }
+
+        private async Task ProcessFileEncryptionAsync(string sourceFilePath, string destinationFilePath, KeyDerivationConfig config)
         {
             byte[] fileData = await File.ReadAllBytesAsync(sourceFilePath);
 
-            byte[] encryptedData = await Task.Run(() => AesHelper.EncryptBytes(fileData, _masterPassword!));
+            byte[] encryptedData = await Task.Run(() => AesHelper.EncryptBytes(fileData, _masterPassword!, config));
 
             await File.WriteAllBytesAsync(destinationFilePath, encryptedData);
         }
 
-        private async Task ProcessFileDecryptionAsync(string encryptedFilePath, string destinationFilePath)
+        private async Task ProcessFileDecryptionAsync(string encryptedFilePath, string destinationFilePath, KeyDerivationConfig config)
         {
             byte[] encryptedData = await File.ReadAllBytesAsync(encryptedFilePath);
 
-            byte[] decryptedData = await Task.Run(() => AesHelper.DecryptBytes(encryptedData, _masterPassword!));
+            byte[] decryptedData = await Task.Run(() => AesHelper.DecryptBytes(encryptedData, _masterPassword!, config));
 
             await File.WriteAllBytesAsync(destinationFilePath, decryptedData);
         }
 
-        private async Task ProcessFolderEncryptionAsync(string sourceFolderPath, string destinationFilePath)
+        private async Task ProcessFolderEncryptionAsync(string sourceFolderPath, string destinationFilePath, KeyDerivationConfig config)
         {
             string tempZipPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString() + ".zip");
 
@@ -128,7 +144,7 @@ namespace EvolveOS_Optimizer.Pages
 
                 byte[] zipData = await File.ReadAllBytesAsync(tempZipPath);
 
-                byte[] encryptedData = await Task.Run(() => AesHelper.EncryptBytes(zipData, _masterPassword!));
+                byte[] encryptedData = await Task.Run(() => AesHelper.EncryptBytes(zipData, _masterPassword!, config));
 
                 await File.WriteAllBytesAsync(destinationFilePath, encryptedData);
             }
@@ -141,7 +157,7 @@ namespace EvolveOS_Optimizer.Pages
             }
         }
 
-        private async Task ProcessFolderDecryptionAsync(string encryptedFilePath, string destinationFolderPath)
+        private async Task ProcessFolderDecryptionAsync(string encryptedFilePath, string destinationFolderPath, KeyDerivationConfig config)
         {
             string tempZipPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString() + ".zip");
 
@@ -149,7 +165,7 @@ namespace EvolveOS_Optimizer.Pages
             {
                 byte[] encryptedData = await File.ReadAllBytesAsync(encryptedFilePath);
 
-                byte[] decryptedZipData = await Task.Run(() => AesHelper.DecryptBytes(encryptedData, _masterPassword!));
+                byte[] decryptedZipData = await Task.Run(() => AesHelper.DecryptBytes(encryptedData, _masterPassword!, config));
 
                 await File.WriteAllBytesAsync(tempZipPath, decryptedZipData);
 
@@ -208,7 +224,9 @@ namespace EvolveOS_Optimizer.Pages
                 UIHelper.SetOverlay(true);
                 LoadingOverlay.Visibility = Visibility.Visible;
 
-                await ProcessFileEncryptionAsync(fileToEncryptPath, destinationFilePath);
+                KeyDerivationConfig cryptoConfig = GetSelectedSecurityConfig();
+
+                await ProcessFileEncryptionAsync(fileToEncryptPath, destinationFilePath, cryptoConfig);
 
                 LoadingOverlay.Visibility = Visibility.Collapsed;
                 UIHelper.SetOverlay(false);
@@ -284,7 +302,9 @@ namespace EvolveOS_Optimizer.Pages
                 UIHelper.SetOverlay(true);
                 LoadingOverlay.Visibility = Visibility.Visible;
 
-                await ProcessFolderEncryptionAsync(folderToEncryptPath, destinationFilePath);
+                KeyDerivationConfig cryptoConfig = GetSelectedSecurityConfig();
+
+                await ProcessFolderEncryptionAsync(folderToEncryptPath, destinationFilePath, cryptoConfig);
 
                 LoadingOverlay.Visibility = Visibility.Collapsed;
                 UIHelper.SetOverlay(false);
@@ -337,6 +357,7 @@ namespace EvolveOS_Optimizer.Pages
                 bool isFolderArchive = !Path.HasExtension(originalName);
 
                 string outputFilePath = string.Empty;
+                KeyDerivationConfig cryptoConfig = GetSelectedSecurityConfig();
 
                 if (isFolderArchive)
                 {
@@ -358,7 +379,7 @@ namespace EvolveOS_Optimizer.Pages
                     UIHelper.SetOverlay(true);
                     LoadingOverlay.Visibility = Visibility.Visible;
 
-                    await ProcessFolderDecryptionAsync(fileToDecryptPath, destFolderPath);
+                    await ProcessFolderDecryptionAsync(fileToDecryptPath, destFolderPath, cryptoConfig);
                 }
                 else
                 {
@@ -391,7 +412,7 @@ namespace EvolveOS_Optimizer.Pages
                     UIHelper.SetOverlay(true);
                     LoadingOverlay.Visibility = Visibility.Visible;
 
-                    await ProcessFileDecryptionAsync(fileToDecryptPath, destFilePath);
+                    await ProcessFileDecryptionAsync(fileToDecryptPath, destFilePath, cryptoConfig);
                 }
 
                 LoadingOverlay.Visibility = Visibility.Collapsed;
@@ -413,7 +434,7 @@ namespace EvolveOS_Optimizer.Pages
                 string failMsg = ResourceString.GetString("FileEncryptor_Toast_DecryptFailMsg");
 
                 NotificationManager.Show(string.IsNullOrEmpty(failTitle) ? "Decryption Failed" : failTitle,
-                                         string.IsNullOrEmpty(failMsg) ? "The password is incorrect or the file has been tampered with." : failMsg)
+                                         string.IsNullOrEmpty(failMsg) ? "The password or security level is incorrect, or the file has been tampered with." : failMsg)
                                    .WithSeverity(NotificationManager.NoticeSeverity.Error)
                                    .Create();
             }

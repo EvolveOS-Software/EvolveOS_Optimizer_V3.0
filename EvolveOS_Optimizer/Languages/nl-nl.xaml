@@ -1973,6 +1973,8 @@
     <sys:String x:Key="Encryptor_SuccessOpen_Title">Proces Voltooid</sys:String>
     <sys:String x:Key="Encryptor_SuccessOpen_Desc">De bewerking was succesvol. Wilt u de uitvoer bekijken in de Bestandsverkenner?</sys:String>
     <sys:String x:Key="Encryptor_SuccessOpen_Btn">Open Map</sys:String>
+
+    <sys:String x:Key="FileEncryptor_SecurityLevel_Desc">Selecteer de AES versleutelingsintensiteit voor uw bestanden.</sys:String>
     <!-- endregion File/Folder Encryption/Decryption -->
 
     <!-- region GamingMode Card -->

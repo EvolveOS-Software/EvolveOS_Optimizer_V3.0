@@ -1962,6 +1962,8 @@
     <sys:String x:Key="Encryptor_SuccessOpen_Title">Process Complete</sys:String>
     <sys:String x:Key="Encryptor_SuccessOpen_Desc">The operation was successful. Would you like to view the output in File Explorer?</sys:String>
     <sys:String x:Key="Encryptor_SuccessOpen_Btn">Open Folder</sys:String>
+
+    <sys:String x:Key="FileEncryptor_SecurityLevel_Desc">Select the AES encryption intensity for your files.</sys:String>
     <!-- endregion File/Folder Encryption/Decryption -->
 
     <!-- region GamingMode Card -->
