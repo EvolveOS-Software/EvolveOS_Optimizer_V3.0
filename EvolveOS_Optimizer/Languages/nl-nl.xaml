@@ -6009,6 +6009,13 @@
     <sys:String x:Key="Stego_Status_Decrypting">Payload ontsleutelen (AES-256)...</sys:String>
     <sys:String x:Key="Stego_Status_Reconstructing">Bestandsstructuur reconstrueren...</sys:String>
 
+    <!-- Encryption Security Level Strings -->
+    <sys:String x:Key="Stego_SecurityLevel_Header">AES-beveiligingsniveau</sys:String>
+    <sys:String x:Key="Stego_SecurityLevel_Desc">Selecteer de AES-versleutelingsintensiteit voor uw payload.</sys:String>
+    <sys:String x:Key="Stego_Security_Fast">Snel</sys:String>
+    <sys:String x:Key="Stego_Security_Balanced">Gebalanceerd</sys:String>
+    <sys:String x:Key="Stego_Security_High">Hoge beveiliging</sys:String>
+
     <!-- endregion Steganography Page -->
 
     <!-- region Device Identity Manager (GDID) Strings -->

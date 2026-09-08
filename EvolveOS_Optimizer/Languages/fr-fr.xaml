@@ -5995,6 +5995,13 @@
     <sys:String x:Key="Stego_Status_Decrypting">Déchiffrement de la charge utile (AES-256)...</sys:String>
     <sys:String x:Key="Stego_Status_Reconstructing">Reconstitution de la structure du fichier...</sys:String>
 
+    <!-- Encryption Security Level Strings -->
+    <sys:String x:Key="Stego_SecurityLevel_Header">Niveau de sécurité AES</sys:String>
+    <sys:String x:Key="Stego_SecurityLevel_Desc">Sélectionnez l'intensité de chiffrement AES pour votre charge utile.</sys:String>
+    <sys:String x:Key="Stego_Security_Fast">Rapide</sys:String>
+    <sys:String x:Key="Stego_Security_Balanced">Équilibré</sys:String>
+    <sys:String x:Key="Stego_Security_High">Haute sécurité</sys:String>
+
     <!-- endregion Steganography Page -->
 
     <!-- region Device Identity Manager (GDID) Strings -->

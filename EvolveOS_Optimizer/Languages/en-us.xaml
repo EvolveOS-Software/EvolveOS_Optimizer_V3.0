@@ -6108,6 +6108,13 @@
     <sys:String x:Key="Stego_Status_Decrypting">Decrypting payload (AES-256)...</sys:String>
     <sys:String x:Key="Stego_Status_Reconstructing">Reconstructing file structure...</sys:String>
 
+    <!-- Encryption Security Level Strings -->
+    <sys:String x:Key="Stego_SecurityLevel_Header">AES Security Level</sys:String>
+    <sys:String x:Key="Stego_SecurityLevel_Desc">Select the AES encryption intensity for your payload.</sys:String>
+    <sys:String x:Key="Stego_Security_Fast">Fast</sys:String>
+    <sys:String x:Key="Stego_Security_Balanced">Balanced</sys:String>
+    <sys:String x:Key="Stego_Security_High">High Security</sys:String>
+
     <!-- endregion Steganography Page -->
 
     <!-- region Device Identity Manager (GDID) Strings -->

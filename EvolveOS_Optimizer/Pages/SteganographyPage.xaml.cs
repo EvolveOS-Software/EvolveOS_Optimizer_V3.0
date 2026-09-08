@@ -5,6 +5,7 @@ using System.IO;
 using System.Security;
 using System.Security.Cryptography;
 using System.Text;
+using EvolveOS_Optimizer.Utilities.Configuration;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Managers;
@@ -100,7 +101,22 @@ namespace EvolveOS_Optimizer.Pages
 
         #region Core Steganography Logic (LSB + AES Encryption + Hardware Optimization)
 
-        private async Task ProcessEmbedAsync(string hostImagePath, string secretFilePath, string destImagePath, IProgress<string> progress)
+        private KeyDerivationConfig GetSelectedSecurityConfig()
+        {
+            var mode = KeyDerivationMode.Balanced; // Default
+
+            if (CmbSecurityLevel.SelectedItem is ComboBoxItem item && item.Tag is string tag)
+            {
+                if (Enum.TryParse<KeyDerivationMode>(tag, out var parsedMode))
+                {
+                    mode = parsedMode;
+                }
+            }
+
+            return KeyDerivationConfig.Create(mode);
+        }
+
+        private async Task ProcessEmbedAsync(string hostImagePath, string secretFilePath, string destImagePath, KeyDerivationConfig cryptoConfig, IProgress<string> progress)
         {
             progress.Report(ResourceString.GetString("Stego_Status_Prep") ?? "Preparing payload headers...");
             string fileName = Path.GetFileName(secretFilePath);
@@ -121,7 +137,8 @@ namespace EvolveOS_Optimizer.Pages
             Array.Clear(nameBytes, 0, nameBytes.Length);
 
             progress.Report(ResourceString.GetString("Stego_Status_Encrypt") ?? "Encrypting payload (AES-256)...");
-            byte[] encryptedData = await Task.Run(() => AesHelper.EncryptBytes(rawData, _masterPassword!));
+
+            byte[] encryptedData = await Task.Run(() => AesHelper.EncryptBytes(rawData, _masterPassword!, cryptoConfig));
 
             Array.Clear(rawData, 0, rawData.Length);
 
@@ -220,7 +237,7 @@ namespace EvolveOS_Optimizer.Pages
             Array.Clear(outBytes, 0, outBytes.Length);
         }
 
-        private async Task<(string OriginalFileName, byte[] FileBytes)> DecodeEncryptedPayloadAsync(string stegoImagePath, IProgress<string> progress)
+        private async Task<(string OriginalFileName, byte[] FileBytes)> DecodeEncryptedPayloadAsync(string stegoImagePath, KeyDerivationConfig cryptoConfig, IProgress<string> progress)
         {
             progress.Report(ResourceString.GetString("Stego_Status_ReadImg") ?? "Reading image matrix...");
             StorageFile stegoFile = await StorageFile.GetFileFromPathAsync(stegoImagePath);
@@ -289,7 +306,8 @@ namespace EvolveOS_Optimizer.Pages
                 Array.Clear(pixels, 0, pixels.Length);
 
                 progress.Report(ResourceString.GetString("Stego_Status_Decrypting") ?? "Decrypting payload (AES-256)...");
-                byte[] decryptedData = AesHelper.DecryptBytes(encryptedData, _masterPassword!);
+
+                byte[] decryptedData = AesHelper.DecryptBytes(encryptedData, _masterPassword!, cryptoConfig);
 
                 Array.Clear(encryptedData, 0, encryptedData.Length);
 
@@ -352,6 +370,8 @@ namespace EvolveOS_Optimizer.Pages
                 EfficiencyModeHelper.IsUIWakeLockActive = true;
                 EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(false);
 
+                KeyDerivationConfig cryptoConfig = GetSelectedSecurityConfig();
+
                 var progress = new Progress<string>(status =>
                 {
                     LoadingTitleText.Text = status;
@@ -360,7 +380,7 @@ namespace EvolveOS_Optimizer.Pages
                 UIHelper.SetOverlay(true);
                 LoadingOverlay.Visibility = Visibility.Visible;
 
-                await ProcessEmbedAsync(hostPath, secretPath, destPath, progress);
+                await ProcessEmbedAsync(hostPath, secretPath, destPath, cryptoConfig, progress);
 
                 LoadingOverlay.Visibility = Visibility.Collapsed;
                 UIHelper.SetOverlay(false);
@@ -411,6 +431,8 @@ namespace EvolveOS_Optimizer.Pages
                 EfficiencyModeHelper.IsUIWakeLockActive = true;
                 EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(false);
 
+                KeyDerivationConfig cryptoConfig = GetSelectedSecurityConfig();
+
                 var progress = new Progress<string>(status =>
                 {
                     LoadingTitleText.Text = status;
@@ -419,7 +441,7 @@ namespace EvolveOS_Optimizer.Pages
                 UIHelper.SetOverlay(true);
                 LoadingOverlay.Visibility = Visibility.Visible;
 
-                var result = await DecodeEncryptedPayloadAsync(stegoPath, progress);
+                var result = await DecodeEncryptedPayloadAsync(stegoPath, cryptoConfig, progress);
 
                 LoadingOverlay.Visibility = Visibility.Collapsed;
                 UIHelper.SetOverlay(false);
