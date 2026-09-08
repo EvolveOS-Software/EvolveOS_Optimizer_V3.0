@@ -913,6 +913,17 @@ public static class TaskbarCustomizations
                     {
                         new RegistrySetting
                         {
+                            KeyPath = @"HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\System",
+                            ValueName = "EnableUCPD",
+                            RecommendedValue = 0,
+                            EnabledValue = [0],
+                            DisabledValue = [1, null],
+                            DefaultValue = null,
+                            ValueType = RegistryValueKind.DWord,
+                            IsGroupPolicy = true,
+                        },
+                        new RegistrySetting
+                        {
                             KeyPath = @"HKEY_CURRENT_USER\Software\Policies\Microsoft\Dsh",
                             ValueName = "AllowNewsAndInterests",
                             RecommendedValue = 0,
@@ -934,6 +945,20 @@ public static class TaskbarCustomizations
                             IsGroupPolicy = true,
                         },
                     },
+                    PowerShellScripts = new List<PowerShellScriptSetting>
+                    {
+                        new PowerShellScriptSetting
+                        {
+                            // Triggered when disabling/blocking widgets: kills the UCPD velocity background task
+                            DisabledScript = "schtasks /change /Disable /TN \"\\Microsoft\\Windows\\AppxDeploymentClient\\UCPD velocity\" -ErrorAction SilentlyContinue",
+
+                            // Triggered when re-enabling widgets: restores the scheduled task state
+                            EnabledScript = "schtasks /change /Enable /TN \"\\Microsoft\\Windows\\AppxDeploymentClient\\UCPD velocity\" -ErrorAction SilentlyContinue",
+                            
+                            RequiresElevation = true,
+                            RunContext = RunContext.System
+                        }
+                    }
                 },
                 new SettingDefinition
                 {
