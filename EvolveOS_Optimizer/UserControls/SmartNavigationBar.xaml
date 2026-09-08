@@ -9,6 +9,16 @@
     mc:Ignorable="d">
 
     <UserControl.Resources>
+
+        <Style TargetType="ToolTip">
+            <Setter Property="FontFamily" Value="{ThemeResource AppCustomFont}"/>
+            <Setter Property="Background" Value="{ThemeResource LayerFillColorDefaultBrush}"/>
+            <Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="Padding" Value="12,6"/>
+        </Style>
+
         <Style x:Key="BtnNavigation" TargetType="RadioButton">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Foreground" Value="{ThemeResource TextControlForeground}"/>
@@ -201,7 +211,7 @@
                                                 </DoubleAnimation.EasingFunction>
                                             </DoubleAnimation>
                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BackgroundBorder" Storyboard.TargetProperty="Background">
-                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource MyDynamicAccentBrush}"/>
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemListLowColor}"/>
                                             </ObjectAnimationUsingKeyFrames>
                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                                                 <DiscreteObjectKeyFrame KeyTime="0" Value="White"/>
@@ -249,7 +259,7 @@
                     Visibility="Collapsed"/>
 
         <Grid x:Name="RadialMenuHitBox" 
-              Width="150" Height="200" 
+              Width="350" Height="200" 
               Margin="27,0,0,0" 
               Canvas.ZIndex="-1"
               Translation="0,0,-10"
@@ -259,14 +269,14 @@
               PointerWheelChanged="RadialMenuContainer_PointerWheelChanged">
 
             <Grid.Clip>
-                <RectangleGeometry Rect="28, -500, 150, 1000" />
+                <RectangleGeometry Rect="28, -500, 350, 1000" />
             </Grid.Clip>
 
             <Grid.RenderTransform>
                 <TranslateTransform x:Name="RadialContainerTranslate" Y="0"/>
             </Grid.RenderTransform>
 
-            <Canvas x:Name="RadialMenuWheel" Width="150" Height="200" RenderTransformOrigin="0,0.5">
+            <Canvas x:Name="RadialMenuWheel" Width="350" Height="200" RenderTransformOrigin="0,0.5">
                 <Canvas.RenderTransform>
                     <RotateTransform x:Name="RadialContainerRotate" Angle="0"/>
                 </Canvas.RenderTransform>

@@ -7,18 +7,20 @@ using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Services;
 using FluentIcons.Common;
 using FluentIcons.WinUI;
-using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media.Animation;
 using Windows.Foundation;
 using System.Numerics;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Text;
 
 namespace EvolveOS_Optimizer.UserControls
 {
     public sealed partial class SmartNavigationBar : Microsoft.UI.Xaml.Controls.UserControl
     {
+        #region Fields & Properties
+
         private RadioButton? _selectedButton;
 
         private bool _isRadialMenuOpen = false;
@@ -49,6 +51,8 @@ namespace EvolveOS_Optimizer.UserControls
 
         public string GetText(string key) => LocalizationService.Instance[key];
 
+        #endregion
+
         #region Navigation Debounce Engine (Fixes WinUI 3 Frame Lockups)
 
         private async void ApplyNavigationDebounce()
@@ -74,6 +78,8 @@ namespace EvolveOS_Optimizer.UserControls
         }
 
         #endregion
+
+        #region Lifecycle & Layout Engine
 
         private void OnControlLoaded(object sender, RoutedEventArgs e)
         {
@@ -184,6 +190,8 @@ namespace EvolveOS_Optimizer.UserControls
                 // Silently swallow early rendering exceptions
             }
         }
+
+        #endregion
 
         #region Pointer Events for Spring Physics
 
@@ -444,20 +452,193 @@ namespace EvolveOS_Optimizer.UserControls
             }
         }
 
+        private FontFamily GetAppCustomFont()
+        {
+            try
+            {
+                if (BtnNavHome != null && BtnNavHome.FontFamily != null)
+                {
+                    return BtnNavHome.FontFamily;
+                }
+            }
+            catch { }
+            return new FontFamily("Segoe UI");
+        }
+
+        private Brush GetSystemLowBrush()
+        {
+            if (Application.Current.Resources.TryGetValue("SystemListLowColor", out var res) && res is Color color)
+            {
+                return new SolidColorBrush(color);
+            }
+
+            return new SolidColorBrush(Color.FromArgb(25, 128, 128, 128));
+        }
+
         private void SetupRadialButton(Button btn, string tag, string tooltip, FrameworkElement? iconElement, bool isVisible = true)
         {
             btn.Tag = tag;
             btn.Visibility = isVisible ? Visibility.Visible : Visibility.Collapsed;
 
-            ToolTipService.SetToolTip(btn, tooltip);
-            ToolTipService.SetPlacement(btn, PlacementMode.Right);
+            ToolTipService.SetToolTip(btn, null);
+
+            btn.Width = 40;
+            btn.Height = 40;
+            btn.HorizontalAlignment = HorizontalAlignment.Left;
+            btn.BorderThickness = new Thickness(0);
+
+            btn.PointerEntered -= RadialBtn_PointerEntered;
+            btn.PointerEntered += RadialBtn_PointerEntered;
+            btn.PointerExited -= RadialBtn_PointerExited;
+            btn.PointerExited += RadialBtn_PointerExited;
 
             if (btn.Content is Grid container)
             {
                 container.Children.Clear();
+
                 if (iconElement != null)
                 {
+                    iconElement.HorizontalAlignment = HorizontalAlignment.Center;
+                    iconElement.VerticalAlignment = VerticalAlignment.Center;
                     container.Children.Add(iconElement);
+                }
+
+                if (!string.IsNullOrEmpty(tooltip))
+                {
+                    var textWrapper = new Grid
+                    {
+                        Name = "RadialTextWrapper",
+                        MaxWidth = 0,
+                        Height = 25,
+                        HorizontalAlignment = HorizontalAlignment.Left,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Margin = new Thickness(-5, 0, -200, 0),
+                        IsHitTestVisible = false
+                    };
+
+                    var hoverPill = new Border
+                    {
+                        Name = "RadialHoverPill",
+                        Background = GetSystemLowBrush(),
+                        CornerRadius = new CornerRadius(12.5),
+                        Height = 25,
+                        HorizontalAlignment = HorizontalAlignment.Stretch,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Opacity = 0,
+                        IsHitTestVisible = false
+                    };
+                    textWrapper.Children.Add(hoverPill);
+
+                    var tb = new TextBlock
+                    {
+                        Name = "RadialTextBlock",
+                        Text = tooltip,
+                        FontFamily = GetAppCustomFont(),
+                        FontSize = 13,
+                        FontWeight = FontWeights.SemiBold,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Margin = new Thickness(41, 0, 16, 0),
+                        TextWrapping = TextWrapping.NoWrap,
+                        Opacity = 0,
+                        RenderTransform = new TranslateTransform { X = -10 }
+                    };
+
+                    textWrapper.Children.Add(tb);
+                    container.Children.Add(textWrapper);
+                }
+            }
+        }
+
+        private void RadialBtn_PointerEntered(object sender, PointerRoutedEventArgs e)
+        {
+            if (sender is Button btn && btn.Content is Grid container)
+            {
+                Canvas.SetZIndex(btn, 100);
+
+                var wrapper = container.Children.OfType<Grid>().FirstOrDefault(g => g.Name == "RadialTextWrapper");
+                var pillBg = wrapper?.Children.OfType<Border>().FirstOrDefault(b => b.Name == "RadialHoverPill");
+                var tb = wrapper?.Children.OfType<TextBlock>().FirstOrDefault(t => t.Name == "RadialTextBlock");
+
+                if (pillBg != null) pillBg.Opacity = 1;
+
+                if (wrapper != null && tb != null && pillBg != null && tb.RenderTransform is TranslateTransform trans)
+                {
+                    var sb = new Storyboard();
+
+                    tb.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+                    double targetWidth = tb.DesiredSize.Width + 42;
+
+                    var animTextWidth = new DoubleAnimation
+                    {
+                        To = targetWidth,
+                        Duration = TimeSpan.FromSeconds(0.25),
+                        EasingFunction = new QuarticEase { EasingMode = EasingMode.EaseOut },
+                        EnableDependentAnimation = true
+                    };
+                    Storyboard.SetTarget(animTextWidth, wrapper);
+                    Storyboard.SetTargetProperty(animTextWidth, "MaxWidth");
+
+                    var animOp = new DoubleAnimation { To = 1, Duration = TimeSpan.FromSeconds(0.2) };
+                    Storyboard.SetTarget(animOp, tb);
+                    Storyboard.SetTargetProperty(animOp, "Opacity");
+
+                    var animX = new DoubleAnimation { To = 0, Duration = TimeSpan.FromSeconds(0.25), EasingFunction = new QuarticEase { EasingMode = EasingMode.EaseOut } };
+                    Storyboard.SetTarget(animX, trans);
+                    Storyboard.SetTargetProperty(animX, "X");
+
+                    sb.Children.Add(animTextWidth);
+                    sb.Children.Add(animOp);
+                    sb.Children.Add(animX);
+                    sb.Begin();
+                }
+            }
+        }
+
+        private void RadialBtn_PointerExited(object sender, PointerRoutedEventArgs e)
+        {
+            if (sender is Button btn && btn.Content is Grid container)
+            {
+                Canvas.SetZIndex(btn, 0);
+
+                var wrapper = container.Children.OfType<Grid>().FirstOrDefault(g => g.Name == "RadialTextWrapper");
+                var pillBg = wrapper?.Children.OfType<Border>().FirstOrDefault(b => b.Name == "RadialHoverPill");
+                var tb = wrapper?.Children.OfType<TextBlock>().FirstOrDefault(t => t.Name == "RadialTextBlock");
+
+                if (wrapper != null && tb != null && tb.RenderTransform is TranslateTransform trans)
+                {
+                    var sb = new Storyboard();
+
+                    var animTextWidth = new DoubleAnimation
+                    {
+                        To = 0,
+                        Duration = TimeSpan.FromSeconds(0.2),
+                        EasingFunction = new QuarticEase { EasingMode = EasingMode.EaseOut },
+                        EnableDependentAnimation = true
+                    };
+                    Storyboard.SetTarget(animTextWidth, wrapper);
+                    Storyboard.SetTargetProperty(animTextWidth, "MaxWidth");
+
+                    var animOp = new DoubleAnimation { To = 0, Duration = TimeSpan.FromSeconds(0.15) };
+                    Storyboard.SetTarget(animOp, tb);
+                    Storyboard.SetTargetProperty(animOp, "Opacity");
+
+                    var animX = new DoubleAnimation { To = -10, Duration = TimeSpan.FromSeconds(0.2) };
+                    Storyboard.SetTarget(animX, trans);
+                    Storyboard.SetTargetProperty(animX, "X");
+
+                    sb.Children.Add(animTextWidth);
+                    sb.Children.Add(animOp);
+                    sb.Children.Add(animX);
+
+                    sb.Completed += (s, ev) =>
+                    {
+                        if (wrapper.MaxWidth == 0 && pillBg != null)
+                        {
+                            pillBg.Opacity = 0;
+                        }
+                    };
+
+                    sb.Begin();
                 }
             }
         }
@@ -542,6 +723,8 @@ namespace EvolveOS_Optimizer.UserControls
 
         #endregion
 
+        #region Tab Management
+
         public void UpdateActiveTab(string tag)
         {
             if (tag == "Home" && BtnNavHome != null) BtnNavHome.IsChecked = true;
@@ -559,5 +742,7 @@ namespace EvolveOS_Optimizer.UserControls
             else if (tag == "ProfileBuilder" && BtnNavProfileBuilder != null) BtnNavProfileBuilder.IsChecked = true;
             else if (tag == "UserAccounts" && BtnNavUserAccounts != null) BtnNavUserAccounts.IsChecked = true;
         }
+
+        #endregion
     }
 }
