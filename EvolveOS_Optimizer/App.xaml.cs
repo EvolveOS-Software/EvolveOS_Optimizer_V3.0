@@ -871,6 +871,21 @@ namespace EvolveOS_Optimizer
                 ErrorLogging.LogWritingFile(ex, "App_OnlineBackup_Fail");
             }
 
+            bool skipEncryption = false;
+            try
+            {
+                var userDataAccess = new UserDataAccess(SqlConnectionHelper.connectReturn());
+                if (userDataAccess.IsDatabaseEmpty())
+                {
+                    skipEncryption = true;
+                    Debug.WriteLine("[App] Database is empty (First-run/Login screen). Skipping encryption cleanup.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[App] DB empty check failed: {ex.Message}. Defaulting to encryption to prevent data loss.");
+            }
+
             try
             {
                 SqlConnectionHelper.ReleaseDatabase();
@@ -919,81 +934,68 @@ namespace EvolveOS_Optimizer
                 Debug.WriteLine($"[App Temp Cleanup Error] {ex.Message}");
             }
 
-            shutdownWindow?.DispatcherQueue.TryEnqueue(() =>
-                shutdownWindow.UpdateShutdownText(ResourceString.GetString("status_securing_files") ?? "Securing files..."));
-
-            string exePath = Process.GetCurrentProcess().MainModule?.FileName ?? AppContext.BaseDirectory;
-            string baseDir = Path.GetDirectoryName(exePath) ?? AppContext.BaseDirectory;
-
-            string mdfPath = Path.Combine(baseDir, PlainDb);
-            string ldfPath = Path.Combine(baseDir, PlainLdf);
-            string securePath = Path.Combine(baseDir, SecureDb);
-            string secureLdfPath = Path.Combine(baseDir, SecureLdf);
-
-            if (!File.Exists(mdfPath))
+            if (!skipEncryption)
             {
-                Debug.WriteLine("[App] No MDF file found. Skipping encryption.");
-                ReleaseMemory();
-                return;
-            }
+                shutdownWindow?.DispatcherQueue.TryEnqueue(() =>
+                    shutdownWindow.UpdateShutdownText(ResourceString.GetString("status_securing_files") ?? "Securing files..."));
 
-            try
-            {
-                var userDataAccess = new UserDataAccess(SqlConnectionHelper.connectReturn());
-                if (userDataAccess.IsDatabaseEmpty())
+                string exePath = Process.GetCurrentProcess().MainModule?.FileName ?? AppContext.BaseDirectory;
+                string baseDir = Path.GetDirectoryName(exePath) ?? AppContext.BaseDirectory;
+
+                string mdfPath = Path.Combine(baseDir, PlainDb);
+                string ldfPath = Path.Combine(baseDir, PlainLdf);
+                string securePath = Path.Combine(baseDir, SecureDb);
+                string secureLdfPath = Path.Combine(baseDir, SecureLdf);
+
+                if (File.Exists(mdfPath))
                 {
-                    Debug.WriteLine("[App] Database is empty (First-run/Login screen). Skipping encryption cleanup.");
-                    ReleaseMemory();
-                    return;
-                }
-            }
-            catch
-            {
-                ReleaseMemory();
-                return;
-            }
-
-            bool isReady = false;
-            for (int i = 0; i < 20; i++)
-            {
-                if (!DatabaseSecurityService.IsFileLocked(mdfPath))
-                {
-                    isReady = true;
-                    break;
-                }
-                Thread.Sleep(500);
-            }
-
-            if (isReady)
-            {
-                try
-                {
-                    DatabaseSecurityService.EncryptDatabase(mdfPath, securePath);
-
-                    if (File.Exists(ldfPath))
+                    bool isReady = false;
+                    for (int i = 0; i < 20; i++)
                     {
-                        DatabaseSecurityService.EncryptDatabase(ldfPath, secureLdfPath);
+                        if (!DatabaseSecurityService.IsFileLocked(mdfPath))
+                        {
+                            isReady = true;
+                            break;
+                        }
+                        Thread.Sleep(500);
                     }
 
-                    if (File.Exists(securePath))
+                    if (isReady)
                     {
-                        File.Delete(mdfPath);
-                    }
-                    if (File.Exists(secureLdfPath))
-                    {
-                        File.Delete(ldfPath);
-                    }
+                        try
+                        {
+                            DatabaseSecurityService.EncryptDatabase(mdfPath, securePath);
 
-                    Debug.WriteLine("[App] Database successfully encrypted and plain files deleted.");
+                            if (File.Exists(ldfPath))
+                            {
+                                DatabaseSecurityService.EncryptDatabase(ldfPath, secureLdfPath);
+                            }
+
+                            if (File.Exists(securePath))
+                            {
+                                File.Delete(mdfPath);
+                            }
+                            if (File.Exists(secureLdfPath))
+                            {
+                                File.Delete(ldfPath);
+                            }
+
+                            Debug.WriteLine("[App] Database successfully encrypted and plain files deleted.");
+                        }
+                        catch (Exception ex)
+                        {
+                            ErrorLogging.LogWritingFile(ex, "App_HandleCleanup_Fail");
+                        }
+                    }
+                    else
+                    {
+                        Debug.WriteLine("[App] Timeout waiting for SQL Server to release the database files.");
+                    }
                 }
-                catch (Exception ex)
+                else
                 {
-                    ErrorLogging.LogWritingFile(ex, "App_HandleCleanup_Fail");
+                    Debug.WriteLine("[App] No MDF file found. Skipping encryption.");
                 }
-            }
-            else
-            {
-                Debug.WriteLine("[App] Timeout waiting for SQL Server to release the database files.");
             }
 
             try
