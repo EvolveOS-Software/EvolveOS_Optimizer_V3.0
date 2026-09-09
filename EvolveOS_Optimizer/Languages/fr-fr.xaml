@@ -1634,6 +1634,9 @@
     <!-- endregion Password validator -->
 
     <!--#region Password Manager -->
+    <sys:String x:Key="PasswordManager_Title">Gestionnaire de mots de passe</sys:String>
+    <sys:String x:Key="PasswordManager_VaultSecuredTitle">Coffre-fort sécurisé</sys:String>
+    <sys:String x:Key="PasswordManager_VaultSecuredDesc">Vos identifiants sont chiffrés localement avec AES-256. Aucune donnée ne quitte cet appareil.</sys:String>
     <sys:String x:Key="text_confirm_password">Confirmez votre mot de passe</sys:String>
     <sys:String x:Key="notif_wrong_password">Le mot de passe est incorrect. Veuillez réessayer.</sys:String>
     <sys:String x:Key="btn_add_record">Ajouter un nouvel enregistrement</sys:String>

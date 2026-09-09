@@ -1709,6 +1709,9 @@
     <sys:String x:Key="btn_close_password_manager">Schließen</sys:String>
 
     <!-- Password Manager -->
+    <sys:String x:Key="PasswordManager_Title">Passwort Manager</sys:String>
+    <sys:String x:Key="PasswordManager_VaultSecuredTitle">Tresor gesichert</sys:String>
+    <sys:String x:Key="PasswordManager_VaultSecuredDesc">Ihre Anmeldedaten werden lokal mit AES-256 verschlüsselt. Keine Daten verlassen dieses Gerät.</sys:String>
     <sys:String x:Key="window_title_password_manager">Passwort-Manager</sys:String>
     <sys:String x:Key="search_passwords_and_websites_tag">Passwörter suchen...</sys:String>
     <sys:String x:Key="btn_add_new_record">Neuen Eintrag hinzufügen</sys:String>

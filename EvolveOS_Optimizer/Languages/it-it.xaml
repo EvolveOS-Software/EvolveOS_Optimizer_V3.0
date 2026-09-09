@@ -1641,6 +1641,9 @@
     <!-- endregion Password validator -->
 
     <!--#region Password Manager -->
+    <sys:String x:Key="PasswordManager_Title">Gestore di password</sys:String>
+    <sys:String x:Key="PasswordManager_VaultSecuredTitle">Cassaforte protetta</sys:String>
+    <sys:String x:Key="PasswordManager_VaultSecuredDesc">Le tue credenziali sono crittografate localmente con AES-256. Nessun dato lascia questo dispositivo.</sys:String>
     <sys:String x:Key="text_confirm_password">Conferma la tua password</sys:String>
     <sys:String x:Key="notif_wrong_password">La password non è corretta. Per favore riprova.</sys:String>
     <sys:String x:Key="btn_add_record">Aggiungi nuovo record</sys:String>

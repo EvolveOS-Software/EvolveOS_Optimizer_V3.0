@@ -1,7 +1,5 @@
 // Copyright (c) 2026 EvolveOS Software
-//
-// Licensed under the MIT License. 
-// See the LICENSE file in the project root for more information.
+// Licensed under the MIT License.
 
 using System.Security;
 using EvolveOS_Optimizer.Core.Interfaces;
@@ -157,15 +155,6 @@ namespace EvolveOS_Optimizer.Pages
 
         #region Tools & Settings
 
-        private void BtnSettings_Click(object sender, RoutedEventArgs e)
-        {
-            var popup = PopupSettings ?? (Popup)this.FindName("PopupSettings");
-            if (popup != null)
-            {
-                popup.IsOpen = !popup.IsOpen;
-            }
-        }
-
         private void BtnPasswordGenerator_Click(object sender, RoutedEventArgs e)
         {
             if (_generatorWindow == null)
@@ -196,9 +185,6 @@ namespace EvolveOS_Optimizer.Pages
 
             var addPopup = AddRecordPopup ?? (Popup)this.FindName("AddRecordPopup");
             if (addPopup != null) addPopup.IsOpen = false;
-
-            var settingsPopup = PopupSettings ?? (Popup)this.FindName("PopupSettings");
-            if (settingsPopup != null) settingsPopup.IsOpen = false;
 
             UIHelper.SetOverlay(false);
 

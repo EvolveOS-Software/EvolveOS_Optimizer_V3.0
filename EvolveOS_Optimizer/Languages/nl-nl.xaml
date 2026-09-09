@@ -1634,6 +1634,9 @@
     <!-- endregion Password validator -->
 
     <!--#region Password Manager -->
+    <sys:String x:Key="PasswordManager_Title">Wachtwoordbeheerder</sys:String>
+    <sys:String x:Key="PasswordManager_VaultSecuredTitle">Kluis beveiligd</sys:String>
+    <sys:String x:Key="PasswordManager_VaultSecuredDesc">Uw inloggegevens zijn lokaal versleuteld met AES-256. Er verlaten geen gegevens dit apparaat.</sys:String>
     <sys:String x:Key="text_confirm_password">Bevestig uw wachtwoord</sys:String>
     <sys:String x:Key="notif_wrong_password">Het wachtwoord is onjuist. Probeer het opnieuw.</sys:String>
     <sys:String x:Key="btn_add_record">Nieuw record toevoegen</sys:String>

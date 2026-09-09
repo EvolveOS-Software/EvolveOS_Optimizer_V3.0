@@ -1623,6 +1623,9 @@
     <!-- endregion Password validator -->
 
     <!-- region Password Manager -->
+    <sys:String x:Key="PasswordManager_Title">Password Manager</sys:String>
+    <sys:String x:Key="PasswordManager_VaultSecuredTitle">Vault Secured</sys:String>
+    <sys:String x:Key="PasswordManager_VaultSecuredDesc">Your credentials are encrypted locally with AES-256. No data leaves this device.</sys:String>
     <sys:String x:Key="text_confirm_password">Confirm your password</sys:String>
     <sys:String x:Key="notif_wrong_password">The password is incorrect. Please try again.</sys:String>
     <sys:String x:Key="btn_add_record">Add New Record</sys:String>
