@@ -937,6 +937,22 @@ namespace EvolveOS_Optimizer
                 return;
             }
 
+            try
+            {
+                var userDataAccess = new UserDataAccess(SqlConnectionHelper.connectReturn());
+                if (userDataAccess.IsDatabaseEmpty())
+                {
+                    Debug.WriteLine("[App] Database is empty (First-run/Login screen). Skipping encryption cleanup.");
+                    ReleaseMemory();
+                    return;
+                }
+            }
+            catch
+            {
+                ReleaseMemory();
+                return;
+            }
+
             bool isReady = false;
             for (int i = 0; i < 20; i++)
             {

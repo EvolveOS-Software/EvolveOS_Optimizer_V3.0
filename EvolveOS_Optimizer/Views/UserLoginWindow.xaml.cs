@@ -1,7 +1,5 @@
 // Copyright (c) 2026 EvolveOS Software
-//
-// Licensed under the MIT License. 
-// See the LICENSE file in the project root for more information.
+// Licensed under the MIT License.
 
 using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Configuration;
@@ -65,7 +63,10 @@ namespace EvolveOS_Optimizer.Views
                 StatusBorder.Visibility = Visibility.Visible;
             }
 
-            this.Activated += UserLoginWindow_Activated;
+            if (this.Content is FrameworkElement rootElement)
+            {
+                rootElement.Loaded += UserLoginWindow_Loaded;
+            }
         }
 
         #region Window Sizing & Centering
@@ -142,19 +143,22 @@ namespace EvolveOS_Optimizer.Views
 
         #region Window LifeCycle
 
-        private async void UserLoginWindow_Activated(object sender, WindowActivatedEventArgs args)
+        private async void UserLoginWindow_Loaded(object sender, RoutedEventArgs args)
         {
-            this.Activated -= UserLoginWindow_Activated;
+            if (sender is FrameworkElement rootElement)
+            {
+                rootElement.Loaded -= UserLoginWindow_Loaded;
+            }
 
             await Task.Delay(100);
 
             if (_isClosed) return;
 
-            if (LoginUserName != null && this.Content != null)
+            if (LoginUserName != null && this.Content?.XamlRoot != null)
             {
                 LoginUserName.Focus(FocusState.Programmatic);
 
-                if (ViewModel != null && this.Content.XamlRoot != null)
+                if (ViewModel != null)
                 {
                     await ViewModel.InitialDatabaseCheckAsync(this.Content.XamlRoot);
                 }
