@@ -10,10 +10,10 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTrademark("EvolveOS")]
 
 // This attribute allows custom text e.g "Build: 2.0.2"
-[assembly: AssemblyInformationalVersion("Build: 1.2.6.428")]
+[assembly: AssemblyInformationalVersion("Build: 1.2.7.429")]
 
-[assembly: AssemblyVersion("1.2.428.1190")]
-[assembly: AssemblyFileVersion("1.2.428.1190")]
+[assembly: AssemblyVersion("1.2.429.1313")]
+[assembly: AssemblyFileVersion("1.2.429.1313")]
 
 [assembly: ComVisible(false)]
 
