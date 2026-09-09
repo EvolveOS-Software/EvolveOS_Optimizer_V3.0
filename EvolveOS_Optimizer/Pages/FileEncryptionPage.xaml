@@ -188,15 +188,17 @@
             </StackPanel>
         </ScrollViewer>
 
-        <!-- Loading Overlay -->
-        <Grid x:Name="LoadingOverlay" Visibility="Collapsed" CornerRadius="8" Background="{ThemeResource LayerFillColorDefaultBrush}" Opacity="0.95" Canvas.ZIndex="100">
-            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="20">
-                <ProgressRing IsActive="True" Width="70" Height="70" Foreground="{ThemeResource SystemAccentColor}"/>
-                <StackPanel Spacing="4">
-                    <TextBlock Text="{helpers:ResourceString Key=FileEncryptor_Processing}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="Bold" FontSize="20" HorizontalAlignment="Center"/>
-                    <TextBlock Text="Please wait while the operation completes. Do not close the application." FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource CaptionTextBlockStyle}" HorizontalAlignment="Center" Opacity="0.7"/>
+        <!-- Global Overlay -->
+        <Grid x:Name="OverlayHost" Visibility="Collapsed">
+            <Border x:Name="LoadingOverlayPanel" Background="{ThemeResource LayerFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Padding="40" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="400">
+                <StackPanel Spacing="20">
+                    <ProgressRing IsActive="True" Width="60" Height="60" Foreground="{ThemeResource SystemAccentColor}"/>
+                    <StackPanel Spacing="6">
+                        <TextBlock Text="{helpers:ResourceString Key=FileEncryptor_Processing}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="Bold" FontSize="20" HorizontalAlignment="Center"/>
+                        <TextBlock Text="{helpers:ResourceString Key=FileEncryptor_ProcessingDesc}" FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource CaptionTextBlockStyle}" HorizontalAlignment="Center" Opacity="0.7"/>
+                    </StackPanel>
                 </StackPanel>
-            </StackPanel>
+            </Border>
         </Grid>
 
     </Grid>

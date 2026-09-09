@@ -19,6 +19,9 @@ namespace EvolveOS_Optimizer.Pages
 
         private const string EncryptedExtension = ".evo";
 
+        private readonly Stopwatch _overlayStopwatch = new Stopwatch();
+        private const int MinOverlayDurationMs = 750;
+
         public FileEncryptionPage()
         {
             this.InitializeComponent();
@@ -182,6 +185,47 @@ namespace EvolveOS_Optimizer.Pages
 
         #endregion
 
+        #region Overlay Management
+
+        private async Task ShowLoadingOverlayAsync()
+        {
+            EfficiencyModeHelper.IsUIWakeLockActive = true;
+            EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(false);
+
+            if (LoadingOverlayPanel.Parent is Panel parentPanel)
+            {
+                parentPanel.Children.Remove(LoadingOverlayPanel);
+            }
+            UIHelper.SetOverlay(true);
+            UIHelper.ShowPopupOverlay(LoadingOverlayPanel);
+
+            _overlayStopwatch.Restart();
+
+            await Task.Delay(50);
+        }
+
+        private async Task HideLoadingOverlayAsync()
+        {
+            if (_overlayStopwatch.IsRunning)
+            {
+                long elapsed = _overlayStopwatch.ElapsedMilliseconds;
+                if (elapsed < MinOverlayDurationMs)
+                {
+                    await Task.Delay(MinOverlayDurationMs - (int)elapsed);
+                }
+                _overlayStopwatch.Stop();
+            }
+
+            UIHelper.HidePopupOverlay();
+            UIHelper.SetOverlay(false);
+            if (LoadingOverlayPanel.Parent == null)
+            {
+                OverlayHost.Children.Add(LoadingOverlayPanel);
+            }
+        }
+
+        #endregion
+
         #region UI Button Handlers (Pickers & Execution)
 
         private async void BtnEncryptFile_Click(object sender, RoutedEventArgs e)
@@ -218,18 +262,13 @@ namespace EvolveOS_Optimizer.Pages
 
                 if (string.IsNullOrEmpty(destinationFilePath)) return;
 
-                EfficiencyModeHelper.IsUIWakeLockActive = true;
-                EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(false);
-
-                UIHelper.SetOverlay(true);
-                LoadingOverlay.Visibility = Visibility.Visible;
+                await ShowLoadingOverlayAsync();
 
                 KeyDerivationConfig cryptoConfig = GetSelectedSecurityConfig();
 
                 await ProcessFileEncryptionAsync(fileToEncryptPath, destinationFilePath, cryptoConfig);
 
-                LoadingOverlay.Visibility = Visibility.Collapsed;
-                UIHelper.SetOverlay(false);
+                await HideLoadingOverlayAsync();
 
                 string successTitle = ResourceString.GetString("Toast_Success_Title");
                 string successMsg = ResourceString.GetString("FileEncryptor_Toast_FileEncryptSuccess");
@@ -243,6 +282,8 @@ namespace EvolveOS_Optimizer.Pages
             }
             catch (Exception ex)
             {
+                await HideLoadingOverlayAsync();
+
                 string errorTitle = ResourceString.GetString("FileEncryptor_Toast_EncryptionErrorTitle");
                 NotificationManager.Show(string.IsNullOrEmpty(errorTitle) ? "Encryption Error" : errorTitle, ex.Message)
                                    .WithSeverity(NotificationManager.NoticeSeverity.Error)
@@ -250,8 +291,9 @@ namespace EvolveOS_Optimizer.Pages
             }
             finally
             {
-                LoadingOverlay.Visibility = Visibility.Collapsed;
+                UIHelper.HidePopupOverlay();
                 UIHelper.SetOverlay(false);
+                if (LoadingOverlayPanel.Parent == null) OverlayHost.Children.Add(LoadingOverlayPanel);
 
                 EfficiencyModeHelper.IsUIWakeLockActive = false;
                 if (LocalMachineSettingsEngine.RunOnPriority == Core.Enums.Priority.Low)
@@ -296,18 +338,13 @@ namespace EvolveOS_Optimizer.Pages
 
                 if (string.IsNullOrEmpty(destinationFilePath)) return;
 
-                EfficiencyModeHelper.IsUIWakeLockActive = true;
-                EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(false);
-
-                UIHelper.SetOverlay(true);
-                LoadingOverlay.Visibility = Visibility.Visible;
+                await ShowLoadingOverlayAsync();
 
                 KeyDerivationConfig cryptoConfig = GetSelectedSecurityConfig();
 
                 await ProcessFolderEncryptionAsync(folderToEncryptPath, destinationFilePath, cryptoConfig);
 
-                LoadingOverlay.Visibility = Visibility.Collapsed;
-                UIHelper.SetOverlay(false);
+                await HideLoadingOverlayAsync();
 
                 string successTitle = ResourceString.GetString("Toast_Success_Title");
                 string successMsg = ResourceString.GetString("FileEncryptor_Toast_FolderEncryptSuccess");
@@ -321,6 +358,8 @@ namespace EvolveOS_Optimizer.Pages
             }
             catch (Exception ex)
             {
+                await HideLoadingOverlayAsync();
+
                 string errorTitle = ResourceString.GetString("FileEncryptor_Toast_EncryptionErrorTitle");
                 NotificationManager.Show(string.IsNullOrEmpty(errorTitle) ? "Encryption Error" : errorTitle, ex.Message)
                                    .WithSeverity(NotificationManager.NoticeSeverity.Error)
@@ -328,8 +367,9 @@ namespace EvolveOS_Optimizer.Pages
             }
             finally
             {
-                LoadingOverlay.Visibility = Visibility.Collapsed;
+                UIHelper.HidePopupOverlay();
                 UIHelper.SetOverlay(false);
+                if (LoadingOverlayPanel.Parent == null) OverlayHost.Children.Add(LoadingOverlayPanel);
 
                 EfficiencyModeHelper.IsUIWakeLockActive = false;
                 if (LocalMachineSettingsEngine.RunOnPriority == Core.Enums.Priority.Low)
@@ -374,10 +414,7 @@ namespace EvolveOS_Optimizer.Pages
 
                     outputFilePath = destFolderPath;
 
-                    EfficiencyModeHelper.IsUIWakeLockActive = true;
-                    EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(false);
-                    UIHelper.SetOverlay(true);
-                    LoadingOverlay.Visibility = Visibility.Visible;
+                    await ShowLoadingOverlayAsync();
 
                     await ProcessFolderDecryptionAsync(fileToDecryptPath, destFolderPath, cryptoConfig);
                 }
@@ -407,16 +444,12 @@ namespace EvolveOS_Optimizer.Pages
 
                     outputFilePath = destFilePath;
 
-                    EfficiencyModeHelper.IsUIWakeLockActive = true;
-                    EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(false);
-                    UIHelper.SetOverlay(true);
-                    LoadingOverlay.Visibility = Visibility.Visible;
+                    await ShowLoadingOverlayAsync();
 
                     await ProcessFileDecryptionAsync(fileToDecryptPath, destFilePath, cryptoConfig);
                 }
 
-                LoadingOverlay.Visibility = Visibility.Collapsed;
-                UIHelper.SetOverlay(false);
+                await HideLoadingOverlayAsync();
 
                 string successTitle = ResourceString.GetString("Toast_Success_Title");
                 string successMsg = ResourceString.GetString("FileEncryptor_Toast_DecryptSuccess");
@@ -430,6 +463,8 @@ namespace EvolveOS_Optimizer.Pages
             }
             catch (CryptographicException)
             {
+                await HideLoadingOverlayAsync();
+
                 string failTitle = ResourceString.GetString("FileEncryptor_Toast_DecryptFailTitle");
                 string failMsg = ResourceString.GetString("FileEncryptor_Toast_DecryptFailMsg");
 
@@ -440,6 +475,8 @@ namespace EvolveOS_Optimizer.Pages
             }
             catch (Exception ex)
             {
+                await HideLoadingOverlayAsync();
+
                 string errorTitle = ResourceString.GetString("Toast_Error_Title");
                 NotificationManager.Show(string.IsNullOrEmpty(errorTitle) ? "Error" : errorTitle, ex.Message)
                                    .WithSeverity(NotificationManager.NoticeSeverity.Error)
@@ -447,8 +484,9 @@ namespace EvolveOS_Optimizer.Pages
             }
             finally
             {
-                LoadingOverlay.Visibility = Visibility.Collapsed;
+                UIHelper.HidePopupOverlay();
                 UIHelper.SetOverlay(false);
+                if (LoadingOverlayPanel.Parent == null) OverlayHost.Children.Add(LoadingOverlayPanel);
 
                 EfficiencyModeHelper.IsUIWakeLockActive = false;
                 if (LocalMachineSettingsEngine.RunOnPriority == Core.Enums.Priority.Low)

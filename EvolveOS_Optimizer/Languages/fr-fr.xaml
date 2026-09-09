@@ -1975,6 +1975,8 @@
     <sys:String x:Key="Encryptor_SuccessOpen_Btn">Ouvrir le dossier</sys:String>
 
     <sys:String x:Key="FileEncryptor_SecurityLevel_Desc">Sélectionnez l'intensité de chiffrement AES pour vos fichiers.</sys:String>
+
+    <sys:String x:Key="FileEncryptor_ProcessingDesc">Veuillez patienter pendant la fin de l'opération. Ne fermez pas l'application.</sys:String>
     <!-- endregion File/Folder Encryption/Decryption -->
 
     <!-- region GamingMode Card -->

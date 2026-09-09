@@ -1975,6 +1975,8 @@
     <sys:String x:Key="Encryptor_SuccessOpen_Btn">Open Map</sys:String>
 
     <sys:String x:Key="FileEncryptor_SecurityLevel_Desc">Selecteer de AES versleutelingsintensiteit voor uw bestanden.</sys:String>
+
+    <sys:String x:Key="FileEncryptor_ProcessingDesc">Een ogenblik geduld terwijl de bewerking wordt voltooid. Sluit de applicatie niet.</sys:String>
     <!-- endregion File/Folder Encryption/Decryption -->
 
     <!-- region GamingMode Card -->
