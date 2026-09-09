@@ -6073,4 +6073,82 @@
     <sys:String x:Key="Degdid_Wizard_UnblockBtn">Netwerk deblokkeren</sys:String>
 
     <!-- endregion Device Identity Manager (GDID) Strings -->
+
+    <!-- region Data Recovery Suite -->
+
+    <sys:String x:Key="DataRecovery_InfoTitle">Hardware versnelde sectorcarver</sys:String>
+    <sys:String x:Key="DataRecovery_InfoMessage">Scan fysieke clusters om verwijderde bestanden direct van de schijf te carven en te extraheren.</sys:String>
+    <sys:String x:Key="DataRecovery_SsdTitle">Solid State Drive (TRIM actief) gedetecteerd</sys:String>
+    <sys:String x:Key="DataRecovery_SsdMessage">Het geselecteerde station gebruikt actieve TRIM/Deallocate. Bestanden die dagen geleden zijn verwijderd, kunnen nul-bytes retourneren als gevolg van garbagecollection van de controller. Externe schijven en RAW-partities bieden de hoogste herstelpercentages.</sys:String>
+    <sys:String x:Key="DataRecovery_TargetDriveConfig">Doelstationconfiguratie</sys:String>
+    <sys:String x:Key="DataRecovery_TargetDriveVss">Doelstation &amp; VSS-snaps</sys:String>
+    <sys:String x:Key="DataRecovery_VssPlaceholder">Zoeken naar VSS-snapshots...</sys:String>
+    <sys:String x:Key="DataRecovery_ScanParameters">Scanparameters</sys:String>
+    <sys:String x:Key="DataRecovery_DeepScan">Diepe scan (Rauwe sectorcarving)</sys:String>
+    <sys:String x:Key="DataRecovery_QuickScan">Snelle scan (MFT-herstel)</sys:String>
+    <sys:String x:Key="DataRecovery_FilterAll">Alle ondersteunde formaten</sys:String>
+    <sys:String x:Key="DataRecovery_FilterPictures">Afbeeldingen (.jpg, .png, .bmp, .heic)</sys:String>
+    <sys:String x:Key="DataRecovery_FilterDocuments">Documenten (.pdf)</sys:String>
+    <sys:String x:Key="DataRecovery_FilterVideos">Video's (.mp4)</sys:String>
+    <sys:String x:Key="DataRecovery_FilterAudio">Audio (.mp3)</sys:String>
+    <sys:String x:Key="DataRecovery_FilterArchives">Archieven (.zip, .docx)</sys:String>
+    <sys:String x:Key="DataRecovery_StartScan">Scan starten</sys:String>
+    <sys:String x:Key="DataRecovery_SelectAll">Alles selecteren</sys:String>
+    <sys:String x:Key="DataRecovery_DiscoveredFiles">Ontdekte herstelbare bestanden</sys:String>
+    <sys:String x:Key="DataRecovery_RecoverSelected">Geselecteerde herstellen...</sys:String>
+    <sys:String x:Key="DataRecovery_AnalyzingSectors">Ruwe sectoren analyseren...</sys:String>
+    <sys:String x:Key="DataRecovery_InitialTelemetry">Ontdekt: 0 bestanden | Gescand: 0%</sys:String>
+    <sys:String x:Key="DataRecovery_CancelScan">Scan annuleren</sys:String>
+    <sys:String x:Key="DataRecovery_PreviewTooltip">Bestand in geheugen voorvertonen</sys:String>
+    <sys:String x:Key="DataRecovery_ParsingMft">Master File Table (MFT) analyseren...</sys:String>
+    <sys:String x:Key="DataRecovery_ScanTelemetry">Ontdekt: {0} bestanden | Gescand: {1:0.0}%</sys:String>
+    <sys:String x:Key="DataRecovery_ScanCompleteTitle">Scan voltooid</sys:String>
+    <sys:String x:Key="DataRecovery_ScanCompleteMsg">{0} bestanden ontdekt.</sys:String>
+    <sys:String x:Key="DataRecovery_ScanStoppedTitle">Scan gestopt</sys:String>
+    <sys:String x:Key="DataRecovery_ScanStoppedMsg">De herstelscan is geannuleerd door de gebruiker.</sys:String>
+    <sys:String x:Key="DataRecovery_ScanErrorTitle">Scanfout</sys:String>
+    <sys:String x:Key="DataRecovery_PreviewError">Kan geen voorbeeld genereren:</sys:String>
+    <sys:String x:Key="DataRecovery_PickerTitle">Selecteer doelmap voor herstelde bestanden</sys:String>
+    <sys:String x:Key="DataRecovery_OverwriteTitle">Voorkomen van sectoroverschrijving</sys:String>
+    <sys:String x:Key="DataRecovery_OverwriteMessage">Het wegschrijven van herstelde bestanden naar dezelfde actieve schijf waarvan u gegevens herstelt, zal niet-toegewezen sectoren permanent overschrijven en vernietigen! Selecteer een andere schijf of een USB-stick.</sys:String>
+    <sys:String x:Key="DataRecovery_SpaceTitle">Onvoldoende schijfruimte</sys:String>
+    <sys:String x:Key="DataRecovery_SpaceMessage">De geselecteerde bestanden vereisen {0} vrije ruimte, maar het doelstation ({1}) heeft slechts {2} beschikbaar. Kies een andere schijf of selecteer minder bestanden.</sys:String>
+    <sys:String x:Key="DataRecovery_ExtractingFiles">Bestanden extraheren...</sys:String>
+    <sys:String x:Key="DataRecovery_CancelRecovery">Herstel annuleren</sys:String>
+    <sys:String x:Key="DataRecovery_CarvingProgress">Bestand {0} van {1} aan het carven...</sys:String>
+    <sys:String x:Key="DataRecovery_SuccessTitle">Herstel geslaagd</sys:String>
+    <sys:String x:Key="DataRecovery_SuccessMsg">{0} bestanden succesvol opgeslagen in {1}.</sys:String>
+    <sys:String x:Key="DataRecovery_StoppedTitle">Herstel gestopt</sys:String>
+    <sys:String x:Key="DataRecovery_StoppedMsg">Extractie geannuleerd. {0} bestanden zijn succesvol opgeslagen voor de annulering.</sys:String>
+    <sys:String x:Key="DataRecovery_ErrorTitle">Extractiefout</sys:String>
+
+    <sys:String x:Key="DataRecovery_FilterPlaceholder">Filter op extensie (bijv. .jpg) of naam...</sys:String>
+    <sys:String x:Key="DataRecovery_SortBy">Sorteer op:</sys:String>
+    <sys:String x:Key="DataRecovery_SortName">Naam</sys:String>
+    <sys:String x:Key="DataRecovery_SortSizeDesc">Grootte (Grootste eerst)</sys:String>
+    <sys:String x:Key="DataRecovery_SortSizeAsc">Grootte (Kleinste eerst)</sys:String>
+    <sys:String x:Key="DataRecovery_SortExtension">Type (Extensie)</sys:String>
+    <sys:String x:Key="DataRecovery_SortIntegrity">Integriteit (Beste eerst)</sys:String>
+
+    <sys:String x:Key="DataRecovery_SaveSessionTitle">Herstelsessie opslaan</sys:String>
+    <sys:String x:Key="DataRecovery_SessionSaved">Sessie opgeslagen</sys:String>
+    <sys:String x:Key="DataRecovery_SaveError">Opslagfout</sys:String>
+    <sys:String x:Key="DataRecovery_LoadSessionTitle">Herstelsessie laden</sys:String>
+    <sys:String x:Key="DataRecovery_SessionLoaded">Sessie geladen</sys:String>
+    <sys:String x:Key="DataRecovery_LoadError">Laadfout</sys:String>
+
+    <sys:String x:Key="DataRecovery_ShredSelected">Geselecteerde veilig vernietigen</sys:String>
+    <sys:String x:Key="DataRecovery_ShredWarningTitle">Waarschuwing: Permanente vernietiging</sys:String>
+    <sys:String x:Key="DataRecovery_ShredWarningMsg">Deze actie overschrijft de fysieke sectoren van de geselecteerde bestanden permanent met nullen, waardoor ze door geen enkele software meer kunnen worden hersteld. Weet u zeker dat u wilt doorgaan?</sys:String>
+    <sys:String x:Key="DataRecovery_ShredConfirmBtn">Permanent vernietigen</sys:String>
+    <sys:String x:Key="DataRecovery_ShreddingFiles">Sectoren veilig vernietigen...</sys:String>
+    <sys:String x:Key="DataRecovery_CancelShred">Vernietigen afbreken</sys:String>
+    <sys:String x:Key="DataRecovery_ShreddingProgress">Bestand {0} van {1} vernietigen...</sys:String>
+    <sys:String x:Key="DataRecovery_ShredSuccessTitle">Vernietiging voltooid</sys:String>
+    <sys:String x:Key="DataRecovery_ShredSuccessMsg">{0} bestanden succesvol vernietigd.</sys:String>
+    <sys:String x:Key="DataRecovery_ShredStoppedTitle">Vernietiging afgebroken</sys:String>
+    <sys:String x:Key="DataRecovery_ShredStoppedMsg">{0} bestanden zijn permanent vernietigd voor het afbreken.</sys:String>
+    <sys:String x:Key="DataRecovery_ShredErrorTitle">Vernietigingsfout</sys:String>
+
+    <!-- endregion Data Recovery Suite -->
 </ResourceDictionary>

@@ -1895,6 +1895,9 @@
     <sys:String x:Key="AdvancedUtils_Degdid_Title">Device Identity Manager</sys:String>
     <sys:String x:Key="AdvancedUtils_Degdid_Desc">Applies a dual-stack hosts block, refreshes firewall defense-in-depth rules, and purges Global Device Identifiers and rehydrate sources from target user, .DEFAULT, and SYSTEM hives.</sys:String>
     <sys:String x:Key="AdvancedUtils_Degdid_Btn">Open Manager</sys:String>
+    <sys:String x:Key="DataRecovery_Title">Data Recovery Suite</sys:String>
+    <sys:String x:Key="AdvancedUtils_DataRecovery_Desc">Hardware-accelerated sector carver to recover deleted files from formatted or corrupted drives.</sys:String>
+    <sys:String x:Key="AdvancedUtils_DataRecovery_Btn">Open Recovery</sys:String>
     <!-- endregion Advanced Utils Page (Privacy & Security) -->
 
     <!-- region File/Folder Encryption/Decryption -->
@@ -6173,5 +6176,83 @@
     <sys:String x:Key="Degdid_Wizard_UnblockBtn">Unblock Network</sys:String>
 
     <!-- endregion Device Identity Manager (GDID) Strings -->
+
+    <!-- region Data Recovery Suite -->
+    
+    <sys:String x:Key="DataRecovery_InfoTitle">Hardware-Accelerated Sector Carver</sys:String>
+    <sys:String x:Key="DataRecovery_InfoMessage">Scan physical clusters to carve and extract deleted files directly from disk.</sys:String>
+    <sys:String x:Key="DataRecovery_SsdTitle">Solid State Drive (TRIM Active) Detected</sys:String>
+    <sys:String x:Key="DataRecovery_SsdMessage">The selected drive utilizes active TRIM/Deallocate. Files deleted days ago may return raw zero-bytes due to controller garbage collection. External drives and RAW partitions provide highest recovery rates.</sys:String>
+    <sys:String x:Key="DataRecovery_TargetDriveConfig">Target Drive Configuration</sys:String>
+    <sys:String x:Key="DataRecovery_TargetDriveVss">Target Drive &amp; VSS Snapshots</sys:String>
+    <sys:String x:Key="DataRecovery_VssPlaceholder">Checking for VSS Snapshots...</sys:String>
+    <sys:String x:Key="DataRecovery_ScanParameters">Scan Parameters</sys:String>
+    <sys:String x:Key="DataRecovery_DeepScan">Deep Scan (Raw Sector Carving)</sys:String>
+    <sys:String x:Key="DataRecovery_QuickScan">Quick Scan (MFT Undelete)</sys:String>
+    <sys:String x:Key="DataRecovery_FilterAll">All Supported Formats</sys:String>
+    <sys:String x:Key="DataRecovery_FilterPictures">Pictures (.jpg, .png, .bmp, .heic)</sys:String>
+    <sys:String x:Key="DataRecovery_FilterDocuments">Documents (.pdf)</sys:String>
+    <sys:String x:Key="DataRecovery_FilterVideos">Videos (.mp4)</sys:String>
+    <sys:String x:Key="DataRecovery_FilterAudio">Audio (.mp3)</sys:String>
+    <sys:String x:Key="DataRecovery_FilterArchives">Archives (.zip, .docx)</sys:String>
+    <sys:String x:Key="DataRecovery_StartScan">Start Scan</sys:String>
+    <sys:String x:Key="DataRecovery_SelectAll">Select All</sys:String>
+    <sys:String x:Key="DataRecovery_DiscoveredFiles">Discovered Recoverable Files</sys:String>
+    <sys:String x:Key="DataRecovery_RecoverSelected">Recover Selected...</sys:String>
+    <sys:String x:Key="DataRecovery_AnalyzingSectors">Analyzing Raw Sectors...</sys:String>
+    <sys:String x:Key="DataRecovery_InitialTelemetry">Discovered: 0 files | Scanned: 0%</sys:String>
+    <sys:String x:Key="DataRecovery_CancelScan">Cancel Scan</sys:String>
+    <sys:String x:Key="DataRecovery_PreviewTooltip">Preview File in Memory</sys:String>
+    <sys:String x:Key="DataRecovery_ParsingMft">Parsing Master File Table...</sys:String>
+    <sys:String x:Key="DataRecovery_ScanTelemetry">Discovered: {0} files | Scanned: {1:0.0}%</sys:String>
+    <sys:String x:Key="DataRecovery_ScanCompleteTitle">Scan Complete</sys:String>
+    <sys:String x:Key="DataRecovery_ScanCompleteMsg">Discovered {0} files.</sys:String>
+    <sys:String x:Key="DataRecovery_ScanStoppedTitle">Scan Stopped</sys:String>
+    <sys:String x:Key="DataRecovery_ScanStoppedMsg">The recovery scan was cancelled by user.</sys:String>
+    <sys:String x:Key="DataRecovery_ScanErrorTitle">Scan Error</sys:String>
+    <sys:String x:Key="DataRecovery_PreviewError">Failed to generate preview:</sys:String>
+    <sys:String x:Key="DataRecovery_PickerTitle">Select Destination Folder for Recovered Files</sys:String>
+    <sys:String x:Key="DataRecovery_OverwriteTitle">Sector Overwrite Prevention</sys:String>
+    <sys:String x:Key="DataRecovery_OverwriteMessage">Writing recovered files to the same live drive you are recovering from will permanently overwrite and destroy unallocated sectors! Please select a different drive or a USB flash drive.</sys:String>
+    <sys:String x:Key="DataRecovery_SpaceTitle">Insufficient Disk Space</sys:String>
+    <sys:String x:Key="DataRecovery_SpaceMessage">The selected files require {0} of free space, but the destination drive ({1}) only has {2} available. Please choose a different drive or select fewer files.</sys:String>
+    <sys:String x:Key="DataRecovery_ExtractingFiles">Extracting Files...</sys:String>
+    <sys:String x:Key="DataRecovery_CancelRecovery">Cancel Recovery</sys:String>
+    <sys:String x:Key="DataRecovery_CarvingProgress">Carving file {0} of {1}...</sys:String>
+    <sys:String x:Key="DataRecovery_SuccessTitle">Recovery Succeeded</sys:String>
+    <sys:String x:Key="DataRecovery_SuccessMsg">Successfully saved {0} files to {1}.</sys:String>
+    <sys:String x:Key="DataRecovery_StoppedTitle">Recovery Stopped</sys:String>
+    <sys:String x:Key="DataRecovery_StoppedMsg">Extraction cancelled. {0} files were successfully saved before cancellation.</sys:String>
+    <sys:String x:Key="DataRecovery_ErrorTitle">Extraction Error</sys:String>
+
+    <sys:String x:Key="DataRecovery_FilterPlaceholder">Filter by extension (e.g. .jpg) or name...</sys:String>
+    <sys:String x:Key="DataRecovery_SortBy">Sort by:</sys:String>
+    <sys:String x:Key="DataRecovery_SortName">Name</sys:String>
+    <sys:String x:Key="DataRecovery_SortSizeDesc">Size (Largest first)</sys:String>
+    <sys:String x:Key="DataRecovery_SortSizeAsc">Size (Smallest first)</sys:String>
+    <sys:String x:Key="DataRecovery_SortExtension">Type (Extension)</sys:String>
+    <sys:String x:Key="DataRecovery_SortIntegrity">Integrity (Best first)</sys:String>
+
+    <sys:String x:Key="DataRecovery_SaveSessionTitle">Save Recovery Session</sys:String>
+    <sys:String x:Key="DataRecovery_SessionSaved">Session Saved</sys:String>
+    <sys:String x:Key="DataRecovery_SaveError">Save Error</sys:String>
+    <sys:String x:Key="DataRecovery_LoadSessionTitle">Load Recovery Session</sys:String>
+    <sys:String x:Key="DataRecovery_SessionLoaded">Session Loaded</sys:String>
+    <sys:String x:Key="DataRecovery_LoadError">Load Error</sys:String>
+
+    <sys:String x:Key="DataRecovery_ShredSelected">Securely Shred Selected</sys:String>
+    <sys:String x:Key="DataRecovery_ShredWarningTitle">Permanent Destruction Warning</sys:String>
+    <sys:String x:Key="DataRecovery_ShredWarningMsg">This action will permanently overwrite the physical sectors for the selected files with zeroes, making them completely unrecoverable by any software. Are you sure you want to proceed?</sys:String>
+    <sys:String x:Key="DataRecovery_ShredConfirmBtn">Shred Permanently</sys:String>
+    <sys:String x:Key="DataRecovery_ShreddingFiles">Securely Shredding Sectors...</sys:String>
+    <sys:String x:Key="DataRecovery_CancelShred">Abort Shredding</sys:String>
+    <sys:String x:Key="DataRecovery_ShreddingProgress">Nuking file {0} of {1}...</sys:String>
+    <sys:String x:Key="DataRecovery_ShredSuccessTitle">Shredding Complete</sys:String>
+    <sys:String x:Key="DataRecovery_ShredSuccessMsg">Successfully destroyed {0} files.</sys:String>
+    <sys:String x:Key="DataRecovery_ShredStoppedTitle">Shredding Aborted</sys:String>
+    <sys:String x:Key="DataRecovery_ShredStoppedMsg">{0} files were permanently destroyed before aborting.</sys:String>
+    <sys:String x:Key="DataRecovery_ShredErrorTitle">Shredding Error</sys:String>
+
+    <!-- endregion Data Recovery Suite -->
 
 </ResourceDictionary>

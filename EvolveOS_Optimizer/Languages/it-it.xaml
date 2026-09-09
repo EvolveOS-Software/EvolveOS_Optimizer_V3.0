@@ -6070,4 +6070,82 @@
     <sys:String x:Key="Degdid_Wizard_UnblockBtn">Sblocca Rete</sys:String>
 
     <!-- endregion Device Identity Manager (GDID) Strings -->
+
+    <!-- region Data Recovery Suite -->
+
+    <sys:String x:Key="DataRecovery_InfoTitle">Analizzatore di settori accelerato via hardware</sys:String>
+    <sys:String x:Key="DataRecovery_InfoMessage">Scansiona i cluster fisici per estrarre e recuperare i file eliminati direttamente dal disco.</sys:String>
+    <sys:String x:Key="DataRecovery_SsdTitle">Solid State Drive (TRIM attivo) rilevato</sys:String>
+    <sys:String x:Key="DataRecovery_SsdMessage">L'unità selezionata utilizza TRIM/Deallocate attivo. I file eliminati giorni fa potrebbero restituire byte zero a causa della garbage collection del controller. Le unità esterne e le partizioni RAW offrono i tassi di recupero più elevati.</sys:String>
+    <sys:String x:Key="DataRecovery_TargetDriveConfig">Configurazione dell'unità di destinazione</sys:String>
+    <sys:String x:Key="DataRecovery_TargetDriveVss">Unità di destinazione &amp; Istantanee VSS</sys:String>
+    <sys:String x:Key="DataRecovery_VssPlaceholder">Ricerca istantanee VSS in corso...</sys:String>
+    <sys:String x:Key="DataRecovery_ScanParameters">Parametri di scansione</sys:String>
+    <sys:String x:Key="DataRecovery_DeepScan">Scansione approfondita (Carving di settori grezzi)</sys:String>
+    <sys:String x:Key="DataRecovery_QuickScan">Scansione rapida (Ripristino MFT)</sys:String>
+    <sys:String x:Key="DataRecovery_FilterAll">Tutti i formati supportati</sys:String>
+    <sys:String x:Key="DataRecovery_FilterPictures">Immagini (.jpg, .png, .bmp, .heic)</sys:String>
+    <sys:String x:Key="DataRecovery_FilterDocuments">Documenti (.pdf)</sys:String>
+    <sys:String x:Key="DataRecovery_FilterVideos">Video (.mp4)</sys:String>
+    <sys:String x:Key="DataRecovery_FilterAudio">Audio (.mp3)</sys:String>
+    <sys:String x:Key="DataRecovery_FilterArchives">Archivi (.zip, .docx)</sys:String>
+    <sys:String x:Key="DataRecovery_StartScan">Avvia scansione</sys:String>
+    <sys:String x:Key="DataRecovery_SelectAll">Seleziona tutto</sys:String>
+    <sys:String x:Key="DataRecovery_DiscoveredFiles">File recuperabili scoperti</sys:String>
+    <sys:String x:Key="DataRecovery_RecoverSelected">Recupera selezionati...</sys:String>
+    <sys:String x:Key="DataRecovery_AnalyzingSectors">Analisi dei settori grezzi in corso...</sys:String>
+    <sys:String x:Key="DataRecovery_InitialTelemetry">Scoperti: 0 file | Scansionati: 0%</sys:String>
+    <sys:String x:Key="DataRecovery_CancelScan">Annulla scansione</sys:String>
+    <sys:String x:Key="DataRecovery_PreviewTooltip">Visualizza anteprima del file in memoria</sys:String>
+    <sys:String x:Key="DataRecovery_ParsingMft">Analisi della Master File Table (MFT) in corso...</sys:String>
+    <sys:String x:Key="DataRecovery_ScanTelemetry">Scoperti: {0} file | Scansionati: {1:0.0}%</sys:String>
+    <sys:String x:Key="DataRecovery_ScanCompleteTitle">Scansione completata</sys:String>
+    <sys:String x:Key="DataRecovery_ScanCompleteMsg">Scoperti {0} file.</sys:String>
+    <sys:String x:Key="DataRecovery_ScanStoppedTitle">Scansione interrotta</sys:String>
+    <sys:String x:Key="DataRecovery_ScanStoppedMsg">La scansione di recupero è stata annullata dall'utente.</sys:String>
+    <sys:String x:Key="DataRecovery_ScanErrorTitle">Errore di scansione</sys:String>
+    <sys:String x:Key="DataRecovery_PreviewError">Impossibile generare l'anteprima:</sys:String>
+    <sys:String x:Key="DataRecovery_PickerTitle">Seleziona la cartella di destinazione per i file recuperati</sys:String>
+    <sys:String x:Key="DataRecovery_OverwriteTitle">Prevenzione sovrascrittura settori</sys:String>
+    <sys:String x:Key="DataRecovery_OverwriteMessage">La scrittura dei file recuperati sulla stessa unità attiva da cui stai effettuando il recupero sovrascriverà e distruggerà permanentemente i settori non allocati! Seleziona un'unità diversa o una chiavetta USB.</sys:String>
+    <sys:String x:Key="DataRecovery_SpaceTitle">Spazio su disco insufficiente</sys:String>
+    <sys:String x:Key="DataRecovery_SpaceMessage">I file selezionati richiedono {0} di spazio libero, ma l'unità di destinazione ({1}) ha a disposizione solo {2}. Scegli un'unità diversa o seleziona meno file.</sys:String>
+    <sys:String x:Key="DataRecovery_ExtractingFiles">Estrazione file in corso...</sys:String>
+    <sys:String x:Key="DataRecovery_CancelRecovery">Annulla recupero</sys:String>
+    <sys:String x:Key="DataRecovery_CarvingProgress">Estrazione del file {0} di {1}...</sys:String>
+    <sys:String x:Key="DataRecovery_SuccessTitle">Recupero riuscito</sys:String>
+    <sys:String x:Key="DataRecovery_SuccessMsg">{0} file salvati con successo in {1}.</sys:String>
+    <sys:String x:Key="DataRecovery_StoppedTitle">Recupero interrotto</sys:String>
+    <sys:String x:Key="DataRecovery_StoppedMsg">Estrazione annullata. {0} file sono stati salvati con successo prima dell'annullamento.</sys:String>
+    <sys:String x:Key="DataRecovery_ErrorTitle">Errore di estrazione</sys:String>
+
+    <sys:String x:Key="DataRecovery_FilterPlaceholder">Filtra per estensione (es. .jpg) o nome...</sys:String>
+    <sys:String x:Key="DataRecovery_SortBy">Ordina per:</sys:String>
+    <sys:String x:Key="DataRecovery_SortName">Nome</sys:String>
+    <sys:String x:Key="DataRecovery_SortSizeDesc">Dimensione (Più grandi prima)</sys:String>
+    <sys:String x:Key="DataRecovery_SortSizeAsc">Dimensione (Più piccoli prima)</sys:String>
+    <sys:String x:Key="DataRecovery_SortExtension">Tipo (Estensione)</sys:String>
+    <sys:String x:Key="DataRecovery_SortIntegrity">Integrità (Migliori prima)</sys:String>
+
+    <sys:String x:Key="DataRecovery_SaveSessionTitle">Salva sessione di recupero</sys:String>
+    <sys:String x:Key="DataRecovery_SessionSaved">Sessione salvata</sys:String>
+    <sys:String x:Key="DataRecovery_SaveError">Errore di salvataggio</sys:String>
+    <sys:String x:Key="DataRecovery_LoadSessionTitle">Carica sessione di recupero</sys:String>
+    <sys:String x:Key="DataRecovery_SessionLoaded">Sessione caricata</sys:String>
+    <sys:String x:Key="DataRecovery_LoadError">Errore di caricamento</sys:String>
+
+    <sys:String x:Key="DataRecovery_ShredSelected">Distruggi in modo sicuro selezionati</sys:String>
+    <sys:String x:Key="DataRecovery_ShredWarningTitle">Avviso di distruzione permanente</sys:String>
+    <sys:String x:Key="DataRecovery_ShredWarningMsg">Questa azione sovrascriverà permanentemente i settori fisici dei file selezionati con zeri, rendendoli completamente irrecuperabili da qualsiasi software. Sei sicuro di voler procedere?</sys:String>
+    <sys:String x:Key="DataRecovery_ShredConfirmBtn">Distruggi permanentemente</sys:String>
+    <sys:String x:Key="DataRecovery_ShreddingFiles">Distruzione sicura dei settori...</sys:String>
+    <sys:String x:Key="DataRecovery_CancelShred">Interrompi distruzione</sys:String>
+    <sys:String x:Key="DataRecovery_ShreddingProgress">Distruzione del file {0} di {1}...</sys:String>
+    <sys:String x:Key="DataRecovery_ShredSuccessTitle">Distruzione completata</sys:String>
+    <sys:String x:Key="DataRecovery_ShredSuccessMsg">{0} file distrutti con successo.</sys:String>
+    <sys:String x:Key="DataRecovery_ShredStoppedTitle">Distruzione interrotta</sys:String>
+    <sys:String x:Key="DataRecovery_ShredStoppedMsg">{0} file sono stati distrutti permanentemente prima dell'interruzione.</sys:String>
+    <sys:String x:Key="DataRecovery_ShredErrorTitle">Errore di distruzione</sys:String>
+
+    <!-- endregion Data Recovery Suite -->
 </ResourceDictionary>

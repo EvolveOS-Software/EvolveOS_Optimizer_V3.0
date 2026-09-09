@@ -99,6 +99,42 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             });
         }
 
+        public static void ShowPopupOverlay(FrameworkElement content)
+        {
+            var mainWindow = (Application.Current as App)?.GetType().GetProperty("MainWindow")?.GetValue(Application.Current) as Window;
+            if (mainWindow?.Content is FrameworkElement rootContent)
+            {
+                var popupHost = FindVisualChildByName<ContentControl>(rootContent, "PopupHost");
+                var windowDimOverlay = FindVisualChildByName<Grid>(rootContent, "WindowDimOverlay");
+
+                if (popupHost != null) popupHost.Content = content;
+                if (windowDimOverlay != null)
+                {
+                    windowDimOverlay.IsHitTestVisible = true;
+                    windowDimOverlay.Visibility = Visibility.Visible;
+                    windowDimOverlay.Opacity = 1;
+                }
+            }
+        }
+
+        public static void HidePopupOverlay()
+        {
+            var mainWindow = (Application.Current as App)?.GetType().GetProperty("MainWindow")?.GetValue(Application.Current) as Window;
+            if (mainWindow?.Content is FrameworkElement rootContent)
+            {
+                var popupHost = FindVisualChildByName<ContentControl>(rootContent, "PopupHost");
+                var windowDimOverlay = FindVisualChildByName<Grid>(rootContent, "WindowDimOverlay");
+
+                if (popupHost != null) popupHost.Content = null;
+                if (windowDimOverlay != null)
+                {
+                    windowDimOverlay.IsHitTestVisible = false;
+                    windowDimOverlay.Visibility = Visibility.Collapsed;
+                    windowDimOverlay.Opacity = 0;
+                }
+            }
+        }
+
         public static void ApplyBackdrop(Window window, string name)
         {
             if (window == null || _isProcessing) return;
