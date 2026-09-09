@@ -12,7 +12,7 @@
 
     <Grid>
         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-            <StackPanel Spacing="24" Padding="5,0,24,24">
+            <StackPanel Spacing="24" Padding="5,10,24,24">
 
                 <!-- Header & Back Button -->
                 <StackPanel Orientation="Horizontal" Spacing="12">

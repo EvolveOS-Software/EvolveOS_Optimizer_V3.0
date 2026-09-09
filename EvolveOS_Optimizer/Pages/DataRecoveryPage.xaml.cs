@@ -769,8 +769,14 @@ namespace EvolveOS_Optimizer.Pages
         {
             if (this.Frame != null)
             {
-                this.Frame.Navigate(typeof(AdvancedUtilsPage));
-                this.Frame.BackStack.Clear();
+                if (this.Frame.CanGoBack)
+                {
+                    this.Frame.GoBack();
+                }
+                else
+                {
+                    this.Frame.Navigate(typeof(AdvancedUtilsPage));
+                }
             }
         }
 
