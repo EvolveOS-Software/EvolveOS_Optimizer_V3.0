@@ -99,6 +99,15 @@ namespace EvolveOS_Optimizer.Utilities.Services
                 return;
             }
 
+            bool hasToken = false;
+            try { hasToken = TokenManager.TokenExists(); } catch { }
+
+            if (!hasToken && !File.Exists(encryptedFile))
+            {
+                Debug.WriteLine("[Security] Unauthenticated session detected. Aborting encryption to prevent missing-key cryptographic errors.");
+                return;
+            }
+
             int maxRetries = 10;
             int attempts = 0;
             while (IsFileLocked(plainFile) && attempts < maxRetries)
