@@ -55,7 +55,7 @@ namespace EvolveOS_Optimizer.Pages
 
         #endregion
 
-        public HomePageViewModel ViewModel { get; } = new();
+        public HomePageViewModel ViewModel { get; set; } = new();
 
         #region Constructor & Page Lifecycle
         public HomePage()
@@ -1166,8 +1166,11 @@ namespace EvolveOS_Optimizer.Pages
             {
                 _dispatcherQueue.TryEnqueue(() =>
                 {
-                    GamingProgressText.Text += $"\n> {message}";
-                    GamingProgressScroll.ChangeView(0, GamingProgressScroll.ScrollableHeight, 1);
+                    if (GamingProgressText != null && GamingProgressScroll != null)
+                    {
+                        GamingProgressText.Text += $"\n> {message}";
+                        GamingProgressScroll.ChangeView(0, GamingProgressScroll.ScrollableHeight, 1);
+                    }
                 });
             });
 
@@ -3785,12 +3788,20 @@ namespace EvolveOS_Optimizer.Pages
         {
             Debug.WriteLine($"[{this.GetType().Name}] Purge requested...");
 
-            ViewModel.OnTelemetryTicked -= ViewModel_OnTelemetryTicked;
-            ViewModel.OnWallpaperUpdated -= ViewModel_OnWallpaperUpdated;
+            if (_backgroundScanTimer != null)
+            {
+                _backgroundScanTimer.Stop();
+                _backgroundScanTimer = null;
+            }
+
+            if (ViewModel != null)
+            {
+                ViewModel.OnTelemetryTicked -= ViewModel_OnTelemetryTicked;
+                ViewModel.OnWallpaperUpdated -= ViewModel_OnWallpaperUpdated;
+                ViewModel.PauseUpdates();
+            }
 
             _networkMonitorCts?.Cancel();
-
-            ViewModel?.PauseUpdates();
 
             _ipShimmerStory?.Stop();
             _ipShimmerStory = null;
