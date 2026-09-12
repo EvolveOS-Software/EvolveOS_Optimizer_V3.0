@@ -783,19 +783,28 @@ public sealed partial class GroupPolicyPage : Page, IPurgeable
             {
                 await Task.Delay(350);
 
+                var tcs = new TaskCompletionSource();
                 DispatcherQueue?.TryEnqueue(() =>
                 {
+                    if (this.DataContext is IDisposable disposableVm) disposableVm.Dispose();
+
                     _policyStates = null;
 
                     if (ConfiguredPoliciesListView != null) ConfiguredPoliciesListView.ItemsSource = null;
                     if (CategorySummaryRepeater != null) CategorySummaryRepeater.ItemsSource = null;
 
-                    //this.Bindings?.StopTracking();
+                    //this.Bindings?.StopTracking(); // Keeping your commented line as-is
                     this.DataContext = null;
                     this.Content = null;
+
+                    tcs.SetResult();
                 });
 
+                await tcs.Task;
+
                 DiagnosticsPageViewModel.Current?.ForceImmediateMemoryCleanup();
+
+                App.MemoryGuardian?.ForcePageTransitionCleanup();
             });
         }
         else

@@ -604,7 +604,7 @@ namespace EvolveOS_Optimizer.Pages
 
             if (!SettingsEngine.IsHighPerformanceModeEnabled)
             {
-                Debug.WriteLine($"[{this.GetType().Name}] Low Resource Mode: Nuking UI and ViewModel...");
+                Debug.WriteLine($"[{this.GetType().Name}] Low Resource Mode: Nuking UI and ViewModel in 800ms...");
 
                 this.Unloaded -= AdvancedUtilsPage_Unloaded;
 
@@ -612,14 +612,24 @@ namespace EvolveOS_Optimizer.Pages
                 {
                     await Task.Delay(800);
 
+                    var tcs = new TaskCompletionSource();
                     DispatcherQueue?.TryEnqueue(() =>
                     {
+                        if (this.DataContext is IDisposable disposableVm)
+                        {
+                            disposableVm.Dispose();
+                        }
+
                         this.Bindings?.StopTracking();
                         this.DataContext = null;
                         this.Content = null;
+
+                        tcs.SetResult();
                     });
 
-                    DiagnosticsPageViewModel.Current?.ForceImmediateMemoryCleanup();
+                    await tcs.Task;
+
+                    App.MemoryGuardian?.ForcePageTransitionCleanup();
                 });
             }
             else

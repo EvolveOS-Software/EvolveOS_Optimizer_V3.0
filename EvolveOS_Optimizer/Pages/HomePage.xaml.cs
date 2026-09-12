@@ -3810,16 +3810,26 @@ namespace EvolveOS_Optimizer.Pages
                 {
                     await Task.Delay(350);
 
+                    var tcs = new TaskCompletionSource();
                     _dispatcherQueue?.TryEnqueue(() =>
                     {
+                        if (this.DataContext is IDisposable disposableVm) disposableVm.Dispose();
+
+                        this.Bindings?.StopTracking();
                         this.DataContext = null;
                         this.Content = null;
+
+                        tcs.SetResult();
                     });
+
+                    await tcs.Task;
 
                     if (DiagnosticsPageViewModel.Current != null)
                     {
                         DiagnosticsPageViewModel.Current.ForceImmediateMemoryCleanup();
                     }
+
+                    App.MemoryGuardian?.ForcePageTransitionCleanup();
                 });
             }
             else

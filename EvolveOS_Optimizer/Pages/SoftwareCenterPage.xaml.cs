@@ -140,6 +140,7 @@ public sealed partial class SoftwareCenterPage : Page, IPurgeable
 
         ExternalPaneRequest = null;
 
+        // Pass the purge command down to the child page before nuking the host!
         if (ContentFrame.Content is IPurgeable purgeablePage)
         {
             purgeablePage.Purge();
@@ -156,8 +157,11 @@ public sealed partial class SoftwareCenterPage : Page, IPurgeable
             {
                 await Task.Delay(350);
 
+                var tcs = new TaskCompletionSource();
                 DispatcherQueue?.TryEnqueue(() =>
                 {
+                    if (this.DataContext is IDisposable disposableVm) disposableVm.Dispose();
+
                     if (_sharedViewModel != null)
                     {
                         _sharedViewModel.DisplayState?.Clear();
@@ -172,9 +176,15 @@ public sealed partial class SoftwareCenterPage : Page, IPurgeable
                     //this.Bindings?.StopTracking();
                     this.DataContext = null;
                     this.Content = null;
+
+                    tcs.SetResult();
                 });
 
+                await tcs.Task;
+
                 DiagnosticsPageViewModel.Current?.ForceImmediateMemoryCleanup();
+
+                App.MemoryGuardian?.ForcePageTransitionCleanup();
             });
         }
         else

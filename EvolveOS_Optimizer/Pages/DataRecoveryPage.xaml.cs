@@ -5,15 +5,18 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Text.Json;
 using System.Threading;
-using Windows.Storage.Streams;
+using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
+using EvolveOS_Optimizer.Core.ViewModel;
+using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Managers;
 using Microsoft.UI.Xaml.Input;
+using Windows.Storage.Streams;
 
 namespace EvolveOS_Optimizer.Pages
 {
-    public sealed partial class DataRecoveryPage : Page
+    public sealed partial class DataRecoveryPage : Page, IPurgeable
     {
         #region Fields & State
 
@@ -34,6 +37,8 @@ namespace EvolveOS_Optimizer.Pages
             this.InitializeComponent();
             ListDiscoveredFiles.ItemsSource = _discoveredFiles;
             LoadSystemDrives();
+
+            this.Unloaded += DataRecoveryPage_Unloaded;
         }
 
         private void LoadSystemDrives()
@@ -50,6 +55,11 @@ namespace EvolveOS_Optimizer.Pages
             {
                 CmbDrives.SelectedIndex = 0;
             }
+        }
+
+        private void DataRecoveryPage_Unloaded(object sender, RoutedEventArgs e)
+        {
+            _ = Purge();
         }
 
         #endregion
@@ -781,5 +791,64 @@ namespace EvolveOS_Optimizer.Pages
         }
 
         #endregion
+
+        #region Purge Page
+        public Task Purge()
+        {
+            Debug.WriteLine($"[{this.GetType().Name}] Purge requested...");
+
+            if (_actionCts != null)
+            {
+                try { _actionCts.Cancel(); _actionCts.Dispose(); } catch (ObjectDisposedException) { }
+                _actionCts = null;
+            }
+
+            if (!SettingsEngine.IsHighPerformanceModeEnabled)
+            {
+                Debug.WriteLine($"[{this.GetType().Name}] Low Resource Mode: Nuking UI and Heavy Scan Collections...");
+
+                _ = Task.Run(async () =>
+                {
+                    await Task.Delay(350);
+
+                    var tcs = new TaskCompletionSource();
+                    DispatcherQueue?.TryEnqueue(() =>
+                    {
+                        if (this.DataContext is IDisposable disposableVm) disposableVm.Dispose();
+
+                        _allScannedFiles.Clear();
+                        _discoveredFiles.Clear();
+                        _availableDrives.Clear();
+                        _selectedDrive = null;
+
+                        if (ListDiscoveredFiles != null) ListDiscoveredFiles.ItemsSource = null;
+                        if (CmbDrives != null) CmbDrives.Items.Clear();
+                        if (CmbVssSnapshots != null) CmbVssSnapshots.Items.Clear();
+
+                        if (ImgPreview != null) ImgPreview.Source = null;
+
+                        //this.Bindings?.StopTracking();
+                        this.DataContext = null;
+                        this.Content = null;
+
+                        tcs.SetResult();
+                    });
+
+                    await tcs.Task;
+
+                    DiagnosticsPageViewModel.Current?.ForceImmediateMemoryCleanup();
+
+                    App.MemoryGuardian?.ForcePageTransitionCleanup();
+                });
+            }
+            else
+            {
+                Debug.WriteLine($"[{this.GetType().Name}] High Performance Mode: State preserved in RAM cache.");
+            }
+
+            return Task.CompletedTask;
+        }
+        #endregion
+
     }
 }

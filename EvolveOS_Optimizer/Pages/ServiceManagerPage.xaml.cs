@@ -644,8 +644,11 @@ public sealed partial class ServiceManagerPage : Page, IPurgeable
             {
                 await Task.Delay(350);
 
+                var tcs = new TaskCompletionSource();
                 DispatcherQueue?.TryEnqueue(() =>
                 {
+                    if (this.DataContext is IDisposable disposableVm) disposableVm.Dispose();
+
                     _allServices.Clear();
                     _filteredServices.Clear();
                     _registryCache.Clear();
@@ -656,9 +659,15 @@ public sealed partial class ServiceManagerPage : Page, IPurgeable
                     //this.Bindings?.StopTracking();
                     this.DataContext = null;
                     this.Content = null;
+
+                    tcs.SetResult();
                 });
 
+                await tcs.Task;
+
                 DiagnosticsPageViewModel.Current?.ForceImmediateMemoryCleanup();
+
+                App.MemoryGuardian?.ForcePageTransitionCleanup();
             });
         }
         else

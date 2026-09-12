@@ -2,8 +2,10 @@
 // Licensed under the MIT License.
 
 using System.Security.AccessControl;
+using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Core.ViewModel;
+using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Input;
@@ -12,10 +14,10 @@ using Windows.Foundation.Metadata;
 
 namespace EvolveOS_Optimizer.Pages
 {
-    public sealed partial class SecurityAdvancedPage : Page
+    public sealed partial class SecurityAdvancedPage : Page, IPurgeable
     {
         #region Properties
-        public SecurityAdvancedViewModel ViewModel { get; } = new SecurityAdvancedViewModel();
+        public SecurityAdvancedViewModel ViewModel { get; set; } = new SecurityAdvancedViewModel();
         public AppWindow? AppWindow;
         #endregion
 
@@ -23,6 +25,13 @@ namespace EvolveOS_Optimizer.Pages
         public SecurityAdvancedPage()
         {
             InitializeComponent();
+
+            this.Unloaded += SecurityAdvancedPage_Unloaded;
+        }
+
+        private void SecurityAdvancedPage_Unloaded(object sender, RoutedEventArgs e)
+        {
+            _ = Purge();
         }
         #endregion
 
@@ -176,6 +185,55 @@ namespace EvolveOS_Optimizer.Pages
                     Debug.WriteLine("Error: AppWindow is null and could not be resolved from XamlRoot.");
                 }
             }
+        }
+        #endregion
+
+        #region Purge Page
+        public Task Purge()
+        {
+            Debug.WriteLine($"[{this.GetType().Name}] Purge requested...");
+
+            if (!SettingsEngine.IsHighPerformanceModeEnabled)
+            {
+                Debug.WriteLine($"[{this.GetType().Name}] Low Resource Mode: Nuking UI and ACL Collections...");
+
+                _ = Task.Run(async () =>
+                {
+                    await Task.Delay(350);
+
+                    var tcs = new TaskCompletionSource();
+                    DispatcherQueue?.TryEnqueue(() =>
+                    {
+                        if (this.DataContext is IDisposable disposableVm) disposableVm.Dispose();
+
+                        if (ViewModel != null)
+                        {
+                            if (ViewModel is IDisposable dispVM) dispVM.Dispose();
+                            ViewModel = null!;
+                        }
+
+                        AppWindow = null!; // Added !
+
+                        // this.Bindings?.StopTracking();
+                        this.DataContext = null!;
+                        this.Content = null!;
+
+                        tcs.SetResult();
+                    });
+
+                    await tcs.Task;
+
+                    DiagnosticsPageViewModel.Current?.ForceImmediateMemoryCleanup();
+
+                    App.MemoryGuardian?.ForcePageTransitionCleanup();
+                });
+            }
+            else
+            {
+                Debug.WriteLine($"[{this.GetType().Name}] High Performance Mode: State preserved in RAM cache.");
+            }
+
+            return Task.CompletedTask;
         }
         #endregion
     }

@@ -203,8 +203,11 @@ namespace EvolveOS_Optimizer.Pages
                 {
                     await Task.Delay(350);
 
+                    var tcs = new TaskCompletionSource();
                     DispatcherQueue?.TryEnqueue(() =>
                     {
+                        if (this.DataContext is IDisposable disposableVm) disposableVm.Dispose();
+
                         if (ViewModel != null)
                         {
                             if (ViewModel.AddRecordVM != null)
@@ -218,9 +221,15 @@ namespace EvolveOS_Optimizer.Pages
                         this.Bindings?.StopTracking();
                         this.DataContext = null;
                         this.Content = null;
+
+                        tcs.SetResult();
                     });
 
+                    await tcs.Task;
+
                     DiagnosticsPageViewModel.Current?.ForceImmediateMemoryCleanup();
+
+                    App.MemoryGuardian?.ForcePageTransitionCleanup();
                 });
             }
             else

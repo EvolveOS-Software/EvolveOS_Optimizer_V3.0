@@ -2,26 +2,28 @@
 // Licensed under the MIT License.
 
 using System.Runtime.InteropServices;
+using System.Runtime;
 using EvolveOS_Optimizer.Utilities.Controls;
+using Microsoft.UI.Dispatching;
 
 namespace EvolveOS_Optimizer.Utilities.Services
 {
     public class MemoryGuardian : IDisposable
     {
         #region Fields & Properties
-        private readonly Microsoft.UI.Dispatching.DispatcherQueueTimer? _checkTimer;
+        private readonly DispatcherQueueTimer? _checkTimer;
         private readonly Action<ulong, ulong>? _onCleanupPerformed;
         private PerformanceCounter? _ramCounter;
 
         private ulong _currentThresholdBytes;
-        private ulong _emergencyThresholdBytes; // Active UI threshold
+        private ulong _emergencyThresholdBytes;
 
-        private bool _isBackgroundMode = false; // Tracks if the app is minimized
+        private bool _isBackgroundMode = false;
         private int _highMemorySeconds = 0;
 
         private bool _isDisposed;
 
-        private const int RequiredSustainedSeconds = 15; // Must stay high for 15s to trigger GC
+        private const int RequiredSustainedSeconds = 15;
         private const int TimerIntervalSeconds = 5;
         #endregion
 
@@ -73,11 +75,10 @@ namespace EvolveOS_Optimizer.Utilities.Services
         }
         #endregion
 
-        #region Control API (The "Silence" Fix)
+        #region Control API
         public void Pause()
         {
             LocalMachineSettingsEngine.IsGuardianPaused = true;
-
             _checkTimer?.Stop();
             Debug.WriteLine("[MemoryGuardian] Guardian STOPPED for critical task.");
         }
@@ -85,7 +86,6 @@ namespace EvolveOS_Optimizer.Utilities.Services
         public void Resume()
         {
             LocalMachineSettingsEngine.IsGuardianPaused = false;
-
             _highMemorySeconds = 0;
             _checkTimer?.Start();
             Debug.WriteLine("[MemoryGuardian] Guardian RESTORED.");
@@ -155,7 +155,7 @@ namespace EvolveOS_Optimizer.Utilities.Services
             {
                 if (privateUsage > _emergencyThresholdBytes)
                 {
-                    Debug.WriteLine($"[MemoryGuardian] EMERGENCY: Active RAM exceeded 700MB ({privateUsage / 1024 / 1024}MB). Initiating Gentle Trim...");
+                    Debug.WriteLine($"[MemoryGuardian] EMERGENCY: Active RAM exceeded 600MB ({privateUsage / 1024 / 1024}MB). Initiating Gentle Trim...");
                     PerformGentleCleanup(currentProcess, privateUsage);
                 }
             }
@@ -164,8 +164,9 @@ namespace EvolveOS_Optimizer.Utilities.Services
         private void PerformDeepCleanup(Process currentProcess, ulong privateUsage)
         {
             ulong physicalBefore = (ulong)currentProcess.WorkingSet64;
-
             Debug.WriteLine($"[MemoryGuardian] Sustained background memory confirmed. Initiating Deep Cleanup...");
+
+            GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
 
             GC.Collect(2, GCCollectionMode.Forced, true, true);
             GC.WaitForPendingFinalizers();
@@ -177,7 +178,6 @@ namespace EvolveOS_Optimizer.Utilities.Services
             ulong physicalAfter = (ulong)currentProcess.WorkingSet64;
 
             Debug.WriteLine($"[MemoryGuardian] Deep Cleanup complete. Physical RAM dropped to: {physicalAfter / 1024 / 1024}MB");
-
             DispatchUpdate(physicalBefore, physicalAfter);
         }
 
@@ -185,14 +185,23 @@ namespace EvolveOS_Optimizer.Utilities.Services
         {
             ulong physicalBefore = (ulong)currentProcess.WorkingSet64;
 
+            GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
             GC.Collect(2, GCCollectionMode.Optimized, false, false);
 
             currentProcess.Refresh();
             ulong physicalAfter = (ulong)currentProcess.WorkingSet64;
 
             Debug.WriteLine($"[MemoryGuardian] Gentle Trim complete. Physical RAM dropped to: {physicalAfter / 1024 / 1024}MB");
-
             DispatchUpdate(physicalBefore, physicalAfter);
+        }
+
+        public void ForcePageTransitionCleanup()
+        {
+            Debug.WriteLine("[MemoryGuardian] Page Transition detected. Forcing LOH Compaction...");
+
+            GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
+            GC.Collect(2, GCCollectionMode.Forced, true, true);
+            GC.WaitForPendingFinalizers();
         }
 
         public void ForceImmediateCleanup()
@@ -204,7 +213,7 @@ namespace EvolveOS_Optimizer.Utilities.Services
 
         private void DispatchUpdate(ulong physicalBefore, ulong physicalAfter)
         {
-            var dispatcher = MainWindow.Instance?.DispatcherQueue;
+            var dispatcher = DispatcherQueue.GetForCurrentThread();
             if (dispatcher != null)
             {
                 dispatcher.TryEnqueue(() =>
@@ -226,7 +235,6 @@ namespace EvolveOS_Optimizer.Utilities.Services
             _isDisposed = true;
 
             _ramCounter?.Dispose();
-
             GC.SuppressFinalize(this);
         }
         #endregion

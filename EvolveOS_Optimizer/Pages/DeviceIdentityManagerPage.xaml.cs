@@ -2,6 +2,8 @@
 // Licensed under the MIT License.
 
 using System.Security;
+using EvolveOS_Optimizer.Core.Interfaces;
+using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Managers;
@@ -9,7 +11,7 @@ using Microsoft.UI.Text;
 
 namespace EvolveOS_Optimizer.Pages
 {
-    public sealed partial class DeviceIdentityManagerPage : Page
+    public sealed partial class DeviceIdentityManagerPage : Page, IPurgeable
     {
         private string? _username;
         private SecureString? _masterPassword;
@@ -30,6 +32,13 @@ namespace EvolveOS_Optimizer.Pages
             }
 
             await RunInitialStatusCheckAsync();
+
+            this.Unloaded += DeviceIdentityManagerPage_Unloaded;
+        }
+
+        private void DeviceIdentityManagerPage_Unloaded(object sender, RoutedEventArgs e)
+        {
+            _ = Purge();
         }
 
         #region Dialog & Execution Helpers
@@ -423,6 +432,54 @@ namespace EvolveOS_Optimizer.Pages
             _masterPassword?.Dispose();
         }
 
+        #endregion
+
+        #region Purge Page
+        public Task Purge()
+        {
+            Debug.WriteLine($"[{this.GetType().Name}] Purge requested...");
+
+            if (!SettingsEngine.IsHighPerformanceModeEnabled)
+            {
+                Debug.WriteLine($"[{this.GetType().Name}] Low Resource Mode: Nuking UI and Secure Credentials...");
+
+                _ = Task.Run(async () =>
+                {
+                    await Task.Delay(350);
+
+                    var tcs = new TaskCompletionSource();
+                    DispatcherQueue?.TryEnqueue(() =>
+                    {
+                        if (this.DataContext is IDisposable disposableVm) disposableVm.Dispose();
+
+                        _username = null;
+                        if (_masterPassword != null)
+                        {
+                            _masterPassword.Dispose();
+                            _masterPassword = null;
+                        }
+
+                        //this.Bindings?.StopTracking();
+                        this.DataContext = null;
+                        this.Content = null;
+
+                        tcs.SetResult();
+                    });
+
+                    await tcs.Task;
+
+                    DiagnosticsPageViewModel.Current?.ForceImmediateMemoryCleanup();
+
+                    App.MemoryGuardian?.ForcePageTransitionCleanup();
+                });
+            }
+            else
+            {
+                Debug.WriteLine($"[{this.GetType().Name}] High Performance Mode: State preserved in RAM cache.");
+            }
+
+            return Task.CompletedTask;
+        }
         #endregion
     }
 }

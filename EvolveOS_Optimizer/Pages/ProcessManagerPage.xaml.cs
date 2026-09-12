@@ -705,28 +705,42 @@ public sealed partial class ProcessManagerPage : Page, IPurgeable
         {
             Debug.WriteLine($"[{this.GetType().Name}] Low Resource Mode: Nuking UI and Process Collections...");
 
-            _allProcesses.Clear();
-            _appsGroup.Clear();
-            _backgroundGroup.Clear();
-            _windowsGroup.Clear();
-            _groupedProcesses.Clear();
-            _iconCache.Clear();
-
             this.Loaded -= ProcessesPage_Loaded;
             this.Unloaded -= ProcessesPage_Unloaded;
 
             LocalMachineSettingsEngine.SettingChanged -= OnSettingChanged;
 
-            if (CVSProcesses != null) CVSProcesses.Source = null;
-            if (ProcessListView != null) ProcessListView.ItemsSource = null;
-
-            this.DataContext = null;
-            this.Content = null;
-            this.Bindings?.StopTracking();
-
-            _ = Task.Run(() =>
+            _ = Task.Run(async () =>
             {
+                await Task.Delay(350);
+
+                var tcs = new TaskCompletionSource();
+                DispatcherQueue?.TryEnqueue(() =>
+                {
+                    if (this.DataContext is IDisposable disposableVm) disposableVm.Dispose();
+
+                    _allProcesses.Clear();
+                    _appsGroup.Clear();
+                    _backgroundGroup.Clear();
+                    _windowsGroup.Clear();
+                    _groupedProcesses.Clear();
+                    _iconCache.Clear();
+
+                    if (CVSProcesses != null) CVSProcesses.Source = null;
+                    if (ProcessListView != null) ProcessListView.ItemsSource = null;
+
+                    this.Bindings?.StopTracking();
+                    this.DataContext = null;
+                    this.Content = null;
+
+                    tcs.SetResult();
+                });
+
+                await tcs.Task;
+
                 DiagnosticsPageViewModel.Current?.ForceImmediateMemoryCleanup();
+
+                App.MemoryGuardian?.ForcePageTransitionCleanup();
             });
         }
         else

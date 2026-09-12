@@ -1155,8 +1155,11 @@ public sealed partial class SystemAppsPage : Page, IPurgeable
             {
                 await Task.Delay(350);
 
+                var tcs = new TaskCompletionSource();
                 DispatcherQueue?.TryEnqueue(() =>
                 {
+                    if (this.DataContext is IDisposable disposableVm) disposableVm.Dispose();
+
                     AppList?.Clear();
                     allApps?.Clear();
 
@@ -1165,9 +1168,15 @@ public sealed partial class SystemAppsPage : Page, IPurgeable
                     //this.Bindings?.StopTracking();
                     this.DataContext = null;
                     this.Content = null;
+
+                    tcs.SetResult();
                 });
 
+                await tcs.Task;
+
                 DiagnosticsPageViewModel.Current?.ForceImmediateMemoryCleanup();
+
+                App.MemoryGuardian?.ForcePageTransitionCleanup();
             });
         }
         else

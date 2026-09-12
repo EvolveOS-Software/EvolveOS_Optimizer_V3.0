@@ -522,7 +522,6 @@ namespace EvolveOS_Optimizer.Pages
         #endregion
 
         #region Purge Page
-
         public async Task Purge()
         {
             Debug.WriteLine("[StartupManagerPage] Caching Purge requested. Pausing page...");
@@ -555,8 +554,11 @@ namespace EvolveOS_Optimizer.Pages
                 {
                     await Task.Delay(350);
 
+                    var tcs = new TaskCompletionSource();
                     DispatcherQueue?.TryEnqueue(() =>
                     {
+                        if (this.DataContext is IDisposable disposableVm) disposableVm.Dispose();
+
                         _allApps.Clear();
                         _startupApps.Clear();
 
@@ -565,9 +567,15 @@ namespace EvolveOS_Optimizer.Pages
                         //this.Bindings?.StopTracking();
                         this.DataContext = null;
                         this.Content = null;
+
+                        tcs.SetResult();
                     });
 
+                    await tcs.Task;
+
                     DiagnosticsPageViewModel.Current?.ForceImmediateMemoryCleanup();
+
+                    App.MemoryGuardian?.ForcePageTransitionCleanup();
                 });
             }
             else
@@ -575,7 +583,6 @@ namespace EvolveOS_Optimizer.Pages
                 Debug.WriteLine($"[{this.GetType().Name}] High Performance Mode: State preserved in RAM cache.");
             }
         }
-
         #endregion
     }
 }
