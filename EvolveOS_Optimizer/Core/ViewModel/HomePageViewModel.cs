@@ -637,7 +637,11 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         public void StartWallpaperMonitor()
         {
-            _wallpaperCts?.Cancel();
+            if (_wallpaperCts != null)
+            {
+                _wallpaperCts.Cancel();
+                _wallpaperCts.Dispose();
+            }
             _wallpaperCts = new CancellationTokenSource();
             Task.Run(() => MonitorWallpaperAsync(_wallpaperCts.Token));
         }
@@ -1667,6 +1671,9 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             {
                 _isDisposed = true;
 
+                OnTelemetryTicked = null;
+                OnWallpaperUpdated = null;
+
                 if (_telemetryTimer != null)
                 {
                     _telemetryTimer.Change(Timeout.Infinite, Timeout.Infinite);
@@ -1702,13 +1709,33 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
                 try
                 {
-                    _wallpaperCts?.Cancel();
-                    _wallpaperCts?.Dispose();
+                    if (_wallpaperCts != null)
+                    {
+                        _wallpaperCts.Cancel();
+                        _wallpaperCts.Dispose();
+                        _wallpaperCts = null;
+                    }
 
                     if (!_cts.IsCancellationRequested) _cts.Cancel();
                     _cts.Dispose();
                 }
                 catch (ObjectDisposedException) { }
+
+                CpuGraphValues?.Clear();
+                CpuGraphDot?.Clear();
+                RamGraphValues?.Clear();
+                RamGraphDot?.Clear();
+                GpuGraphValues?.Clear();
+                GpuGraphDot?.Clear();
+                NetDownGraphValues?.Clear();
+                NetDownGraphDot?.Clear();
+                NetUpGraphValues?.Clear();
+                NetUpGraphDot?.Clear();
+
+                CpuGraphSeries = Array.Empty<ISeries>();
+                RamGraphSeries = Array.Empty<ISeries>();
+                GpuGraphSeries = Array.Empty<ISeries>();
+                NetGraphSeries = Array.Empty<ISeries>();
 
                 if (_displayData != null) { _displayData.Clear(); _displayData = null!; }
                 if (_fiveDayForecast != null) { _fiveDayForecast.Clear(); _fiveDayForecast = null!; }
@@ -1720,7 +1747,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
                 ClearPropertyChangedListeners();
 
-                Debug.WriteLine("[HomePageVM] Purge: All models and delegates unrooted.");
+                Debug.WriteLine("[HomePageVM] Purge: All models, graphs, and delegates unrooted.");
             }
 
             base.Dispose(disposing);

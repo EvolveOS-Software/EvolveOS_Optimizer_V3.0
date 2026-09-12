@@ -27,7 +27,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         public int Seconds { get; set; }
     }
 
-    public partial class CpuCoreTemperaturesViewModel : ObservableObject
+    public partial class CpuCoreTemperaturesViewModel : ObservableObject, IDisposable
     {
         #region Fields
 
@@ -419,6 +419,31 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 _pCoreCount = 8;
                 return _pCoreCount.Value;
             }
+        }
+
+        #endregion
+
+        #region Disposal
+
+        private bool _isDisposed;
+
+        public void Dispose()
+        {
+            if (_isDisposed) return;
+            _isDisposed = true;
+
+            StopPolling();
+
+            if (GroupedCores != null)
+            {
+                foreach (var group in GroupedCores)
+                {
+                    group.Clear();
+                }
+                GroupedCores.Clear();
+            }
+
+            Debug.WriteLine("[CpuCoreTemperaturesVM] Disposed: Polling halted and collections cleared.");
         }
 
         #endregion

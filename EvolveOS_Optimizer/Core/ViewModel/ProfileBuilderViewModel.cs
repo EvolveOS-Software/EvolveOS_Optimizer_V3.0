@@ -17,7 +17,7 @@ using EvolveOS_Optimizer.Utilities.WinBuilder;
 
 namespace EvolveOS_Optimizer.Core.ViewModel;
 
-public partial class ProfileBuilderViewModel : ObservableObject
+public partial class ProfileBuilderViewModel : ObservableObject, IDisposable
 {
     #region Fields & Dependencies
 
@@ -783,6 +783,34 @@ public partial class ProfileBuilderViewModel : ObservableObject
         {
             try { File.Delete(tempPath); } catch { }
         }
+    }
+
+    #endregion
+
+    #region Disposal
+
+    private bool _isDisposed;
+
+    public void Dispose()
+    {
+        if (_isDisposed) return;
+        _isDisposed = true;
+
+        if (_categories != null)
+        {
+            foreach (var category in _categories.OfType<BuilderFeatureCategory>())
+            {
+                category.Settings?.Clear();
+            }
+            _categories.Clear();
+        }
+
+        _searchSuggestions?.Clear();
+
+        DisplayedCategory = null;
+        SelectedCategory = null;
+
+        Debug.WriteLine("[ProfileBuilderVM] Purge: Builder collections unrooted.");
     }
 
     #endregion

@@ -87,11 +87,22 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         public void Dispose()
         {
-            _cts.Cancel();
-            _cts.Dispose();
+            try
+            {
+                if (!_cts.IsCancellationRequested) _cts.Cancel();
+                _cts.Dispose();
+            }
+            catch (ObjectDisposedException) { }
+
+            StatusUpdateRequested = null;
+            CriticalErrorRequested = null;
+            UserDataLoaded = null;
+            TransitionReady = null;
 
             if (_systemDiagnostics is IDisposable d1) d1.Dispose();
             if (_uninstallingPakages is IDisposable d2) d2.Dispose();
+
+            Debug.WriteLine("[LoadingWindowVM] Disposed and delegates unhooked.");
         }
 
         #region Background Startup Checks
