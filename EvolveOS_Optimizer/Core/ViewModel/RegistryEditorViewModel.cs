@@ -10,7 +10,7 @@ using EvolveOS_Optimizer.Utilities.Helpers;
 
 namespace EvolveOS_Optimizer.Core.ViewModel
 {
-    public partial class RegistryEditorViewModel : ObservableObject
+    public partial class RegistryEditorViewModel : ObservableObject, IDisposable
     {
         private CancellationTokenSource? _cancellationTokenSource = new();
 
@@ -80,16 +80,31 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             }
         }
 
-        public void Cleanup()
+        #region Disposal
+
+        private bool _isDisposed;
+
+        public void Dispose()
         {
+            if (_isDisposed) return;
+            _isDisposed = true;
+
             if (_cancellationTokenSource != null)
             {
-                _cancellationTokenSource.Cancel();
+                if (!_cancellationTokenSource.IsCancellationRequested)
+                {
+                    _cancellationTokenSource.Cancel();
+                }
                 _cancellationTokenSource.Dispose();
                 _cancellationTokenSource = null;
             }
 
-            Debug.WriteLine($"[{this.GetType().Name}] Cleanup complete. References broken.");
+            KeyItems?.Clear();
+            FlatKeyItems?.Clear();
+
+            Debug.WriteLine($"[{this.GetType().Name}] Disposed: CTS destroyed and Registry trees cleared.");
         }
+
+        #endregion
     }
 }

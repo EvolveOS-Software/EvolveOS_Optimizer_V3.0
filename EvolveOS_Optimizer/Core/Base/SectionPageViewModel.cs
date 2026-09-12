@@ -78,12 +78,6 @@ public abstract partial class SectionPageViewModel<TSectionInfo> : CommunityTool
         _localizationService.LanguageChanged += OnLanguageChanged;
     }
 
-    public void Dispose()
-    {
-        if (_disposed) return;
-        _disposed = true;
-        _localizationService.LanguageChanged -= OnLanguageChanged;
-    }
     protected void InitializeSectionMappings()
     {
         var byModuleId = _featureViewModels.ToDictionary(vm => vm.ModuleId);
@@ -241,4 +235,42 @@ public abstract partial class SectionPageViewModel<TSectionInfo> : CommunityTool
         UpdateSearchSuggestions(value);
         OnPropertyChanged(nameof(HasNoSearchResults));
     }
+
+    #region Disposal
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (_disposed) return;
+
+        if (disposing)
+        {
+            _localizationService.LanguageChanged -= OnLanguageChanged;
+
+            if (_featureViewModels != null)
+            {
+                foreach (var vm in _featureViewModels)
+                {
+                    if (vm is IDisposable disposableVm)
+                    {
+                        disposableVm.Dispose();
+                    }
+                }
+            }
+
+            _viewModelBySectionKey?.Clear();
+            SearchSuggestions?.Clear();
+
+            Debug.WriteLine($"[{this.GetType().Name}] Disposed: Cascaded teardown to all child tabs and cleared dictionaries.");
+        }
+
+        _disposed = true;
+    }
+
+    #endregion
 }

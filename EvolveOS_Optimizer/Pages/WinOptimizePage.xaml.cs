@@ -60,7 +60,7 @@ public sealed partial class WinOptimizePage : Page, IPurgeable
     public static string? RequestedSearchOnLoad { get; set; }
     public static Action<string>? ExternalSectionRequest;
 
-    public OptimizeViewModel ViewModel { get; }
+    public OptimizeViewModel ViewModel { get; set; }
     #endregion
 
     #region Constructor & ViewModel Event Handlers
@@ -792,13 +792,18 @@ public sealed partial class WinOptimizePage : Page, IPurgeable
     #endregion
 
     #region Purge Page
-    public async Task Purge()
+    public Task Purge()
     {
         Debug.WriteLine($"[{this.GetType().Name}] Purge requested...");
 
         if (!SettingsEngine.IsHighPerformanceModeEnabled)
         {
-            ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
+            Debug.WriteLine($"[{this.GetType().Name}] Low Resource Mode: Nuking UI and ViewModel...");
+
+            if (ViewModel != null)
+            {
+                ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
+            }
 
             _settingAppliedSubscription?.Dispose();
             _settingAppliedSubscription = null;
@@ -810,21 +815,36 @@ public sealed partial class WinOptimizePage : Page, IPurgeable
             {
                 await Task.Delay(350);
 
+                var tcs = new TaskCompletionSource();
                 DispatcherQueue?.TryEnqueue(() =>
                 {
+                    if (this.DataContext is IDisposable disposableVm) disposableVm.Dispose();
+
                     if (InnerContentFrame != null)
                     {
                         InnerContentFrame.Content = null;
                     }
+
+                    ViewModel = null!;
+                    this.Bindings?.StopTracking();
+                    this.DataContext = null!;
+                    this.Content = null!;
+
+                    tcs.SetResult();
                 });
 
-                DiagnosticsPageViewModel.Current.ForceImmediateMemoryCleanup();
+                await tcs.Task;
+
+                DiagnosticsPageViewModel.Current?.ForceImmediateMemoryCleanup();
+                App.MemoryGuardian?.ForcePageTransitionCleanup();
             });
         }
         else
         {
             Debug.WriteLine($"[{this.GetType().Name}] State preserved in RAM cache.");
         }
+
+        return Task.CompletedTask;
     }
     #endregion
 }

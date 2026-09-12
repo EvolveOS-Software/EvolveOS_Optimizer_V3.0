@@ -19,7 +19,7 @@ using EvolveOS_Optimizer.Utilities.Services;
 
 namespace EvolveOS_Optimizer.Core.ViewModel
 {
-    public partial class DiskCleanupViewModel : ObservableObject
+    public partial class DiskCleanupViewModel : ObservableObject, IDisposable
     {
         #region Services & Fields
         private readonly Winapp2Parser _parser = new();
@@ -1938,21 +1938,61 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         #endregion
 
         #region Cleanup & Memory Management
-        public void DisposeCollections()
+
+        private bool _isDisposed;
+
+        public void Dispose()
         {
-            _analyzerCts?.Cancel();
-            _cleanerCts?.Cancel();
+            if (_isDisposed) return;
+            _isDisposed = true;
+
+            try
+            {
+                if (_analyzerCts != null)
+                {
+                    if (!_analyzerCts.IsCancellationRequested) _analyzerCts.Cancel();
+                    _analyzerCts.Dispose();
+                    _analyzerCts = null;
+                }
+
+                if (_analyzerSearchCts != null)
+                {
+                    if (!_analyzerSearchCts.IsCancellationRequested) _analyzerSearchCts.Cancel();
+                    _analyzerSearchCts.Dispose();
+                    _analyzerSearchCts = null;
+                }
+
+                if (_cleanerCts != null)
+                {
+                    if (!_cleanerCts.IsCancellationRequested) _cleanerCts.Cancel();
+                    _cleanerCts.Dispose();
+                    _cleanerCts = null;
+                }
+            }
+            catch (ObjectDisposedException) { }
+
             Categories?.Clear();
             ResultLines?.Clear();
             DetailLines?.Clear();
             CategoryInsights?.Clear();
             HistoryChart?.Clear();
             AnalyzedNodes?.Clear();
+            AnalyzerInsights?.Clear();
+            FileCategories?.Clear();
+
+            if (DevToolchains != null)
+            {
+                DevToolchains.Clear();
+            }
+
             _lastScan?.Clear();
             _loadedEntries?.Clear();
+            _unfilteredRootNodes?.Clear();
+            _lastPaths?.Clear();
 
-            System.Diagnostics.Debug.WriteLine("[DiskCleanupVM] Large collections zeroed for Search & Destroy Purge.");
+            Debug.WriteLine("[DiskCleanupVM] Disposed: CTS safely destroyed and large collections zeroed.");
         }
+
         #endregion
     }
 

@@ -623,23 +623,12 @@ namespace EvolveOS_Optimizer.Pages
                     {
                         if (this.DataContext is IDisposable disposableVm) disposableVm.Dispose();
 
-                        if (_viewModel != null)
-                        {
-                            _viewModel.Categories?.Clear();
-                            _viewModel.ResultLines?.Clear();
-                            _viewModel.DetailLines?.Clear();
-                            _viewModel.HistoryChart?.Clear();
-                            _viewModel.CategoryInsights?.Clear();
-                            _viewModel.AnalyzedNodes?.Clear();
-
-                            _viewModel = null;
-                        }
-
+                        _viewModel = null!;
                         _buttonsWithOpenFlyouts.Clear();
 
                         this.Bindings?.StopTracking();
-                        this.DataContext = null;
-                        this.Content = null;
+                        this.DataContext = null!;
+                        this.Content = null!;
 
                         tcs.SetResult();
                     });
