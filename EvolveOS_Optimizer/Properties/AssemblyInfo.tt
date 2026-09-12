@@ -1,5 +1,11 @@
 <#@ template hostspecific="true" language="C#" #>
 <#@ output extension=".cs" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="System.Xml" #>
+<#@ assembly name="System.Xml.Linq" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Xml.Linq" #>
 using System.Reflection;
 using System.Runtime.InteropServices;
 
@@ -7,23 +13,36 @@ using System.Runtime.InteropServices;
     string displayVersion = "Build: 1.2.7"; 
     string cleanVersion = displayVersion.Replace("Build:", "").Trim(); 
     string[] versionParts = cleanVersion.Split('.');
-    string majorMinor = $"{versionParts[0]}.{versionParts[1]}";
+    
+    string major = versionParts.Length > 0 ? versionParts[0] : "1";
+    string minor = versionParts.Length > 1 ? versionParts[1] : "0";
+    string patch = versionParts.Length > 2 ? versionParts[2] : "0";
+
     string build = GetBuildNumber();
     string revision = GetRevisionNumber();
 
-    string numericVersion = $"{majorMinor}.{build}.{revision}";
+    // Assembly versions (e.g. 1.2.7.429)
+    string numericVersion = $"{major}.{minor}.{patch}.{build}";
+
+    // Store-compliant MSIX package version (4th digit MUST be 0 -> e.g. 1.2.7.0)
+    string storePackageVersion = $"{major}.{minor}.{patch}.0";
+
+    // Automatically synchronize Package.appxmanifest and capture the result
+    string manifestUpdateResult = UpdateAppxManifest(storePackageVersion);
 #>
+
+// =========================================================================
+// T4 Manifest Update Status: <#= manifestUpdateResult #>
+// =========================================================================
 
 [assembly: AssemblyTitle("EvolveOS_Optimizer")]
 [assembly: AssemblyDescription("An advanced, self-contained Windows management suite for deep system optimization, privacy, and security.")]
 [assembly: AssemblyCompany("EvolveOS Software")]
 [assembly: AssemblyProduct("EvolveOS_Optimizer")]
-[assembly: AssemblyCopyright("© 2024-<#= DateTime.Now.Year #> EvolveOS")]
-[assembly: AssemblyTrademark("EvolveOS")]
+[assembly: AssemblyCopyright("© 2026-<#= DateTime.Now.Year #> EvolveOS")]
+[assembly: AssemblyTrademark("EvolveOS Software")]
 
-// This attribute allows custom text e.g "Build: 2.0.2"
 [assembly: AssemblyInformationalVersion("<#= displayVersion #>.<#= build #>")]
-
 [assembly: AssemblyVersion("<#= numericVersion #>")]
 [assembly: AssemblyFileVersion("<#= numericVersion #>")]
 
@@ -39,5 +58,57 @@ using System.Runtime.InteropServices;
     private string GetRevisionNumber()
     {
         return ((int)DateTime.UtcNow.TimeOfDay.TotalMinutes).ToString();
+    }
+
+    private string UpdateAppxManifest(string newVersion)
+    {
+        try
+        {
+            string startDir = this.Host.ResolvePath(".");
+            string manifestPath = null;
+            
+            // Search up to 3 directory levels up to guarantee we find the manifest
+            var currentDir = new DirectoryInfo(startDir);
+            for(int i = 0; i < 3 && currentDir != null; i++)
+            {
+                string testPath = Path.Combine(currentDir.FullName, "Package.appxmanifest");
+                if (File.Exists(testPath))
+                {
+                    manifestPath = testPath;
+                    break;
+                }
+                currentDir = currentDir.Parent;
+            }
+
+            if (manifestPath == null)
+            {
+                return "FAILED: Package.appxmanifest not found in project directories.";
+            }
+
+            var doc = XDocument.Load(manifestPath);
+            
+            // Bulletproof: Find Identity tag regardless of which schema XML namespace it uses
+            var identity = doc.Descendants().FirstOrDefault(e => e.Name.LocalName == "Identity");
+            
+            if (identity != null)
+            {
+                var currentVersion = identity.Attribute("Version")?.Value;
+                if (currentVersion == newVersion)
+                {
+                    return $"SKIPPED: Manifest is already up-to-date at version {newVersion}.";
+                }
+
+                identity.SetAttributeValue("Version", newVersion);
+                doc.Save(manifestPath);
+                return $"SUCCESS: Updated {manifestPath} to {newVersion}.";
+            }
+            
+            return "FAILED: <Identity> tag not found inside the XML.";
+        }
+        catch (Exception ex)
+        {
+            // Now you will actually see what went wrong!
+            return $"ERROR: {ex.Message}";
+        }
     }
 #>
