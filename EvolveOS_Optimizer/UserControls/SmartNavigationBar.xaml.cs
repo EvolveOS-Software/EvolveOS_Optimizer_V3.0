@@ -1,19 +1,19 @@
 // Copyright (c) 2026 EvolveOS Software
 // Licensed under the MIT License.
 
+using System.Numerics;
 using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Pages;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Services;
 using FluentIcons.Common;
 using FluentIcons.WinUI;
+using Microsoft.UI.Text;
+using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media.Animation;
 using Windows.Foundation;
-using System.Numerics;
-using Microsoft.UI.Xaml.Hosting;
-using Microsoft.UI.Xaml.Markup;
-using Microsoft.UI.Text;
 
 namespace EvolveOS_Optimizer.UserControls
 {

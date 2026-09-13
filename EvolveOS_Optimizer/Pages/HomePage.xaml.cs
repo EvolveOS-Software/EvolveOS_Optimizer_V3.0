@@ -146,7 +146,7 @@ namespace EvolveOS_Optimizer.Pages
                 _ = UpdateSecurityUIAsync();
                 _ = UpdatePrivacyUIAsync();
                 _ = UpdatePerformanceUIAsync();
-                
+
                 StartShimmer(IpShimmerBrush, "Stop2");
                 StartShimmer(LocalIpShimmerBrush, "LocalStop2");
 

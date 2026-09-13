@@ -954,7 +954,7 @@ public static class TaskbarCustomizations
 
                             // Triggered when re-enabling widgets: restores the scheduled task state
                             EnabledScript = "schtasks /change /Enable /TN \"\\Microsoft\\Windows\\AppxDeploymentClient\\UCPD velocity\" -ErrorAction SilentlyContinue",
-                            
+
                             RequiresElevation = true,
                             RunContext = RunContext.System
                         }
