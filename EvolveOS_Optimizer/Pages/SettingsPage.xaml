@@ -633,7 +633,7 @@
                             <TextBlock Grid.Column="1" FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_AI_ProviderLabel'), Mode=OneWay}" VerticalAlignment="Center" FontWeight="SemiBold"/>
                             <ComboBox x:Name="CbAiProvider" Grid.Column="2" Width="200" SelectionChanged="CbAiProvider_SelectionChanged">
                                 <ComboBoxItem Content="Groq (Llama 3.3)" Tag="Groq"/>
-                                <ComboBoxItem Content="Google Gemini (1.5 Flash)" Tag="Gemini"/>
+                                <ComboBoxItem Content="Google Gemini (2.5 Flash)" Tag="Gemini"/>
                                 <ComboBoxItem Content="OpenRouter (Aggregator)" Tag="OpenRouter"/>
                                 <ComboBoxItem Content="Cohere (Command)" Tag="Cohere"/>
                                 <ComboBoxItem Content="Mistral AI" Tag="Mistral"/>

@@ -249,8 +249,22 @@ namespace EvolveOS_Optimizer.Utilities.Services
             try
             {
                 string url = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={apiKey}";
-                var fullPrompt = SystemPrompt + "\n\n" + prompt;
-                var requestBody = new { contents = new[] { new { parts = new[] { new { text = fullPrompt } } } } };
+
+                var requestBody = new
+                {
+                    system_instruction = new
+                    {
+                        parts = new[] { new { text = SystemPrompt } }
+                    },
+                    contents = new[]
+                    {
+                        new
+                        {
+                            parts = new[] { new { text = prompt } }
+                        }
+                    }
+                };
+
                 var content = new StringContent(JsonSerializer.Serialize(requestBody), Encoding.UTF8, "application/json");
 
                 var res = await _http.PostAsync(url, content);
