@@ -1,6 +1,3 @@
-using EvolveOS_Optimizer.Utilities.Controls;
-using EvolveOS_Optimizer.Utilities.Helpers;
-using EvolveOS_Optimizer.Utilities.Managers;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Input;
 using Windows.ApplicationModel.DataTransfer;

@@ -2,9 +2,6 @@
 // Licensed under the MIT License.
 
 using System.Runtime.InteropServices;
-using EvolveOS_Optimizer.Core.ViewModel;
-using EvolveOS_Optimizer.Utilities.Controls;
-using EvolveOS_Optimizer.Utilities.Helpers;
 using Microsoft.UI.Windowing;
 using WinRT.Interop;
 

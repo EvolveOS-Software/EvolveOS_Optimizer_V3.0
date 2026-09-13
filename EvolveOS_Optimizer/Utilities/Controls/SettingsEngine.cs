@@ -4,10 +4,6 @@
 using System.IO;
 using System.Reflection;
 using System.Text.Json;
-using EvolveOS_Optimizer.Core.Enums;
-using EvolveOS_Optimizer.Utilities.Configuration;
-using EvolveOS_Optimizer.Utilities.Helpers;
-using EvolveOS_Optimizer.Utilities.Services;
 using Microsoft.Win32;
 using Microsoft.Win32.TaskScheduler;
 using Windows.System;
@@ -603,8 +599,8 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["UseHotkey"] = false,
             ["OptimizationKey"] = (int)VirtualKey.M,
             ["OptimizationModifiers"] = (int)(VirtualKeyModifiers.Control | VirtualKeyModifiers.Shift),
-            ["MemoryAreas"] = (int)(Memory.Areas.CombinedPageList | Memory.Areas.ModifiedFileCache | Memory.Areas.ModifiedPageList | Memory.Areas.RegistryCache |
-                        Memory.Areas.StandbyList | Memory.Areas.SystemFileCache | Memory.Areas.WorkingSet | Memory.Areas.DiskCleanup | Memory.Areas.FlushDns),
+            ["MemoryAreas"] = (int)(Core.Enums.Memory.Areas.CombinedPageList | Core.Enums.Memory.Areas.ModifiedFileCache | Core.Enums.Memory.Areas.ModifiedPageList | Core.Enums.Memory.Areas.RegistryCache |
+                        Core.Enums.Memory.Areas.StandbyList | Core.Enums.Memory.Areas.SystemFileCache | Core.Enums.Memory.Areas.WorkingSet | Core.Enums.Memory.Areas.DiskCleanup | Core.Enums.Memory.Areas.FlushDns),
             ["EnableDeveloperMode"] = false,
             ["IsFirstRun"] = true,
             ["HasChosenResourceMode"] = false,
@@ -678,7 +674,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static Priority RunOnPriority { get => (Priority)(int)_cachedSettings["RunOnPriority"]; set => ChangingParameters("RunOnPriority", (int)value); }
         internal static VirtualKey OptimizationKey { get => (VirtualKey)Convert.ToInt32(_cachedSettings["OptimizationKey"]); set => ChangingParameters("OptimizationKey", (int)value); }
         internal static VirtualKeyModifiers OptimizationModifiers { get => (VirtualKeyModifiers)Convert.ToInt32(_cachedSettings["OptimizationModifiers"]); set => ChangingParameters("OptimizationModifiers", (int)value); }
-        internal static Memory.Areas MemoryAreas { get => (Memory.Areas)(int)_cachedSettings["MemoryAreas"]; set => ChangingParameters("MemoryAreas", (int)value); }
+        internal static Core.Enums.Memory.Areas MemoryAreas { get => (Core.Enums.Memory.Areas)(int)_cachedSettings["MemoryAreas"]; set => ChangingParameters("MemoryAreas", (int)value); }
         internal static bool IsDeveloperMode { get => (bool)_cachedSettings["EnableDeveloperMode"]; set => ChangingParameters("EnableDeveloperMode", value); }
         internal static bool IsFirstRun { get => (bool)_cachedSettings["IsFirstRun"]; set => ChangingParameters("IsFirstRun", value); }
         internal static bool HasChosenResourceMode { get => (bool)_cachedSettings["HasChosenResourceMode"]; set => ChangingParameters("HasChosenResourceMode", value); }
@@ -826,7 +822,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             if (System.IO.Directory.Exists(System.IO.Path.Combine(systemDrive, "Windows.old")))
             {
                 int currentAreas = Convert.ToInt32(_cachedSettings["MemoryAreas"]);
-                _cachedSettings["MemoryAreas"] = currentAreas | (int)Memory.Areas.WindowsOld;
+                _cachedSettings["MemoryAreas"] = currentAreas | (int)Core.Enums.Memory.Areas.WindowsOld;
             }
 
             try

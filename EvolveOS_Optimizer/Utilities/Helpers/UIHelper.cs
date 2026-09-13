@@ -3,8 +3,6 @@
 
 using System.ComponentModel;
 using System.Numerics;
-using EvolveOS_Optimizer.Core.ViewModel;
-using EvolveOS_Optimizer.Utilities.Controls;
 using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Hosting;

@@ -2,14 +2,7 @@
 // Licensed under the MIT License.
 
 using System.Collections.ObjectModel;
-using System.Threading;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using EvolveOS_Optimizer.Core.Base;
-using EvolveOS_Optimizer.Core.Enums;
-using EvolveOS_Optimizer.Core.Events;
-using EvolveOS_Optimizer.Core.Interfaces;
-using EvolveOS_Optimizer.Utilities.Extensions;
 using ISettingsLoadingService = EvolveOS_Optimizer.Core.Interfaces.ISettingsLoadingService;
 
 namespace EvolveOS_Optimizer.Core.ViewModel;

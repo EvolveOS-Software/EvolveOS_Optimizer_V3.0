@@ -1,13 +1,11 @@
 // Copyright (c) 2026 EvolveOS Software
 // Licensed under the MIT License.
 
-using EvolveOS_Optimizer.Core.Base;
-using EvolveOS_Optimizer.Utilities.Controls;
 using Windows.System;
 
 namespace EvolveOS_Optimizer.Core.ViewModel
 {
-    public class AdvancedUtilsViewModel : ObservableObject
+    public class AdvancedUtilsViewModel : Base.ObservableObject
     {
         #region Properties
 

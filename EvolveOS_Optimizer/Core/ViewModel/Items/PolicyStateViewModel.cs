@@ -1,5 +1,3 @@
-using EvolveOS_Optimizer.Utilities.Helpers;
-
 namespace EvolveOS_Optimizer.Core.ViewModel.Items
 {
     public sealed class PolicyStateViewModel

@@ -1,5 +1,3 @@
-using EvolveOS_Optimizer.Core.Enums;
-
 namespace EvolveOS_Optimizer.Core.Interfaces
 {
     public interface IDNSCryptSetting

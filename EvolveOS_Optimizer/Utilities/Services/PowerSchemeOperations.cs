@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using System.Runtime.InteropServices;
-using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Native;
 
 namespace EvolveOS_Optimizer.Utilities.Services;

@@ -4,8 +4,6 @@
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
-using EvolveOS_Optimizer.Core.ViewModel;
-using static EvolveOS_Optimizer.Utilities.Helpers.Win32Helper;
 
 namespace EvolveOS_Optimizer.Utilities.Helpers
 {
@@ -13,7 +11,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
     public static class SystemHealthHelper
     {
-        
+
 
         public static async Task<SystemHealthResult> EvaluateHealthAsync()
         {

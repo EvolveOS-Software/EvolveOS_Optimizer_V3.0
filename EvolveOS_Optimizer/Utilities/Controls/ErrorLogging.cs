@@ -2,8 +2,6 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
-using EvolveOS_Optimizer.Utilities.Configuration;
-using EvolveOS_Optimizer.Utilities.Helpers;
 
 namespace EvolveOS_Optimizer.Utilities.Controls
 {

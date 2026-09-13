@@ -1,5 +1,4 @@
 using System.Windows.Input;
-using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace EvolveOS_Optimizer.Core.Model
 {

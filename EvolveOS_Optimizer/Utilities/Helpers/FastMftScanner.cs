@@ -3,8 +3,6 @@
 
 using System.ComponentModel;
 using System.Runtime.InteropServices;
-using System.Threading;
-using EvolveOS_Optimizer.Core.Model;
 
 namespace EvolveOS_Optimizer.Utilities.Helpers
 {

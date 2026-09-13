@@ -3,12 +3,6 @@
 
 using System.Collections.ObjectModel;
 using System.Runtime.InteropServices;
-using EvolveOS_Optimizer.Core.Enums;
-using EvolveOS_Optimizer.Core.Model;
-using EvolveOS_Optimizer.Core.ViewModel;
-using EvolveOS_Optimizer.Utilities.Controls;
-using EvolveOS_Optimizer.Utilities.Helpers;
-using EvolveOS_Optimizer.Utilities.Services;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Shapes;
 using WinRT.Interop;

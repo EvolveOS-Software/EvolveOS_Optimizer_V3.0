@@ -2,10 +2,6 @@
 // Licensed under the MIT License.
 
 using System.IO;
-using EvolveOS_Optimizer.Core.Model;
-using EvolveOS_Optimizer.Pages;
-using EvolveOS_Optimizer.Utilities.Controls;
-using EvolveOS_Optimizer.Utilities.Helpers;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Media.Animation;
 using Windows.Graphics;

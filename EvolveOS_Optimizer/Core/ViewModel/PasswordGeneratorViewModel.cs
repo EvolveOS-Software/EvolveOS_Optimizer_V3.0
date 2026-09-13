@@ -3,13 +3,11 @@
 
 using System.Text;
 using System.Windows.Input;
-using EvolveOS_Optimizer.Core.Base;
-using EvolveOS_Optimizer.Utilities.Helpers;
 using Windows.ApplicationModel.DataTransfer;
 
 namespace EvolveOS_Optimizer.Core.ViewModel
 {
-    public class PasswordGeneratorViewModel : ObservableObject
+    public class PasswordGeneratorViewModel : Base.ObservableObject
     {
         private readonly PasswordValidator _passwordValidator = new PasswordValidator();
         public PasswordViewModel PasswordValidation { get; }
@@ -102,8 +100,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         public PasswordGeneratorViewModel()
         {
             PasswordValidation = new PasswordViewModel();
-            GenerateCommand = new RelayCommand(_ => GeneratePassword());
-            CopyCommand = new RelayCommand(_ => CopyToClipboard());
+            GenerateCommand = new Base.RelayCommand(_ => GeneratePassword());
+            CopyCommand = new Base.RelayCommand(_ => CopyToClipboard());
 
             GeneratePassword();
         }

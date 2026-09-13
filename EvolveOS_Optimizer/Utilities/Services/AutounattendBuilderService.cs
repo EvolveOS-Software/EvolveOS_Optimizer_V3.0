@@ -1,7 +1,6 @@
 // Copyright (c) 2026 EvolveOS Software
 // Licensed under the MIT License.
 
-using System.IO;
 using System.Text;
 using EvolveOS_Optimizer.Utilities.WinBuilder;
 

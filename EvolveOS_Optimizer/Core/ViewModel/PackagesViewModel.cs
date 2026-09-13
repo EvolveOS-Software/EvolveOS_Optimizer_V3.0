@@ -1,8 +1,5 @@
 using System.Collections.ObjectModel;
 using EvolveOS_Optimizer.Core.Base;
-using EvolveOS_Optimizer.Core.Model;
-using EvolveOS_Optimizer.Utilities.Configuration;
-using EvolveOS_Optimizer.Utilities.Managers;
 using EvolveOS_Optimizer.Utilities.Tweaks;
 
 namespace EvolveOS_Optimizer.Core.ViewModel

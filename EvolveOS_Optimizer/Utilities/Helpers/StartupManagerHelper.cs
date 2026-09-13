@@ -4,9 +4,6 @@
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.Json;
-using EvolveOS_Optimizer.Core.Enums;
-using EvolveOS_Optimizer.Core.Model;
-using EvolveOS_Optimizer.Utilities.Controls;
 using Microsoft.Win32;
 
 namespace EvolveOS_Optimizer.Utilities.Helpers

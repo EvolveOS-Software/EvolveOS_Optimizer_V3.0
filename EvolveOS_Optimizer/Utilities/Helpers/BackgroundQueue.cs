@@ -1,5 +1,3 @@
-﻿using System.Threading;
-
 namespace EvolveOS_Optimizer.Utilities.Helpers
 {
     public class BackgroundQueue

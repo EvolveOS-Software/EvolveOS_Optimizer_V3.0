@@ -4,9 +4,6 @@
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
-using System.Threading;
-using EvolveOS_Optimizer.Utilities.Controls;
-using EvolveOS_Optimizer.Utilities.Managers;
 
 namespace EvolveOS_Optimizer.Utilities.Services
 {

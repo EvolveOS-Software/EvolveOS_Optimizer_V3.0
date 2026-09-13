@@ -1,9 +1,7 @@
-using System.IO;
 using System.Management;
 using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
 using System.ServiceProcess;
-using Microsoft.Win32;
 
 namespace EvolveOS_Optimizer.Utilities.Configuration
 {

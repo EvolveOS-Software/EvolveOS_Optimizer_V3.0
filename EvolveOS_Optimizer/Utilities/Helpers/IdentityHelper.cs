@@ -4,8 +4,6 @@
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
-using EvolveOS_Optimizer.Utilities.Controls;
-using EvolveOS_Optimizer.Utilities.Managers;
 using Windows.Management.Deployment;
 
 namespace EvolveOS_Optimizer.Utilities.Helpers

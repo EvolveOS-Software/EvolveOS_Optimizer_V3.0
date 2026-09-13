@@ -1,13 +1,10 @@
 // Copyright (c) 2026 EvolveOS Software
-//
-// Licensed under the MIT License. 
-// See the LICENSE file in the project root for more information.
+// Licensed under the MIT License.
 
 using System.IO;
 using System.Text;
 using System.Text.Json;
 using System.Xml.Linq;
-using EvolveOS_Optimizer.Core.Enums;
 
 namespace EvolveOS_Optimizer.Utilities.Helpers
 {
@@ -99,9 +96,9 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
         public static string GetOptimizationResultMessage(
             string reason,
-            KeyValuePair<double, Memory.Unit> physical,
-            KeyValuePair<double, Memory.Unit> virtualMem,
-            KeyValuePair<double, Memory.Unit> disk,
+            KeyValuePair<double, Core.Enums.Memory.Unit> physical,
+            KeyValuePair<double, Core.Enums.Memory.Unit> virtualMem,
+            KeyValuePair<double, Core.Enums.Memory.Unit> disk,
             bool showVirtual,
             bool showDisk)
         {
@@ -149,7 +146,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             return sb.ToString();
         }
 
-        public static string GetLocalizedUnit(Memory.Unit unit)
+        public static string GetLocalizedUnit(Core.Enums.Memory.Unit unit)
         {
             string resourceKey = "unit_" + unit.ToString();
             string localizedUnit = ResourceString.GetString(resourceKey);

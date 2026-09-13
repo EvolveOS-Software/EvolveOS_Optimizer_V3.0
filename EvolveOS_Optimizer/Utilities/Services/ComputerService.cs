@@ -1,17 +1,10 @@
 // Copyright (c) 2026 EvolveOS Software
-//
-// Licensed under the MIT License. 
-// See the LICENSE file in the project root for more information.
+// Licensed under the MIT License.
 
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using EvolveOS_Optimizer.Core;
-using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model.Log;
-using EvolveOS_Optimizer.Core.Model.MemoryModel;
-using EvolveOS_Optimizer.Utilities.Controls;
-using EvolveOS_Optimizer.Utilities.Helpers;
-using EvolveOS_Optimizer.Utilities.Maintenance;
 using static EvolveOS_Optimizer.Core.Enums.Memory;
 
 namespace EvolveOS_Optimizer.Utilities.Services

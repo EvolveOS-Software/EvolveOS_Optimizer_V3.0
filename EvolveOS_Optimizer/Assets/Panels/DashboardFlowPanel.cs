@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using System.Numerics;
-using Windows.Foundation;
 
 namespace EvolveOS_Optimizer.Assets.UserControl
 {

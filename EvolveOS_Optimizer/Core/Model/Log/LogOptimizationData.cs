@@ -1,5 +1,3 @@
-using EvolveOS_Optimizer.Core.Interfaces;
-
 namespace EvolveOS_Optimizer.Core.Model.Log
 {
     public class LogOptimizationData : ILogData, IJsonSerializable

@@ -1,6 +1,3 @@
-using EvolveOS_Optimizer.Core.Enums;
-using EvolveOS_Optimizer.Core.Interfaces;
-using EvolveOS_Optimizer.Utilities.Helpers;
 using ComboBoxItem = EvolveOS_Optimizer.Core.Structs.ComboBoxItem;
 
 namespace EvolveOS_Optimizer.Core.Settings

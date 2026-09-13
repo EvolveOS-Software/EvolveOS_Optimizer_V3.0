@@ -4,17 +4,11 @@
 // See the LICENSE file in the project root for more information.
 
 using System.IO;
-using System.Threading;
 using System.Windows.Input;
-using EvolveOS_Optimizer.Core.Base;
-using EvolveOS_Optimizer.Core.Model;
-using EvolveOS_Optimizer.Utilities.Configuration;
-using EvolveOS_Optimizer.Utilities.Controls;
-using EvolveOS_Optimizer.Utilities.Helpers;
 
 namespace EvolveOS_Optimizer.Core.ViewModel
 {
-    public class UserLoginViewModel : ObservableObject
+    public class UserLoginViewModel : Base.ObservableObject
     {
         #region Fields & Constants
         private readonly WeatherService _weatherService;
@@ -134,8 +128,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             _userDataAccess = new UserDataAccess(GetConnectionString());
 
-            SignInCommand = new RelayCommand(async _ => await ExecuteSignInAsync(), CanExecuteSignIn);
-            OpenSignUpCommand = new RelayCommand(_ => ExecuteOpenSignUp());
+            SignInCommand = new Base.RelayCommand(async _ => await ExecuteSignInAsync(), CanExecuteSignIn);
+            OpenSignUpCommand = new Base.RelayCommand(_ => ExecuteOpenSignUp());
 
             _loginTimer = new DispatcherTimer();
             _loginTimer.Interval = TimeSpan.FromSeconds(1);
@@ -187,7 +181,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             IsSignInEnabled = !string.IsNullOrEmpty(Username) && Username.Length >= 2 &&
                               !string.IsNullOrEmpty(Password) && Password.Length >= 7;
 
-            if (SignInCommand is RelayCommand relay)
+            if (SignInCommand is Base.RelayCommand relay)
             {
                 relay.RaiseCanExecuteChanged();
             }

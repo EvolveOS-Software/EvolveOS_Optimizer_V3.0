@@ -1,6 +1,5 @@
 using System.Net.Http;
 using System.Net.NetworkInformation;
-using EvolveOS_Optimizer.Utilities.Managers;
 using static EvolveOS_Optimizer.Utilities.Managers.NotificationManager;
 
 namespace EvolveOS_Optimizer.Utilities.Helpers

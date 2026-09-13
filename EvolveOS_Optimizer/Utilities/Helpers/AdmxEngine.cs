@@ -2,9 +2,7 @@
 // Licensed under the MIT License.
 
 using System.IO;
-using System.Threading;
 using System.Xml.Linq;
-using EvolveOS_Optimizer.Utilities.Controls;
 using Microsoft.Win32;
 
 namespace EvolveOS_Optimizer.Utilities.Helpers;

@@ -3,7 +3,6 @@
 
 using System.Runtime.CompilerServices;
 using System.Text;
-using System.Threading;
 using Microsoft.UI.Xaml.Media.Animation;
 
 namespace EvolveOS_Optimizer.Utilities.Animation

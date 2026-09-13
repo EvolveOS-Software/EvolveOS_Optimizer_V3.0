@@ -2,8 +2,6 @@
 // Licensed under the MIT License.
 
 using System.Reflection;
-using EvolveOS_Optimizer.Core.Enums;
-using EvolveOS_Optimizer.Core.Model;
 
 namespace EvolveOS_Optimizer.Utilities.Extensions
 {
@@ -32,17 +30,17 @@ namespace EvolveOS_Optimizer.Utilities.Extensions
             }
         }
 
-        public static string GetString(this Memory.Optimization.Reason obj)
+        public static string GetString(this Core.Enums.Memory.Optimization.Reason obj)
         {
             switch (obj)
             {
-                case Memory.Optimization.Reason.LowMemory:
+                case Core.Enums.Memory.Optimization.Reason.LowMemory:
                     return "Low memory";
 
-                case Memory.Optimization.Reason.Manual:
+                case Core.Enums.Memory.Optimization.Reason.Manual:
                     return "Manual";
 
-                case Memory.Optimization.Reason.Schedule:
+                case Core.Enums.Memory.Optimization.Reason.Schedule:
                     return "Schedule";
 
                 default:

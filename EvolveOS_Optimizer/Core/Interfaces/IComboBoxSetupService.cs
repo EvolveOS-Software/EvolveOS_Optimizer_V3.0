@@ -3,7 +3,6 @@
 
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using EvolveOS_Optimizer.Core.Model;
 
 namespace EvolveOS_Optimizer.Core.Interfaces;
 

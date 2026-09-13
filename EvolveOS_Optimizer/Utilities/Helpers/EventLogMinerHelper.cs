@@ -2,7 +2,6 @@
 // Licensed under the MIT License. 
 
 using System.Diagnostics.Eventing.Reader;
-using EvolveOS_Optimizer.Core.Model;
 
 namespace EvolveOS_Optimizer.Utilities.Helpers
 {

@@ -2,11 +2,6 @@
 // Licensed under the MIT License.
 
 using System.Collections.ObjectModel;
-using System.Threading;
-using CommunityToolkit.Mvvm.ComponentModel;
-using EvolveOS_Optimizer.Core.Model;
-using EvolveOS_Optimizer.Utilities.Extensions;
-using EvolveOS_Optimizer.Utilities.Helpers;
 
 namespace EvolveOS_Optimizer.Core.ViewModel
 {

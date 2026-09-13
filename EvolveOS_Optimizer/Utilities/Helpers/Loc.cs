@@ -3,9 +3,6 @@
 // Licensed under the MIT License. 
 // See the LICENSE file in the project root for more information.
 
-using EvolveOS_Optimizer.Utilities.Controls;
-using EvolveOS_Optimizer.Utilities.Services;
-
 namespace EvolveOS_Optimizer.Utilities.Helpers
 {
     public static class Loc

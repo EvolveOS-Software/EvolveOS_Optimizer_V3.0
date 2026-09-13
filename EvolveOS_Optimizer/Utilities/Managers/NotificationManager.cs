@@ -1,12 +1,6 @@
 // Copyright (c) 2026 EvolveOS Software
-//
-// Licensed under the MIT License. 
-// See the LICENSE file in the project root for more information.
+// Licensed under the MIT License.
 
-using System.Threading;
-using EvolveOS_Optimizer.Core.Enums;
-using EvolveOS_Optimizer.Core.ViewModel;
-using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Views;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Hosting;
@@ -379,7 +373,7 @@ namespace EvolveOS_Optimizer.Utilities.Managers
 
             try
             {
-                await sharedViewModel.Optimize(Memory.Optimization.Reason.Manual);
+                await sharedViewModel.Optimize(Core.Enums.Memory.Optimization.Reason.Manual);
             }
             catch (Exception ex)
             {

@@ -5,11 +5,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.ServiceProcess;
-using System.Threading;
 using EvolveOS_Optimizer.Core;
-using EvolveOS_Optimizer.Core.Model;
-using EvolveOS_Optimizer.Utilities.Controls;
-using Microsoft.Win32;
 using Microsoft.Win32.SafeHandles;
 
 namespace EvolveOS_Optimizer.Utilities.Helpers

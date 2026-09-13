@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using System.Security.Principal;
-using EvolveOS_Optimizer.Utilities.Controls;
 
 namespace EvolveOS_Optimizer.Utilities.Helpers;
 

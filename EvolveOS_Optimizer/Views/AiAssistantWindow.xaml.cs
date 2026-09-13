@@ -3,9 +3,6 @@
 
 using System.IO;
 using System.Runtime.InteropServices;
-using EvolveOS_Optimizer.Utilities.Animation;
-using EvolveOS_Optimizer.Utilities.Helpers;
-using EvolveOS_Optimizer.Utilities.Services;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Input;
 using Windows.Graphics;

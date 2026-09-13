@@ -1,7 +1,6 @@
 // Copyright (c) 2026 EvolveOS Software
 // Licensed under the MIT License.
 
-using EvolveOS_Optimizer.Utilities.Helpers;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Input;
 using Windows.Graphics;

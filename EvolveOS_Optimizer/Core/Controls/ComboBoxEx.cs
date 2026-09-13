@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using Microsoft.UI.Xaml.Input;
-using Windows.Foundation;
 
 namespace EvolveOS_Optimizer.Core.Controls;
 

@@ -3,7 +3,6 @@
 
 using System.Runtime;
 using System.Runtime.InteropServices;
-using EvolveOS_Optimizer.Utilities.Controls;
 using Microsoft.UI.Dispatching;
 
 namespace EvolveOS_Optimizer.Utilities.Services

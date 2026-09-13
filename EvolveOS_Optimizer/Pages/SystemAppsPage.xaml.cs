@@ -4,16 +4,7 @@
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Text;
-using System.Threading;
 using CommunityToolkit.WinUI;
-using EvolveOS_Optimizer.Core.Enums;
-using EvolveOS_Optimizer.Core.Interfaces;
-using EvolveOS_Optimizer.Core.Model;
-using EvolveOS_Optimizer.Core.ViewModel;
-using EvolveOS_Optimizer.Utilities.Controls;
-using EvolveOS_Optimizer.Utilities.Helpers;
-using EvolveOS_Optimizer.Utilities.Managers;
-using EvolveOS_Optimizer.Utilities.Services;
 using Microsoft.UI.Dispatching;
 using Microsoft.Win32;
 

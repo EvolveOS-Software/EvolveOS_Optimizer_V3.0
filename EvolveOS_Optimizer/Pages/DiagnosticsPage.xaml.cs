@@ -5,17 +5,8 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
 using EvolveOS_Optimizer.Core;
-using EvolveOS_Optimizer.Core.Enums;
-using EvolveOS_Optimizer.Core.Interfaces;
-using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Core.Settings;
-using EvolveOS_Optimizer.Core.ViewModel;
-using EvolveOS_Optimizer.Utilities.Controls;
-using EvolveOS_Optimizer.Utilities.Helpers;
-using EvolveOS_Optimizer.Utilities.Maintenance;
-using EvolveOS_Optimizer.Utilities.Services;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 
@@ -1355,7 +1346,7 @@ namespace EvolveOS_Optimizer.Pages
             PortScannerDialog?.Hide();
         }
 
-        private void OnOptimizeCommandCompleted(Memory.Optimization.Reason reason, string message)
+        private void OnOptimizeCommandCompleted(Core.Enums.Memory.Optimization.Reason reason, string message)
         {
             if (_isShowingResult) return;
             _isShowingResult = true;

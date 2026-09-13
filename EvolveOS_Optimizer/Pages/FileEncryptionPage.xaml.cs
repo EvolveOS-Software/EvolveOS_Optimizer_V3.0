@@ -5,12 +5,6 @@ using System.IO;
 using System.IO.Compression;
 using System.Security;
 using System.Security.Cryptography;
-using EvolveOS_Optimizer.Core.Interfaces;
-using EvolveOS_Optimizer.Core.ViewModel;
-using EvolveOS_Optimizer.Utilities.Configuration;
-using EvolveOS_Optimizer.Utilities.Controls;
-using EvolveOS_Optimizer.Utilities.Helpers;
-using EvolveOS_Optimizer.Utilities.Managers;
 
 namespace EvolveOS_Optimizer.Pages
 {

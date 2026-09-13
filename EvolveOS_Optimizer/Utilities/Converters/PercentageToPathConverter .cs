@@ -1,6 +1,5 @@
 using System.Globalization;
 using Microsoft.UI.Xaml.Data;
-using Windows.Foundation;
 
 namespace EvolveOS_Optimizer.Utilities.Converters
 {

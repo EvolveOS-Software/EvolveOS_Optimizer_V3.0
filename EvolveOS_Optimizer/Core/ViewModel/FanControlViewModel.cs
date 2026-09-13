@@ -3,12 +3,6 @@
 
 using System.Collections.ObjectModel;
 using System.Globalization;
-using CommunityToolkit.Mvvm.ComponentModel;
-using EvolveOS_Optimizer.Core.Enums;
-using EvolveOS_Optimizer.Core.Model;
-using EvolveOS_Optimizer.Utilities.Controls;
-using EvolveOS_Optimizer.Utilities.Helpers;
-using EvolveOS_Optimizer.Utilities.Services;
 using LibreHardwareMonitor.Hardware;
 
 namespace EvolveOS_Optimizer.Core.ViewModel;

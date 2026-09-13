@@ -8,8 +8,6 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 using EvolveOS_Optimizer.Core;
-using EvolveOS_Optimizer.Utilities.Controls;
-using EvolveOS_Optimizer.Utilities.Helpers;
 using Microsoft.Win32;
 using Microsoft.Win32.SafeHandles;
 using static EvolveOS_Optimizer.Core.Structs.Windows;

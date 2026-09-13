@@ -4,13 +4,6 @@
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Text.Json;
-using System.Threading;
-using EvolveOS_Optimizer.Core.Interfaces;
-using EvolveOS_Optimizer.Core.Model;
-using EvolveOS_Optimizer.Core.ViewModel;
-using EvolveOS_Optimizer.Utilities.Controls;
-using EvolveOS_Optimizer.Utilities.Helpers;
-using EvolveOS_Optimizer.Utilities.Managers;
 using Microsoft.UI.Xaml.Input;
 using Windows.Storage.Streams;
 

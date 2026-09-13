@@ -2,8 +2,8 @@
 // Licensed under the MIT License.
 
 using System.Collections.Concurrent;
-using System.Threading;
 using LibreHardwareMonitor.Hardware;
+using Computer = LibreHardwareMonitor.Hardware.Computer;
 
 namespace EvolveOS_Optimizer.Utilities.Services
 {

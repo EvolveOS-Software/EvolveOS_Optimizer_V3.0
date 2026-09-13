@@ -2,9 +2,6 @@
 // Licensed under the MIT License.
 
 using EvolveOS_Optimizer.Core.Base;
-using EvolveOS_Optimizer.Core.Constants;
-using EvolveOS_Optimizer.Core.Interfaces;
-using EvolveOS_Optimizer.Core.Model;
 
 namespace EvolveOS_Optimizer.Core.ViewModel;
 

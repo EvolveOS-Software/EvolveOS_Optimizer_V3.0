@@ -5,7 +5,6 @@ using System.IO;
 using System.Security;
 using System.Security.Cryptography;
 using System.Text;
-using EvolveOS_Optimizer.Utilities.Helpers;
 
 namespace EvolveOS_Optimizer.Utilities.Managers
 {

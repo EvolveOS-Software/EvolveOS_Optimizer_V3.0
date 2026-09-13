@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using Microsoft.UI.Xaml.Shapes;
-using Windows.Foundation;
 
 namespace EvolveOS_Optimizer.Utilities.Helpers
 {

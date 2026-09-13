@@ -2,9 +2,6 @@ using System.Globalization;
 using System.Net;
 using System.Net.Http;
 using System.Text.Json;
-using System.Threading;
-using EvolveOS_Optimizer.Core.Model;
-using EvolveOS_Optimizer.Utilities.Controls;
 using static EvolveOS_Optimizer.Core.Model.WeatherApiModels;
 
 namespace EvolveOS_Optimizer.Utilities.Configuration

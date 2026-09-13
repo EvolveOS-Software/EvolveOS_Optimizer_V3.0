@@ -4,10 +4,6 @@
 using System.IO;
 using System.Runtime.InteropServices;
 using EvolveOS_Optimizer.Core.Localization;
-using EvolveOS_Optimizer.Core.Model;
-using EvolveOS_Optimizer.Utilities.Controls;
-using EvolveOS_Optimizer.Utilities.Helpers;
-using EvolveOS_Optimizer.Utilities.Services;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.Win32;

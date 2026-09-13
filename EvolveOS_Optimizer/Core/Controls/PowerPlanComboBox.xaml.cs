@@ -3,7 +3,6 @@
 
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using EvolveOS_Optimizer.Core.Model;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Input;

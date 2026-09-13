@@ -6,12 +6,6 @@ using System.Reflection;
 using System.Security.Principal;
 using System.Windows.Input;
 using EvolveOS_Optimizer.Core.Base;
-using EvolveOS_Optimizer.Core.Model;
-using EvolveOS_Optimizer.Pages;
-using EvolveOS_Optimizer.Utilities.Configuration;
-using EvolveOS_Optimizer.Utilities.Controls;
-using EvolveOS_Optimizer.Utilities.Helpers;
-using EvolveOS_Optimizer.Utilities.Services;
 using Microsoft.UI.Windowing;
 using Windows.System;
 using WinRT.Interop;
@@ -244,7 +238,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         #endregion
 
         #region Commands
-        public RelayCommand<string> ExecuteNavigateCommand { get; }
+        public Base.RelayCommand<string> ExecuteNavigateCommand { get; }
 
         public ICommand MaximizeCommand { get; }
         public ICommand MinimizeCommand { get; }
@@ -261,22 +255,22 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         #region Constructor
         public MainWinViewModel()
         {
-            ExecuteNavigateCommand = new RelayCommand<string>(ExecuteNavigate);
+            ExecuteNavigateCommand = new Base.RelayCommand<string>(ExecuteNavigate);
 
-            MaximizeCommand = new RelayCommand<object>(_ => ExecuteMaximize());
-            MinimizeCommand = new RelayCommand<object>(_ => ExecuteMinimize());
-            CloseCommand = new RelayCommand<object>(_ => ExecuteClose());
-            OpenSecurityCommand = new RelayCommand<object>(_ => OpenPageFromTray("Diagnostics", "Security"));
-            OpenMaintenanceCommand = new RelayCommand<object>(_ => OpenPageFromTray("Diagnostics", "Maintenance"));
-            OpenStartupAppsCommand = new RelayCommand<object>(_ => OpenPageFromTray("SystemManager", "StartupManagerPage"));
-            OpenDnsCommand = new RelayCommand<object>(_ => OpenPageFromTray("Diagnostics", "DnsCrypt"));
-            ToggleWindowVisibilityCommand = new RelayCommand<object>(_ => ExecuteToggleVisibility());
+            MaximizeCommand = new Base.RelayCommand<object>(_ => ExecuteMaximize());
+            MinimizeCommand = new Base.RelayCommand<object>(_ => ExecuteMinimize());
+            CloseCommand = new Base.RelayCommand<object>(_ => ExecuteClose());
+            OpenSecurityCommand = new Base.RelayCommand<object>(_ => OpenPageFromTray("Diagnostics", "Security"));
+            OpenMaintenanceCommand = new Base.RelayCommand<object>(_ => OpenPageFromTray("Diagnostics", "Maintenance"));
+            OpenStartupAppsCommand = new Base.RelayCommand<object>(_ => OpenPageFromTray("SystemManager", "StartupManagerPage"));
+            OpenDnsCommand = new Base.RelayCommand<object>(_ => OpenPageFromTray("Diagnostics", "DnsCrypt"));
+            ToggleWindowVisibilityCommand = new Base.RelayCommand<object>(_ => ExecuteToggleVisibility());
 
             LocalizationService.Instance.PropertyChanged += OnLocalizationPropertyChanged;
 
             UserProfileUpdated += OnUserProfileUpdated;
 
-            ToggleRunOnStartupCommand = new RelayCommand(_ =>
+            ToggleRunOnStartupCommand = new Base.RelayCommand(_ =>
             {
                 IsRunOnStartUp = !IsRunOnStartUp;
             });
@@ -289,7 +283,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 }
             };
 
-            ToggleLowPriorityCommand = new RelayCommand(_ =>
+            ToggleLowPriorityCommand = new Base.RelayCommand(_ =>
             {
                 bool isCurrentlyLow = LocalMachineSettingsEngine.RunOnPriority == Enums.Priority.Low;
                 LocalMachineSettingsEngine.RunOnPriority = isCurrentlyLow ? Enums.Priority.Normal : Enums.Priority.Low;

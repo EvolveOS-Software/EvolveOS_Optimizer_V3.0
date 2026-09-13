@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using System.Security.AccessControl;
-using CommunityToolkit.Mvvm.ComponentModel;
 using static Vanara.PInvoke.AdvApi32;
 
 namespace EvolveOS_Optimizer.Core.Model

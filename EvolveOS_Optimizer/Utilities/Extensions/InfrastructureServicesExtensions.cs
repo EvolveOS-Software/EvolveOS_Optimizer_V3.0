@@ -2,9 +2,6 @@
 // Licensed under the MIT License.
 
 using EvolveOS_Optimizer.Core.EventHandlers;
-using EvolveOS_Optimizer.Core.Events;
-using EvolveOS_Optimizer.Core.Interfaces;
-using EvolveOS_Optimizer.Utilities.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 

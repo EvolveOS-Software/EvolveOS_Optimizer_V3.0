@@ -1,9 +1,6 @@
 // Copyright (c) 2026 EvolveOS Software
 // Licensed under the MIT License.
 
-using System.Threading;
-using EvolveOS_Optimizer.Utilities.Controls;
-
 namespace EvolveOS_Optimizer.Core.Events
 {
     public class EventBus : IEventBus

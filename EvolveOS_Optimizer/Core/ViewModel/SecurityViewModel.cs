@@ -6,8 +6,6 @@ using System.Runtime.InteropServices;
 using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Text;
-using CommunityToolkit.Mvvm.ComponentModel;
-using EvolveOS_Optimizer.Core.Model;
 using Microsoft.Win32.SafeHandles;
 using Vanara.PInvoke;
 using static Vanara.PInvoke.AdvApi32;

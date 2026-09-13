@@ -5,9 +5,6 @@
 
 using System.IO;
 using System.Management;
-using System.Threading;
-using EvolveOS_Optimizer.Utilities.Controls;
-using Microsoft.Win32;
 using NetFwTypeLib;
 
 namespace EvolveOS_Optimizer.Utilities.Configuration

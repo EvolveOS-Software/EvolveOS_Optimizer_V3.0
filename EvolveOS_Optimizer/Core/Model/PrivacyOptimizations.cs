@@ -1,8 +1,6 @@
 // Copyright (c) 2026 EvolveOS Software
 // Licensed under the MIT License.
 
-using EvolveOS_Optimizer.Core.Constants;
-using EvolveOS_Optimizer.Core.Enums;
 using Microsoft.Win32;
 
 namespace EvolveOS_Optimizer.Core.Model;

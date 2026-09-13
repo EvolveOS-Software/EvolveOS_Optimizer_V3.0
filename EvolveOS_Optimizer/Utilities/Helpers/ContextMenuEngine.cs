@@ -7,8 +7,6 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using EvolveOS_Optimizer.Core.Model;
-using EvolveOS_Optimizer.Utilities.Controls;
 using Microsoft.Win32;
 
 namespace EvolveOS_Optimizer.Utilities.Helpers

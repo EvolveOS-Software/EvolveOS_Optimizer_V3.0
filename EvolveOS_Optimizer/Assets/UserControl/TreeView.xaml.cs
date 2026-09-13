@@ -3,10 +3,6 @@
 
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.Messaging;
-using EvolveOS_Optimizer.Core.Model;
-using EvolveOS_Optimizer.Core.ViewModel;
-using EvolveOS_Optimizer.Utilities.Helpers;
-using EvolveOS_Optimizer.Utilities.Services;
 using Vanara.PInvoke;
 
 namespace EvolveOS_Optimizer.Assets.UserControl

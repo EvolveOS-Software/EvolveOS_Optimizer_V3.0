@@ -1,5 +1,3 @@
-using System.Threading;
-using EvolveOS_Optimizer.Utilities.Animation;
 using Microsoft.UI.Xaml.Media.Animation;
 
 namespace EvolveOS_Optimizer.Assets.UserControl

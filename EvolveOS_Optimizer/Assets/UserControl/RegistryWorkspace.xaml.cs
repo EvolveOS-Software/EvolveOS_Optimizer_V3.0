@@ -2,9 +2,7 @@
 // Licensed under the MIT License.
 
 using System.ComponentModel;
-using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Helpers;
-using EvolveOS_Optimizer.Pages;
 
 namespace EvolveOS_Optimizer.Assets.UserControl
 {

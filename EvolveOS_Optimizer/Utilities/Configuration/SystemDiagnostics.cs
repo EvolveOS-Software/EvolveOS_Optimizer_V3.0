@@ -12,15 +12,8 @@ using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
-using EvolveOS_Optimizer.Utilities.Controls;
-using EvolveOS_Optimizer.Utilities.Helpers;
 using Microsoft.Win32;
 using Newtonsoft.Json;
-using static EvolveOS_Optimizer.Utilities.Helpers.Win32Helper;
-
-using File = System.IO.File;
-using Registry = Microsoft.Win32.Registry;
 
 namespace EvolveOS_Optimizer.Utilities.Configuration
 {

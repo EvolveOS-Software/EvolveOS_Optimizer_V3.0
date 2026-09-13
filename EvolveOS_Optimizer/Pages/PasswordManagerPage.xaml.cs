@@ -2,11 +2,6 @@
 // Licensed under the MIT License.
 
 using System.Security;
-using EvolveOS_Optimizer.Core.Interfaces;
-using EvolveOS_Optimizer.Core.Model;
-using EvolveOS_Optimizer.Core.ViewModel;
-using EvolveOS_Optimizer.Utilities.Controls;
-using EvolveOS_Optimizer.Utilities.Helpers;
 using Microsoft.UI.Xaml.Controls.Primitives;
 
 namespace EvolveOS_Optimizer.Pages

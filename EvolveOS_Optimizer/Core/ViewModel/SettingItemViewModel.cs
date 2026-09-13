@@ -2,18 +2,7 @@
 // Licensed under the MIT License.
 
 using System.Collections.ObjectModel;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using EvolveOS_Optimizer.Core.Base;
-using EvolveOS_Optimizer.Core.Constants;
-using EvolveOS_Optimizer.Core.Enums;
-using EvolveOS_Optimizer.Core.Events;
-using EvolveOS_Optimizer.Core.Interfaces;
-using EvolveOS_Optimizer.Core.Model;
-using EvolveOS_Optimizer.Utilities.Controls;
-using EvolveOS_Optimizer.Utilities.Extensions;
-using EvolveOS_Optimizer.Utilities.Helpers;
-using EvolveOS_Optimizer.Utilities.Services;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Windows.Globalization.NumberFormatting;
 using AsyncRelayCommand = CommunityToolkit.Mvvm.Input.AsyncRelayCommand;

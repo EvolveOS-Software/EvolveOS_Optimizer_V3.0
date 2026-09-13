@@ -6,14 +6,6 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Threading;
-using EvolveOS_Optimizer.Core.Enums;
-using EvolveOS_Optimizer.Core.Interfaces;
-using EvolveOS_Optimizer.Core.Model;
-using EvolveOS_Optimizer.Core.ViewModel;
-using EvolveOS_Optimizer.Utilities.Controls;
-using EvolveOS_Optimizer.Utilities.Helpers;
-using EvolveOS_Optimizer.Utilities.Services;
 
 namespace EvolveOS_Optimizer.Pages;
 
@@ -453,7 +445,7 @@ public sealed partial class ProcessManagerPage : Page, IPurgeable
         }
     }
 
-    private void OnGlobalOptimizationCompleted(Memory.Optimization.Reason reason, string message)
+    private void OnGlobalOptimizationCompleted(Core.Enums.Memory.Optimization.Reason reason, string message)
     {
         Task.Delay(200).ContinueWith(async _ =>
         {

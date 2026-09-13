@@ -4,15 +4,8 @@
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Text.Json;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using EvolveOS_Optimizer.Core.Constants;
-using EvolveOS_Optimizer.Core.Interfaces;
-using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Core.Model.Profiles;
 using EvolveOS_Optimizer.Core.TemplateSelectors;
-using EvolveOS_Optimizer.Utilities.Helpers;
-using EvolveOS_Optimizer.Utilities.Services;
 using EvolveOS_Optimizer.Utilities.WinBuilder;
 
 namespace EvolveOS_Optimizer.Core.ViewModel;

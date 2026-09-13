@@ -3,8 +3,6 @@
 
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using EvolveOS_Optimizer.Core.Enums;
-using EvolveOS_Optimizer.Utilities.Helpers;
 
 namespace EvolveOS_Optimizer.Core.Model
 {

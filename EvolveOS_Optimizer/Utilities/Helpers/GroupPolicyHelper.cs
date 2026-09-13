@@ -1,6 +1,4 @@
 using System.IO;
-using System.Threading;
-using EvolveOS_Optimizer.Utilities.Controls;
 using Microsoft.Win32;
 
 namespace EvolveOS_Optimizer.Utilities.Helpers;

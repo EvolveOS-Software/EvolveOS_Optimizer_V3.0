@@ -1,5 +1,4 @@
 using Microsoft.UI.Xaml.Media.Animation;
-using Windows.Foundation;
 
 namespace EvolveOS_Optimizer.Assets.Panels
 {

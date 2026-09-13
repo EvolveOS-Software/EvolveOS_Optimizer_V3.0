@@ -9,15 +9,13 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Windows.Input;
-using EvolveOS_Optimizer.Core.Base;
-using EvolveOS_Optimizer.Utilities.Helpers;
 using Microsoft.Data.SqlClient;
 using Microsoft.UI.Xaml.Input;
 using WinRT.Interop;
 
 namespace EvolveOS_Optimizer.Core.ViewModel
 {
-    public class UserCreateViewModel : ObservableObject
+    public class UserCreateViewModel : Base.ObservableObject
     {
         private static string GetConnectionString()
         {
@@ -231,10 +229,10 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             PasswordValidation = new PasswordViewModel();
             PasswordValidation.PropertyChanged += PasswordValidation_PropertyChanged;
 
-            CreateAccountCommand = new RelayCommand(OnCreateAccount, CanCreateAccount);
-            LoginHereCommand = new RelayCommand(OnLoginHere);
-            BrowseImageCommand = new RelayCommand(async _ => await OnBrowseImage());
-            SpaceBarPreventCommand = new RelayCommand(OnSpaceBarPrevent);
+            CreateAccountCommand = new Base.RelayCommand(OnCreateAccount, CanCreateAccount);
+            LoginHereCommand = new Base.RelayCommand(OnLoginHere);
+            BrowseImageCommand = new Base.RelayCommand(async _ => await OnBrowseImage());
+            SpaceBarPreventCommand = new Base.RelayCommand(OnSpaceBarPrevent);
 
             _timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
             _timer.Tick += Timer_Tick;
@@ -258,7 +256,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         private void RefreshCommand()
         {
-            if (CreateAccountCommand is RelayCommand relay)
+            if (CreateAccountCommand is Base.RelayCommand relay)
             {
                 relay.RaiseCanExecuteChanged();
             }

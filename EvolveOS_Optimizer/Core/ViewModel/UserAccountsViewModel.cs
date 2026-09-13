@@ -9,8 +9,6 @@ using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Windows.Input;
 using EvolveOS_Optimizer.Core.Base;
-using EvolveOS_Optimizer.Core.Model;
-using EvolveOS_Optimizer.Utilities.Helpers;
 using Microsoft.Data.SqlClient;
 using WinRT.Interop;
 
@@ -45,8 +43,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     OnPropertyChanged();
                     UpdateSelectedUserDetails(value);
 
-                    (DeleteUserCommand as RelayCommand)?.RaiseCanExecuteChanged();
-                    (EditUserCommand as RelayCommand)?.RaiseCanExecuteChanged();
+                    (DeleteUserCommand as Base.RelayCommand)?.RaiseCanExecuteChanged();
+                    (EditUserCommand as Base.RelayCommand)?.RaiseCanExecuteChanged();
                 }
             }
         }
@@ -282,16 +280,16 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private ICommand? _cancelFormCommand;
         private ICommand? _browseImageCommand;
 
-        public ICommand LoadUsersCommand => _loadUsersCommand ??= new RelayCommand(async (_) => await ExecuteLoadUsers());
-        public ICommand ClearSelectionCommand => _clearSelectionCommand ??= new RelayCommand((_) => SelectedUser = null);
-        public ICommand DeleteUserCommand => _deleteUserCommand ??= new RelayCommand(async (_) => await ExecuteDeleteUser(), (_) => SelectedUser != null);
+        public ICommand LoadUsersCommand => _loadUsersCommand ??= new Base.RelayCommand(async (_) => await ExecuteLoadUsers());
+        public ICommand ClearSelectionCommand => _clearSelectionCommand ??= new Base.RelayCommand((_) => SelectedUser = null);
+        public ICommand DeleteUserCommand => _deleteUserCommand ??= new Base.RelayCommand(async (_) => await ExecuteDeleteUser(), (_) => SelectedUser != null);
 
-        public ICommand CreateUserCommand => _createUserCommand ??= new RelayCommand((_) => ExecuteCreateUser());
-        public ICommand EditUserCommand => _editUserCommand ??= new RelayCommand((_) => ExecuteUpdateUser(), (_) => SelectedUser != null);
+        public ICommand CreateUserCommand => _createUserCommand ??= new Base.RelayCommand((_) => ExecuteCreateUser());
+        public ICommand EditUserCommand => _editUserCommand ??= new Base.RelayCommand((_) => ExecuteUpdateUser(), (_) => SelectedUser != null);
 
-        public ICommand SaveUserCommand => _saveUserCommand ??= new RelayCommand(async (_) => await ExecuteSaveUser());
-        public ICommand CancelFormCommand => _cancelFormCommand ??= new RelayCommand((_) => IsPanelOpen = false);
-        public ICommand BrowseImageCommand => _browseImageCommand ??= new RelayCommand(async (_) => await ExecuteBrowseImage());
+        public ICommand SaveUserCommand => _saveUserCommand ??= new Base.RelayCommand(async (_) => await ExecuteSaveUser());
+        public ICommand CancelFormCommand => _cancelFormCommand ??= new Base.RelayCommand((_) => IsPanelOpen = false);
+        public ICommand BrowseImageCommand => _browseImageCommand ??= new Base.RelayCommand(async (_) => await ExecuteBrowseImage());
 
         #endregion
 

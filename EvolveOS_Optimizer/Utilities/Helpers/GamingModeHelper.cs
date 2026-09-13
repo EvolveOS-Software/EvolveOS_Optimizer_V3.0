@@ -6,13 +6,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using EvolveOS_Optimizer.Utilities.Controls;
-using EvolveOS_Optimizer.Utilities.Maintenance;
 using Microsoft.Win32;
-using static EvolveOS_Optimizer.Utilities.Helpers.Win32Helper;
-
-using File = System.IO.File;
-using Registry = Microsoft.Win32.Registry;
 
 namespace EvolveOS_Optimizer.Utilities.Helpers
 {

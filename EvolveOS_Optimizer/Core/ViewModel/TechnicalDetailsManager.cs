@@ -1,9 +1,3 @@
-using CommunityToolkit.Mvvm.Input;
-using EvolveOS_Optimizer.Core.Enums;
-using EvolveOS_Optimizer.Core.Events;
-using EvolveOS_Optimizer.Core.Interfaces;
-using EvolveOS_Optimizer.Core.Model;
-using EvolveOS_Optimizer.Utilities.Helpers;
 using Microsoft.UI.Dispatching;
 
 namespace EvolveOS_Optimizer.Core.ViewModel;

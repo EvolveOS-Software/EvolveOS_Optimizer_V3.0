@@ -1,11 +1,9 @@
 // Copyright (c) 2026 EvolveOS Software
 // Licensed under the MIT License.
 
-using EvolveOS_Optimizer.Core.Base;
-
 namespace EvolveOS_Optimizer.Core.Model
 {
-    public class ObservableItem<T> : ObservableObject
+    public class ObservableItem<T> : Base.ObservableObject
     {
         #region Fields
         private bool _isEnabled;

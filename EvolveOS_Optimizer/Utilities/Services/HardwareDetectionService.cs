@@ -2,8 +2,6 @@
 // Licensed under the MIT License.
 
 using System.Management;
-using EvolveOS_Optimizer.Core.Enums;
-using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Native;
 
 namespace EvolveOS_Optimizer.Utilities.Services;

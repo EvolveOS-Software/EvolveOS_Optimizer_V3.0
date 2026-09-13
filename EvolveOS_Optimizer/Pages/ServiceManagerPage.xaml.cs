@@ -3,14 +3,6 @@
 
 using System.Collections.ObjectModel;
 using System.ServiceProcess;
-using System.Threading;
-using EvolveOS_Optimizer.Core.Enums;
-using EvolveOS_Optimizer.Core.Interfaces;
-using EvolveOS_Optimizer.Core.Model;
-using EvolveOS_Optimizer.Core.ViewModel;
-using EvolveOS_Optimizer.Utilities.Controls;
-using EvolveOS_Optimizer.Utilities.Helpers;
-using EvolveOS_Optimizer.Utilities.Services;
 using Microsoft.Win32;
 
 namespace EvolveOS_Optimizer.Pages;

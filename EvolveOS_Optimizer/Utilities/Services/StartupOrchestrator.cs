@@ -2,10 +2,6 @@
 // Licensed under the MIT License.
 
 using EvolveOS_Optimizer.Core.EventHandlers;
-using EvolveOS_Optimizer.Core.Interfaces;
-using EvolveOS_Optimizer.Core.Model;
-using EvolveOS_Optimizer.Utilities.Extensions;
-using EvolveOS_Optimizer.Utilities.Helpers;
 
 namespace EvolveOS_Optimizer.Utilities.Services;
 

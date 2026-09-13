@@ -9,11 +9,6 @@ using System.Reflection;
 using System.Security;
 using System.Windows.Input;
 using EvolveOS_Optimizer.Core.Base;
-using EvolveOS_Optimizer.Core.Model;
-using EvolveOS_Optimizer.Utilities.Configuration;
-using EvolveOS_Optimizer.Utilities.Helpers;
-using EvolveOS_Optimizer.Utilities.Managers;
-using EvolveOS_Optimizer.Utilities.Services;
 
 namespace EvolveOS_Optimizer.Core.ViewModel
 {
@@ -103,10 +98,10 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         public ObservableCollection<RecordTypeItem> RecordTypes { get; }
 
         private ICommand? _saveCommand;
-        public ICommand SaveCommand => _saveCommand ??= new RelayCommand(ExecuteSave, CanExecuteSave);
+        public ICommand SaveCommand => _saveCommand ??= new Base.RelayCommand(ExecuteSave, CanExecuteSave);
 
         private ICommand? _cancelCommand;
-        public ICommand CancelCommand => _cancelCommand ??= new RelayCommand(ExecuteCancel);
+        public ICommand CancelCommand => _cancelCommand ??= new Base.RelayCommand(ExecuteCancel);
 
         public AddRecordViewModel(SecureString masterSecurePassword, KeyDerivationConfig initialConfig)
         {
@@ -270,7 +265,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         private void UpdateCanExecute()
         {
-            (_saveCommand as RelayCommand)?.RaiseCanExecuteChanged();
+            (_saveCommand as Base.RelayCommand)?.RaiseCanExecuteChanged();
         }
 
         private void ResetForm()

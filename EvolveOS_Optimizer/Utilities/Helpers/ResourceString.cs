@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using System.Reflection;
-using EvolveOS_Optimizer.Utilities.Services;
 using Microsoft.UI.Xaml.Markup;
 
 namespace EvolveOS_Optimizer.Utilities.Helpers

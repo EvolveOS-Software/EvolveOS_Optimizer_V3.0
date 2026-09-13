@@ -2,9 +2,6 @@
 // Licensed under the MIT License.
 
 using System.IO;
-using System.Threading;
-using EvolveOS_Optimizer.Utilities.Controls;
-using EvolveOS_Optimizer.Utilities.Services;
 using Microsoft.Data.SqlClient;
 
 namespace EvolveOS_Optimizer.Utilities.Helpers

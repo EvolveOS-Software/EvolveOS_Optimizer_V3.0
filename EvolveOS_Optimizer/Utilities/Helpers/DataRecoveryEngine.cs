@@ -4,8 +4,6 @@
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading;
-using EvolveOS_Optimizer.Core.Model;
 using Microsoft.Win32.SafeHandles;
 
 namespace EvolveOS_Optimizer.Utilities.Helpers

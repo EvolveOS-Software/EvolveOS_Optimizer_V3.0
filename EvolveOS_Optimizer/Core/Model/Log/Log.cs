@@ -1,6 +1,5 @@
 using System.Globalization;
 using System.Runtime.CompilerServices;
-using EvolveOS_Optimizer.Core.Interfaces;
 
 namespace EvolveOS_Optimizer.Core.Model.Log
 {

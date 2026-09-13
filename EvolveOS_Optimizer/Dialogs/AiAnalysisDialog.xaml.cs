@@ -1,8 +1,6 @@
 // Copyright (c) 2026 EvolveOS Software
 // Licensed under the MIT License.
 
-using EvolveOS_Optimizer.Utilities.Services;
-
 namespace EvolveOS_Optimizer.Dialogs
 {
     public sealed partial class AiAnalysisDialog : ContentDialog

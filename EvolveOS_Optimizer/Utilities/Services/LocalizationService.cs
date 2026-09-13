@@ -8,8 +8,6 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Xml.Linq;
-using EvolveOS_Optimizer.Core.Interfaces;
-using EvolveOS_Optimizer.Utilities.Controls;
 
 namespace EvolveOS_Optimizer.Utilities.Services
 {

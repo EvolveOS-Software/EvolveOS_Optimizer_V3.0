@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using System.Runtime.CompilerServices;
-using EvolveOS_Optimizer.Core.Interfaces;
 
 namespace EvolveOS_Optimizer.Utilities.Extensions;
 

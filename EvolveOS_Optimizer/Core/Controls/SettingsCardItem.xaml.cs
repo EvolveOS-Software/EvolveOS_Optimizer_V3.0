@@ -2,9 +2,6 @@
 // Licensed under the MIT License.
 
 using System.ComponentModel;
-using EvolveOS_Optimizer.Core.Enums;
-using EvolveOS_Optimizer.Core.Interfaces;
-using EvolveOS_Optimizer.Core.ViewModel;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml.Automation.Peers;
 

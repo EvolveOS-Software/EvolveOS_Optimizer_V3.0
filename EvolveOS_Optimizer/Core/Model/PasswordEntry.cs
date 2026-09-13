@@ -7,8 +7,6 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Security;
 using System.Security.Cryptography;
-using EvolveOS_Optimizer.Utilities.Configuration;
-using EvolveOS_Optimizer.Utilities.Helpers;
 
 namespace EvolveOS_Optimizer.Core.Model
 {

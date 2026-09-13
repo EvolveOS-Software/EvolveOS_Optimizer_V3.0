@@ -4,12 +4,6 @@
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Runtime.InteropServices;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using EvolveOS_Optimizer.Core.Model;
-using EvolveOS_Optimizer.Utilities.Controls;
-using EvolveOS_Optimizer.Utilities.Helpers;
-using EvolveOS_Optimizer.Utilities.Managers;
 using EvolveOS_Optimizer.Views;
 using WinRT.Interop;
 

@@ -4,7 +4,6 @@
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
-using EvolveOS_Optimizer.Utilities.Controls;
 
 namespace EvolveOS_Optimizer.Utilities.Helpers
 {

@@ -4,7 +4,6 @@
 using System.Collections.ObjectModel;
 using System.Runtime.CompilerServices;
 using System.Text;
-using EvolveOS_Optimizer.Core.Model;
 using Microsoft.Win32.SafeHandles;
 using Vanara.PInvoke;
 using static Vanara.PInvoke.AdvApi32;

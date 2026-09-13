@@ -2,15 +2,6 @@
 // Licensed under the MIT License.
 
 using System.IO;
-using System.Threading;
-using CommunityToolkit.Mvvm.ComponentModel;
-using EvolveOS_Optimizer.Core.Model;
-using EvolveOS_Optimizer.Utilities.Configuration;
-using EvolveOS_Optimizer.Utilities.Controls;
-using EvolveOS_Optimizer.Utilities.Helpers;
-using EvolveOS_Optimizer.Utilities.Maintenance;
-using EvolveOS_Optimizer.Utilities.Managers;
-using EvolveOS_Optimizer.Utilities.Services;
 using EvolveOS_Optimizer.Utilities.Tweaks;
 
 namespace EvolveOS_Optimizer.Core.ViewModel

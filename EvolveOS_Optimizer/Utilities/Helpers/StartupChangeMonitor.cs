@@ -1,9 +1,6 @@
 // Copyright (c) 2026 EvolveOS Software
 // Licensed under the MIT License.
 
-using EvolveOS_Optimizer.Utilities.Controls;
-using EvolveOS_Optimizer.Utilities.Managers;
-
 namespace EvolveOS_Optimizer.Utilities.Helpers
 {
     public static class StartupChangeMonitor

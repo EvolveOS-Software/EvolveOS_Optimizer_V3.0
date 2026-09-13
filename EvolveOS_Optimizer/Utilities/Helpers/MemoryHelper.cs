@@ -3,10 +3,6 @@
 // Licensed under the MIT License. 
 // See the LICENSE file in the project root for more information.
 
-using EvolveOS_Optimizer.Utilities.Controls;
-using EvolveOS_Optimizer.Utilities.Maintenance;
-
-
 namespace EvolveOS_Optimizer.Utilities.Helpers
 {
     public static class MemoryHelper

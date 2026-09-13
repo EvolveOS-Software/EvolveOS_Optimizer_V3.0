@@ -2,9 +2,6 @@
 // Licensed under the MIT License.
 
 using System.Management;
-using EvolveOS_Optimizer.Utilities.Controls;
-using EvolveOS_Optimizer.Utilities.Helpers;
-using EvolveOS_Optimizer.Utilities.Managers;
 using Microsoft.Win32;
 
 namespace EvolveOS_Optimizer.Utilities.Services;

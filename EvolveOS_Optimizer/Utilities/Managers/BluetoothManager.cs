@@ -1,10 +1,7 @@
 // Copyright (c) 2026 EvolveOS Software
 // Licensed under the MIT License.
 
-using System.Threading;
-using EvolveOS_Optimizer.Utilities.Controls;
 using Windows.Devices.Radios;
-using Windows.Foundation;
 
 namespace EvolveOS_Optimizer.Utilities.Managers;
 

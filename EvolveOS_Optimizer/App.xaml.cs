@@ -3,17 +3,7 @@
 
 using System.IO;
 using System.Security.Principal;
-using System.Threading;
 using CommunityToolkit.Mvvm.Messaging;
-using EvolveOS_Optimizer.Core.Enums;
-using EvolveOS_Optimizer.Core.Interfaces;
-using EvolveOS_Optimizer.Core.Model;
-using EvolveOS_Optimizer.Core.ViewModel;
-using EvolveOS_Optimizer.Utilities.Controls;
-using EvolveOS_Optimizer.Utilities.Extensions;
-using EvolveOS_Optimizer.Utilities.Helpers;
-using EvolveOS_Optimizer.Utilities.Managers;
-using EvolveOS_Optimizer.Utilities.Services;
 using EvolveOS_Optimizer.Views;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.DependencyInjection;

@@ -5,23 +5,14 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
-using System.Threading;
 using EvolveOS_Optimizer.Core.Base;
-using EvolveOS_Optimizer.Core.Interfaces;
-using EvolveOS_Optimizer.Core.Model;
-using EvolveOS_Optimizer.Utilities.Configuration;
-using EvolveOS_Optimizer.Utilities.Controls;
-using EvolveOS_Optimizer.Utilities.Helpers;
-using EvolveOS_Optimizer.Utilities.Services;
 using LiveChartsCore;
 using LiveChartsCore.Defaults;
 using LiveChartsCore.Kernel.Sketches;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Win32;
 using SkiaSharp;
-using static EvolveOS_Optimizer.Utilities.Helpers.Win32Helper;
 
 namespace EvolveOS_Optimizer.Core.ViewModel
 {

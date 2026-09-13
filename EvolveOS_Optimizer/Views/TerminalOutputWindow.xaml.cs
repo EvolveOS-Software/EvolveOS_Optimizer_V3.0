@@ -1,5 +1,3 @@
-using EvolveOS_Optimizer.Utilities.Controls;
-using EvolveOS_Optimizer.Utilities.Helpers;
 using Microsoft.UI.Text;
 using Microsoft.UI.Windowing;
 using Windows.ApplicationModel.DataTransfer;

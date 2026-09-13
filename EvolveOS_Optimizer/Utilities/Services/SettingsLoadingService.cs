@@ -2,12 +2,6 @@
 // Licensed under the MIT License.
 
 using System.Collections.ObjectModel;
-using EvolveOS_Optimizer.Core.Constants;
-using EvolveOS_Optimizer.Core.Enums;
-using EvolveOS_Optimizer.Core.Events;
-using EvolveOS_Optimizer.Core.Interfaces;
-using EvolveOS_Optimizer.Core.Model;
-using EvolveOS_Optimizer.Core.ViewModel;
 
 namespace EvolveOS_Optimizer.Utilities.Services;
 

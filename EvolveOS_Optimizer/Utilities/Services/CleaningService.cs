@@ -3,11 +3,6 @@
 
 using System.IO;
 using System.IO.Enumeration;
-using System.Threading;
-using EvolveOS_Optimizer.Core.Enums;
-using EvolveOS_Optimizer.Core.Model;
-using EvolveOS_Optimizer.Utilities.Controls;
-using EvolveOS_Optimizer.Utilities.Helpers;
 
 namespace EvolveOS_Optimizer.Utilities.Services
 {

@@ -4,7 +4,6 @@
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Shapes;
-using Windows.Foundation;
 
 namespace EvolveOS_Optimizer.Utilities.Helpers
 {

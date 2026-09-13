@@ -4,7 +4,6 @@
 // See the LICENSE file in the project root for more information.
 
 using Microsoft.UI.Xaml.Media.Animation;
-using Windows.Foundation;
 
 namespace EvolveOS_Optimizer.Assets.Panels
 {

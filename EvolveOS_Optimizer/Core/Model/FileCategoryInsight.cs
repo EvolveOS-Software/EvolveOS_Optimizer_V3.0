@@ -1,9 +1,6 @@
 // Copyright (c) 2026 EvolveOS Software
 // Licensed under the MIT License.
 
-using CommunityToolkit.Mvvm.ComponentModel;
-using EvolveOS_Optimizer.Utilities.Extensions;
-
 namespace EvolveOS_Optimizer.Core.Model
 {
     public partial class FileCategoryInsight : ObservableObject

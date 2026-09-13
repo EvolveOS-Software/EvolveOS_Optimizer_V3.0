@@ -1,5 +1,4 @@
 using System.Net.NetworkInformation;
-using EvolveOS_Optimizer.Utilities.Controls;
 
 namespace EvolveOS_Optimizer.Utilities.Managers
 {

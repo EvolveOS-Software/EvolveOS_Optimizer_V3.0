@@ -6,18 +6,6 @@ using System.IO;
 using System.Management;
 using System.Net.NetworkInformation;
 using System.Text.Json;
-using System.Threading;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using EvolveOS_Optimizer.Core.Interfaces;
-using EvolveOS_Optimizer.Core.Model;
-using EvolveOS_Optimizer.Pages;
-using EvolveOS_Optimizer.Utilities.Configuration;
-using EvolveOS_Optimizer.Utilities.Controls;
-using EvolveOS_Optimizer.Utilities.Extensions;
-using EvolveOS_Optimizer.Utilities.Helpers;
-using EvolveOS_Optimizer.Utilities.Managers;
-using EvolveOS_Optimizer.Utilities.Services;
 using LiveChartsCore;
 using LiveChartsCore.Defaults;
 using LiveChartsCore.Kernel.Sketches;
@@ -26,9 +14,7 @@ using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
 using Microsoft.Windows.System.Power;
 using SkiaSharp;
-using Windows.Foundation;
 using Windows.System;
-using static EvolveOS_Optimizer.Utilities.Helpers.Win32Helper;
 
 namespace EvolveOS_Optimizer.Core.ViewModel
 {

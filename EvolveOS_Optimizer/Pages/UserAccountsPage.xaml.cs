@@ -1,6 +1,3 @@
-using EvolveOS_Optimizer.Core.Model;
-using EvolveOS_Optimizer.Core.ViewModel;
-using EvolveOS_Optimizer.Utilities.Animation;
 using Microsoft.UI.Xaml.Input;
 
 namespace EvolveOS_Optimizer.Pages

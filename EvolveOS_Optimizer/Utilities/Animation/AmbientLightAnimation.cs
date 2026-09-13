@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using System.Numerics;
-using EvolveOS_Optimizer.Utilities.Controls;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Input;

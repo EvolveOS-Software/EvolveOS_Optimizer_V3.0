@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using System.Collections.ObjectModel;
-using CommunityToolkit.Mvvm.ComponentModel;
 using Vanara.PInvoke;
 
 namespace EvolveOS_Optimizer.Core.Model

@@ -1,4 +1,3 @@
-using EvolveOS_Optimizer.Core.Model;
 using Microsoft.UI.Xaml.Data;
 
 namespace EvolveOS_Optimizer.Utilities.Converters
@@ -9,7 +8,7 @@ namespace EvolveOS_Optimizer.Utilities.Converters
         {
             if (value is System.Enum enumValue)
             {
-                return EnumExtensions.GetDescription(enumValue);
+                return Core.Model.EnumExtensions.GetDescription(enumValue);
             }
             return value?.ToString() ?? string.Empty;
         }

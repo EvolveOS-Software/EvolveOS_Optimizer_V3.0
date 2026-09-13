@@ -1,4 +1,5 @@
-using EvolveOS_Optimizer.Core.Enums;
+// Copyright (c) 2026 EvolveOS Software
+// Licensed under the MIT License.
 
 namespace EvolveOS_Optimizer.Utilities.Extensions
 {
@@ -28,16 +29,16 @@ namespace EvolveOS_Optimizer.Utilities.Extensions
             }
         }
 
-        public static KeyValuePair<double, Memory.Unit> ToMemoryUnit(this long obj)
+        public static KeyValuePair<double, Core.Enums.Memory.Unit> ToMemoryUnit(this long obj)
         {
             if (obj < 1024)
             {
-                return new KeyValuePair<double, Memory.Unit>(obj, Memory.Unit.B);
+                return new KeyValuePair<double, Core.Enums.Memory.Unit>(obj, Core.Enums.Memory.Unit.B);
             }
 
             var mag = (int)Math.Log(obj, 1024);
 
-            return new KeyValuePair<double, Memory.Unit>(obj / Math.Pow(1024, mag), (Memory.Unit)mag);
+            return new KeyValuePair<double, Core.Enums.Memory.Unit>(obj / Math.Pow(1024, mag), (Core.Enums.Memory.Unit)mag);
         }
 
         public static string FormatBytes(this long bytes)

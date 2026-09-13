@@ -1,7 +1,6 @@
 using System.Numerics;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Hosting;
-using Windows.Foundation;
 
 namespace EvolveOS_Optimizer.Assets.Panels
 {

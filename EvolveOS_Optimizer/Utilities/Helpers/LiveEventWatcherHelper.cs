@@ -3,9 +3,6 @@
 
 using System.Collections.Concurrent;
 using System.Diagnostics.Eventing.Reader;
-using System.Threading;
-using EvolveOS_Optimizer.Core.Model;
-using EvolveOS_Optimizer.Utilities.Controls;
 
 namespace EvolveOS_Optimizer.Utilities.Helpers
 {

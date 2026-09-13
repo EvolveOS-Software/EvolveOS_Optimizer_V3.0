@@ -1,10 +1,6 @@
 // Copyright (c) 2026 EvolveOS Software
 // Licensed under the MIT License.
 
-using System.Threading;
-using EvolveOS_Optimizer.Core.Interfaces;
-using EvolveOS_Optimizer.Core.Model;
-using EvolveOS_Optimizer.Utilities.Helpers;
 using Microsoft.UI.Dispatching;
 
 namespace EvolveOS_Optimizer.Utilities.Services;

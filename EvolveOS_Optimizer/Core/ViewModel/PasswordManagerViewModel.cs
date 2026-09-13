@@ -7,12 +7,6 @@ using System.Collections.ObjectModel;
 using System.Security;
 using System.Windows.Input;
 using EvolveOS_Optimizer.Core.Base;
-using EvolveOS_Optimizer.Core.Model;
-using EvolveOS_Optimizer.Utilities.Configuration;
-using EvolveOS_Optimizer.Utilities.Controls;
-using EvolveOS_Optimizer.Utilities.Helpers;
-using EvolveOS_Optimizer.Utilities.Managers;
-using EvolveOS_Optimizer.Utilities.Services;
 using Microsoft.Data.SqlClient;
 
 namespace EvolveOS_Optimizer.Core.ViewModel
@@ -195,14 +189,14 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 await LoadDataAsync(null);
             };
 
-            LoadDataCommand = new RelayCommand(async (obj) => await LoadDataAsync(obj));
-            EditCommand = new RelayCommand(ExecuteEdit);
-            DeleteCommand = new RelayCommand(async (obj) => await ExecuteDeleteAsync(obj));
-            TogglePasswordVisibilityCommand = new RelayCommand(ExecuteTogglePasswordVisibility);
-            SaveEntryCommand = new RelayCommand(async (obj) => await ExecuteSaveEntryAsync(obj));
-            CopyPasswordCommand = new RelayCommand(async (obj) => await ExecuteCopyPasswordAsync(obj));
+            LoadDataCommand = new Base.RelayCommand(async (obj) => await LoadDataAsync(obj));
+            EditCommand = new Base.RelayCommand(ExecuteEdit);
+            DeleteCommand = new Base.RelayCommand(async (obj) => await ExecuteDeleteAsync(obj));
+            TogglePasswordVisibilityCommand = new Base.RelayCommand(ExecuteTogglePasswordVisibility);
+            SaveEntryCommand = new Base.RelayCommand(async (obj) => await ExecuteSaveEntryAsync(obj));
+            CopyPasswordCommand = new Base.RelayCommand(async (obj) => await ExecuteCopyPasswordAsync(obj));
 
-            SelectCategoryCommand = new RelayCommand(ExecuteSelectCategory);
+            SelectCategoryCommand = new Base.RelayCommand(ExecuteSelectCategory);
 
             _ = LoadDataAsync(null);
         }

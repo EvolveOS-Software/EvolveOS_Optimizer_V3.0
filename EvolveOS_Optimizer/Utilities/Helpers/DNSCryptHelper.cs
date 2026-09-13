@@ -9,7 +9,6 @@ using System.Net;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using DnsClient;
-using EvolveOS_Optimizer.Utilities.Controls;
 using static EvolveOS_Optimizer.Core.Structs;
 
 namespace EvolveOS_Optimizer.Utilities.Helpers
