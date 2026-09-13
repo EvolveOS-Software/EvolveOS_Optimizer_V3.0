@@ -434,7 +434,7 @@
     <sys:String x:Key="Settings_AI_Title">Explications par l'IA</sys:String>
     <sys:String x:Key="Settings_AI_BadgeOptIn">opt-in</sys:String>
     <sys:String x:Key="Settings_AI_DescPart1">Cliquez sur le bouton (···) sur n'importe quelle entrée du Nettoyeur système →</sys:String>
-    <sys:String x:Key="Settings_AI_DescPart2">✨ Expliquer.</sys:String>
+    <sys:String x:Key="Settings_AI_DescPart2">Expliquer.</sys:String>
     <sys:String x:Key="Settings_AI_DescPart3">Propulsé par l'IA. Rien n'est envoyé sans votre action explicite. Nécessite votre propre clé API.</sys:String>
     <sys:String x:Key="Settings_AI_ProviderLabel">Fournisseur d'IA actif</sys:String>
     <sys:String x:Key="Settings_AI_GroqPlaceholder">gsk_...</sys:String>

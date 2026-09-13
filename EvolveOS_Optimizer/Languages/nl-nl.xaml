@@ -434,7 +434,7 @@
     <sys:String x:Key="Settings_AI_Title">AI-uitleg</sys:String>
     <sys:String x:Key="Settings_AI_BadgeOptIn">opt-in</sys:String>
     <sys:String x:Key="Settings_AI_DescPart1">Klik op de (···) knop bij een item in de Systeemreiniger →</sys:String>
-    <sys:String x:Key="Settings_AI_DescPart2">✨ Uitleggen.</sys:String>
+    <sys:String x:Key="Settings_AI_DescPart2">Uitleggen.</sys:String>
     <sys:String x:Key="Settings_AI_DescPart3">Mogelijk gemaakt door AI. Er wordt niets verzonden zonder uw expliciete actie. Vereist uw eigen API-sleutel.</sys:String>
     <sys:String x:Key="Settings_AI_ProviderLabel">Actieve AI provider</sys:String>
     <sys:String x:Key="Settings_AI_GroqPlaceholder">gsk_...</sys:String>

@@ -610,13 +610,18 @@
                             <StackPanel Grid.Column="1" Spacing="6">
                                 <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
                                     <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_AI_Title'), Mode=OneWay}" FontWeight="SemiBold" VerticalAlignment="Center" />
-                                    <Border Background="{ThemeResource SystemFillColorSuccessBrush}" CornerRadius="3" Padding="4,1" VerticalAlignment="Center">
-                                        <TextBlock FontFamily="{ThemeResource AppCustomFont}" Text="{x:Bind GetText('Settings_AI_BadgeOptIn'), Mode=OneWay}" FontSize="10" Foreground="White" />
+
+                                    <Border Style="{StaticResource BadgeRecommendedStyle}">
+                                        <TextBlock FontFamily="{ThemeResource AppCustomFont}"
+                                                   Text="{x:Bind GetText('Settings_AI_BadgeOptIn'), Mode=OneWay}"
+                                                   Style="{StaticResource BadgeTextStyle}"
+                                                   Foreground="{ThemeResource BadgeRecommendedForeground}" />
                                     </Border>
                                 </StackPanel>
 
                                 <TextBlock FontFamily="{ThemeResource AppCustomFont}" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Style="{StaticResource CaptionTextBlockStyle}">
                                     <Run Text="{x:Bind GetText('Settings_AI_DescPart1'), Mode=OneWay}" />
+                                    <Run Text=" &#xED15; " FontFamily="{StaticResource SymbolThemeFontFamily}" Foreground="{ThemeResource MyDynamicAccentBrush}" />
                                     <Run FontWeight="SemiBold" Text="{x:Bind GetText('Settings_AI_DescPart2'), Mode=OneWay}" />
                                     <Run Text="{x:Bind GetText('Settings_AI_DescPart3'), Mode=OneWay}" />
                                 </TextBlock>

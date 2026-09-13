@@ -434,7 +434,7 @@
     <sys:String x:Key="Settings_AI_Title">Spiegazioni IA</sys:String>
     <sys:String x:Key="Settings_AI_BadgeOptIn">opt-in</sys:String>
     <sys:String x:Key="Settings_AI_DescPart1">Fai clic sul pulsante (···) su qualsiasi voce nello Strumento di pulizia del sistema →</sys:String>
-    <sys:String x:Key="Settings_AI_DescPart2">✨ Spiega.</sys:String>
+    <sys:String x:Key="Settings_AI_DescPart2">Spiega.</sys:String>
     <sys:String x:Key="Settings_AI_DescPart3">Basato su IA. Nessun dato viene inviato senza la tua azione esplicita. Richiede la tua chiave API.</sys:String>
     <sys:String x:Key="Settings_AI_ProviderLabel">Provider IA attivo</sys:String>
     <sys:String x:Key="Settings_AI_GroqPlaceholder">gsk_...</sys:String>

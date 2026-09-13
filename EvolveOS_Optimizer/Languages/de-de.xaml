@@ -434,7 +434,7 @@
     <sys:String x:Key="Settings_AI_Title">KI-Erklärungen</sys:String>
     <sys:String x:Key="Settings_AI_BadgeOptIn">opt-in</sys:String>
     <sys:String x:Key="Settings_AI_DescPart1">Klicken Sie auf die (···) Schaltfläche bei einem Eintrag im Systemreiniger →</sys:String>
-    <sys:String x:Key="Settings_AI_DescPart2">✨ Erklären.</sys:String>
+    <sys:String x:Key="Settings_AI_DescPart2">Erklären.</sys:String>
     <sys:String x:Key="Settings_AI_DescPart3">Unterstützt von KI. Ohne Ihre ausdrückliche Aktion wird nichts gesendet. Erfordert einen eigenen API-Schlüssel.</sys:String>
     <sys:String x:Key="Settings_AI_ProviderLabel">Aktiver KI Anbieter</sys:String>
     <sys:String x:Key="Settings_AI_GroqPlaceholder">gsk_...</sys:String>
