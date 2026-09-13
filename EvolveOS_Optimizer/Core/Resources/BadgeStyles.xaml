@@ -108,6 +108,11 @@
         <Setter Property="BorderBrush" Value="{ThemeResource BadgeCustomBorder}"/>
     </Style>
 
+    <Style x:Key="BadgeDangerStyle" TargetType="Border" BasedOn="{StaticResource BadgePillBase}">
+        <Setter Property="Background"  Value="{ThemeResource BadgeDangerBackground}"/>
+        <Setter Property="BorderBrush" Value="{ThemeResource BadgeDangerBorder}"/>
+    </Style>
+
     <Style x:Key="NewBadgeBorderStyle" TargetType="Border">
         <Setter Property="Padding" Value="5,1"/>
         <Setter Property="CornerRadius" Value="3"/>

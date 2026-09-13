@@ -278,63 +278,110 @@
                            Foreground="{StaticResource MyDynamicAccentBrush}"/>
             </StackPanel>
 
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <Button Background="Transparent"
+                    BorderThickness="0"
+                    Padding="4"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    CornerRadius="19"
+                    IsTabStop="False">
 
-                <Grid Width="30" Height="30">
-                    <Border CornerRadius="15" Width="30" Height="30" BorderBrush="{StaticResource MyDynamicAccentBrush}" BorderThickness="1">
-                        <Border.Background>
-                            <ImageBrush x:Name="ProfileImage" ImageSource="{Binding DisplayProfileAvatar, Mode=TwoWay}" Stretch="UniformToFill"/>
-                        </Border.Background>
-                    </Border>
-                    <Ellipse Stroke="{StaticResource MyDynamicAccentBrush}" StrokeThickness="0.5" Opacity="0.5" Margin="-2"/>
-                </Grid>
+                <Button.Flyout>
+                    <Flyout>
+                        <Flyout.FlyoutPresenterStyle>
+                            <Style TargetType="FlyoutPresenter">
+                                <Setter Property="Background" Value="{ThemeResource AcrylicBackgroundFillColorDefaultBrush}"/>
+                                <Setter Property="BorderBrush" Value="{ThemeResource SurfaceStrokeColorFlyoutBrush}"/>
 
-                <TextBlock x:Name="DisplayProfileName"
-                           Text="{Binding DisplayProfileName}"
-                           FontFamily="{ThemeResource AppCustomFont}"
-                           FontSize="14"
-                           FontWeight="Medium"
-                           Foreground="{StaticResource MyDynamicAccentBrush}"
-                           VerticalAlignment="Center"
-                           Margin="10,0,0,0"/>
+                                <Setter Property="Padding" Value="4"/>
+                                <Setter Property="CornerRadius" Value="8"/>
+                                <Setter Property="MinWidth" Value="140"/>
+                            </Style>
+                        </Flyout.FlyoutPresenterStyle>
 
-                <Button Background="Transparent" 
-                        BorderThickness="0" 
-                        Padding="0" 
-                        Margin="10,0,0,0" 
-                        VerticalAlignment="Center"
-                        CornerRadius="4"
-                        IsTabStop="False">
+                        <StackPanel Spacing="4">
 
-                    <Button.Flyout>
-                        <MenuFlyout>
-                            <MenuFlyoutItem Text="Logout" Click="LogoutMenu_Click">
-                                <MenuFlyoutItem.Icon>
-                                    <FontIcon Glyph="&#xE7E8;"/>
-                                </MenuFlyoutItem.Icon>
-                            </MenuFlyoutItem>
-                        </MenuFlyout>
-                    </Button.Flyout>
+                            <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center" Margin="4,4,4,8">
 
-                    <Border Background="{Binding AssignedUserType, Converter={StaticResource UserTypeToColorConverter}}" 
-                            Padding="6,3" 
-                            CornerRadius="4" 
-                            BorderThickness="1"
-                            BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}">
-                        <StackPanel Orientation="Horizontal" Spacing="4">
-                            <FontIcon Glyph="&#xE77B;" FontSize="10" Foreground="White" VerticalAlignment="Center"/>
-                            <TextBlock Text="{Binding AssignedUserType}"
-                                       FontFamily="{ThemeResource AppCustomFont}"
-                                       FontSize="10" 
-                                       FontWeight="Bold" 
-                                       Foreground="White" 
-                                       VerticalAlignment="Center"/>
-                            <FontIcon Glyph="&#xE70D;" FontSize="8" Foreground="White" VerticalAlignment="Center" Margin="2,0,0,0"/>
+                                <Border Style="{StaticResource BadgeDangerStyle}">
+                                    <StackPanel Orientation="Horizontal" Spacing="6" HorizontalAlignment="Center" Margin="4,0,4,0">
+                                        <FontIcon Glyph="&#xE77B;" FontSize="11" Foreground="{ThemeResource BadgeDangerForeground}" VerticalAlignment="Center"/>
+                                        <TextBlock Text="{Binding AssignedUserType}" FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDangerForeground}" />
+                                    </StackPanel>
+                                </Border>
+
+                                <Border x:Name="AutoLoginActiveBadge"
+                                        Visibility="Collapsed"
+                                        Style="{StaticResource BadgeRecommendedStyle}">
+                                    <StackPanel Orientation="Horizontal" Spacing="6" HorizontalAlignment="Center" Margin="4,0,4,0">
+                                        <FontIcon Glyph="&#xE8FA;" FontSize="11" Foreground="{ThemeResource BadgeRecommendedForeground}" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Auto-Login" FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}" />
+                                    </StackPanel>
+                                </Border>
+
+                            </StackPanel>
+
+                            <Rectangle Height="1" Fill="{ThemeResource DividerStrokeColorDefaultBrush}" Margin="4,4,4,4" />
+
+                            <Button x:Name="MenuAutoLogin"
+                                    Click="AutoLoginMenu_Click"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="Left"
+                                    CornerRadius="4"
+                                    Padding="12,8">
+                                <StackPanel Orientation="Horizontal" Spacing="12">
+                                    <FontIcon Glyph="&#xE8FA;" FontSize="14"/>
+                                    <TextBlock Text="Auto-Login Session" FontSize="14" FontFamily="{ThemeResource AppCustomFont}" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+
+                            <Button x:Name="MenuRestartApp"
+                                    Click="MenuRestartApp_Click"
+                                    Visibility="Collapsed"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="Left"
+                                    CornerRadius="4"
+                                    Padding="12,8">
+                                <StackPanel Orientation="Horizontal" Spacing="12">
+                                    <FontIcon Glyph="&#xE777;" FontSize="14"/>
+                                    <TextBlock Text="Restart App" FontSize="14" FontFamily="{ThemeResource AppCustomFont}" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+
+                            <Button Click="LogoutMenu_Click"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="Left"
+                                    CornerRadius="4"
+                                    Padding="12,8">
+                                <StackPanel Orientation="Horizontal" Spacing="12">
+                                    <FontIcon Glyph="&#xE7E8;" FontSize="14"/>
+                                    <TextBlock Text="Logout" FontSize="14" FontFamily="{ThemeResource AppCustomFont}" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+
                         </StackPanel>
-                    </Border>
-                </Button>
+                    </Flyout>
+                </Button.Flyout>
 
-            </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                    <Grid Width="30" Height="30">
+                        <Border CornerRadius="15" Width="30" Height="30" BorderBrush="{StaticResource MyDynamicAccentBrush}" BorderThickness="1">
+                            <Border.Background>
+                                <ImageBrush x:Name="ProfileImage" ImageSource="{Binding DisplayProfileAvatar, Mode=TwoWay}" Stretch="UniformToFill"/>
+                            </Border.Background>
+                        </Border>
+                        <Ellipse Stroke="{StaticResource MyDynamicAccentBrush}" StrokeThickness="0.5" Opacity="0.5" Margin="-2"/>
+                    </Grid>
+                    <TextBlock x:Name="DisplayProfileName" Text="{Binding DisplayProfileName}" FontFamily="{ThemeResource AppCustomFont}" FontSize="14" FontWeight="Medium" Foreground="{StaticResource MyDynamicAccentBrush}" VerticalAlignment="Center"/>
+                    <FontIcon Glyph="&#xE70D;" FontSize="10" Foreground="{StaticResource MyDynamicAccentBrush}" VerticalAlignment="Center" Margin="0,2,0,0"/>
+                </StackPanel>
+            </Button>
 
             <Button x:Name="BtnAiAssistant"
                     IsEnabled="{x:Bind IsAiEnabled, Mode=OneWay}"
@@ -350,7 +397,7 @@
                     Click="BtnAiAssistant_Click"
                     ToolTipService.ToolTip="{x:Bind GetText('AIAssistant_Tooltip'), Mode=OneWay}">
                 <StackPanel Orientation="Horizontal" Spacing="8">
-                    <FontIcon Glyph="&#xE994;" FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                    <FontIcon Glyph="&#xED15;" FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                     <TextBlock Text="AI Assistant" FontFamily="{ThemeResource AppCustomFont}" FontSize="12" VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>

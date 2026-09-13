@@ -167,6 +167,14 @@
 
     <sys:String x:Key="Tab_WinIsoBuilder">Windows ISO-bouwer</sys:String>
     <sys:String x:Key="Tab_Advanced">Privacy &amp; Beveiliging</sys:String>
+
+    <sys:String x:Key="title_autologin_settings">Auto-Login Instellingen</sys:String>
+    <sys:String x:Key="txt_enable_autologin">Auto-Login inschakelen</sys:String>
+    <sys:String x:Key="txt_session_hours">Sessieduur (uren)</sys:String>
+    <sys:String x:Key="btn_save">Opslaan</sys:String>
+    <sys:String x:Key="btn_close">Sluiten</sys:String>
+    <sys:String x:Key="btn_verify_enable">Verifiëren &amp; inschakelen</sys:String>
+    <sys:String x:Key="btn_end_session">Sessie beëindigen</sys:String>
     <!-- endregion Main Window -->
 
     <!-- region Settings -->

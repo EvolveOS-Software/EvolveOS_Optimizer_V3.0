@@ -167,6 +167,14 @@
 
     <sys:String x:Key="Tab_WinIsoBuilder">Créateur d'ISO Windows</sys:String>
     <sys:String x:Key="Tab_Advanced">Confidentialité &amp; Sécurité</sys:String>
+
+    <sys:String x:Key="title_autologin_settings">Paramètres de connexion automatique</sys:String>
+    <sys:String x:Key="txt_enable_autologin">Activer la connexion automatique</sys:String>
+    <sys:String x:Key="txt_session_hours">Durée de la session (Heures)</sys:String>
+    <sys:String x:Key="btn_save">Enregistrer</sys:String>
+    <sys:String x:Key="btn_close">Fermer</sys:String>
+    <sys:String x:Key="btn_verify_enable">Vérifier &amp; Activer</sys:String>
+    <sys:String x:Key="btn_end_session">Terminer la session</sys:String>
     <!-- endregion Main Window -->
 
     <!-- region Settings -->

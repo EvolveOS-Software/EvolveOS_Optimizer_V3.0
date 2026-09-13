@@ -7,6 +7,7 @@ using System.IO;
 using System.Net.Http;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using System.Security;
 using System.Security.Principal;
 using EvolveOS_Optimizer.Dialogs;
 using EvolveOS_Optimizer.Views;
@@ -409,6 +410,13 @@ namespace EvolveOS_Optimizer
                 await InitializeUserPermissionsAsync(UserSession.Username);
             }
 
+            if (UserSession.UserType != "Admin")
+            {
+                MenuAutoLogin.Visibility = Visibility.Collapsed;
+            }
+
+            UpdateAutoLoginUIState();
+
             _ = Task.Run(async () =>
             {
                 if (SettingsEngine.IsUpdateCheckRequired)
@@ -603,6 +611,197 @@ namespace EvolveOS_Optimizer
                 });
             }
         }
+        #endregion
+
+        #region Auto-Login Session Logic (Migrated to Dialog)
+
+        private void UpdateAutoLoginUIState()
+        {
+            bool sessionActive = AuthSessionManager.IsSessionValid(out _, out _);
+
+            if (AutoLoginActiveBadge != null)
+                AutoLoginActiveBadge.Visibility = sessionActive ? Visibility.Visible : Visibility.Collapsed;
+
+            if (MenuRestartApp != null)
+                MenuRestartApp.Visibility = sessionActive ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        private void MenuRestartApp_Click(object sender, RoutedEventArgs e)
+        {
+            SettingsEngine.SelfReboot();
+        }
+
+        private async void AutoLoginMenu_Click(object sender, RoutedEventArgs e)
+        {
+            bool sessionActive = AuthSessionManager.IsSessionValid(out _, out _);
+
+            var sp = new StackPanel { Spacing = 12, Width = 320 };
+
+            var toggle = new ToggleSwitch
+            {
+                Header = ResourceString.GetString("txt_enable_autologin") ?? "Enable Auto-Login",
+                IsOn = sessionActive
+            };
+
+            var slider = new Slider
+            {
+                Minimum = 1,
+                Maximum = 72,
+                Value = SettingsEngine.AutoLoginSessionHours > 0 ? SettingsEngine.AutoLoginSessionHours : 24,
+                Header = ResourceString.GetString("txt_session_hours") ?? "Session Duration (Hours)",
+                Visibility = sessionActive ? Visibility.Visible : Visibility.Collapsed
+            };
+
+            var expiryText = new TextBlock
+            {
+                Text = sessionActive ? $"Session expires at: {DateTime.Now.AddHours(SettingsEngine.AutoLoginSessionHours):hh:mm tt}" : "",
+                Visibility = sessionActive ? Visibility.Visible : Visibility.Collapsed,
+                FontSize = 12,
+                Foreground = new SolidColorBrush(Microsoft.UI.Colors.Gray)
+            };
+
+            var passBox = new PasswordBox
+            {
+                PlaceholderText = ResourceString.GetString("txt_enter_password") ?? "Enter password to verify...",
+                Visibility = Visibility.Collapsed
+            };
+
+            var errorText = new TextBlock
+            {
+                Text = ResourceString.GetString("msg_invalid_password") ?? "Invalid password. Please try again.",
+                Foreground = new SolidColorBrush(Microsoft.UI.Colors.Red),
+                Visibility = Visibility.Collapsed,
+                FontSize = 12
+            };
+
+            sp.Children.Add(toggle);
+            sp.Children.Add(slider);
+            sp.Children.Add(expiryText);
+            sp.Children.Add(passBox);
+            sp.Children.Add(errorText);
+
+            var dialog = new ContentDialog
+            {
+                Title = ResourceString.GetString("title_autologin_settings") ?? "Auto-Login Settings",
+                Content = sp,
+                PrimaryButtonText = sessionActive ? (ResourceString.GetString("btn_save") ?? "Save") : (ResourceString.GetString("btn_cancel") ?? "Cancel"),
+                CloseButtonText = ResourceString.GetString("btn_close") ?? "Close",
+                XamlRoot = RootGrid.XamlRoot
+            };
+
+            toggle.Toggled += (s, args) =>
+            {
+                if (toggle.IsOn && !sessionActive)
+                {
+                    passBox.Visibility = Visibility.Visible;
+                    slider.Visibility = Visibility.Visible;
+                    expiryText.Visibility = Visibility.Collapsed;
+                    dialog.PrimaryButtonText = ResourceString.GetString("btn_verify_enable") ?? "Verify & Enable";
+                }
+                else if (!toggle.IsOn && sessionActive)
+                {
+                    passBox.Visibility = Visibility.Collapsed;
+                    slider.Visibility = Visibility.Collapsed;
+                    expiryText.Visibility = Visibility.Collapsed;
+                    dialog.PrimaryButtonText = ResourceString.GetString("btn_end_session") ?? "End Session";
+                }
+            };
+
+            slider.ValueChanged += (s, args) =>
+            {
+                if (toggle.IsOn && sessionActive)
+                {
+                    expiryText.Text = $"Session will expire at: {DateTime.Now.AddHours((int)args.NewValue):hh:mm tt}";
+                }
+            };
+
+            dialog.PrimaryButtonClick += async (s, args) =>
+            {
+                var deferral = args.GetDeferral();
+                args.Cancel = true;
+
+                if (toggle.IsOn && !sessionActive)
+                {
+                    string plainPassword = passBox.Password;
+                    passBox.IsEnabled = false;
+
+                    try
+                    {
+                        await Task.Run(() =>
+                        {
+                            var psi = new ProcessStartInfo("sqllocaldb", "start MSSQLLocalDB") { CreateNoWindow = true, WindowStyle = ProcessWindowStyle.Hidden };
+                            Process.Start(psi)?.WaitForExit();
+                        });
+
+                        var userDataAccess = new UserDataAccess(SqlConnectionHelper.connectReturn());
+                        var loginData = await userDataAccess.GetPasswordAndImageAsync(UserSession.Username!);
+                        bool isVerified = loginData.PasswordHash != null && BCrypt.Net.BCrypt.Verify(plainPassword, loginData.PasswordHash);
+
+                        passBox.IsEnabled = true;
+
+                        if (isVerified)
+                        {
+                            using (SecureString machineKey = TokenManager.GetMachineKey())
+                            {
+                                string encryptedToken = AesHelper.Encrypt(plainPassword, machineKey);
+                                TokenManager.SaveToken(UserSession.Username!, encryptedToken);
+                            }
+
+                            int hours = (int)slider.Value;
+                            SettingsEngine.AutoLoginSessionHours = hours;
+                            AuthSessionManager.CreateAutoLoginSession(UserSession.Username!, hours);
+
+                            UpdateAutoLoginUIState();
+
+                            NativeToastHelper.SendNativeToast(
+                                ResourceString.GetString("toast_success") ?? "Success",
+                                ResourceString.GetString("toast_autologin_authorized") ?? "Auto-Login Authorized!"
+                            );
+                            dialog.Hide();
+                        }
+                        else
+                        {
+                            FactoryAnimation.AnimateErrorShake(passBox);
+                            errorText.Visibility = Visibility.Visible;
+                            passBox.Password = string.Empty;
+                            passBox.Focus(FocusState.Programmatic);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        passBox.IsEnabled = true;
+                        NativeToastHelper.SendNativeToast("Error", ex.Message);
+                        dialog.Hide();
+                    }
+                }
+                else if (!toggle.IsOn && sessionActive)
+                {
+                    _sessionTimer?.Stop();
+                    AuthSessionManager.ClearSession();
+
+                    UpdateAutoLoginUIState();
+
+                    NativeToastHelper.SendNativeToast(
+                        ResourceString.GetString("toast_title_autologin") ?? "Auto-Login",
+                        ResourceString.GetString("toast_msg_session_ended") ?? "Session ended and credentials removed."
+                    );
+                    dialog.Hide();
+                }
+                else if (toggle.IsOn && sessionActive)
+                {
+                    int hours = (int)slider.Value;
+                    SettingsEngine.AutoLoginSessionHours = hours;
+                    AuthSessionManager.CreateAutoLoginSession(UserSession.Username!, hours);
+
+                    dialog.Hide();
+                }
+
+                deferral.Complete();
+            };
+
+            await dialog.ShowAsync();
+        }
+
         #endregion
 
         #region Taskbar Monitoring
