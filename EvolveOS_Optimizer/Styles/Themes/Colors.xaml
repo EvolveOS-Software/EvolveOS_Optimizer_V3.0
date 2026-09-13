@@ -27,6 +27,8 @@
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 
+    <ui:Color x:Key="MyDynamicAccentColor">#FF0078D4</ui:Color>
+
     <ui:Color x:Key="Color_Accent">#7BFFB5</ui:Color>
     <ui:Color x:Key="Color_Error">#E53935</ui:Color>
     <ui:Color x:Key="Color_Success">#43A047</ui:Color>
@@ -43,5 +45,8 @@
     <SolidColorBrush x:Key="Brush_Highlighted_Inverted" Color="#2C2E2D"/>
 
     <SolidColorBrush x:Key="Brush_DiagnosticBlue" Color="#FF00D6E8" />
+
+    <SolidColorBrush x:Key="MyDynamicAccentBrush" Color="{StaticResource MyDynamicAccentColor}"/>
+    <SolidColorBrush x:Key="SystemFillColorBaseMediumBrush" Color="{ThemeResource SystemBaseMediumColor}" />
 
 </ResourceDictionary>
