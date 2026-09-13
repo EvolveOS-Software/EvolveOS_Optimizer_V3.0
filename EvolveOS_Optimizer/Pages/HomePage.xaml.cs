@@ -94,6 +94,8 @@ namespace EvolveOS_Optimizer.Pages
             MainWinViewModel.AppHidden += PauseLiveMonitoring;
             MainWinViewModel.AppRestored += ResumeLiveMonitoring;
 
+            ClearingMemory.CleanupFinished += OnGlobalCleanupFinished;
+
             _isInternalToggle = true;
             ToggleAutoOptimize.IsOn = SettingsEngine.Dashboard_AutoRamOptimize;
             TxtAutoTriggerBadge.Text = $"Auto-trigger at {SettingsEngine.Dashboard_AutoRamThreshold}% RAM usage";
@@ -166,6 +168,8 @@ namespace EvolveOS_Optimizer.Pages
 
             MainWinViewModel.AppHidden -= PauseLiveMonitoring;
             MainWinViewModel.AppRestored -= ResumeLiveMonitoring;
+
+            ClearingMemory.CleanupFinished -= OnGlobalCleanupFinished;
 
             PauseLiveMonitoring();
 
@@ -1637,6 +1641,14 @@ namespace EvolveOS_Optimizer.Pages
         private async void BtnRefreshHealth_Click(object sender, RoutedEventArgs e)
         {
             await UpdateSystemHealthUIAsync();
+        }
+
+        private void OnGlobalCleanupFinished()
+        {
+            _dispatcherQueue.TryEnqueue(async () =>
+            {
+                await UpdateSystemHealthUIAsync();
+            });
         }
 
         private async Task UpdateSystemHealthUIAsync()

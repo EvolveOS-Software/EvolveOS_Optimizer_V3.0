@@ -14,6 +14,7 @@ using EvolveOS_Optimizer.Core.Settings;
 using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
+using EvolveOS_Optimizer.Utilities.Maintenance;
 using EvolveOS_Optimizer.Utilities.Services;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
@@ -228,6 +229,8 @@ namespace EvolveOS_Optimizer.Pages
                 ViewModel.SecurityScanStarted += InitializeSecurityCard;
                 ViewModel.SecurityScanCompleted += UpdateSecurityShieldState;
 
+                ClearingMemory.CleanupFinished += OnGlobalCleanupFinished;
+
                 if (ViewModel.HardwareScannerVisibility == Visibility.Visible) HeartbeatStoryboard?.Begin();
                 if (ViewModel.ScanningVisibility == Visibility.Visible) SystemSonarStoryboard?.Begin();
                 if (ViewModel.EventEmptyStateVisibility == Visibility.Visible) RadarSpinStoryboard?.Begin();
@@ -307,6 +310,8 @@ namespace EvolveOS_Optimizer.Pages
                 ViewModel.OpenDnsToolkitRequested -= ViewModel_OpenDnsToolkitRequested;
                 ViewModel.SecurityScanStarted -= InitializeSecurityCard;
                 ViewModel.SecurityScanCompleted -= UpdateSecurityShieldState;
+
+                ClearingMemory.CleanupFinished -= OnGlobalCleanupFinished;
             }
 
             ExternalPaneRequest = null;
@@ -1585,6 +1590,17 @@ namespace EvolveOS_Optimizer.Pages
         private async void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
             await CalculateSystemHealthAsync();
+        }
+
+        private void OnGlobalCleanupFinished()
+        {
+            this.DispatcherQueue.TryEnqueue(async () =>
+            {
+                if (_isCurrentPageActive)
+                {
+                    await CalculateSystemHealthAsync();
+                }
+            });
         }
 
         private bool _isUpdatingDiagHealth = false;

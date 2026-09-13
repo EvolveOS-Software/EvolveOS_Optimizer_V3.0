@@ -18,6 +18,8 @@ namespace EvolveOS_Optimizer.Utilities.Maintenance
 {
     public sealed class ClearingMemory
     {
+        public static event Action? CleanupFinished;
+
         public struct CleanupStatus
         {
             public bool WinOldRemovedAttempted { get; set; }
@@ -575,6 +577,8 @@ namespace EvolveOS_Optimizer.Utilities.Maintenance
             {
                 ErrorLogging.LogDebug(ex);
             }
+
+            CleanupFinished?.Invoke();
 
             return status;
         }

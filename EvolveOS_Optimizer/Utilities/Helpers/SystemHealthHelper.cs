@@ -53,6 +53,8 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                         ulong usedPageFile = usedCommit > usedPhysical ? usedCommit - usedPhysical : 0;
 
                         vRamPercentage = ((double)usedPageFile / trueTotalPageFile) * 100.0;
+
+                        if (vRamPercentage > 100.0) vRamPercentage = 100.0;
                     }
                     else
                     {
@@ -73,9 +75,9 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
             if (vRamPercentage >= 90.0) penaltyScore += 1;
 
-            if (junkGigabytes >= 20.0) penaltyScore += 2;
-            else if (junkGigabytes >= 10.0) penaltyScore += 1;
-            else if (junkGigabytes >= 2.0) penaltyScore += 1;
+            if (junkGigabytes >= 30.0) penaltyScore += 2;
+            else if (junkGigabytes >= 15.0) penaltyScore += 1;
+            else if (junkGigabytes >= 5.0) penaltyScore += 1;
 
             string statusText;
             double healthScore = 1.0;
@@ -139,7 +141,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                         _ => 0
                     };
 
-                    if (resultInGb < 3.5) return 0.0;
+                    //if (resultInGb < 3.5) return 0.0;
 
                     return resultInGb;
                 }
