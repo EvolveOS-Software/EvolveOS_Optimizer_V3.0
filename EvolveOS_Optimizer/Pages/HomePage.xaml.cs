@@ -23,8 +23,8 @@ using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media.Animation;
-using Microsoft.Win32;
 using Windows.Foundation;
+using static EvolveOS_Optimizer.Utilities.Helpers.Win32Helper;
 
 namespace EvolveOS_Optimizer.Pages
 {
@@ -353,7 +353,7 @@ namespace EvolveOS_Optimizer.Pages
         {
             try
             {
-                using var key = Registry.CurrentUser.CreateSubKey(RegistryPath);
+                using var key = Microsoft.Win32.Registry.CurrentUser.CreateSubKey(RegistryPath);
                 key.SetValue(RegistryValueName, location);
             }
             catch (Exception ex) { Debug.WriteLine($"[Registry] Save Error: {ex.Message}"); }
@@ -3230,24 +3230,6 @@ namespace EvolveOS_Optimizer.Pages
         #endregion
 
         #region Memory Optimization Engine
-
-        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool GlobalMemoryStatusEx(ref MEMORYSTATUSEX lpBuffer);
-
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-        private struct MEMORYSTATUSEX
-        {
-            public uint dwLength;
-            public uint dwMemoryLoad;
-            public ulong ullTotalPhys;
-            public ulong ullAvailPhys;
-            public ulong ullTotalPageFile;
-            public ulong ullAvailPageFile;
-            public ulong ullTotalVirtual;
-            public ulong ullAvailVirtual;
-            public ulong ullAvailExtendedVirtual;
-        }
 
         private DateTime _lastAutoOptimizeTime = DateTime.MinValue;
         private bool _isInternalToggle = false;

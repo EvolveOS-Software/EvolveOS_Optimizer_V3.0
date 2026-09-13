@@ -2,12 +2,17 @@
 // Licensed under the MIT License.
 
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Maintenance;
 using Microsoft.Win32;
+using static EvolveOS_Optimizer.Utilities.Helpers.Win32Helper;
+
+using File = System.IO.File;
+using Registry = Microsoft.Win32.Registry;
 
 namespace EvolveOS_Optimizer.Utilities.Helpers
 {
@@ -119,28 +124,10 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             public long PingMs { get; set; }
         }
 
-        [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
-        private struct MEMORYSTATUSEX
-        {
-            public uint dwLength;
-            public uint dwMemoryLoad;
-            public ulong ullTotalPhys;
-            public ulong ullAvailPhys;
-            public ulong ullTotalPageFile;
-            public ulong ullAvailPageFile;
-            public ulong ullTotalVirtual;
-            public ulong ullAvailVirtual;
-            public ulong ullAvailExtendedVirtual;
-        }
-
-        [System.Runtime.InteropServices.DllImport("kernel32.dll", CharSet = System.Runtime.InteropServices.CharSet.Auto, SetLastError = true)]
-        [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Bool)]
-        private static extern bool GlobalMemoryStatusEx(ref MEMORYSTATUSEX lpBuffer);
-
         private static ulong GetAvailablePhysicalMemoryMB()
         {
             var memStatus = new MEMORYSTATUSEX();
-            memStatus.dwLength = (uint)System.Runtime.InteropServices.Marshal.SizeOf(typeof(MEMORYSTATUSEX));
+            memStatus.dwLength = (uint)Marshal.SizeOf(typeof(MEMORYSTATUSEX));
             if (GlobalMemoryStatusEx(ref memStatus))
                 return memStatus.ullAvailPhys / (1024 * 1024);
             return 0;

@@ -17,6 +17,10 @@ using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using Microsoft.Win32;
 using Newtonsoft.Json;
+using static EvolveOS_Optimizer.Utilities.Helpers.Win32Helper;
+
+using File = System.IO.File;
+using Registry = Microsoft.Win32.Registry;
 
 namespace EvolveOS_Optimizer.Utilities.Configuration
 {
@@ -37,24 +41,6 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
         internal string? AvatarPath { get; private set; }
 
         #region Native Methods
-
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-        private struct MEMORYSTATUSEX
-        {
-            public uint dwLength;
-            public uint dwMemoryLoad;
-            public ulong ullTotalPhys;
-            public ulong ullAvailPhys;
-            public ulong ullTotalPageFile;
-            public ulong ullAvailPageFile;
-            public ulong ullTotalVirtual;
-            public ulong ullAvailVirtual;
-            public ulong ullAvailExtendedVirtual;
-        }
-
-        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool GlobalMemoryStatusEx(ref MEMORYSTATUSEX lpBuffer);
 
         [DllImport("kernel32.dll", SetLastError = true)]
         private static extern bool GetSystemTimes(out FILETIME lpIdleTime, out FILETIME lpKernelTime, out FILETIME lpUserTime);
@@ -164,8 +150,8 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
 
                 if (!string.IsNullOrWhiteSpace(avatarPath) && File.Exists(avatarPath) && new FileInfo(avatarPath).Length > 0)
                 {
-                    var bitmap = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage();
-                    bitmap.CreateOptions = Microsoft.UI.Xaml.Media.Imaging.BitmapCreateOptions.IgnoreImageCache;
+                    var bitmap = new BitmapImage();
+                    bitmap.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
                     bitmap.DecodePixelWidth = 200;
                     bitmap.UriSource = new Uri(avatarPath);
 
@@ -181,9 +167,9 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
                 Debug.WriteLine($"[Diagnostics] Profile Image Error: {ex.Message}");
             }
 
-            if (Microsoft.UI.Xaml.Application.Current.Resources.ContainsKey("Icon_ProfileAvatar"))
+            if (Application.Current.Resources.ContainsKey("Icon_ProfileAvatar"))
             {
-                return Microsoft.UI.Xaml.Application.Current.Resources["Icon_ProfileAvatar"] as ImageSource;
+                return Application.Current.Resources["Icon_ProfileAvatar"] as ImageSource;
             }
 
             return null;

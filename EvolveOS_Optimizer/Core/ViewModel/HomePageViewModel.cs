@@ -21,6 +21,7 @@ using LiveChartsCore.SkiaSharpView.Painting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Win32;
 using SkiaSharp;
+using static EvolveOS_Optimizer.Utilities.Helpers.Win32Helper;
 
 namespace EvolveOS_Optimizer.Core.ViewModel
 {
@@ -42,24 +43,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             public uint dwLowDateTime;
             public uint dwHighDateTime;
         }
-
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-        private struct MEMORYSTATUSEX
-        {
-            public uint dwLength;
-            public uint dwMemoryLoad;
-            public ulong ullTotalPhys;
-            public ulong ullAvailPhys;
-            public ulong ullTotalPageFile;
-            public ulong ullAvailPageFile;
-            public ulong ullTotalVirtual;
-            public ulong ullAvailVirtual;
-            public ulong ullAvailExtendedVirtual;
-        }
-
-        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool GlobalMemoryStatusEx(ref MEMORYSTATUSEX lpBuffer);
 
         [DllImport("iphlpapi.dll", SetLastError = true)]
         private static extern uint GetExtendedTcpTable(IntPtr pTcpTable, ref int dwOutBufLen, bool sort, int ipVersion, int tcpTableType, int reserved);
@@ -655,13 +638,13 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             {
                 try
                 {
-                    if (File.Exists(path))
+                    if (System.IO.File.Exists(path))
                     {
-                        var writeTime = File.GetLastWriteTime(path);
+                        var writeTime = System.IO.File.GetLastWriteTime(path);
                         if (writeTime > lastWrite)
                         {
                             lastWrite = writeTime;
-                            byte[] bytes = await File.ReadAllBytesAsync(path, token);
+                            byte[] bytes = await System.IO.File.ReadAllBytesAsync(path, token);
                             App.MainWindow?.DispatcherQueue?.TryEnqueue(() => OnWallpaperUpdated?.Invoke(bytes));
                         }
                     }
@@ -788,7 +771,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         {
             try
             {
-                using var baseKey = keyPath.StartsWith("HKEY_LOCAL_MACHINE") ? Registry.LocalMachine : Registry.CurrentUser;
+                using var baseKey = keyPath.StartsWith("HKEY_LOCAL_MACHINE") ? Microsoft.Win32.Registry.LocalMachine : Microsoft.Win32.Registry.CurrentUser;
                 string subKey = keyPath.Substring(keyPath.IndexOf('\\') + 1);
                 using var key = baseKey.OpenSubKey(subKey);
                 return key?.GetValue(valueName);

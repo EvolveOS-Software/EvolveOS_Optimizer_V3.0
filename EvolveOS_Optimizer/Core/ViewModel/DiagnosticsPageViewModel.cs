@@ -28,6 +28,7 @@ using Microsoft.Windows.System.Power;
 using SkiaSharp;
 using Windows.Foundation;
 using Windows.System;
+using static EvolveOS_Optimizer.Utilities.Helpers.Win32Helper;
 
 namespace EvolveOS_Optimizer.Core.ViewModel
 {
@@ -151,9 +152,9 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         {
             try
             {
-                if (File.Exists(_telemetryStorePath))
+                if (System.IO.File.Exists(_telemetryStorePath))
                 {
-                    string json = File.ReadAllText(_telemetryStorePath);
+                    string json = System.IO.File.ReadAllText(_telemetryStorePath);
                     var snapshot = JsonSerializer.Deserialize<TelemetrySnapshot>(json);
                     if (snapshot != null)
                     {
@@ -197,7 +198,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
 
                 string json = JsonSerializer.Serialize(snapshot);
-                await File.WriteAllTextAsync(_telemetryStorePath, json);
+                await System.IO.File.WriteAllTextAsync(_telemetryStorePath, json);
             }
             catch { Debug.WriteLine("Failed to save 72H telemetry."); }
         }
@@ -856,24 +857,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             public uint dwLowDateTime;
             public uint dwHighDateTime;
         }
-
-        [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, CharSet = System.Runtime.InteropServices.CharSet.Auto)]
-        private struct MEMORYSTATUSEX
-        {
-            public uint dwLength;
-            public uint dwMemoryLoad;
-            public ulong ullTotalPhys;
-            public ulong ullAvailPhys;
-            public ulong ullTotalPageFile;
-            public ulong ullAvailPageFile;
-            public ulong ullTotalVirtual;
-            public ulong ullAvailVirtual;
-            public ulong ullAvailExtendedVirtual;
-        }
-
-        [System.Runtime.InteropServices.DllImport("kernel32.dll", CharSet = System.Runtime.InteropServices.CharSet.Auto, SetLastError = true)]
-        [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Bool)]
-        private static extern bool GlobalMemoryStatusEx(ref MEMORYSTATUSEX lpBuffer);
         #endregion
 
         #region Merged Core UI & State Properties (Maintenance)
@@ -5115,7 +5098,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     {
                         try
                         {
-                            FileAttributes attributes = File.GetAttributes(dir);
+                            FileAttributes attributes = System.IO.File.GetAttributes(dir);
                             if ((attributes & FileAttributes.ReparsePoint) == FileAttributes.ReparsePoint) continue;
 
                             size += GetDirectorySize(dir, currentDepth + 1, maxDepth);
