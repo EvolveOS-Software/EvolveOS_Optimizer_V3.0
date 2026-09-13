@@ -412,10 +412,11 @@ namespace EvolveOS_Optimizer
 
             if (UserSession.UserType != "Admin")
             {
-                MenuAutoLogin.Visibility = Visibility.Collapsed;
+                if (MenuAutoLogin != null) MenuAutoLogin.Visibility = Visibility.Collapsed;
             }
 
             UpdateAutoLoginUIState();
+            UpdateAdminMenuChecks();
 
             _ = Task.Run(async () =>
             {
@@ -613,7 +614,55 @@ namespace EvolveOS_Optimizer
         }
         #endregion
 
-        #region Auto-Login Session Logic (Migrated to Dialog)
+        #region Admin Tools & Auto-Login Dialog
+
+        public void UpdateAdminMenuChecks()
+        {
+            _dispatcherQueue.TryEnqueue(() =>
+            {
+                if (IconStartMinimizedCheck != null)
+                    IconStartMinimizedCheck.Visibility = SettingsEngine.IsStartMinimized ? Visibility.Visible : Visibility.Collapsed;
+
+                if (IconRunOnStartupCheck != null)
+                    IconRunOnStartupCheck.Visibility = SettingsEngine.IsRunOnStartUp ? Visibility.Visible : Visibility.Collapsed;
+            });
+        }
+
+        private void MenuToggleStartMinimized_Click(object sender, RoutedEventArgs e)
+        {
+            if (RootGrid.DataContext is MainWinViewModel vm)
+            {
+                vm.IsStartMinimized = !SettingsEngine.IsStartMinimized;
+            }
+            else
+            {
+                SettingsEngine.IsStartMinimized = !SettingsEngine.IsStartMinimized;
+            }
+            UpdateAdminMenuChecks();
+            RefreshSettingsPageIfActive();
+        }
+
+        private void MenuToggleRunOnStartup_Click(object sender, RoutedEventArgs e)
+        {
+            if (RootGrid.DataContext is MainWinViewModel vm)
+            {
+                vm.IsRunOnStartUp = !SettingsEngine.IsRunOnStartUp;
+            }
+            else
+            {
+                SettingsEngine.IsRunOnStartUp = !SettingsEngine.IsRunOnStartUp;
+            }
+            UpdateAdminMenuChecks();
+            RefreshSettingsPageIfActive();
+        }
+
+        public void RefreshSettingsPageIfActive()
+        {
+            if (ContentFrame?.Content is Pages.SettingsPage settingsPage)
+            {
+                settingsPage.RefreshToggleStates();
+            }
+        }
 
         private void UpdateAutoLoginUIState()
         {
@@ -1372,6 +1421,11 @@ namespace EvolveOS_Optimizer
             UserSession.UserType = type;
 
             IsAdmin = string.Equals(UserSession.UserType, "Admin", StringComparison.OrdinalIgnoreCase);
+
+            if (AdminToolsPanel != null)
+            {
+                AdminToolsPanel.Visibility = IsAdmin ? Visibility.Visible : Visibility.Collapsed;
+            }
 
             Debug.WriteLine($"[Permissions] Applied logic for type: {type}, IsAdmin: {IsAdmin}");
         }

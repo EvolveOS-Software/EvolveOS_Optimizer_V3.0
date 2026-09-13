@@ -273,6 +273,9 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             ToggleRunOnStartupCommand = new Base.RelayCommand(_ =>
             {
                 IsRunOnStartUp = !IsRunOnStartUp;
+
+                MainWindow.Instance?.UpdateAdminMenuChecks();
+                MainWindow.Instance?.RefreshSettingsPageIfActive();
             });
 
             LocalMachineSettingsEngine.SettingChanged += (sender, settingKey) =>

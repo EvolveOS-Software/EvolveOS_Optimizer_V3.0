@@ -918,6 +918,12 @@ namespace EvolveOS_Optimizer.Pages
 
         private void DonationBanner_Dismiss(object sender, RoutedEventArgs e) => DonationBanner.IsOpen = false;
         private async void Link_Donate(object sender, RoutedEventArgs e) => await Links.OpenAsync(Links.Donate);
+
+        public void RefreshToggleStates()
+        {
+            OnPropertyChanged(nameof(IsStartMinimized));
+            OnPropertyChanged(nameof(IsRunOnStartUp));
+        }
         #endregion
 
         #region Developer Tools
@@ -1186,6 +1192,8 @@ namespace EvolveOS_Optimizer.Pages
                 {
                     SettingsEngine.IsRunOnStartUp = value;
                     OnPropertyChanged();
+
+                    MainWindow.Instance?.UpdateAdminMenuChecks();
                 }
             }
         }
@@ -1212,6 +1220,8 @@ namespace EvolveOS_Optimizer.Pages
                 {
                     SettingsEngine.IsStartMinimized = value;
                     OnPropertyChanged();
+
+                    MainWindow.Instance?.UpdateAdminMenuChecks();
                 }
             }
         }
