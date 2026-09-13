@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 
 // =========================================================================
-// T4 Manifest Update Status: SUCCESS: Updated E:\EvolveOS_Optimizer_V3.0\EvolveOS_Optimizer\Package.appxmanifest to 1.2.7.0.
+// T4 Manifest Update Status: SUCCESS: Updated E:\EvolveOS_Optimizer_V3.0\EvolveOS_Optimizer\Package.appxmanifest to 1.2.8.0.
 // =========================================================================
 
 [assembly: AssemblyTitle("EvolveOS_Optimizer")]
@@ -13,9 +13,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright("© 2026-2026 EvolveOS")]
 [assembly: AssemblyTrademark("EvolveOS Software")]
 
-[assembly: AssemblyInformationalVersion("Build: 1.2.7.432")]
-[assembly: AssemblyVersion("1.2.7.432")]
-[assembly: AssemblyFileVersion("1.2.7.432")]
+[assembly: AssemblyInformationalVersion("Build: 1.2.8.433")]
+[assembly: AssemblyVersion("1.2.8.433")]
+[assembly: AssemblyFileVersion("1.2.8.433")]
 
 [assembly: ComVisible(false)]
 
