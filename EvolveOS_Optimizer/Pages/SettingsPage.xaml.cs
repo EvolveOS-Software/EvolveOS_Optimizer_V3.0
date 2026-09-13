@@ -1,7 +1,5 @@
 // Copyright (c) 2026 EvolveOS Software
-//
-// Licensed under the MIT License. 
-// See the LICENSE file in the project root for more information.
+// Licensed under the MIT License.
 
 using System.ComponentModel;
 using System.Globalization;
