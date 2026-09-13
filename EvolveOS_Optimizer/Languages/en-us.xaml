@@ -5971,6 +5971,8 @@
     <sys:String x:Key="cme_qt_flushdns_desc">Clears the DNS resolver cache</sys:String>
     <sys:String x:Key="cme_qt_adv_startup_title">Advanced Startup Options</sys:String>
     <sys:String x:Key="cme_qt_adv_startup_desc">Restarts the PC into the Advanced Recovery environment</sys:String>
+    <sys:String x:Key="cme_qt_reboot_bios_title">Reboot to BIOS / UEFI</sys:String>
+    <sys:String x:Key="cme_qt_reboot_bios_desc">Restarts the PC directly into the motherboard firmware settings</sys:String>
 
     <sys:String x:Key="cme_editor_header">Context Menu Editor</sys:String>
     <sys:String x:Key="cme_editor_desc">Add or remove custom apps from your classic and modern right-click menus</sys:String>

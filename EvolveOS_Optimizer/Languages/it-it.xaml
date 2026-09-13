@@ -5866,6 +5866,8 @@
     <sys:String x:Key="cme_qt_flushdns_desc">Cancella la cache del resolver DNS</sys:String>
     <sys:String x:Key="cme_qt_adv_startup_title">Opzioni di avvio avanzate</sys:String>
     <sys:String x:Key="cme_qt_adv_startup_desc">Riavvia il PC nell'ambiente di ripristino avanzato</sys:String>
+    <sys:String x:Key="cme_qt_reboot_bios_title">Riavvia nel BIOS / UEFI</sys:String>
+    <sys:String x:Key="cme_qt_reboot_bios_desc">Riavvia il PC direttamente nelle impostazioni del firmware della scheda madre</sys:String>
 
     <sys:String x:Key="cme_editor_header">Editor del menu contestuale</sys:String>
     <sys:String x:Key="cme_editor_desc">Aggiungi o rimuovi app personalizzate dai menu contestuali classici e moderni</sys:String>

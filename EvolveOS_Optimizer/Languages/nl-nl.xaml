@@ -5869,6 +5869,8 @@
     <sys:String x:Key="cme_qt_flushdns_desc">Wist de DNS resolvercache</sys:String>
     <sys:String x:Key="cme_qt_adv_startup_title">Geavanceerde opstartopties</sys:String>
     <sys:String x:Key="cme_qt_adv_startup_desc">Start de pc opnieuw op in de geavanceerde herstelomgeving</sys:String>
+    <sys:String x:Key="cme_qt_reboot_bios_title">Herstarten naar BIOS / UEFI</sys:String>
+    <sys:String x:Key="cme_qt_reboot_bios_desc">Start de pc direct opnieuw op in de firmware instellingen van het moederbord</sys:String>
 
     <sys:String x:Key="cme_editor_header">Contextmenu editor</sys:String>
     <sys:String x:Key="cme_editor_desc">Aangepaste apps toevoegen of verwijderen uit je klassieke en moderne rechtermuisknopmenu's</sys:String>
