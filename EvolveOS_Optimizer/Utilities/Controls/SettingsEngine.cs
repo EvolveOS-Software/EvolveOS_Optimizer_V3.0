@@ -154,6 +154,12 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["DevCacheRetentionIndex"] = 0,
 
             ["HideFanControlWarningDialog"] = false,
+
+            ["Shell_MasterEnabled"] = false,
+            ["Shell_StartMenuEnabled"] = false,
+            ["Shell_StartMenuStyle"] = "Standard",
+            ["Shell_TaskbarEnabled"] = false,
+            ["Shell_TaskbarStyle"] = "Standard"
         };
 
         private static readonly Dictionary<string, object> _cachedSettings = new Dictionary<string, object>(_defaultSettings);
@@ -300,6 +306,12 @@ namespace EvolveOS_Optimizer.Utilities.Controls
                 ChangingParameters("SelectedCleanerEntries", serialized);
             }
         }
+
+        internal static bool Shell_MasterEnabled { get => (bool)_cachedSettings["Shell_MasterEnabled"]; set => ChangingParameters("Shell_MasterEnabled", value); }
+        internal static bool Shell_StartMenuEnabled { get => (bool)_cachedSettings["Shell_StartMenuEnabled"]; set => ChangingParameters("Shell_StartMenuEnabled", value); }
+        internal static string Shell_StartMenuStyle { get => (string)_cachedSettings["Shell_StartMenuStyle"]; set => ChangingParameters("Shell_StartMenuStyle", value); }
+        internal static bool Shell_TaskbarEnabled { get => (bool)_cachedSettings["Shell_TaskbarEnabled"]; set => ChangingParameters("Shell_TaskbarEnabled", value); }
+        internal static string Shell_TaskbarStyle { get => (string)_cachedSettings["Shell_TaskbarStyle"]; set => ChangingParameters("Shell_TaskbarStyle", value); }
 
         private static void ChangingParameters(string key, object value)
         {
