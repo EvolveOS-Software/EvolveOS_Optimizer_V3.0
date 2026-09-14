@@ -922,6 +922,7 @@ namespace EvolveOS_Optimizer
             {
                 "Home" => typeof(Pages.HomePage),
                 "Diagnostics" => typeof(Pages.DiagnosticsPage),
+                //"Diagnostics" => typeof(Pages.ShellCustomizationPage),
                 "SystemManager" => typeof(Pages.SystemManagerPage),
                 "SystemCleaner" => typeof(Pages.DiskCleanupPage),
                 "Software" => typeof(Pages.SoftwareCenterPage),

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="EvolveOS_Optimizer.Pages.ShellCustomizationPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="Transparent">
+
+    <ScrollViewer Padding="24">
+        <StackPanel Spacing="24" MaxWidth="800" HorizontalAlignment="Left">
+
+            <TextBlock Text="Shell Customization" FontSize="28" FontWeight="SemiBold" Margin="0,0,0,8"/>
+
+            <!-- Master Switch -->
+            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" 
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" 
+                    BorderThickness="1" CornerRadius="8" Padding="16">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <FontIcon Glyph="&#xE7F4;" FontSize="24" Margin="0,0,16,0" VerticalAlignment="Center" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"/>
+
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                        <TextBlock Text="Enable EvolveOS Shell Enhancer" FontWeight="SemiBold" FontSize="16"/>
+                        <TextBlock Text="Master switch to activate the background process for custom Start Menu and Taskbar features." 
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="12" TextWrapping="Wrap"/>
+                    </StackPanel>
+
+                    <ToggleSwitch Grid.Column="2" x:Name="MasterToggle" VerticalAlignment="Center" Toggled="MasterToggle_Toggled"/>
+                </Grid>
+            </Border>
+
+            <!-- Start Menu Settings -->
+            <TextBlock Text="Start Menu Options" FontSize="16" FontWeight="SemiBold" Margin="0,8,0,0"/>
+            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" 
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" 
+                    BorderThickness="1" CornerRadius="8">
+                <StackPanel>
+
+                    <!-- Custom Start Menu Toggle -->
+                    <Grid Padding="16">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="Custom Start Menu" FontWeight="SemiBold"/>
+                            <TextBlock Text="Replace the native Windows 11 Start Menu with the EvolveOS optimized menu." 
+                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="12"/>
+                        </StackPanel>
+                        <ToggleSwitch Grid.Column="1" x:Name="StartMenuToggle" IsEnabled="False" VerticalAlignment="Center" Toggled="SettingToggle_Toggled" Tag="StartMenu_Enable"/>
+                    </Grid>
+
+                    <MenuFlyoutSeparator/>
+
+                    <!-- Taskbar Style Dropdown -->
+                    <Grid Padding="16">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="Taskbar Style" FontWeight="SemiBold"/>
+                            <TextBlock Text="Choose between a traditional full-width bar or a modern floating dock." 
+                   Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="12"/>
+                        </StackPanel>
+                        <ComboBox Grid.Column="1" x:Name="TaskbarStyleCombo" IsEnabled="False" Width="150" VerticalAlignment="Center" SelectionChanged="SettingCombo_SelectionChanged" Tag="Taskbar_Style">
+                            <ComboBoxItem Content="Floating Dock" Tag="Floating"/>
+                            <ComboBoxItem Content="Standard" Tag="Standard"/>
+                        </ComboBox>
+                    </Grid>
+
+                    <!-- Start Menu Style Dropdown -->
+                    <Grid Padding="16">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="Start Menu Style" FontWeight="SemiBold"/>
+                            <TextBlock Text="Choose between standard or compact rendering." 
+                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="12"/>
+                        </StackPanel>
+                        <ComboBox Grid.Column="1" x:Name="StartMenuStyleCombo" IsEnabled="False" Width="150" VerticalAlignment="Center" SelectionChanged="StartMenuStyleCombo_SelectionChanged">
+                            <ComboBoxItem Content="Standard" Tag="Standard"/>
+                            <ComboBoxItem Content="Compact" Tag="Compact"/>
+                        </ComboBox>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Taskbar Settings -->
+            <TextBlock Text="Taskbar Options" FontSize="16" FontWeight="SemiBold" Margin="0,8,0,0"/>
+            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" 
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" 
+                    BorderThickness="1" CornerRadius="8">
+                <StackPanel>
+
+                    <!-- Custom Taskbar Toggle -->
+                    <Grid Padding="16">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="Custom Taskbar Rendering" FontWeight="SemiBold"/>
+                            <TextBlock Text="Enable custom taskbar styles, dynamic transparency, and centered floating mode." 
+                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="12"/>
+                        </StackPanel>
+                        <ToggleSwitch Grid.Column="1" x:Name="TaskbarToggle" IsEnabled="False" VerticalAlignment="Center" Toggled="SettingToggle_Toggled" Tag="Taskbar_Enable"/>
+                    </Grid>
+
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</Page>
