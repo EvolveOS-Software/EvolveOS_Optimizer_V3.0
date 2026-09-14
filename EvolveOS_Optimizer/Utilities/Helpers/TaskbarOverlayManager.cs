@@ -33,7 +33,23 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         private static extern bool GetMonitorInfo(IntPtr hMonitor, ref MONITORINFO lpmi);
 
+        [DllImport("shell32.dll", SetLastError = true)]
+        private static extern IntPtr SHAppBarMessage(uint dwMessage, ref APPBARDATA pData);
+
+        private const uint ABM_GETTASKBARPOS = 0x00000005;
+
         private const uint MONITOR_DEFAULTTONEAREST = 2;
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct APPBARDATA
+        {
+            public uint cbSize;
+            public IntPtr hWnd;
+            public uint uCallbackMessage;
+            public uint uEdge;
+            public RECT rc;
+            public int lParam;
+        }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
         public struct MONITORINFO
@@ -90,13 +106,28 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             return new RECT { Left = 0, Top = 1040, Right = 1920, Bottom = 1080 };
         }
 
-        public static int GetCurrentWidgetXOffset(IntPtr monitorHwnd)
+        public static uint GetTaskbarEdge()
+        {
+            APPBARDATA abd = new APPBARDATA();
+            abd.cbSize = (uint)Marshal.SizeOf(typeof(APPBARDATA));
+            SHAppBarMessage(ABM_GETTASKBARPOS, ref abd);
+            return abd.uEdge;
+        }
+
+        public static int GetCurrentWidgetOffset(IntPtr monitorHwnd)
         {
             GetWindowRect(monitorHwnd, out RECT windowRect);
-
             var taskbarRect = GetTaskbarRect();
+            uint edge = GetTaskbarEdge();
 
-            return taskbarRect.Right - windowRect.Left;
+            if (edge == 0 || edge == 2)
+            {
+                return taskbarRect.Bottom - windowRect.Bottom;
+            }
+            else
+            {
+                return taskbarRect.Right - windowRect.Right;
+            }
         }
 
         public static bool AreRectsEqual(RECT a, RECT b)
@@ -122,23 +153,32 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             exStyle |= WS_EX_TOOLWINDOW | WS_EX_TOPMOST;
             SetWindowLongPtr(monitorHwnd, GWL_EXSTYLE, new IntPtr(exStyle));
 
-            GetWindowRect(taskbarHwnd, out RECT taskbarRect);
-
-            int widgetHeight = 36;
-            int taskbarHeight = taskbarRect.Bottom - taskbarRect.Top;
-            int targetY = taskbarRect.Top + ((taskbarHeight - widgetHeight) / 2);
-            int targetX = 500;
-
-            SetWindowPos(monitorHwnd, HWND_TOPMOST, targetX, targetY, 0, 0,
+            SetWindowPos(monitorHwnd, HWND_TOPMOST, 0, 0, 0, 0,
                 SWP_NOSIZE | SWP_NOACTIVATE | SWP_FRAMECHANGED);
         }
 
-        public static void PositionInsideTaskbar(IntPtr monitorHwnd, int xOffsetFromRight, int yOffsetFromTop)
+        public static void PositionInsideTaskbar(IntPtr monitorHwnd, int primaryOffset, int widgetWidth, int widgetHeight)
         {
             var taskbarRect = GetTaskbarRect();
+            uint edge = GetTaskbarEdge();
 
-            int absoluteX = taskbarRect.Right - xOffsetFromRight;
-            int absoluteY = taskbarRect.Top + yOffsetFromTop;
+            int absoluteX = 0;
+            int absoluteY = 0;
+
+            switch (edge)
+            {
+                case 1:
+                case 3:
+                    absoluteX = taskbarRect.Right - primaryOffset - widgetWidth;
+                    absoluteY = taskbarRect.Top + ((taskbarRect.Height - widgetHeight) / 2);
+                    break;
+
+                case 0:
+                case 2:
+                    absoluteX = taskbarRect.Left + ((taskbarRect.Width - widgetWidth) / 2);
+                    absoluteY = taskbarRect.Bottom - primaryOffset - widgetHeight;
+                    break;
+            }
 
             SetWindowPos(monitorHwnd, HWND_TOPMOST, absoluteX, absoluteY, 0, 0,
                 SWP_NOSIZE | SWP_SHOWWINDOW | SWP_NOACTIVATE);
@@ -178,10 +218,12 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
             if (GetMonitorInfo(tbMonitor, ref miTb))
             {
-                if (tbRect.Top >= miTb.rcMonitor.Bottom - 10)
-                {
-                    return true;
-                }
+                uint edge = GetTaskbarEdge();
+
+                if (edge == 3 && tbRect.Top >= miTb.rcMonitor.Bottom - 10) return true;
+                if (edge == 1 && tbRect.Bottom <= miTb.rcMonitor.Top + 10) return true;
+                if (edge == 0 && tbRect.Right <= miTb.rcMonitor.Left + 10) return true;
+                if (edge == 2 && tbRect.Left >= miTb.rcMonitor.Right - 10) return true;
             }
 
             IntPtr fgHwnd = GetForegroundWindow();
