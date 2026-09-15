@@ -19,11 +19,11 @@ namespace EvolveOS_Optimizer.Pages
             MasterToggle.IsOn = SettingsEngine.Shell_MasterEnabled;
             StartMenuToggle.IsOn = SettingsEngine.Shell_StartMenuEnabled;
             TaskbarToggle.IsOn = SettingsEngine.Shell_TaskbarEnabled;
+            PreviewButtonsToggle.IsOn = SettingsEngine.Shell_TaskbarPreviewButtons;
+            ClockSecondsToggle.IsOn = SettingsEngine.Shell_TaskbarClockSeconds;
 
             SelectComboBoxItemByTag(StartMenuStyleCombo, SettingsEngine.Shell_StartMenuStyle);
             SelectComboBoxItemByTag(TaskbarStyleCombo, SettingsEngine.Shell_TaskbarStyle);
-
-            // 1. Load the Alignment setting
             SelectComboBoxItemByTag(TaskbarAlignmentCombo, SettingsEngine.Shell_TaskbarAlignment ?? "Split");
 
             UpdateChildControlStates(MasterToggle.IsOn);
@@ -56,6 +56,8 @@ namespace EvolveOS_Optimizer.Pages
 
             TaskbarStyleCombo.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
             TaskbarAlignmentCombo.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
+            PreviewButtonsToggle.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
+            ClockSecondsToggle.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
         }
 
         #region Event Handlers
@@ -77,6 +79,8 @@ namespace EvolveOS_Optimizer.Pages
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_Enable:{TaskbarToggle.IsOn}");
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_Style:{SettingsEngine.Shell_TaskbarStyle}");
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_Alignment:{SettingsEngine.Shell_TaskbarAlignment}");
+                _ = ShellEnhancerController.SendCommandAsync($"Taskbar_PreviewButtons:{SettingsEngine.Shell_TaskbarPreviewButtons}");
+                _ = ShellEnhancerController.SendCommandAsync($"Taskbar_ClockSeconds:{SettingsEngine.Shell_TaskbarClockSeconds}");
             }
             else
             {
@@ -94,6 +98,10 @@ namespace EvolveOS_Optimizer.Pages
                 SettingsEngine.Shell_StartMenuEnabled = toggle.IsOn;
             else if (commandTag == "Taskbar_Enable")
                 SettingsEngine.Shell_TaskbarEnabled = toggle.IsOn;
+            else if (commandTag == "Taskbar_PreviewButtons")
+                SettingsEngine.Shell_TaskbarPreviewButtons = toggle.IsOn;
+            else if (commandTag == "Taskbar_ClockSeconds")
+                SettingsEngine.Shell_TaskbarClockSeconds = toggle.IsOn;
 
             UpdateChildControlStates(MasterToggle.IsOn);
 

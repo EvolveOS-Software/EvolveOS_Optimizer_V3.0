@@ -160,7 +160,9 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["Shell_StartMenuStyle"] = "Standard",
             ["Shell_TaskbarEnabled"] = false,
             ["Shell_TaskbarStyle"] = "Standard",
-            ["Shell_TaskbarAlignment"] = "Split"
+            ["Shell_TaskbarAlignment"] = "Split",
+            ["Shell_TaskbarPreviewButtons"] = true,
+            ["Shell_TaskbarClockSeconds"] = false
         };
 
         private static readonly Dictionary<string, object> _cachedSettings = new Dictionary<string, object>(_defaultSettings);
@@ -314,6 +316,8 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static bool Shell_TaskbarEnabled { get => (bool)_cachedSettings["Shell_TaskbarEnabled"]; set => ChangingParameters("Shell_TaskbarEnabled", value); }
         internal static string Shell_TaskbarStyle { get => (string)_cachedSettings["Shell_TaskbarStyle"]; set => ChangingParameters("Shell_TaskbarStyle", value); }
         internal static string Shell_TaskbarAlignment { get => (string)_cachedSettings["Shell_TaskbarAlignment"]; set => ChangingParameters("Shell_TaskbarAlignment", value); }
+        internal static bool Shell_TaskbarPreviewButtons { get => (bool)_cachedSettings["Shell_TaskbarPreviewButtons"]; set => ChangingParameters("Shell_TaskbarPreviewButtons", value); }
+        internal static bool Shell_TaskbarClockSeconds { get => (bool)_cachedSettings["Shell_TaskbarClockSeconds"]; set => ChangingParameters("Shell_TaskbarClockSeconds", value); }
 
         private static void ChangingParameters(string key, object value)
         {
