@@ -23,6 +23,9 @@ namespace EvolveOS_Optimizer.Pages
             SelectComboBoxItemByTag(StartMenuStyleCombo, SettingsEngine.Shell_StartMenuStyle);
             SelectComboBoxItemByTag(TaskbarStyleCombo, SettingsEngine.Shell_TaskbarStyle);
 
+            // 1. Load the Alignment setting
+            SelectComboBoxItemByTag(TaskbarAlignmentCombo, SettingsEngine.Shell_TaskbarAlignment ?? "Split");
+
             UpdateChildControlStates(MasterToggle.IsOn);
 
             if (MasterToggle.IsOn && Process.GetProcessesByName("EvolveOS_ShellEnhancer").Length == 0)
@@ -47,9 +50,12 @@ namespace EvolveOS_Optimizer.Pages
         private void UpdateChildControlStates(bool isMasterEnabled)
         {
             StartMenuToggle.IsEnabled = isMasterEnabled;
-            StartMenuStyleCombo.IsEnabled = isMasterEnabled;
             TaskbarToggle.IsEnabled = isMasterEnabled;
-            TaskbarStyleCombo.IsEnabled = isMasterEnabled;
+
+            StartMenuStyleCombo.IsEnabled = isMasterEnabled && StartMenuToggle.IsOn;
+
+            TaskbarStyleCombo.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
+            TaskbarAlignmentCombo.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
         }
 
         #region Event Handlers
@@ -70,6 +76,7 @@ namespace EvolveOS_Optimizer.Pages
                 _ = ShellEnhancerController.SendCommandAsync($"StartMenu_Style:{SettingsEngine.Shell_StartMenuStyle}");
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_Enable:{TaskbarToggle.IsOn}");
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_Style:{SettingsEngine.Shell_TaskbarStyle}");
+                _ = ShellEnhancerController.SendCommandAsync($"Taskbar_Alignment:{SettingsEngine.Shell_TaskbarAlignment}");
             }
             else
             {
@@ -87,6 +94,8 @@ namespace EvolveOS_Optimizer.Pages
                 SettingsEngine.Shell_StartMenuEnabled = toggle.IsOn;
             else if (commandTag == "Taskbar_Enable")
                 SettingsEngine.Shell_TaskbarEnabled = toggle.IsOn;
+
+            UpdateChildControlStates(MasterToggle.IsOn);
 
             if (MasterToggle.IsOn)
             {
@@ -116,6 +125,9 @@ namespace EvolveOS_Optimizer.Pages
 
             if (commandTag == "Taskbar_Style")
                 SettingsEngine.Shell_TaskbarStyle = style;
+
+            else if (commandTag == "Taskbar_Alignment")
+                SettingsEngine.Shell_TaskbarAlignment = style;
 
             if (MasterToggle.IsOn)
             {
