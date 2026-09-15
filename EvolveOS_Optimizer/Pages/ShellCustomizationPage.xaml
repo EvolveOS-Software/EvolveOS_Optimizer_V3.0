@@ -172,6 +172,40 @@
                                 </ComboBox>
                             </Grid>
 
+                            <!-- Live Preview Action Buttons Toggle -->
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel VerticalAlignment="Center" Spacing="2">
+                                    <TextBlock Text="Live Preview Actions" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                    <TextBlock Text="Show quick actions (Kill) when hovering over live previews." 
+                                               FontFamily="{ThemeResource AppCustomFont}"
+                                               Style="{StaticResource CaptionTextBlockStyle}"
+                                               Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" 
+                                               TextWrapping="Wrap"/>
+                                </StackPanel>
+                                <ToggleSwitch Grid.Column="1" x:Name="PreviewButtonsToggle" IsEnabled="False" VerticalAlignment="Center" Toggled="SettingToggle_Toggled" Tag="Taskbar_PreviewButtons" Margin="0" MinWidth="0"/>
+                            </Grid>
+
+                            <!-- Show Seconds on Clock Toggle -->
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel VerticalAlignment="Center" Spacing="2">
+                                    <TextBlock Text="Show Seconds in Clock" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                    <TextBlock Text="Display seconds on the taskbar system clock." 
+                                               FontFamily="{ThemeResource AppCustomFont}"
+                                               Style="{StaticResource CaptionTextBlockStyle}"
+                                               Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" 
+                                               TextWrapping="Wrap"/>
+                                </StackPanel>
+                                <ToggleSwitch Grid.Column="1" x:Name="ClockSecondsToggle" IsEnabled="False" VerticalAlignment="Center" Toggled="SettingToggle_Toggled" Tag="Taskbar_ClockSeconds" Margin="0" MinWidth="0"/>
+                            </Grid>
+
                         </StackPanel>
                     </Expander.Content>
                 </Expander>
