@@ -159,7 +159,8 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["Shell_StartMenuEnabled"] = false,
             ["Shell_StartMenuStyle"] = "Standard",
             ["Shell_TaskbarEnabled"] = false,
-            ["Shell_TaskbarStyle"] = "Standard"
+            ["Shell_TaskbarStyle"] = "Standard",
+            ["Shell_TaskbarAlignment"] = "Split"
         };
 
         private static readonly Dictionary<string, object> _cachedSettings = new Dictionary<string, object>(_defaultSettings);
@@ -312,6 +313,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static string Shell_StartMenuStyle { get => (string)_cachedSettings["Shell_StartMenuStyle"]; set => ChangingParameters("Shell_StartMenuStyle", value); }
         internal static bool Shell_TaskbarEnabled { get => (bool)_cachedSettings["Shell_TaskbarEnabled"]; set => ChangingParameters("Shell_TaskbarEnabled", value); }
         internal static string Shell_TaskbarStyle { get => (string)_cachedSettings["Shell_TaskbarStyle"]; set => ChangingParameters("Shell_TaskbarStyle", value); }
+        internal static string Shell_TaskbarAlignment { get => (string)_cachedSettings["Shell_TaskbarAlignment"]; set => ChangingParameters("Shell_TaskbarAlignment", value); }
 
         private static void ChangingParameters(string key, object value)
         {
