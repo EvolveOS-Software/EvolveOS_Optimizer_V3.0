@@ -3,6 +3,7 @@
 
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Microsoft.UI.Windowing;
 
 namespace EvolveOS_Optimizer.Pages
 {
@@ -77,6 +78,7 @@ namespace EvolveOS_Optimizer.Pages
             ClockSecondsToggle.IsOn = SettingsEngine.Shell_TaskbarClockSeconds;
             ShowUnpinnedToggle.IsOn = SettingsEngine.Shell_TaskbarShowUnpinned;
             HoverBackgroundToggle.IsOn = SettingsEngine.Shell_TaskbarHoverBackground;
+            MonitorAwareToggle.IsOn = SettingsEngine.Shell_TaskbarMonitorAware;
 
             SelectComboBoxItemByTag(StartMenuStyleCombo, SettingsEngine.Shell_StartMenuStyle);
             SelectComboBoxItemByTag(TaskbarStyleCombo, SettingsEngine.Shell_TaskbarStyle);
@@ -87,6 +89,16 @@ namespace EvolveOS_Optimizer.Pages
 
             string pos = SettingsEngine.Shell_TaskbarPosition ?? "Bottom";
             UpdateTaskbarPositionUI(pos);
+
+            var displays = DisplayArea.FindAll();
+            if (displays.Count > 1)
+            {
+                MonitorAwareContainer.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                MonitorAwareContainer.Visibility = Visibility.Collapsed;
+            }
 
             UpdateChildControlStates(MasterToggle.IsOn);
 
@@ -134,6 +146,7 @@ namespace EvolveOS_Optimizer.Pages
             TaskbarAnimationCombo.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
             TaskbarHoverAnimationCombo.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
             HoverBackgroundToggle.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
+            MonitorAwareToggle.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
         }
 
         #region Event Handlers
@@ -163,6 +176,7 @@ namespace EvolveOS_Optimizer.Pages
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_Animation:{SettingsEngine.Shell_TaskbarAnimation ?? "Spring"}");
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_HoverAnimation:{SettingsEngine.Shell_TaskbarHoverAnimation ?? "Standard"}");
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_HoverBackground:{SettingsEngine.Shell_TaskbarHoverBackground}");
+                _ = ShellEnhancerController.SendCommandAsync($"Taskbar_MonitorAware:{SettingsEngine.Shell_TaskbarMonitorAware}");
             }
             else
             {
