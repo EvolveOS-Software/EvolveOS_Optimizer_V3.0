@@ -161,10 +161,12 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["Shell_TaskbarEnabled"] = false,
             ["Shell_TaskbarStyle"] = "Standard",
             ["Shell_TaskbarAlignment"] = "Split",
+            ["Shell_TaskbarPosition"] = "Bottom",
             ["Shell_TaskbarPreviewButtons"] = true,
             ["Shell_TaskbarClockSeconds"] = false,
             ["Shell_TaskbarShowUnpinned"] = true,
-            ["Shell_TaskbarUnpinnedMode"] = "Inline"
+            ["Shell_TaskbarUnpinnedMode"] = "Inline",
+            ["Shell_TaskbarAnimation"] = "Spring"
         };
 
         private static readonly Dictionary<string, object> _cachedSettings = new Dictionary<string, object>(_defaultSettings);
@@ -318,10 +320,12 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static bool Shell_TaskbarEnabled { get => (bool)_cachedSettings["Shell_TaskbarEnabled"]; set => ChangingParameters("Shell_TaskbarEnabled", value); }
         internal static string Shell_TaskbarStyle { get => (string)_cachedSettings["Shell_TaskbarStyle"]; set => ChangingParameters("Shell_TaskbarStyle", value); }
         internal static string Shell_TaskbarAlignment { get => (string)_cachedSettings["Shell_TaskbarAlignment"]; set => ChangingParameters("Shell_TaskbarAlignment", value); }
+        internal static string Shell_TaskbarPosition { get => (string)_cachedSettings["Shell_TaskbarPosition"]; set => ChangingParameters("Shell_TaskbarPosition", value); }
         internal static bool Shell_TaskbarPreviewButtons { get => (bool)_cachedSettings["Shell_TaskbarPreviewButtons"]; set => ChangingParameters("Shell_TaskbarPreviewButtons", value); }
         internal static bool Shell_TaskbarClockSeconds { get => (bool)_cachedSettings["Shell_TaskbarClockSeconds"]; set => ChangingParameters("Shell_TaskbarClockSeconds", value); }
         internal static bool Shell_TaskbarShowUnpinned { get => (bool)_cachedSettings["Shell_TaskbarShowUnpinned"]; set => ChangingParameters("Shell_TaskbarShowUnpinned", value); }
         internal static string Shell_TaskbarUnpinnedMode { get => (string)_cachedSettings["Shell_TaskbarUnpinnedMode"]; set => ChangingParameters("Shell_TaskbarUnpinnedMode", value); }
+        internal static string Shell_TaskbarAnimation { get => (string)_cachedSettings["Shell_TaskbarAnimation"]; set => ChangingParameters("Shell_TaskbarAnimation", value); }
 
         private static void ChangingParameters(string key, object value)
         {
