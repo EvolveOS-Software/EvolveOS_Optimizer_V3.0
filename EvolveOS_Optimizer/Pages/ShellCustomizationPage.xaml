@@ -206,6 +206,43 @@
                                 <ToggleSwitch Grid.Column="1" x:Name="ClockSecondsToggle" IsEnabled="False" VerticalAlignment="Center" Toggled="SettingToggle_Toggled" Tag="Taskbar_ClockSeconds" Margin="0" MinWidth="0"/>
                             </Grid>
 
+                            <!-- Show Unpinned Running Apps Toggle -->
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel VerticalAlignment="Center" Spacing="2">
+                                    <TextBlock Text="Show Unpinned Apps" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                    <TextBlock Text="Display running applications that are not pinned to the taskbar." 
+                                               FontFamily="{ThemeResource AppCustomFont}"
+                                               Style="{StaticResource CaptionTextBlockStyle}"
+                                               Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" 
+                                               TextWrapping="Wrap"/>
+                                </StackPanel>
+                                <ToggleSwitch Grid.Column="1" x:Name="ShowUnpinnedToggle" IsEnabled="False" VerticalAlignment="Center" Toggled="SettingToggle_Toggled" Tag="Taskbar_ShowUnpinned" Margin="0" MinWidth="0"/>
+                            </Grid>
+
+                            <!-- Unpinned Apps Display Mode Dropdown -->
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel VerticalAlignment="Center" Spacing="2">
+                                    <TextBlock Text="Unpinned Display Mode" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                    <TextBlock Text="Choose whether unpinned apps appear inline or switch views via mouse scroll." 
+                                               FontFamily="{ThemeResource AppCustomFont}"
+                                               Style="{StaticResource CaptionTextBlockStyle}"
+                                               Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" 
+                                               TextWrapping="Wrap"/>
+                                </StackPanel>
+                                <ComboBox Grid.Column="1" x:Name="UnpinnedModeCombo" IsEnabled="False" Width="150" VerticalAlignment="Center" SelectionChanged="SettingCombo_SelectionChanged" Tag="Taskbar_UnpinnedMode" FontFamily="{ThemeResource AppCustomFont}">
+                                    <ComboBoxItem Content="Inline" Tag="Inline" FontFamily="{ThemeResource AppCustomFont}"/>
+                                    <ComboBoxItem Content="Scroll View" Tag="Scroll" FontFamily="{ThemeResource AppCustomFont}"/>
+                                </ComboBox>
+                            </Grid>
+
                         </StackPanel>
                     </Expander.Content>
                 </Expander>

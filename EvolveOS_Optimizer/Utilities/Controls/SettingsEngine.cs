@@ -162,7 +162,9 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["Shell_TaskbarStyle"] = "Standard",
             ["Shell_TaskbarAlignment"] = "Split",
             ["Shell_TaskbarPreviewButtons"] = true,
-            ["Shell_TaskbarClockSeconds"] = false
+            ["Shell_TaskbarClockSeconds"] = false,
+            ["Shell_TaskbarShowUnpinned"] = true,
+            ["Shell_TaskbarUnpinnedMode"] = "Inline"
         };
 
         private static readonly Dictionary<string, object> _cachedSettings = new Dictionary<string, object>(_defaultSettings);
@@ -318,6 +320,8 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static string Shell_TaskbarAlignment { get => (string)_cachedSettings["Shell_TaskbarAlignment"]; set => ChangingParameters("Shell_TaskbarAlignment", value); }
         internal static bool Shell_TaskbarPreviewButtons { get => (bool)_cachedSettings["Shell_TaskbarPreviewButtons"]; set => ChangingParameters("Shell_TaskbarPreviewButtons", value); }
         internal static bool Shell_TaskbarClockSeconds { get => (bool)_cachedSettings["Shell_TaskbarClockSeconds"]; set => ChangingParameters("Shell_TaskbarClockSeconds", value); }
+        internal static bool Shell_TaskbarShowUnpinned { get => (bool)_cachedSettings["Shell_TaskbarShowUnpinned"]; set => ChangingParameters("Shell_TaskbarShowUnpinned", value); }
+        internal static string Shell_TaskbarUnpinnedMode { get => (string)_cachedSettings["Shell_TaskbarUnpinnedMode"]; set => ChangingParameters("Shell_TaskbarUnpinnedMode", value); }
 
         private static void ChangingParameters(string key, object value)
         {

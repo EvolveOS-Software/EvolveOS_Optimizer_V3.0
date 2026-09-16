@@ -21,10 +21,12 @@ namespace EvolveOS_Optimizer.Pages
             TaskbarToggle.IsOn = SettingsEngine.Shell_TaskbarEnabled;
             PreviewButtonsToggle.IsOn = SettingsEngine.Shell_TaskbarPreviewButtons;
             ClockSecondsToggle.IsOn = SettingsEngine.Shell_TaskbarClockSeconds;
+            ShowUnpinnedToggle.IsOn = SettingsEngine.Shell_TaskbarShowUnpinned;
 
             SelectComboBoxItemByTag(StartMenuStyleCombo, SettingsEngine.Shell_StartMenuStyle);
             SelectComboBoxItemByTag(TaskbarStyleCombo, SettingsEngine.Shell_TaskbarStyle);
             SelectComboBoxItemByTag(TaskbarAlignmentCombo, SettingsEngine.Shell_TaskbarAlignment ?? "Split");
+            SelectComboBoxItemByTag(UnpinnedModeCombo, SettingsEngine.Shell_TaskbarUnpinnedMode);
 
             UpdateChildControlStates(MasterToggle.IsOn);
 
@@ -58,6 +60,8 @@ namespace EvolveOS_Optimizer.Pages
             TaskbarAlignmentCombo.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
             PreviewButtonsToggle.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
             ClockSecondsToggle.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
+            ShowUnpinnedToggle.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
+            UnpinnedModeCombo.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn && ShowUnpinnedToggle.IsOn;
         }
 
         #region Event Handlers
@@ -81,6 +85,8 @@ namespace EvolveOS_Optimizer.Pages
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_Alignment:{SettingsEngine.Shell_TaskbarAlignment}");
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_PreviewButtons:{SettingsEngine.Shell_TaskbarPreviewButtons}");
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_ClockSeconds:{SettingsEngine.Shell_TaskbarClockSeconds}");
+                _ = ShellEnhancerController.SendCommandAsync($"Taskbar_ShowUnpinned:{SettingsEngine.Shell_TaskbarShowUnpinned}");
+                _ = ShellEnhancerController.SendCommandAsync($"Taskbar_UnpinnedMode:{SettingsEngine.Shell_TaskbarUnpinnedMode}");
             }
             else
             {
@@ -102,6 +108,11 @@ namespace EvolveOS_Optimizer.Pages
                 SettingsEngine.Shell_TaskbarPreviewButtons = toggle.IsOn;
             else if (commandTag == "Taskbar_ClockSeconds")
                 SettingsEngine.Shell_TaskbarClockSeconds = toggle.IsOn;
+            else if (commandTag == "Taskbar_ShowUnpinned")
+            {
+                SettingsEngine.Shell_TaskbarShowUnpinned = toggle.IsOn;
+                UnpinnedModeCombo.IsEnabled = MasterToggle.IsOn && TaskbarToggle.IsOn && toggle.IsOn;
+            }
 
             UpdateChildControlStates(MasterToggle.IsOn);
 
@@ -136,6 +147,9 @@ namespace EvolveOS_Optimizer.Pages
 
             else if (commandTag == "Taskbar_Alignment")
                 SettingsEngine.Shell_TaskbarAlignment = style;
+
+            else if (commandTag == "Taskbar_UnpinnedMode")
+                SettingsEngine.Shell_TaskbarUnpinnedMode = style;
 
             if (MasterToggle.IsOn)
             {
