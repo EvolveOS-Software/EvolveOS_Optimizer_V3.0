@@ -63,7 +63,7 @@
                 <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                         BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                         BorderThickness="1"
-                        CornerRadius="4"
+                        CornerRadius="8"
                         Padding="20">
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -113,27 +113,32 @@
                     </Expander.Header>
 
                     <Expander.Content>
-                        <StackPanel Orientation="Vertical" Spacing="16" Margin="0,8,0,8">
+                        <StackPanel Orientation="Vertical" Spacing="24" Margin="0,8,0,8">
 
-                            <!-- Start Menu Style Dropdown -->
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <StackPanel VerticalAlignment="Center" Spacing="2">
-                                    <TextBlock Text="Start Menu Style" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
-                                    <TextBlock Text="Choose between standard or compact rendering." 
-                                               FontFamily="{ThemeResource AppCustomFont}"
-                                               Style="{StaticResource CaptionTextBlockStyle}"
-                                               Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" 
-                                               TextWrapping="Wrap"/>
-                                </StackPanel>
-                                <ComboBox Grid.Column="1" x:Name="StartMenuStyleCombo" IsEnabled="False" Width="150" VerticalAlignment="Center" SelectionChanged="StartMenuStyleCombo_SelectionChanged" FontFamily="{ThemeResource AppCustomFont}">
-                                    <ComboBoxItem Content="Standard" Tag="Standard" FontFamily="{ThemeResource AppCustomFont}"/>
-                                    <ComboBoxItem Content="Compact" Tag="Compact" FontFamily="{ThemeResource AppCustomFont}"/>
-                                </ComboBox>
-                            </Grid>
+                            <!-- Start Menu Section -->
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Appearance" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" Margin="4,0,0,0"/>
+                                <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8">
+                                    <Grid Padding="16,12">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel VerticalAlignment="Center" Spacing="2">
+                                            <TextBlock Text="Start Menu Style" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                            <TextBlock Text="Choose between standard or compact rendering." 
+                                                       FontFamily="{ThemeResource AppCustomFont}"
+                                                       Style="{StaticResource CaptionTextBlockStyle}"
+                                                       Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" 
+                                                       TextWrapping="Wrap"/>
+                                        </StackPanel>
+                                        <ComboBox Grid.Column="1" x:Name="StartMenuStyleCombo" IsEnabled="False" Width="150" VerticalAlignment="Center" SelectionChanged="StartMenuStyleCombo_SelectionChanged" FontFamily="{ThemeResource AppCustomFont}">
+                                            <ComboBoxItem Content="Standard" Tag="Standard" FontFamily="{ThemeResource AppCustomFont}"/>
+                                            <ComboBoxItem Content="Compact" Tag="Compact" FontFamily="{ThemeResource AppCustomFont}"/>
+                                        </ComboBox>
+                                    </Grid>
+                                </Border>
+                            </StackPanel>
 
                         </StackPanel>
                     </Expander.Content>
@@ -167,212 +172,304 @@
                     <Expander.Content>
                         <StackPanel Orientation="Vertical" Spacing="24" Margin="0,8,0,8">
 
-                            <!-- Taskbar Style Dropdown -->
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <StackPanel VerticalAlignment="Center" Spacing="2">
-                                    <TextBlock Text="Taskbar Style" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
-                                    <TextBlock Text="Choose between a traditional full-width bar or a modern floating dock." 
-                                               FontFamily="{ThemeResource AppCustomFont}"
-                                               Style="{StaticResource CaptionTextBlockStyle}"
-                                               Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" 
-                                               TextWrapping="Wrap"/>
-                                </StackPanel>
-                                <ComboBox Grid.Column="1" x:Name="TaskbarStyleCombo" IsEnabled="False" Width="150" VerticalAlignment="Center" SelectionChanged="SettingCombo_SelectionChanged" Tag="Taskbar_Style" FontFamily="{ThemeResource AppCustomFont}">
-                                    <ComboBoxItem Content="Floating Dock" Tag="Floating" FontFamily="{ThemeResource AppCustomFont}"/>
-                                    <ComboBoxItem Content="Standard" Tag="Standard" FontFamily="{ThemeResource AppCustomFont}"/>
-                                </ComboBox>
-                            </Grid>
+                            <!-- GROUP 1: APPEARANCE & LAYOUT -->
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Appearance &amp; Layout" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" Margin="4,0,0,0"/>
+                                <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8">
+                                    <StackPanel>
 
-                            <!-- Taskbar Alignment Dropdown -->
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <StackPanel VerticalAlignment="Center" Spacing="2">
-                                    <TextBlock Text="Taskbar Alignment" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
-                                    <TextBlock Text="Choose how the Start button and pinned apps are arranged." 
-                                               FontFamily="{ThemeResource AppCustomFont}"
-                                               Style="{StaticResource CaptionTextBlockStyle}"
-                                               Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" 
-                                               TextWrapping="Wrap"/>
-                                </StackPanel>
-                                <ComboBox Grid.Column="1" x:Name="TaskbarAlignmentCombo" IsEnabled="False" Width="150" VerticalAlignment="Center" SelectionChanged="SettingCombo_SelectionChanged" Tag="Taskbar_Alignment" FontFamily="{ThemeResource AppCustomFont}">
-                                    <ComboBoxItem Content="Split" Tag="Split" FontFamily="{ThemeResource AppCustomFont}"/>
-                                    <ComboBoxItem Content="Center" Tag="Center" FontFamily="{ThemeResource AppCustomFont}"/>
-                                    <ComboBoxItem Content="Left" Tag="Left" FontFamily="{ThemeResource AppCustomFont}"/>
-                                </ComboBox>
-                            </Grid>
+                                        <!-- Taskbar Style Dropdown -->
+                                        <Grid Padding="16,12">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel VerticalAlignment="Center" Spacing="2">
+                                                <TextBlock Text="Taskbar Style" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                                <TextBlock Text="Choose between a traditional full-width bar or a modern floating dock." 
+                                                           FontFamily="{ThemeResource AppCustomFont}"
+                                                           Style="{StaticResource CaptionTextBlockStyle}"
+                                                           Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" 
+                                                           TextWrapping="Wrap"/>
+                                            </StackPanel>
+                                            <ComboBox Grid.Column="1" x:Name="TaskbarStyleCombo" IsEnabled="False" Width="150" VerticalAlignment="Center" SelectionChanged="SettingCombo_SelectionChanged" Tag="Taskbar_Style" FontFamily="{ThemeResource AppCustomFont}">
+                                                <ComboBoxItem Content="Floating Dock" Tag="Floating" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="Standard" Tag="Standard" FontFamily="{ThemeResource AppCustomFont}"/>
+                                            </ComboBox>
+                                        </Grid>
 
-                            <!-- Taskbar Position Selector -->
-                            <ContentControl x:Name="TaskbarPositionPanel" HorizontalContentAlignment="Stretch" IsTabStop="False">
-                                <StackPanel Spacing="12">
-                                    <StackPanel Spacing="2">
-                                        <TextBlock Text="Taskbar Position" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
-                                        <TextBlock Text="Choose the screen edge where the taskbar is displayed."
-                                                   FontFamily="{ThemeResource AppCustomFont}"
-                                                   Style="{StaticResource CaptionTextBlockStyle}"
-                                                   Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
-                                                   TextWrapping="Wrap"/>
-                                    </StackPanel>
+                                        <Border Height="1" Background="{ThemeResource CardStrokeColorDefaultBrush}" Margin="16,0" Opacity="0.5"/>
 
-                                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
-                                        <StackPanel Orientation="Horizontal" Spacing="16">
+                                        <!-- Taskbar Alignment Dropdown -->
+                                        <Grid Padding="16,12">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel VerticalAlignment="Center" Spacing="2">
+                                                <TextBlock Text="Taskbar Alignment" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                                <TextBlock Text="Choose how the Start button and pinned apps are arranged." 
+                                                           FontFamily="{ThemeResource AppCustomFont}"
+                                                           Style="{StaticResource CaptionTextBlockStyle}"
+                                                           Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" 
+                                                           TextWrapping="Wrap"/>
+                                            </StackPanel>
+                                            <ComboBox Grid.Column="1" x:Name="TaskbarAlignmentCombo" IsEnabled="False" Width="150" VerticalAlignment="Center" SelectionChanged="SettingCombo_SelectionChanged" Tag="Taskbar_Alignment" FontFamily="{ThemeResource AppCustomFont}">
+                                                <ComboBoxItem Content="Split" Tag="Split" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="Center" Tag="Center" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="Left" Tag="Left" FontFamily="{ThemeResource AppCustomFont}"/>
+                                            </ComboBox>
+                                        </Grid>
 
-                                            <RadioButton GroupName="TaskbarPos" Click="TaskbarPos_Click" Tag="Left" Style="{StaticResource TaskbarPosRadioButtonStyle}" IsChecked="{x:Bind IsTaskbarLeft, Mode=OneWay}">
-                                                <StackPanel Spacing="8" Margin="8">
-                                                    <Border Width="120" Height="75" CornerRadius="4">
-                                                        <Grid>
-                                                            <Image Source="{x:Bind CurrentWallpaper, Mode=OneWay}" Stretch="UniformToFill" />
-                                                            <Border Background="{ThemeResource LayerFillColorAltBrush}" Opacity="0.3" />
-                                                            <Border Width="8" HorizontalAlignment="Left" Background="{ThemeResource SystemControlBackgroundAccentBrush}" Opacity="0.9" />
-                                                        </Grid>
-                                                    </Border>
-                                                    <TextBlock Text="{helpers:ResourceString Key=Setting_taskbar-position_Option_0}" HorizontalAlignment="Center" FontSize="12" />
+                                        <Border Height="1" Background="{ThemeResource CardStrokeColorDefaultBrush}" Margin="16,0" Opacity="0.5"/>
+
+                                        <!-- Taskbar Position Selector (Untouched Visual Code) -->
+                                        <StackPanel Padding="16,16">
+                                            <ContentControl x:Name="TaskbarPositionPanel" HorizontalContentAlignment="Stretch" IsTabStop="False">
+                                                <StackPanel Spacing="12">
+                                                    <StackPanel Spacing="2">
+                                                        <TextBlock Text="Taskbar Position" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                                        <TextBlock Text="Choose the screen edge where the taskbar is displayed."
+                                                                   FontFamily="{ThemeResource AppCustomFont}"
+                                                                   Style="{StaticResource CaptionTextBlockStyle}"
+                                                                   Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                                                                   TextWrapping="Wrap"/>
+                                                    </StackPanel>
+
+                                                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                                                        <StackPanel Orientation="Horizontal" Spacing="16">
+
+                                                            <RadioButton GroupName="TaskbarPos" Click="TaskbarPos_Click" Tag="Left" Style="{StaticResource TaskbarPosRadioButtonStyle}" IsChecked="{x:Bind IsTaskbarLeft, Mode=OneWay}">
+                                                                <StackPanel Spacing="8" Margin="8">
+                                                                    <Border Width="120" Height="75" CornerRadius="4">
+                                                                        <Grid>
+                                                                            <Image Source="{x:Bind CurrentWallpaper, Mode=OneWay}" Stretch="UniformToFill" />
+                                                                            <Border Background="{ThemeResource LayerFillColorAltBrush}" Opacity="0.3" />
+                                                                            <Border Width="8" HorizontalAlignment="Left" Background="{ThemeResource SystemControlBackgroundAccentBrush}" Opacity="0.9" />
+                                                                        </Grid>
+                                                                    </Border>
+                                                                    <TextBlock Text="{helpers:ResourceString Key=Setting_taskbar-position_Option_0}" HorizontalAlignment="Center" FontSize="12" />
+                                                                </StackPanel>
+                                                            </RadioButton>
+
+                                                            <RadioButton GroupName="TaskbarPos" Click="TaskbarPos_Click" Tag="Top" Style="{StaticResource TaskbarPosRadioButtonStyle}" IsChecked="{x:Bind IsTaskbarTop, Mode=OneWay}">
+                                                                <StackPanel Spacing="8" Margin="8">
+                                                                    <Border Width="120" Height="75" CornerRadius="4">
+                                                                        <Grid>
+                                                                            <Image Source="{x:Bind CurrentWallpaper, Mode=OneWay}" Stretch="UniformToFill" />
+                                                                            <Border Background="{ThemeResource LayerFillColorAltBrush}" Opacity="0.3" />
+                                                                            <Border Height="6" VerticalAlignment="Top" Background="{ThemeResource SystemControlBackgroundAccentBrush}" Opacity="0.9" />
+                                                                        </Grid>
+                                                                    </Border>
+                                                                    <TextBlock Text="{helpers:ResourceString Key=Setting_taskbar-position_Option_1}" HorizontalAlignment="Center" FontSize="12" />
+                                                                </StackPanel>
+                                                            </RadioButton>
+
+                                                            <RadioButton GroupName="TaskbarPos" Click="TaskbarPos_Click" Tag="Right" Style="{StaticResource TaskbarPosRadioButtonStyle}" IsChecked="{x:Bind IsTaskbarRight, Mode=OneWay}">
+                                                                <StackPanel Spacing="8" Margin="8">
+                                                                    <Border Width="120" Height="75" CornerRadius="4">
+                                                                        <Grid>
+                                                                            <Image Source="{x:Bind CurrentWallpaper, Mode=OneWay}" Stretch="UniformToFill" />
+                                                                            <Border Background="{ThemeResource LayerFillColorAltBrush}" Opacity="0.3" />
+                                                                            <Border Width="8" HorizontalAlignment="Right" Background="{ThemeResource SystemControlBackgroundAccentBrush}" Opacity="0.9" />
+                                                                        </Grid>
+                                                                    </Border>
+                                                                    <TextBlock Text="{helpers:ResourceString Key=Setting_taskbar-position_Option_2}" HorizontalAlignment="Center" FontSize="12" />
+                                                                </StackPanel>
+                                                            </RadioButton>
+
+                                                            <RadioButton GroupName="TaskbarPos" Click="TaskbarPos_Click" Tag="Bottom" Style="{StaticResource TaskbarPosRadioButtonStyle}" IsChecked="{x:Bind IsTaskbarBottom, Mode=OneWay}">
+                                                                <StackPanel Spacing="8" Margin="8">
+                                                                    <Border Width="120" Height="75" CornerRadius="4">
+                                                                        <Grid>
+                                                                            <Image Source="{x:Bind CurrentWallpaper, Mode=OneWay}" Stretch="UniformToFill" />
+                                                                            <Border Background="{ThemeResource LayerFillColorAltBrush}" Opacity="0.3" />
+                                                                            <Border Height="6" VerticalAlignment="Bottom" Background="{ThemeResource SystemControlBackgroundAccentBrush}" Opacity="0.9" />
+                                                                        </Grid>
+                                                                    </Border>
+                                                                    <TextBlock Text="{helpers:ResourceString Key=Setting_taskbar-position_Option_3}" HorizontalAlignment="Center" FontSize="12" />
+                                                                </StackPanel>
+                                                            </RadioButton>
+
+                                                        </StackPanel>
+                                                    </ScrollViewer>
                                                 </StackPanel>
-                                            </RadioButton>
-
-                                            <RadioButton GroupName="TaskbarPos" Click="TaskbarPos_Click" Tag="Top" Style="{StaticResource TaskbarPosRadioButtonStyle}" IsChecked="{x:Bind IsTaskbarTop, Mode=OneWay}">
-                                                <StackPanel Spacing="8" Margin="8">
-                                                    <Border Width="120" Height="75" CornerRadius="4">
-                                                        <Grid>
-                                                            <Image Source="{x:Bind CurrentWallpaper, Mode=OneWay}" Stretch="UniformToFill" />
-                                                            <Border Background="{ThemeResource LayerFillColorAltBrush}" Opacity="0.3" />
-                                                            <Border Height="6" VerticalAlignment="Top" Background="{ThemeResource SystemControlBackgroundAccentBrush}" Opacity="0.9" />
-                                                        </Grid>
-                                                    </Border>
-                                                    <TextBlock Text="{helpers:ResourceString Key=Setting_taskbar-position_Option_1}" HorizontalAlignment="Center" FontSize="12" />
-                                                </StackPanel>
-                                            </RadioButton>
-
-                                            <RadioButton GroupName="TaskbarPos" Click="TaskbarPos_Click" Tag="Right" Style="{StaticResource TaskbarPosRadioButtonStyle}" IsChecked="{x:Bind IsTaskbarRight, Mode=OneWay}">
-                                                <StackPanel Spacing="8" Margin="8">
-                                                    <Border Width="120" Height="75" CornerRadius="4">
-                                                        <Grid>
-                                                            <Image Source="{x:Bind CurrentWallpaper, Mode=OneWay}" Stretch="UniformToFill" />
-                                                            <Border Background="{ThemeResource LayerFillColorAltBrush}" Opacity="0.3" />
-                                                            <Border Width="8" HorizontalAlignment="Right" Background="{ThemeResource SystemControlBackgroundAccentBrush}" Opacity="0.9" />
-                                                        </Grid>
-                                                    </Border>
-                                                    <TextBlock Text="{helpers:ResourceString Key=Setting_taskbar-position_Option_2}" HorizontalAlignment="Center" FontSize="12" />
-                                                </StackPanel>
-                                            </RadioButton>
-
-                                            <RadioButton GroupName="TaskbarPos" Click="TaskbarPos_Click" Tag="Bottom" Style="{StaticResource TaskbarPosRadioButtonStyle}" IsChecked="{x:Bind IsTaskbarBottom, Mode=OneWay}">
-                                                <StackPanel Spacing="8" Margin="8">
-                                                    <Border Width="120" Height="75" CornerRadius="4">
-                                                        <Grid>
-                                                            <Image Source="{x:Bind CurrentWallpaper, Mode=OneWay}" Stretch="UniformToFill" />
-                                                            <Border Background="{ThemeResource LayerFillColorAltBrush}" Opacity="0.3" />
-                                                            <Border Height="6" VerticalAlignment="Bottom" Background="{ThemeResource SystemControlBackgroundAccentBrush}" Opacity="0.9" />
-                                                        </Grid>
-                                                    </Border>
-                                                    <TextBlock Text="{helpers:ResourceString Key=Setting_taskbar-position_Option_3}" HorizontalAlignment="Center" FontSize="12" />
-                                                </StackPanel>
-                                            </RadioButton>
-
+                                            </ContentControl>
                                         </StackPanel>
-                                    </ScrollViewer>
-                                </StackPanel>
-                            </ContentControl>
 
-                            <!-- Taskbar Position Animation Dropdown -->
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <StackPanel VerticalAlignment="Center" Spacing="2">
-                                    <TextBlock Text="Position Transition Animation" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
-                                    <TextBlock Text="Choose the fluid animation style when moving the taskbar."
-                                               FontFamily="{ThemeResource AppCustomFont}"
-                                               Style="{StaticResource CaptionTextBlockStyle}"
-                                               Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
-                                               TextWrapping="Wrap"/>
-                                </StackPanel>
-                                <ComboBox Grid.Column="1" x:Name="TaskbarAnimationCombo" IsEnabled="False" Width="150" VerticalAlignment="Center" SelectionChanged="SettingCombo_SelectionChanged" Tag="Taskbar_Animation" FontFamily="{ThemeResource AppCustomFont}">
-                                    <ComboBoxItem Content="Spring" Tag="Spring" FontFamily="{ThemeResource AppCustomFont}"/>
-                                    <ComboBoxItem Content="BackEase" Tag="BackEase" FontFamily="{ThemeResource AppCustomFont}"/>
-                                    <ComboBoxItem Content="Exponential" Tag="Exponential" FontFamily="{ThemeResource AppCustomFont}"/>
-                                    <ComboBoxItem Content="Elastic" Tag="Elastic" FontFamily="{ThemeResource AppCustomFont}"/>
-                                    <ComboBoxItem Content="Scale Morph" Tag="ScaleMorph" FontFamily="{ThemeResource AppCustomFont}"/>
-                                </ComboBox>
-                            </Grid>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
 
-                            <!-- Live Preview Action Buttons Toggle -->
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <StackPanel VerticalAlignment="Center" Spacing="2">
-                                    <TextBlock Text="Live Preview Actions" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
-                                    <TextBlock Text="Show quick actions (Kill) when hovering over live previews." 
-                                               FontFamily="{ThemeResource AppCustomFont}"
-                                               Style="{StaticResource CaptionTextBlockStyle}"
-                                               Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" 
-                                               TextWrapping="Wrap"/>
-                                </StackPanel>
-                                <ToggleSwitch Grid.Column="1" x:Name="PreviewButtonsToggle" IsEnabled="False" VerticalAlignment="Center" Toggled="SettingToggle_Toggled" Tag="Taskbar_PreviewButtons" Margin="0" MinWidth="0"/>
-                            </Grid>
+                            <!-- GROUP 2: MOTION & ANIMATIONS -->
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Motion &amp; Animations" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" Margin="4,0,0,0"/>
+                                <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8">
+                                    <StackPanel>
 
-                            <!-- Show Seconds on Clock Toggle -->
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <StackPanel VerticalAlignment="Center" Spacing="2">
-                                    <TextBlock Text="Show Seconds in Clock" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
-                                    <TextBlock Text="Display seconds on the taskbar system clock." 
-                                               FontFamily="{ThemeResource AppCustomFont}"
-                                               Style="{StaticResource CaptionTextBlockStyle}"
-                                               Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" 
-                                               TextWrapping="Wrap"/>
-                                </StackPanel>
-                                <ToggleSwitch Grid.Column="1" x:Name="ClockSecondsToggle" IsEnabled="False" VerticalAlignment="Center" Toggled="SettingToggle_Toggled" Tag="Taskbar_ClockSeconds" Margin="0" MinWidth="0"/>
-                            </Grid>
+                                        <!-- Taskbar Position Animation Dropdown -->
+                                        <Grid Padding="16,12">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel VerticalAlignment="Center" Spacing="2">
+                                                <TextBlock Text="Position Transition Animation" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                                <TextBlock Text="Choose the fluid animation style when moving the taskbar."
+                                                           FontFamily="{ThemeResource AppCustomFont}"
+                                                           Style="{StaticResource CaptionTextBlockStyle}"
+                                                           Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                                                           TextWrapping="Wrap"/>
+                                            </StackPanel>
+                                            <ComboBox Grid.Column="1" x:Name="TaskbarAnimationCombo" IsEnabled="False" Width="150" VerticalAlignment="Center" SelectionChanged="SettingCombo_SelectionChanged" Tag="Taskbar_Animation" FontFamily="{ThemeResource AppCustomFont}">
+                                                <ComboBoxItem Content="Spring" Tag="Spring" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="BackEase" Tag="BackEase" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="Exponential" Tag="Exponential" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="Elastic" Tag="Elastic" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="Scale Morph" Tag="ScaleMorph" FontFamily="{ThemeResource AppCustomFont}"/>
+                                            </ComboBox>
+                                        </Grid>
 
-                            <!-- Show Unpinned Running Apps Toggle -->
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <StackPanel VerticalAlignment="Center" Spacing="2">
-                                    <TextBlock Text="Show Unpinned Apps" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
-                                    <TextBlock Text="Display running applications that are not pinned to the taskbar." 
-                                               FontFamily="{ThemeResource AppCustomFont}"
-                                               Style="{StaticResource CaptionTextBlockStyle}"
-                                               Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" 
-                                               TextWrapping="Wrap"/>
-                                </StackPanel>
-                                <ToggleSwitch Grid.Column="1" x:Name="ShowUnpinnedToggle" IsEnabled="False" VerticalAlignment="Center" Toggled="SettingToggle_Toggled" Tag="Taskbar_ShowUnpinned" Margin="0" MinWidth="0"/>
-                            </Grid>
+                                        <Border Height="1" Background="{ThemeResource CardStrokeColorDefaultBrush}" Margin="16,0" Opacity="0.5"/>
 
-                            <!-- Unpinned Apps Display Mode Dropdown -->
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <StackPanel VerticalAlignment="Center" Spacing="2">
-                                    <TextBlock Text="Unpinned Display Mode" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
-                                    <TextBlock Text="Choose whether unpinned apps appear inline or switch views via mouse scroll." 
-                                               FontFamily="{ThemeResource AppCustomFont}"
-                                               Style="{StaticResource CaptionTextBlockStyle}"
-                                               Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" 
-                                               TextWrapping="Wrap"/>
-                                </StackPanel>
-                                <ComboBox Grid.Column="1" x:Name="UnpinnedModeCombo" IsEnabled="False" Width="150" VerticalAlignment="Center" SelectionChanged="SettingCombo_SelectionChanged" Tag="Taskbar_UnpinnedMode" FontFamily="{ThemeResource AppCustomFont}">
-                                    <ComboBoxItem Content="Inline" Tag="Inline" FontFamily="{ThemeResource AppCustomFont}"/>
-                                    <ComboBoxItem Content="Scroll View" Tag="Scroll" FontFamily="{ThemeResource AppCustomFont}"/>
-                                </ComboBox>
-                            </Grid>
+                                        <!-- Taskbar Hover Animation Dropdown -->
+                                        <Grid Padding="16,12">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel VerticalAlignment="Center" Spacing="2">
+                                                <TextBlock Text="App Icon Hover Animation" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                                <TextBlock Text="Choose the animation style when hovering over taskbar apps." 
+                                                           FontFamily="{ThemeResource AppCustomFont}"
+                                                           Style="{StaticResource CaptionTextBlockStyle}"
+                                                           Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" 
+                                                           TextWrapping="Wrap"/>
+                                            </StackPanel>
+                                            <ComboBox Grid.Column="1" x:Name="TaskbarHoverAnimationCombo" IsEnabled="False" Width="150" VerticalAlignment="Center" SelectionChanged="SettingCombo_SelectionChanged" Tag="Taskbar_HoverAnimation" FontFamily="{ThemeResource AppCustomFont}">
+                                                <ComboBoxItem Content="Standard" Tag="Standard" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="Rise" Tag="Rise" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="Grow" Tag="Grow" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="Tilt" Tag="Tilt" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="Breathing" Tag="Breathing" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="Wobble" Tag="Wobble" FontFamily="{ThemeResource AppCustomFont}"/>
+                                            </ComboBox>
+                                        </Grid>
+
+                                        <Grid Padding="16,12">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel VerticalAlignment="Center" Spacing="2">
+                                                <TextBlock Text="Show Hover Background" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                                <TextBlock Text="Display a subtle background highlight when hovering over an app card." 
+                                                           FontFamily="{ThemeResource AppCustomFont}"
+                                                           Style="{StaticResource CaptionTextBlockStyle}"
+                                                           Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" 
+                                                           TextWrapping="Wrap"/>
+                                            </StackPanel>
+                                            <ToggleSwitch Grid.Column="1" x:Name="HoverBackgroundToggle" IsEnabled="False" VerticalAlignment="Center" Toggled="SettingToggle_Toggled" Tag="Taskbar_HoverBackground" Margin="0" MinWidth="0"/>
+                                        </Grid>
+
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+
+                            <!-- GROUP 3: APPS & PREVIEWS -->
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Apps &amp; Previews" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" Margin="4,0,0,0"/>
+                                <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8">
+                                    <StackPanel>
+
+                                        <!-- Show Unpinned Running Apps Toggle -->
+                                        <Grid Padding="16,12">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel VerticalAlignment="Center" Spacing="2">
+                                                <TextBlock Text="Show Unpinned Apps" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                                <TextBlock Text="Display running applications that are not pinned to the taskbar." 
+                                                           FontFamily="{ThemeResource AppCustomFont}"
+                                                           Style="{StaticResource CaptionTextBlockStyle}"
+                                                           Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" 
+                                                           TextWrapping="Wrap"/>
+                                            </StackPanel>
+                                            <ToggleSwitch Grid.Column="1" x:Name="ShowUnpinnedToggle" IsEnabled="False" VerticalAlignment="Center" Toggled="SettingToggle_Toggled" Tag="Taskbar_ShowUnpinned" Margin="0" MinWidth="0"/>
+                                        </Grid>
+
+                                        <Border Height="1" Background="{ThemeResource CardStrokeColorDefaultBrush}" Margin="16,0" Opacity="0.5"/>
+
+                                        <!-- Unpinned Apps Display Mode Dropdown -->
+                                        <Grid Padding="16,12">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel VerticalAlignment="Center" Spacing="2">
+                                                <TextBlock Text="Unpinned Display Mode" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                                <TextBlock Text="Choose whether unpinned apps appear inline or switch views via mouse scroll." 
+                                                           FontFamily="{ThemeResource AppCustomFont}"
+                                                           Style="{StaticResource CaptionTextBlockStyle}"
+                                                           Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" 
+                                                           TextWrapping="Wrap"/>
+                                            </StackPanel>
+                                            <ComboBox Grid.Column="1" x:Name="UnpinnedModeCombo" IsEnabled="False" Width="150" VerticalAlignment="Center" SelectionChanged="SettingCombo_SelectionChanged" Tag="Taskbar_UnpinnedMode" FontFamily="{ThemeResource AppCustomFont}">
+                                                <ComboBoxItem Content="Inline" Tag="Inline" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="Scroll View" Tag="Scroll" FontFamily="{ThemeResource AppCustomFont}"/>
+                                            </ComboBox>
+                                        </Grid>
+
+                                        <Border Height="1" Background="{ThemeResource CardStrokeColorDefaultBrush}" Margin="16,0" Opacity="0.5"/>
+
+                                        <!-- Live Preview Action Buttons Toggle -->
+                                        <Grid Padding="16,12">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel VerticalAlignment="Center" Spacing="2">
+                                                <TextBlock Text="Live Preview Actions" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                                <TextBlock Text="Show quick actions (Kill) when hovering over live previews." 
+                                                           FontFamily="{ThemeResource AppCustomFont}"
+                                                           Style="{StaticResource CaptionTextBlockStyle}"
+                                                           Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" 
+                                                           TextWrapping="Wrap"/>
+                                            </StackPanel>
+                                            <ToggleSwitch Grid.Column="1" x:Name="PreviewButtonsToggle" IsEnabled="False" VerticalAlignment="Center" Toggled="SettingToggle_Toggled" Tag="Taskbar_PreviewButtons" Margin="0" MinWidth="0"/>
+                                        </Grid>
+
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+
+                            <!-- GROUP 4: SYSTEM ELEMENTS -->
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="System Elements" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" Margin="4,0,0,0"/>
+                                <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8">
+                                    <StackPanel>
+
+                                        <!-- Show Seconds on Clock Toggle -->
+                                        <Grid Padding="16,12">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel VerticalAlignment="Center" Spacing="2">
+                                                <TextBlock Text="Show Seconds in Clock" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                                <TextBlock Text="Display seconds on the taskbar system clock." 
+                                                           FontFamily="{ThemeResource AppCustomFont}"
+                                                           Style="{StaticResource CaptionTextBlockStyle}"
+                                                           Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" 
+                                                           TextWrapping="Wrap"/>
+                                            </StackPanel>
+                                            <ToggleSwitch Grid.Column="1" x:Name="ClockSecondsToggle" IsEnabled="False" VerticalAlignment="Center" Toggled="SettingToggle_Toggled" Tag="Taskbar_ClockSeconds" Margin="0" MinWidth="0"/>
+                                        </Grid>
+
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
 
                         </StackPanel>
                     </Expander.Content>

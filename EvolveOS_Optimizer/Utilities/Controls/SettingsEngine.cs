@@ -160,13 +160,15 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["Shell_StartMenuStyle"] = "Standard",
             ["Shell_TaskbarEnabled"] = false,
             ["Shell_TaskbarStyle"] = "Standard",
-            ["Shell_TaskbarAlignment"] = "Split",
+            ["Shell_TaskbarAlignment"] = "Center",
             ["Shell_TaskbarPosition"] = "Bottom",
             ["Shell_TaskbarPreviewButtons"] = true,
             ["Shell_TaskbarClockSeconds"] = false,
             ["Shell_TaskbarShowUnpinned"] = true,
             ["Shell_TaskbarUnpinnedMode"] = "Inline",
-            ["Shell_TaskbarAnimation"] = "Spring"
+            ["Shell_TaskbarAnimation"] = "Spring",
+            ["Shell_TaskbarHoverAnimation"] = "Standard",
+            ["Shell_TaskbarHoverBackground"] = true
         };
 
         private static readonly Dictionary<string, object> _cachedSettings = new Dictionary<string, object>(_defaultSettings);
@@ -326,6 +328,8 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static bool Shell_TaskbarShowUnpinned { get => (bool)_cachedSettings["Shell_TaskbarShowUnpinned"]; set => ChangingParameters("Shell_TaskbarShowUnpinned", value); }
         internal static string Shell_TaskbarUnpinnedMode { get => (string)_cachedSettings["Shell_TaskbarUnpinnedMode"]; set => ChangingParameters("Shell_TaskbarUnpinnedMode", value); }
         internal static string Shell_TaskbarAnimation { get => (string)_cachedSettings["Shell_TaskbarAnimation"]; set => ChangingParameters("Shell_TaskbarAnimation", value); }
+        internal static string Shell_TaskbarHoverAnimation { get => (string)_cachedSettings["Shell_TaskbarHoverAnimation"]; set => ChangingParameters("Shell_TaskbarHoverAnimation", value); }
+        internal static bool Shell_TaskbarHoverBackground { get => (bool)_cachedSettings["Shell_TaskbarHoverBackground"]; set => ChangingParameters("Shell_TaskbarHoverBackground", value); }
 
         private static void ChangingParameters(string key, object value)
         {

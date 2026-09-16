@@ -76,12 +76,14 @@ namespace EvolveOS_Optimizer.Pages
             PreviewButtonsToggle.IsOn = SettingsEngine.Shell_TaskbarPreviewButtons;
             ClockSecondsToggle.IsOn = SettingsEngine.Shell_TaskbarClockSeconds;
             ShowUnpinnedToggle.IsOn = SettingsEngine.Shell_TaskbarShowUnpinned;
+            HoverBackgroundToggle.IsOn = SettingsEngine.Shell_TaskbarHoverBackground;
 
             SelectComboBoxItemByTag(StartMenuStyleCombo, SettingsEngine.Shell_StartMenuStyle);
             SelectComboBoxItemByTag(TaskbarStyleCombo, SettingsEngine.Shell_TaskbarStyle);
-            SelectComboBoxItemByTag(TaskbarAlignmentCombo, SettingsEngine.Shell_TaskbarAlignment ?? "Split");
+            SelectComboBoxItemByTag(TaskbarAlignmentCombo, SettingsEngine.Shell_TaskbarAlignment ?? "Center");
             SelectComboBoxItemByTag(UnpinnedModeCombo, SettingsEngine.Shell_TaskbarUnpinnedMode);
             SelectComboBoxItemByTag(TaskbarAnimationCombo, SettingsEngine.Shell_TaskbarAnimation ?? "Spring");
+            SelectComboBoxItemByTag(TaskbarHoverAnimationCombo, SettingsEngine.Shell_TaskbarHoverAnimation ?? "Standard");
 
             string pos = SettingsEngine.Shell_TaskbarPosition ?? "Bottom";
             UpdateTaskbarPositionUI(pos);
@@ -130,6 +132,8 @@ namespace EvolveOS_Optimizer.Pages
             ShowUnpinnedToggle.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
             UnpinnedModeCombo.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn && ShowUnpinnedToggle.IsOn;
             TaskbarAnimationCombo.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
+            TaskbarHoverAnimationCombo.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
+            HoverBackgroundToggle.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
         }
 
         #region Event Handlers
@@ -157,6 +161,8 @@ namespace EvolveOS_Optimizer.Pages
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_ShowUnpinned:{SettingsEngine.Shell_TaskbarShowUnpinned}");
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_UnpinnedMode:{SettingsEngine.Shell_TaskbarUnpinnedMode}");
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_Animation:{SettingsEngine.Shell_TaskbarAnimation ?? "Spring"}");
+                _ = ShellEnhancerController.SendCommandAsync($"Taskbar_HoverAnimation:{SettingsEngine.Shell_TaskbarHoverAnimation ?? "Standard"}");
+                _ = ShellEnhancerController.SendCommandAsync($"Taskbar_HoverBackground:{SettingsEngine.Shell_TaskbarHoverBackground}");
             }
             else
             {
@@ -178,6 +184,8 @@ namespace EvolveOS_Optimizer.Pages
                 SettingsEngine.Shell_TaskbarPreviewButtons = toggle.IsOn;
             else if (commandTag == "Taskbar_ClockSeconds")
                 SettingsEngine.Shell_TaskbarClockSeconds = toggle.IsOn;
+            else if (commandTag == "Taskbar_HoverBackground")
+                SettingsEngine.Shell_TaskbarHoverBackground = toggle.IsOn;
             else if (commandTag == "Taskbar_ShowUnpinned")
 
             {
@@ -221,6 +229,8 @@ namespace EvolveOS_Optimizer.Pages
                 SettingsEngine.Shell_TaskbarUnpinnedMode = style;
             else if (commandTag == "Taskbar_Animation")
                 SettingsEngine.Shell_TaskbarAnimation = style;
+            else if (commandTag == "Taskbar_HoverAnimation")
+                SettingsEngine.Shell_TaskbarHoverAnimation = style;
 
             if (MasterToggle.IsOn)
             {
