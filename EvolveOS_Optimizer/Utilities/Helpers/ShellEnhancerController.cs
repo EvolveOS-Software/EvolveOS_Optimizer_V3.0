@@ -3,11 +3,42 @@
 
 using System.IO;
 using System.IO.Pipes;
+using System.Runtime.InteropServices;
 
 namespace EvolveOS_Optimizer.Utilities.Helpers
 {
     public static class ShellEnhancerController
     {
+        #region Native Taskbar Restoration P/Invokes
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern int GetWindowLong(IntPtr hWnd, int nIndex);
+
+        [DllImport("user32.dll")]
+        private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
+
+        [DllImport("user32.dll")]
+        private static extern bool SetLayeredWindowAttributes(IntPtr hwnd, uint crKey, byte bAlpha, uint dwFlags);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern IntPtr FindWindow(string lpClassName, string? lpWindowName);
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool EnumWindows(EnumWindowsProc lpEnumFunc, IntPtr lParam);
+        public delegate bool EnumWindowsProc(IntPtr hwnd, IntPtr lParam);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        private static extern int GetClassName(IntPtr hWnd, System.Text.StringBuilder lpClassName, int nMaxCount);
+
+        [DllImport("user32.dll")]
+        public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+        private const int GWL_EXSTYLE = -20;
+        private const int WS_EX_TRANSPARENT = 0x00000020;
+        private const uint LWA_ALPHA = 0x2;
+        private const int SW_SHOW = 5;
+        #endregion
+
         private const string EnhancerProcessName = "EvolveOS_ShellEnhancer";
         private const string EnhancerExeName = "EvolveOS_ShellEnhancer.exe";
         private const string PipeName = "EvolveOS_ShellPipe";
@@ -67,6 +98,17 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             }
         }
 
+        private static void ForceRestoreWindow(IntPtr hWnd)
+        {
+            if (hWnd == IntPtr.Zero) return;
+
+            int exStyle = GetWindowLong(hWnd, GWL_EXSTYLE);
+            SetWindowLong(hWnd, GWL_EXSTYLE, exStyle & ~WS_EX_TRANSPARENT);
+            SetLayeredWindowAttributes(hWnd, 0, 255, LWA_ALPHA);
+
+            ShowWindow(hWnd, SW_SHOW);
+        }
+
         public static void StopEnhancer()
         {
             foreach (var process in Process.GetProcessesByName(EnhancerProcessName))
@@ -74,14 +116,19 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                 try { process.Kill(); } catch { }
             }
 
-            IntPtr trayWnd = FindWindow("Shell_TrayWnd", null);
-            if (trayWnd != IntPtr.Zero) ShowWindow(trayWnd, 5);
+            ForceRestoreWindow(FindWindow("Shell_TrayWnd", null));
 
-            IntPtr secondaryTray = IntPtr.Zero;
-            while ((secondaryTray = FindWindowEx(IntPtr.Zero, secondaryTray, "Shell_SecondaryTrayWnd", null)) != IntPtr.Zero)
+            EnumWindows((hWnd, lParam) =>
             {
-                ShowWindow(secondaryTray, 5);
-            }
+                System.Text.StringBuilder sb = new System.Text.StringBuilder(256);
+                GetClassName(hWnd, sb, sb.Capacity);
+
+                if (sb.ToString() == "Shell_SecondaryTrayWnd")
+                {
+                    ForceRestoreWindow(hWnd);
+                }
+                return true;
+            }, IntPtr.Zero);
         }
         #endregion
 
