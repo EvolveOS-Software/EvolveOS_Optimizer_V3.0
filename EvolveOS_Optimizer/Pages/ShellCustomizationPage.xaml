@@ -6,6 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:helpers="using:EvolveOS_Optimizer.Utilities.Helpers"
+    xmlns:viewmodel="using:EvolveOS_Optimizer.Core.ViewModel"
     xmlns:fluentIcons="using:FluentIcons.WinUI"
     mc:Ignorable="d"
     Background="Transparent">
@@ -229,70 +230,82 @@
                                                 <StackPanel Spacing="12">
                                                     <StackPanel Spacing="2">
                                                         <TextBlock Text="Taskbar Position" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
-                                                        <TextBlock Text="Choose the screen edge where the taskbar is displayed."
-                                                                   FontFamily="{ThemeResource AppCustomFont}"
-                                                                   Style="{StaticResource CaptionTextBlockStyle}"
-                                                                   Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
-                                                                   TextWrapping="Wrap"/>
+                                                        <TextBlock Text="Choose the screen edge where the taskbar is displayed for each monitor."
+                                                               FontFamily="{ThemeResource AppCustomFont}"
+                                                               Style="{StaticResource CaptionTextBlockStyle}"
+                                                               Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                                                               TextWrapping="Wrap"/>
                                                     </StackPanel>
 
-                                                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
-                                                        <StackPanel Orientation="Horizontal" Spacing="16">
+                                                    <!-- Dynamically generate a selector for every connected monitor -->
+                                                    <ItemsControl ItemsSource="{x:Bind Monitors}">
+                                                        <ItemsControl.ItemTemplate>
+                                                            <DataTemplate x:DataType="viewmodel:MonitorPositionViewModel">
+                                                                <StackPanel Margin="0,0,0,24">
+                                                                    <TextBlock Text="{x:Bind DisplayName}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" Margin="0,0,0,8"/>
 
-                                                            <RadioButton GroupName="TaskbarPos" Click="TaskbarPos_Click" Tag="Left" Style="{StaticResource TaskbarPosRadioButtonStyle}" IsChecked="{x:Bind IsTaskbarLeft, Mode=OneWay}">
-                                                                <StackPanel Spacing="8" Margin="8">
-                                                                    <Border Width="120" Height="75" CornerRadius="4">
-                                                                        <Grid>
-                                                                            <Image Source="{x:Bind CurrentWallpaper, Mode=OneWay}" Stretch="UniformToFill" />
-                                                                            <Border Background="{ThemeResource LayerFillColorAltBrush}" Opacity="0.3" />
-                                                                            <Border Width="8" HorizontalAlignment="Left" Background="{ThemeResource SystemControlBackgroundAccentBrush}" Opacity="0.9" />
-                                                                        </Grid>
-                                                                    </Border>
-                                                                    <TextBlock Text="{helpers:ResourceString Key=Setting_taskbar-position_Option_0}" HorizontalAlignment="Center" FontSize="12" />
+                                                                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                                                                        <StackPanel Orientation="Horizontal" Spacing="16">
+
+                                                                            <RadioButton GroupName="{x:Bind DeviceId}" Click="TaskbarPos_Click" Tag="Left" Style="{StaticResource TaskbarPosRadioButtonStyle}" IsChecked="{x:Bind IsLeft, Mode=TwoWay}">
+                                                                                <StackPanel Spacing="8" Margin="8">
+                                                                                    <Border Width="120" Height="75" CornerRadius="4">
+                                                                                        <Grid>
+                                                                                            <Image Source="{x:Bind WallpaperPath, Mode=OneWay}" Stretch="UniformToFill" />
+                                                                                            <Border Background="{ThemeResource LayerFillColorAltBrush}" Opacity="0.3" />
+                                                                                            <Border Width="8" HorizontalAlignment="Left" Background="{ThemeResource SystemControlBackgroundAccentBrush}" Opacity="0.9" />
+                                                                                        </Grid>
+                                                                                    </Border>
+                                                                                    <TextBlock Text="{helpers:ResourceString Key=Setting_taskbar-position_Option_0}" HorizontalAlignment="Center" FontSize="12" />
+                                                                                </StackPanel>
+                                                                            </RadioButton>
+
+                                                                            <RadioButton GroupName="{x:Bind DeviceId}" Click="TaskbarPos_Click" Tag="Top" Style="{StaticResource TaskbarPosRadioButtonStyle}" IsChecked="{x:Bind IsTop, Mode=TwoWay}">
+                                                                                <StackPanel Spacing="8" Margin="8">
+                                                                                    <Border Width="120" Height="75" CornerRadius="4">
+                                                                                        <Grid>
+                                                                                            <Image Source="{x:Bind WallpaperPath, Mode=OneWay}" Stretch="UniformToFill" />
+                                                                                            <Border Background="{ThemeResource LayerFillColorAltBrush}" Opacity="0.3" />
+                                                                                            <Border Height="6" VerticalAlignment="Top" Background="{ThemeResource SystemControlBackgroundAccentBrush}" Opacity="0.9" />
+                                                                                        </Grid>
+                                                                                    </Border>
+                                                                                    <TextBlock Text="{helpers:ResourceString Key=Setting_taskbar-position_Option_1}" HorizontalAlignment="Center" FontSize="12" />
+                                                                                </StackPanel>
+                                                                            </RadioButton>
+
+                                                                            <RadioButton GroupName="{x:Bind DeviceId}" Click="TaskbarPos_Click" Tag="Right" Style="{StaticResource TaskbarPosRadioButtonStyle}" IsChecked="{x:Bind IsRight, Mode=TwoWay}">
+                                                                                <StackPanel Spacing="8" Margin="8">
+                                                                                    <Border Width="120" Height="75" CornerRadius="4">
+                                                                                        <Grid>
+                                                                                            <Image Source="{x:Bind WallpaperPath, Mode=OneWay}" Stretch="UniformToFill" />
+                                                                                            <Border Background="{ThemeResource LayerFillColorAltBrush}" Opacity="0.3" />
+                                                                                            <Border Width="8" HorizontalAlignment="Right" Background="{ThemeResource SystemControlBackgroundAccentBrush}" Opacity="0.9" />
+                                                                                        </Grid>
+                                                                                    </Border>
+                                                                                    <TextBlock Text="{helpers:ResourceString Key=Setting_taskbar-position_Option_2}" HorizontalAlignment="Center" FontSize="12" />
+                                                                                </StackPanel>
+                                                                            </RadioButton>
+
+                                                                            <RadioButton GroupName="{x:Bind DeviceId}" Click="TaskbarPos_Click" Tag="Bottom" Style="{StaticResource TaskbarPosRadioButtonStyle}" IsChecked="{x:Bind IsBottom, Mode=TwoWay}">
+                                                                                <StackPanel Spacing="8" Margin="8">
+                                                                                    <Border Width="120" Height="75" CornerRadius="4">
+                                                                                        <Grid>
+                                                                                            <Image Source="{x:Bind WallpaperPath, Mode=OneWay}" Stretch="UniformToFill" />
+                                                                                            <Border Background="{ThemeResource LayerFillColorAltBrush}" Opacity="0.3" />
+                                                                                            <Border Height="6" VerticalAlignment="Bottom" Background="{ThemeResource SystemControlBackgroundAccentBrush}" Opacity="0.9" />
+                                                                                        </Grid>
+                                                                                    </Border>
+                                                                                    <TextBlock Text="{helpers:ResourceString Key=Setting_taskbar-position_Option_3}" HorizontalAlignment="Center" FontSize="12" />
+                                                                                </StackPanel>
+                                                                            </RadioButton>
+
+                                                                        </StackPanel>
+                                                                    </ScrollViewer>
                                                                 </StackPanel>
-                                                            </RadioButton>
+                                                            </DataTemplate>
+                                                        </ItemsControl.ItemTemplate>
+                                                    </ItemsControl>
 
-                                                            <RadioButton GroupName="TaskbarPos" Click="TaskbarPos_Click" Tag="Top" Style="{StaticResource TaskbarPosRadioButtonStyle}" IsChecked="{x:Bind IsTaskbarTop, Mode=OneWay}">
-                                                                <StackPanel Spacing="8" Margin="8">
-                                                                    <Border Width="120" Height="75" CornerRadius="4">
-                                                                        <Grid>
-                                                                            <Image Source="{x:Bind CurrentWallpaper, Mode=OneWay}" Stretch="UniformToFill" />
-                                                                            <Border Background="{ThemeResource LayerFillColorAltBrush}" Opacity="0.3" />
-                                                                            <Border Height="6" VerticalAlignment="Top" Background="{ThemeResource SystemControlBackgroundAccentBrush}" Opacity="0.9" />
-                                                                        </Grid>
-                                                                    </Border>
-                                                                    <TextBlock Text="{helpers:ResourceString Key=Setting_taskbar-position_Option_1}" HorizontalAlignment="Center" FontSize="12" />
-                                                                </StackPanel>
-                                                            </RadioButton>
-
-                                                            <RadioButton GroupName="TaskbarPos" Click="TaskbarPos_Click" Tag="Right" Style="{StaticResource TaskbarPosRadioButtonStyle}" IsChecked="{x:Bind IsTaskbarRight, Mode=OneWay}">
-                                                                <StackPanel Spacing="8" Margin="8">
-                                                                    <Border Width="120" Height="75" CornerRadius="4">
-                                                                        <Grid>
-                                                                            <Image Source="{x:Bind CurrentWallpaper, Mode=OneWay}" Stretch="UniformToFill" />
-                                                                            <Border Background="{ThemeResource LayerFillColorAltBrush}" Opacity="0.3" />
-                                                                            <Border Width="8" HorizontalAlignment="Right" Background="{ThemeResource SystemControlBackgroundAccentBrush}" Opacity="0.9" />
-                                                                        </Grid>
-                                                                    </Border>
-                                                                    <TextBlock Text="{helpers:ResourceString Key=Setting_taskbar-position_Option_2}" HorizontalAlignment="Center" FontSize="12" />
-                                                                </StackPanel>
-                                                            </RadioButton>
-
-                                                            <RadioButton GroupName="TaskbarPos" Click="TaskbarPos_Click" Tag="Bottom" Style="{StaticResource TaskbarPosRadioButtonStyle}" IsChecked="{x:Bind IsTaskbarBottom, Mode=OneWay}">
-                                                                <StackPanel Spacing="8" Margin="8">
-                                                                    <Border Width="120" Height="75" CornerRadius="4">
-                                                                        <Grid>
-                                                                            <Image Source="{x:Bind CurrentWallpaper, Mode=OneWay}" Stretch="UniformToFill" />
-                                                                            <Border Background="{ThemeResource LayerFillColorAltBrush}" Opacity="0.3" />
-                                                                            <Border Height="6" VerticalAlignment="Bottom" Background="{ThemeResource SystemControlBackgroundAccentBrush}" Opacity="0.9" />
-                                                                        </Grid>
-                                                                    </Border>
-                                                                    <TextBlock Text="{helpers:ResourceString Key=Setting_taskbar-position_Option_3}" HorizontalAlignment="Center" FontSize="12" />
-                                                                </StackPanel>
-                                                            </RadioButton>
-
-                                                        </StackPanel>
-                                                    </ScrollViewer>
                                                 </StackPanel>
                                             </ContentControl>
                                         </StackPanel>

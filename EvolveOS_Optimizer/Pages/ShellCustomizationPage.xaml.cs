@@ -1,8 +1,10 @@
 // Copyright (c) 2026 EvolveOS Software
 // Licensed under the MIT License.
 
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using Microsoft.UI.Windowing;
 
 namespace EvolveOS_Optimizer.Pages
@@ -28,6 +30,8 @@ namespace EvolveOS_Optimizer.Pages
             get => _currentWallpaper;
             set => SetProperty(ref _currentWallpaper, value);
         }
+
+        public ObservableCollection<MonitorPositionViewModel> Monitors { get; } = new();
 
         private bool _isTaskbarLeft;
         public bool IsTaskbarLeft { get => _isTaskbarLeft; set => SetProperty(ref _isTaskbarLeft, value); }
@@ -55,10 +59,10 @@ namespace EvolveOS_Optimizer.Pages
             string path = @"C:\Windows\Web\Wallpaper\Windows\img0.jpg";
             try
             {
-                using var key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(@"Control Panel\Desktop");
+                using var key = Registry.CurrentUser.OpenSubKey(@"Control Panel\Desktop");
                 if (key?.GetValue("Wallpaper") is string wallpaperPath)
                 {
-                    if (System.IO.File.Exists(wallpaperPath))
+                    if (File.Exists(wallpaperPath))
                     {
                         path = wallpaperPath;
                     }
@@ -87,10 +91,57 @@ namespace EvolveOS_Optimizer.Pages
             SelectComboBoxItemByTag(TaskbarAnimationCombo, SettingsEngine.Shell_TaskbarAnimation ?? "Spring");
             SelectComboBoxItemByTag(TaskbarHoverAnimationCombo, SettingsEngine.Shell_TaskbarHoverAnimation ?? "Standard");
 
-            string pos = SettingsEngine.Shell_TaskbarPosition ?? "Bottom";
-            UpdateTaskbarPositionUI(pos);
+            // 1. Parse saved multi-monitor positions (e.g. "12345:Bottom;67890:Left")
+            string savedPos = SettingsEngine.Shell_TaskbarPosition ?? "Bottom";
+            var posDict = new System.Collections.Generic.Dictionary<string, string>();
+
+            if (savedPos.Contains(":"))
+            {
+                foreach (var part in savedPos.Split(';', StringSplitOptions.RemoveEmptyEntries))
+                {
+                    var kv = part.Split(':');
+                    if (kv.Length == 2) posDict[kv[0]] = kv[1];
+                }
+            }
 
             var displays = DisplayArea.FindAll();
+
+            // 2. Initialize the Windows COM interface to grab actual multi-monitor wallpapers
+            IDesktopWallpaper? wallpaperManager = null;
+            try { wallpaperManager = (IDesktopWallpaper)new DesktopWallpaperClass(); } catch { }
+
+            // 3. Clear existing list and build out the monitor UI controls dynamically
+            Monitors.Clear();
+            for (int i = 0; i < displays.Count; i++)
+            {
+                var display = displays[i];
+                string deviceId = display.DisplayId.Value.ToString();
+                string name = display.IsPrimary ? "Primary Monitor" : $"Monitor {i + 1}";
+
+                // Fallback gracefully if it's an old save string like "Bottom" or a new monitor is plugged in
+                string pos = posDict.ContainsKey(deviceId) ? posDict[deviceId] : (savedPos.Contains(":") ? "Bottom" : savedPos);
+
+                string wpPath = CurrentWallpaper;
+                if (wallpaperManager != null)
+                {
+                    try
+                    {
+                        string monitorPath = wallpaperManager.GetMonitorDevicePathAt((uint)i);
+                        wpPath = wallpaperManager.GetWallpaper(monitorPath);
+                    }
+                    catch { }
+                }
+
+                Monitors.Add(new MonitorPositionViewModel
+                {
+                    DisplayName = name,
+                    DeviceId = deviceId,
+                    WallpaperPath = string.IsNullOrEmpty(wpPath) ? CurrentWallpaper : wpPath,
+                    Position = pos
+                });
+            }
+
+            // 4. Update dynamic container visibility based on monitor count
             if (displays.Count > 1)
             {
                 MonitorAwareContainer.Visibility = Visibility.Visible;
@@ -106,14 +157,6 @@ namespace EvolveOS_Optimizer.Pages
             {
                 await ShellEnhancerController.StartEnhancerAsync();
             }
-        }
-
-        private void UpdateTaskbarPositionUI(string position)
-        {
-            IsTaskbarLeft = position == "Left";
-            IsTaskbarTop = position == "Top";
-            IsTaskbarRight = position == "Right";
-            IsTaskbarBottom = position == "Bottom";
         }
 
         private void SelectComboBoxItemByTag(ComboBox comboBox, string tag)
@@ -200,6 +243,8 @@ namespace EvolveOS_Optimizer.Pages
                 SettingsEngine.Shell_TaskbarClockSeconds = toggle.IsOn;
             else if (commandTag == "Taskbar_HoverBackground")
                 SettingsEngine.Shell_TaskbarHoverBackground = toggle.IsOn;
+            else if (commandTag == "Taskbar_MonitorAware")
+                SettingsEngine.Shell_TaskbarMonitorAware = toggle.IsOn;
             else if (commandTag == "Taskbar_ShowUnpinned")
 
             {
@@ -256,13 +301,19 @@ namespace EvolveOS_Optimizer.Pages
         {
             if (!_isInitialized || sender is not RadioButton rb) return;
 
-            string pos = rb.Tag?.ToString() ?? "Bottom";
-            SettingsEngine.Shell_TaskbarPosition = pos;
-            UpdateTaskbarPositionUI(pos);
-
-            if (MasterToggle.IsOn && TaskbarToggle.IsOn)
+            if (rb.DataContext is MonitorPositionViewModel monitor)
             {
-                _ = ShellEnhancerController.SendCommandAsync($"Taskbar_Position:{pos}");
+                monitor.Position = rb.Tag?.ToString() ?? "Bottom";
+
+                var positions = System.Linq.Enumerable.Select(Monitors, m => $"{m.DeviceId}:{m.Position}");
+                string newSetting = string.Join(";", positions);
+
+                SettingsEngine.Shell_TaskbarPosition = newSetting;
+
+                if (MasterToggle.IsOn && TaskbarToggle.IsOn)
+                {
+                    _ = ShellEnhancerController.SendCommandAsync($"Taskbar_Position:{newSetting}");
+                }
             }
         }
         #endregion
