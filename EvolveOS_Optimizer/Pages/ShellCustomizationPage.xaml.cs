@@ -223,6 +223,11 @@ namespace EvolveOS_Optimizer.Pages
             }
             else
             {
+                _ = ShellEnhancerController.SendCommandAsync("StartMenu_Enable:False");
+                _ = ShellEnhancerController.SendCommandAsync("Taskbar_Enable:False");
+
+                await Task.Delay(300);
+
                 ShellEnhancerController.StopEnhancer();
             }
         }
