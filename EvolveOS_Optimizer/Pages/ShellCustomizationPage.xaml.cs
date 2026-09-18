@@ -91,6 +91,7 @@ namespace EvolveOS_Optimizer.Pages
             SelectComboBoxItemByTag(TaskbarAnimationCombo, SettingsEngine.Shell_TaskbarAnimation ?? "Spring");
             SelectComboBoxItemByTag(TaskbarHoverAnimationCombo, SettingsEngine.Shell_TaskbarHoverAnimation ?? "Standard");
             SelectComboBoxItemByTag(AppFontCombo, SettingsEngine.Shell_AppFont ?? "Segoe UI");
+            SelectComboBoxItemByTag(AppFontSizeCombo, SettingsEngine.Shell_AppFontSize.ToString());
 
             string savedPos = SettingsEngine.Shell_TaskbarPosition ?? "Bottom";
             var posDict = new System.Collections.Generic.Dictionary<string, string>();
@@ -172,7 +173,9 @@ namespace EvolveOS_Optimizer.Pages
         {
             StartMenuToggle.IsEnabled = isMasterEnabled;
             TaskbarToggle.IsEnabled = isMasterEnabled;
+
             AppFontCombo.IsEnabled = isMasterEnabled;
+            AppFontSizeCombo.IsEnabled = isMasterEnabled;
 
             StartMenuStyleCombo.IsEnabled = isMasterEnabled && StartMenuToggle.IsOn;
 
@@ -204,6 +207,8 @@ namespace EvolveOS_Optimizer.Pages
                 await ShellEnhancerController.StartEnhancerAsync();
 
                 _ = ShellEnhancerController.SendCommandAsync($"Shell_Font:{SettingsEngine.Shell_AppFont}");
+                _ = ShellEnhancerController.SendCommandAsync($"Shell_FontSize:{SettingsEngine.Shell_AppFontSize}");
+
                 _ = ShellEnhancerController.SendCommandAsync($"StartMenu_Enable:{StartMenuToggle.IsOn}");
                 _ = ShellEnhancerController.SendCommandAsync($"StartMenu_Style:{SettingsEngine.Shell_StartMenuStyle}");
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_Enable:{TaskbarToggle.IsOn}");
@@ -295,6 +300,11 @@ namespace EvolveOS_Optimizer.Pages
                 SettingsEngine.Shell_TaskbarHoverAnimation = style;
             else if (commandTag == "Shell_Font")
                 SettingsEngine.Shell_AppFont = style;
+            else if (commandTag == "Shell_FontSize")
+            {
+                if (double.TryParse(style, out double size))
+                    SettingsEngine.Shell_AppFontSize = size;
+            }
 
             if (MasterToggle.IsOn)
             {

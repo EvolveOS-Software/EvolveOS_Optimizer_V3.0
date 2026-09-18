@@ -170,7 +170,8 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["Shell_TaskbarHoverAnimation"] = "Standard",
             ["Shell_TaskbarHoverBackground"] = true,
             ["Shell_TaskbarMonitorAware"] = false,
-            ["Shell_AppFont"] = "Segoe UI"
+            ["Shell_AppFont"] = "Segoe UI",
+            ["Shell_AppFontSize"] = 14.0
         };
 
         private static readonly Dictionary<string, object> _cachedSettings = new Dictionary<string, object>(_defaultSettings);
@@ -334,6 +335,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static bool Shell_TaskbarHoverBackground { get => (bool)_cachedSettings["Shell_TaskbarHoverBackground"]; set => ChangingParameters("Shell_TaskbarHoverBackground", value); }
         internal static bool Shell_TaskbarMonitorAware { get => (bool)_cachedSettings["Shell_TaskbarMonitorAware"]; set => ChangingParameters("Shell_TaskbarMonitorAware", value); }
         internal static string Shell_AppFont { get => (string)_cachedSettings["Shell_AppFont"]; set => ChangingParameters("Shell_AppFont", value); }
+        internal static double Shell_AppFontSize { get => Convert.ToDouble(_cachedSettings["Shell_AppFontSize"]); set => ChangingParameters("Shell_AppFontSize", value); }
 
         private static void ChangingParameters(string key, object value)
         {
