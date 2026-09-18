@@ -216,16 +216,82 @@
                                         <StackPanel VerticalAlignment="Center" Spacing="2">
                                             <TextBlock Text="Start Menu Style" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
                                             <TextBlock Text="Choose between standard or compact rendering." 
-                                                       FontFamily="{ThemeResource AppCustomFont}"
-                                                       Style="{StaticResource CaptionTextBlockStyle}"
-                                                       Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" 
-                                                       TextWrapping="Wrap"/>
+                               FontFamily="{ThemeResource AppCustomFont}"
+                               Style="{StaticResource CaptionTextBlockStyle}"
+                               Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" 
+                               TextWrapping="Wrap"/>
                                         </StackPanel>
                                         <ComboBox Grid.Column="1" x:Name="StartMenuStyleCombo" IsEnabled="False" Width="150" VerticalAlignment="Center" SelectionChanged="StartMenuStyleCombo_SelectionChanged" FontFamily="{ThemeResource AppCustomFont}">
                                             <ComboBoxItem Content="Standard" Tag="Standard" FontFamily="{ThemeResource AppCustomFont}"/>
                                             <ComboBoxItem Content="Compact" Tag="Compact" FontFamily="{ThemeResource AppCustomFont}"/>
                                         </ComboBox>
                                     </Grid>
+                                </Border>
+                            </StackPanel>
+
+                            <!-- Start Menu Animations Section -->
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Animations" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" Margin="4,0,0,0"/>
+                                <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8">
+                                    <StackPanel>
+
+                                        <!-- Start Menu Animations Toggle -->
+                                        <Grid Padding="16,12">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel VerticalAlignment="Center" Spacing="2">
+                                                <TextBlock Text="Start Menu Animations" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                                <TextBlock Text="Enable smooth sliding animations when opening and closing the Start Menu." 
+                                   FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                                            </StackPanel>
+                                            <ToggleSwitch Grid.Column="1" x:Name="StartMenuAnimationsToggle" IsEnabled="False" VerticalAlignment="Center" Toggled="SettingToggle_Toggled" Tag="StartMenu_Animation" Margin="0" MinWidth="0"/>
+                                        </Grid>
+
+                                        <Border Height="1" Background="{ThemeResource CardStrokeColorDefaultBrush}" Margin="16,0" Opacity="0.5"/>
+
+                                        <!-- Start Menu Animation Style -->
+                                        <Grid Padding="16,12">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel VerticalAlignment="Center" Spacing="2">
+                                                <TextBlock Text="Animation Style" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                                <TextBlock Text="Choose the motion style for the Start Menu." 
+                                   FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                                            </StackPanel>
+                                            <ComboBox Grid.Column="1" x:Name="StartMenuAnimStyleCombo" IsEnabled="False" Width="150" VerticalAlignment="Center" SelectionChanged="SettingCombo_SelectionChanged" Tag="StartMenu_AnimStyle" FontFamily="{ThemeResource AppCustomFont}">
+                                                <ComboBoxItem Content="Standard" Tag="Standard" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="Glide" Tag="Glide" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="Spring" Tag="Spring" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="Bounce" Tag="Bounce" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="Elastic" Tag="Elastic" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="Exponential" Tag="Exponential" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="Overshoot" Tag="Overshoot" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="Circle" Tag="Circle" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="Sine" Tag="Sine" FontFamily="{ThemeResource AppCustomFont}"/>
+                                            </ComboBox>
+                                        </Grid>
+
+                                        <Border Height="1" Background="{ThemeResource CardStrokeColorDefaultBrush}" Margin="16,0" Opacity="0.5"/>
+
+                                        <!-- Start Menu Animation Speed -->
+                                        <Grid Padding="16,12">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel VerticalAlignment="Center" Spacing="2">
+                                                <TextBlock Text="Animation Speed" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                                <TextBlock Text="Adjust how fast the Start Menu animates in and out." 
+                                   FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                                            </StackPanel>
+                                            <Slider Grid.Column="1" x:Name="StartMenuSpeedSlider" Minimum="0.1" Maximum="3.0" StepFrequency="0.1" Value="1.0" Width="150" VerticalAlignment="Center" ValueChanged="StartMenuSpeedSlider_ValueChanged" IsEnabled="False"/>
+                                        </Grid>
+
+                                    </StackPanel>
                                 </Border>
                             </StackPanel>
 

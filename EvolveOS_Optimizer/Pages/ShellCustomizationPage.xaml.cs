@@ -3,8 +3,10 @@
 
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using Microsoft.UI.Windowing;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
 namespace EvolveOS_Optimizer.Pages
 {
@@ -76,6 +78,8 @@ namespace EvolveOS_Optimizer.Pages
         {
             MasterToggle.IsOn = SettingsEngine.Shell_MasterEnabled;
             StartMenuToggle.IsOn = SettingsEngine.Shell_StartMenuEnabled;
+            StartMenuAnimationsToggle.IsOn = SettingsEngine.Shell_StartMenuAnimation;
+            StartMenuSpeedSlider.Value = SettingsEngine.Shell_StartMenuAnimSpeed;
             TaskbarToggle.IsOn = SettingsEngine.Shell_TaskbarEnabled;
             PreviewButtonsToggle.IsOn = SettingsEngine.Shell_TaskbarPreviewButtons;
             PreviewAnimationsToggle.IsOn = SettingsEngine.Shell_TaskbarPreviewAnimation;
@@ -85,6 +89,7 @@ namespace EvolveOS_Optimizer.Pages
             MonitorAwareToggle.IsOn = SettingsEngine.Shell_TaskbarMonitorAware;
 
             SelectComboBoxItemByTag(StartMenuStyleCombo, SettingsEngine.Shell_StartMenuStyle);
+            SelectComboBoxItemByTag(StartMenuAnimStyleCombo, SettingsEngine.Shell_StartMenuAnimStyle ?? "Standard");
             SelectComboBoxItemByTag(TaskbarStyleCombo, SettingsEngine.Shell_TaskbarStyle);
             SelectComboBoxItemByTag(TaskbarAlignmentCombo, SettingsEngine.Shell_TaskbarAlignment ?? "Center");
             SelectComboBoxItemByTag(UnpinnedModeCombo, SettingsEngine.Shell_TaskbarUnpinnedMode);
@@ -180,6 +185,9 @@ namespace EvolveOS_Optimizer.Pages
             AppFontSizeCombo.IsEnabled = isMasterEnabled;
 
             StartMenuStyleCombo.IsEnabled = isMasterEnabled && StartMenuToggle.IsOn;
+            StartMenuAnimationsToggle.IsEnabled = isMasterEnabled && StartMenuToggle.IsOn;
+            StartMenuAnimStyleCombo.IsEnabled = isMasterEnabled && StartMenuToggle.IsOn && StartMenuAnimationsToggle.IsOn;
+            StartMenuSpeedSlider.IsEnabled = isMasterEnabled && StartMenuToggle.IsOn && StartMenuAnimationsToggle.IsOn;
 
             TaskbarStyleCombo.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
             TaskbarAlignmentCombo.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
@@ -216,6 +224,9 @@ namespace EvolveOS_Optimizer.Pages
 
                 _ = ShellEnhancerController.SendCommandAsync($"StartMenu_Enable:{StartMenuToggle.IsOn}");
                 _ = ShellEnhancerController.SendCommandAsync($"StartMenu_Style:{SettingsEngine.Shell_StartMenuStyle}");
+                _ = ShellEnhancerController.SendCommandAsync($"StartMenu_Animation:{SettingsEngine.Shell_StartMenuAnimation}");
+                _ = ShellEnhancerController.SendCommandAsync($"StartMenu_AnimStyle:{SettingsEngine.Shell_StartMenuAnimStyle ?? "Standard"}");
+                _ = ShellEnhancerController.SendCommandAsync($"StartMenu_AnimSpeed:{SettingsEngine.Shell_StartMenuAnimSpeed.ToString(System.Globalization.CultureInfo.InvariantCulture)}");
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_Enable:{TaskbarToggle.IsOn}");
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_Style:{SettingsEngine.Shell_TaskbarStyle}");
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_Alignment:{SettingsEngine.Shell_TaskbarAlignment}");
@@ -251,6 +262,12 @@ namespace EvolveOS_Optimizer.Pages
 
             if (commandTag == "StartMenu_Enable")
                 SettingsEngine.Shell_StartMenuEnabled = toggle.IsOn;
+            else if (commandTag == "StartMenu_Animation")
+            {
+                SettingsEngine.Shell_StartMenuAnimation = toggle.IsOn;
+                StartMenuAnimStyleCombo.IsEnabled = MasterToggle.IsOn && StartMenuToggle.IsOn && toggle.IsOn;
+                StartMenuSpeedSlider.IsEnabled = MasterToggle.IsOn && StartMenuToggle.IsOn && toggle.IsOn;
+            }
             else if (commandTag == "Taskbar_Enable")
                 SettingsEngine.Shell_TaskbarEnabled = toggle.IsOn;
             else if (commandTag == "Taskbar_PreviewButtons")
@@ -315,6 +332,8 @@ namespace EvolveOS_Optimizer.Pages
                 SettingsEngine.Shell_AppFont = style;
             else if (commandTag == "Taskbar_PreviewAnimStyle")
                 SettingsEngine.Shell_TaskbarPreviewAnimStyle = style;
+            else if (commandTag == "StartMenu_AnimStyle")
+                SettingsEngine.Shell_StartMenuAnimStyle = style;
             else if (commandTag == "Shell_FontSize")
             {
                 if (double.TryParse(style, out double size))
@@ -327,14 +346,25 @@ namespace EvolveOS_Optimizer.Pages
             }
         }
 
-        private void PreviewSpeedSlider_ValueChanged(object sender, Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
+        private void PreviewSpeedSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
             if (!_isInitialized) return;
             SettingsEngine.Shell_TaskbarPreviewAnimSpeed = e.NewValue;
 
             if (MasterToggle.IsOn && TaskbarToggle.IsOn && PreviewAnimationsToggle.IsOn)
             {
-                _ = ShellEnhancerController.SendCommandAsync($"Taskbar_PreviewAnimSpeed:{e.NewValue.ToString(System.Globalization.CultureInfo.InvariantCulture)}");
+                _ = ShellEnhancerController.SendCommandAsync($"Taskbar_PreviewAnimSpeed:{e.NewValue.ToString(CultureInfo.InvariantCulture)}");
+            }
+        }
+
+        private void StartMenuSpeedSlider_ValueChanged(object sender, Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
+        {
+            if (!_isInitialized) return;
+            SettingsEngine.Shell_StartMenuAnimSpeed = e.NewValue;
+
+            if (MasterToggle.IsOn && StartMenuToggle.IsOn && StartMenuAnimationsToggle.IsOn)
+            {
+                _ = ShellEnhancerController.SendCommandAsync($"StartMenu_AnimSpeed:{e.NewValue.ToString(System.Globalization.CultureInfo.InvariantCulture)}");
             }
         }
 
@@ -346,7 +376,7 @@ namespace EvolveOS_Optimizer.Pages
             {
                 monitor.Position = rb.Tag?.ToString() ?? "Bottom";
 
-                var positions = System.Linq.Enumerable.Select(Monitors, m => $"{m.DeviceId}:{m.Position}");
+                var positions = Enumerable.Select(Monitors, m => $"{m.DeviceId}:{m.Position}");
                 string newSetting = string.Join(";", positions);
 
                 SettingsEngine.Shell_TaskbarPosition = newSetting;

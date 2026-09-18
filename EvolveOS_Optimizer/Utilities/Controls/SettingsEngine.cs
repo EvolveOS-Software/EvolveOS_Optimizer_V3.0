@@ -158,6 +158,9 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["Shell_MasterEnabled"] = false,
             ["Shell_StartMenuEnabled"] = false,
             ["Shell_StartMenuStyle"] = "Standard",
+            ["Shell_StartMenuAnimation"] = true,
+            ["Shell_StartMenuAnimStyle"] = "Standard",
+            ["Shell_StartMenuAnimSpeed"] = 1.0,
             ["Shell_TaskbarEnabled"] = false,
             ["Shell_TaskbarStyle"] = "Standard",
             ["Shell_TaskbarAlignment"] = "Center",
@@ -325,6 +328,9 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static bool Shell_MasterEnabled { get => (bool)_cachedSettings["Shell_MasterEnabled"]; set => ChangingParameters("Shell_MasterEnabled", value); }
         internal static bool Shell_StartMenuEnabled { get => (bool)_cachedSettings["Shell_StartMenuEnabled"]; set => ChangingParameters("Shell_StartMenuEnabled", value); }
         internal static string Shell_StartMenuStyle { get => (string)_cachedSettings["Shell_StartMenuStyle"]; set => ChangingParameters("Shell_StartMenuStyle", value); }
+        internal static bool Shell_StartMenuAnimation { get => (bool)_cachedSettings["Shell_StartMenuAnimation"]; set => ChangingParameters("Shell_StartMenuAnimation", value); }
+        internal static string Shell_StartMenuAnimStyle { get => (string)_cachedSettings["Shell_StartMenuAnimStyle"]; set => ChangingParameters("Shell_StartMenuAnimStyle", value); }
+        internal static double Shell_StartMenuAnimSpeed { get => Convert.ToDouble(_cachedSettings["Shell_StartMenuAnimSpeed"]); set => ChangingParameters("Shell_StartMenuAnimSpeed", value); }
         internal static bool Shell_TaskbarEnabled { get => (bool)_cachedSettings["Shell_TaskbarEnabled"]; set => ChangingParameters("Shell_TaskbarEnabled", value); }
         internal static string Shell_TaskbarStyle { get => (string)_cachedSettings["Shell_TaskbarStyle"]; set => ChangingParameters("Shell_TaskbarStyle", value); }
         internal static string Shell_TaskbarAlignment { get => (string)_cachedSettings["Shell_TaskbarAlignment"]; set => ChangingParameters("Shell_TaskbarAlignment", value); }
