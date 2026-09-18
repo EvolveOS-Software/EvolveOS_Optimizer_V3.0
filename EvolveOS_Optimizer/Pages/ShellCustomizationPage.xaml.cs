@@ -352,10 +352,11 @@ namespace EvolveOS_Optimizer.Pages
             }
         }
 
-        private void TaskbarSizeSlider_ValueChanged(object sender, Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
+        private void TaskbarSizeSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
             if (!_isInitialized) return;
             int size = (int)e.NewValue;
+            if (TaskbarSizeValueText != null) TaskbarSizeValueText.Text = $"{size}px";
             SettingsEngine.Shell_TaskbarSize = size;
 
             if (MasterToggle.IsOn && TaskbarToggle.IsOn)
@@ -364,10 +365,11 @@ namespace EvolveOS_Optimizer.Pages
             }
         }
 
-        private void TaskbarIconSizeSlider_ValueChanged(object sender, Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
+        private void TaskbarIconSizeSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
             if (!_isInitialized) return;
             int size = (int)e.NewValue;
+            if (TaskbarIconSizeValueText != null) TaskbarIconSizeValueText.Text = $"{size}px";
             SettingsEngine.Shell_TaskbarIconSize = size;
 
             if (MasterToggle.IsOn && TaskbarToggle.IsOn)
@@ -379,22 +381,26 @@ namespace EvolveOS_Optimizer.Pages
         private void PreviewSpeedSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
             if (!_isInitialized) return;
-            SettingsEngine.Shell_TaskbarPreviewAnimSpeed = e.NewValue;
+            double speed = e.NewValue;
+            if (PreviewSpeedValueText != null) PreviewSpeedValueText.Text = $"{speed:0.0}x";
+            SettingsEngine.Shell_TaskbarPreviewAnimSpeed = speed;
 
             if (MasterToggle.IsOn && TaskbarToggle.IsOn && PreviewAnimationsToggle.IsOn)
             {
-                _ = ShellEnhancerController.SendCommandAsync($"Taskbar_PreviewAnimSpeed:{e.NewValue.ToString(CultureInfo.InvariantCulture)}");
+                _ = ShellEnhancerController.SendCommandAsync($"Taskbar_PreviewAnimSpeed:{speed.ToString(CultureInfo.InvariantCulture)}");
             }
         }
 
-        private void StartMenuSpeedSlider_ValueChanged(object sender, Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
+        private void StartMenuSpeedSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
             if (!_isInitialized) return;
-            SettingsEngine.Shell_StartMenuAnimSpeed = e.NewValue;
+            double speed = e.NewValue;
+            if (StartMenuSpeedValueText != null) StartMenuSpeedValueText.Text = $"{speed:0.0}x";
+            SettingsEngine.Shell_StartMenuAnimSpeed = speed;
 
             if (MasterToggle.IsOn && StartMenuToggle.IsOn && StartMenuAnimationsToggle.IsOn)
             {
-                _ = ShellEnhancerController.SendCommandAsync($"StartMenu_AnimSpeed:{e.NewValue.ToString(System.Globalization.CultureInfo.InvariantCulture)}");
+                _ = ShellEnhancerController.SendCommandAsync($"StartMenu_AnimSpeed:{speed.ToString(CultureInfo.InvariantCulture)}");
             }
         }
 

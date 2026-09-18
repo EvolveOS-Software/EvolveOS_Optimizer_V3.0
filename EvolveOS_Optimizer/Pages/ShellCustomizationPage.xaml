@@ -215,11 +215,11 @@
                                         </Grid.ColumnDefinitions>
                                         <StackPanel VerticalAlignment="Center" Spacing="2">
                                             <TextBlock Text="Start Menu Style" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
-                                            <TextBlock Text="Choose between standard or compact rendering." 
-                               FontFamily="{ThemeResource AppCustomFont}"
-                               Style="{StaticResource CaptionTextBlockStyle}"
-                               Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" 
-                               TextWrapping="Wrap"/>
+                                            <TextBlock Text="Choose between standard or compact rendering."
+                                                       FontFamily="{ThemeResource AppCustomFont}"
+                                                       Style="{StaticResource CaptionTextBlockStyle}"
+                                                       Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                                                       TextWrapping="Wrap"/>
                                         </StackPanel>
                                         <ComboBox Grid.Column="1" x:Name="StartMenuStyleCombo" IsEnabled="False" Width="150" VerticalAlignment="Center" SelectionChanged="StartMenuStyleCombo_SelectionChanged" FontFamily="{ThemeResource AppCustomFont}">
                                             <ComboBoxItem Content="Standard" Tag="Standard" FontFamily="{ThemeResource AppCustomFont}"/>
@@ -243,8 +243,8 @@
                                             </Grid.ColumnDefinitions>
                                             <StackPanel VerticalAlignment="Center" Spacing="2">
                                                 <TextBlock Text="Start Menu Animations" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
-                                                <TextBlock Text="Enable smooth sliding animations when opening and closing the Start Menu." 
-                                   FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                                                <TextBlock Text="Enable smooth sliding animations when opening and closing the Start Menu."
+                                                           FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                                             </StackPanel>
                                             <ToggleSwitch Grid.Column="1" x:Name="StartMenuAnimationsToggle" IsEnabled="False" VerticalAlignment="Center" Toggled="SettingToggle_Toggled" Tag="StartMenu_Animation" Margin="0" MinWidth="0"/>
                                         </Grid>
@@ -259,8 +259,8 @@
                                             </Grid.ColumnDefinitions>
                                             <StackPanel VerticalAlignment="Center" Spacing="2">
                                                 <TextBlock Text="Animation Style" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
-                                                <TextBlock Text="Choose the motion style for the Start Menu." 
-                                   FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                                                <TextBlock Text="Choose the motion style for the Start Menu."
+                                                           FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                                             </StackPanel>
                                             <ComboBox Grid.Column="1" x:Name="StartMenuAnimStyleCombo" IsEnabled="False" Width="150" VerticalAlignment="Center" SelectionChanged="SettingCombo_SelectionChanged" Tag="StartMenu_AnimStyle" FontFamily="{ThemeResource AppCustomFont}">
                                                 <ComboBoxItem Content="Standard" Tag="Standard" FontFamily="{ThemeResource AppCustomFont}"/>
@@ -282,13 +282,15 @@
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="50"/>
                                             </Grid.ColumnDefinitions>
                                             <StackPanel VerticalAlignment="Center" Spacing="2">
                                                 <TextBlock Text="Animation Speed" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
-                                                <TextBlock Text="Adjust how fast the Start Menu animates in and out." 
-                                   FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                                                <TextBlock Text="Adjust how fast the Start Menu animates in and out."
+                                                           FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                                             </StackPanel>
-                                            <Slider Grid.Column="1" x:Name="StartMenuSpeedSlider" Minimum="0.1" Maximum="3.0" StepFrequency="0.1" Value="1.0" Width="150" VerticalAlignment="Center" ValueChanged="StartMenuSpeedSlider_ValueChanged" IsEnabled="False"/>
+                                            <Slider Grid.Column="1" x:Name="StartMenuSpeedSlider" Minimum="0.1" Maximum="3.0" StepFrequency="0.1" Value="1.0" Width="130" VerticalAlignment="Center" ValueChanged="StartMenuSpeedSlider_ValueChanged" IsEnabled="False" Margin="0,0,12,0"/>
+                                            <TextBlock Grid.Column="2" x:Name="StartMenuSpeedValueText" Text="1.0x" VerticalAlignment="Center" HorizontalAlignment="Right" FontFamily="{ThemeResource AppCustomFont}" FontSize="12" Opacity="0.8"/>
                                         </Grid>
 
                                     </StackPanel>
@@ -383,13 +385,15 @@
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="50"/>
                                             </Grid.ColumnDefinitions>
                                             <StackPanel VerticalAlignment="Center" Spacing="2">
                                                 <TextBlock Text="Taskbar Size" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
                                                 <TextBlock Text="Adjust the height or width of the taskbar dock." 
                                                    FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                                             </StackPanel>
-                                            <Slider Grid.Column="1" x:Name="TaskbarSizeSlider" Minimum="36" Maximum="80" StepFrequency="1" Value="48" Width="150" VerticalAlignment="Center" ValueChanged="TaskbarSizeSlider_ValueChanged" IsEnabled="False"/>
+                                            <Slider Grid.Column="1" x:Name="TaskbarSizeSlider" Minimum="36" Maximum="80" StepFrequency="1" Value="48" Width="130" VerticalAlignment="Center" ValueChanged="TaskbarSizeSlider_ValueChanged" IsEnabled="False" Margin="0,0,12,0"/>
+                                            <TextBlock Grid.Column="2" x:Name="TaskbarSizeValueText" Text="{Binding Value, ElementName=TaskbarSizeSlider}" VerticalAlignment="Center" HorizontalAlignment="Right" FontFamily="{ThemeResource AppCustomFont}" FontSize="12" Opacity="0.8"/>
                                         </Grid>
 
                                         <Border Height="1" Background="{ThemeResource CardStrokeColorDefaultBrush}" Margin="16,0" Opacity="0.5"/>
@@ -399,13 +403,15 @@
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="50"/>
                                             </Grid.ColumnDefinitions>
                                             <StackPanel VerticalAlignment="Center" Spacing="2">
                                                 <TextBlock Text="Taskbar Icon Size" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
                                                 <TextBlock Text="Adjust the scale of app icons on the taskbar." 
                                                    FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                                             </StackPanel>
-                                            <Slider Grid.Column="1" x:Name="TaskbarIconSizeSlider" Minimum="16" Maximum="48" StepFrequency="1" Value="24" Width="150" VerticalAlignment="Center" ValueChanged="TaskbarIconSizeSlider_ValueChanged" IsEnabled="False"/>
+                                            <Slider Grid.Column="1" x:Name="TaskbarIconSizeSlider" Minimum="16" Maximum="48" StepFrequency="1" Value="24" Width="130" VerticalAlignment="Center" ValueChanged="TaskbarIconSizeSlider_ValueChanged" IsEnabled="False" Margin="0,0,12,0"/>
+                                            <TextBlock Grid.Column="2" x:Name="TaskbarIconSizeValueText" Text="24px" VerticalAlignment="Center" HorizontalAlignment="Right" FontFamily="{ThemeResource AppCustomFont}" FontSize="12" Opacity="0.8"/>
                                         </Grid>
 
                                         <Border Height="1" Background="{ThemeResource CardStrokeColorDefaultBrush}" Margin="16,0" Opacity="0.5"/>
@@ -707,13 +713,15 @@
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="50"/>
                                             </Grid.ColumnDefinitions>
                                             <StackPanel VerticalAlignment="Center" Spacing="2">
                                                 <TextBlock Text="Preview Animation Speed" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
-                                                <TextBlock Text="Adjust how fast the live previews animate in and out." 
+                                                <TextBlock Text="Adjust how fast the live previews animate in and out."
                                                            FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                                             </StackPanel>
-                                            <Slider Grid.Column="1" x:Name="PreviewSpeedSlider" Minimum="0.1" Maximum="3.0" StepFrequency="0.1" Value="1.0" Width="150" VerticalAlignment="Center" ValueChanged="PreviewSpeedSlider_ValueChanged" IsEnabled="False"/>
+                                            <Slider Grid.Column="1" x:Name="PreviewSpeedSlider" Minimum="0.1" Maximum="3.0" StepFrequency="0.1" Value="1.0" Width="130" VerticalAlignment="Center" ValueChanged="PreviewSpeedSlider_ValueChanged" IsEnabled="False" Margin="0,0,12,0"/>
+                                            <TextBlock Grid.Column="2" x:Name="PreviewSpeedValueText" Text="1.0x" VerticalAlignment="Center" HorizontalAlignment="Right" FontFamily="{ThemeResource AppCustomFont}" FontSize="12" Opacity="0.8"/>
                                         </Grid>
 
                                     </StackPanel>
