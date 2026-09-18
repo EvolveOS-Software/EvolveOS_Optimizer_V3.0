@@ -4,7 +4,6 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using Microsoft.UI.Windowing;
 
 namespace EvolveOS_Optimizer.Pages
@@ -93,6 +92,8 @@ namespace EvolveOS_Optimizer.Pages
             SelectComboBoxItemByTag(TaskbarHoverAnimationCombo, SettingsEngine.Shell_TaskbarHoverAnimation ?? "Standard");
             SelectComboBoxItemByTag(AppFontCombo, SettingsEngine.Shell_AppFont ?? "Segoe UI");
             SelectComboBoxItemByTag(AppFontSizeCombo, SettingsEngine.Shell_AppFontSize.ToString());
+            SelectComboBoxItemByTag(PreviewAnimStyleCombo, SettingsEngine.Shell_TaskbarPreviewAnimStyle ?? "Standard");
+            PreviewSpeedSlider.Value = SettingsEngine.Shell_TaskbarPreviewAnimSpeed;
 
             string savedPos = SettingsEngine.Shell_TaskbarPosition ?? "Bottom";
             var posDict = new System.Collections.Generic.Dictionary<string, string>();
@@ -185,6 +186,8 @@ namespace EvolveOS_Optimizer.Pages
             TaskbarPositionPanel.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
             PreviewButtonsToggle.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
             PreviewAnimationsToggle.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
+            PreviewAnimStyleCombo.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn && PreviewAnimationsToggle.IsOn;
+            PreviewSpeedSlider.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn && PreviewAnimationsToggle.IsOn;
             ClockSecondsToggle.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
             ShowUnpinnedToggle.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
             UnpinnedModeCombo.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn && ShowUnpinnedToggle.IsOn;
@@ -219,6 +222,8 @@ namespace EvolveOS_Optimizer.Pages
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_Position:{SettingsEngine.Shell_TaskbarPosition ?? "Bottom"}");
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_PreviewButtons:{SettingsEngine.Shell_TaskbarPreviewButtons}");
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_PreviewAnimation:{SettingsEngine.Shell_TaskbarPreviewAnimation}");
+                _ = ShellEnhancerController.SendCommandAsync($"Taskbar_PreviewAnimStyle:{SettingsEngine.Shell_TaskbarPreviewAnimStyle ?? "Standard"}");
+                _ = ShellEnhancerController.SendCommandAsync($"Taskbar_PreviewAnimSpeed:{SettingsEngine.Shell_TaskbarPreviewAnimSpeed.ToString(System.Globalization.CultureInfo.InvariantCulture)}");
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_ClockSeconds:{SettingsEngine.Shell_TaskbarClockSeconds}");
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_ShowUnpinned:{SettingsEngine.Shell_TaskbarShowUnpinned}");
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_UnpinnedMode:{SettingsEngine.Shell_TaskbarUnpinnedMode}");
@@ -251,7 +256,11 @@ namespace EvolveOS_Optimizer.Pages
             else if (commandTag == "Taskbar_PreviewButtons")
                 SettingsEngine.Shell_TaskbarPreviewButtons = toggle.IsOn;
             else if (commandTag == "Taskbar_PreviewAnimation")
+            {
                 SettingsEngine.Shell_TaskbarPreviewAnimation = toggle.IsOn;
+                PreviewAnimStyleCombo.IsEnabled = MasterToggle.IsOn && TaskbarToggle.IsOn && toggle.IsOn;
+                PreviewSpeedSlider.IsEnabled = MasterToggle.IsOn && TaskbarToggle.IsOn && toggle.IsOn;
+            }
             else if (commandTag == "Taskbar_ClockSeconds")
                 SettingsEngine.Shell_TaskbarClockSeconds = toggle.IsOn;
             else if (commandTag == "Taskbar_HoverBackground")
@@ -259,7 +268,6 @@ namespace EvolveOS_Optimizer.Pages
             else if (commandTag == "Taskbar_MonitorAware")
                 SettingsEngine.Shell_TaskbarMonitorAware = toggle.IsOn;
             else if (commandTag == "Taskbar_ShowUnpinned")
-
             {
                 SettingsEngine.Shell_TaskbarShowUnpinned = toggle.IsOn;
                 UnpinnedModeCombo.IsEnabled = MasterToggle.IsOn && TaskbarToggle.IsOn && toggle.IsOn;
@@ -305,6 +313,8 @@ namespace EvolveOS_Optimizer.Pages
                 SettingsEngine.Shell_TaskbarHoverAnimation = style;
             else if (commandTag == "Shell_Font")
                 SettingsEngine.Shell_AppFont = style;
+            else if (commandTag == "Taskbar_PreviewAnimStyle")
+                SettingsEngine.Shell_TaskbarPreviewAnimStyle = style;
             else if (commandTag == "Shell_FontSize")
             {
                 if (double.TryParse(style, out double size))
@@ -314,6 +324,17 @@ namespace EvolveOS_Optimizer.Pages
             if (MasterToggle.IsOn)
             {
                 _ = ShellEnhancerController.SendCommandAsync($"{commandTag}:{style}");
+            }
+        }
+
+        private void PreviewSpeedSlider_ValueChanged(object sender, Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
+        {
+            if (!_isInitialized) return;
+            SettingsEngine.Shell_TaskbarPreviewAnimSpeed = e.NewValue;
+
+            if (MasterToggle.IsOn && TaskbarToggle.IsOn && PreviewAnimationsToggle.IsOn)
+            {
+                _ = ShellEnhancerController.SendCommandAsync($"Taskbar_PreviewAnimSpeed:{e.NewValue.ToString(System.Globalization.CultureInfo.InvariantCulture)}");
             }
         }
 

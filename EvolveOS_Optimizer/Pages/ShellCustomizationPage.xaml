@@ -581,6 +581,43 @@
                                             <ToggleSwitch Grid.Column="1" x:Name="PreviewAnimationsToggle" IsEnabled="False" VerticalAlignment="Center" Toggled="SettingToggle_Toggled" Tag="Taskbar_PreviewAnimation" Margin="0" MinWidth="0"/>
                                         </Grid>
 
+                                        <!-- Live Preview Animation Style -->
+                                        <Border Height="1" Background="{ThemeResource CardStrokeColorDefaultBrush}" Margin="16,0" Opacity="0.5"/>
+                                        <Grid Padding="16,12">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel VerticalAlignment="Center" Spacing="2">
+                                                <TextBlock Text="Preview Animation Style" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                                <TextBlock Text="Choose the motion style for the live preview window." 
+                                                           FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                                            </StackPanel>
+                                            <ComboBox Grid.Column="1" x:Name="PreviewAnimStyleCombo" IsEnabled="False" Width="150" VerticalAlignment="Center" SelectionChanged="SettingCombo_SelectionChanged" Tag="Taskbar_PreviewAnimStyle" FontFamily="{ThemeResource AppCustomFont}">
+                                                <ComboBoxItem Content="Standard" Tag="Standard" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="Glide" Tag="Glide" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="Spring" Tag="Spring" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="Bounce" Tag="Bounce" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="Elastic" Tag="Elastic" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="Fade Only" Tag="Fade" FontFamily="{ThemeResource AppCustomFont}"/>
+                                            </ComboBox>
+                                        </Grid>
+
+                                        <!-- Live Preview Animation Speed -->
+                                        <Border Height="1" Background="{ThemeResource CardStrokeColorDefaultBrush}" Margin="16,0" Opacity="0.5"/>
+                                        <Grid Padding="16,12">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel VerticalAlignment="Center" Spacing="2">
+                                                <TextBlock Text="Preview Animation Speed" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                                <TextBlock Text="Adjust how fast the live previews animate in and out." 
+                                                           FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                                            </StackPanel>
+                                            <Slider Grid.Column="1" x:Name="PreviewSpeedSlider" Minimum="0.1" Maximum="3.0" StepFrequency="0.1" Value="1.0" Width="150" VerticalAlignment="Center" ValueChanged="PreviewSpeedSlider_ValueChanged" IsEnabled="False"/>
+                                        </Grid>
+
                                     </StackPanel>
                                 </Border>
                             </StackPanel>
