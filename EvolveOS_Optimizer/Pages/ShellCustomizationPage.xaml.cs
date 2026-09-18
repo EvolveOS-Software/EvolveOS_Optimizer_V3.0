@@ -90,8 +90,8 @@ namespace EvolveOS_Optimizer.Pages
             SelectComboBoxItemByTag(UnpinnedModeCombo, SettingsEngine.Shell_TaskbarUnpinnedMode);
             SelectComboBoxItemByTag(TaskbarAnimationCombo, SettingsEngine.Shell_TaskbarAnimation ?? "Spring");
             SelectComboBoxItemByTag(TaskbarHoverAnimationCombo, SettingsEngine.Shell_TaskbarHoverAnimation ?? "Standard");
+            SelectComboBoxItemByTag(AppFontCombo, SettingsEngine.Shell_AppFont ?? "Segoe UI");
 
-            // 1. Parse saved multi-monitor positions (e.g. "12345:Bottom;67890:Left")
             string savedPos = SettingsEngine.Shell_TaskbarPosition ?? "Bottom";
             var posDict = new System.Collections.Generic.Dictionary<string, string>();
 
@@ -106,11 +106,9 @@ namespace EvolveOS_Optimizer.Pages
 
             var displays = DisplayArea.FindAll();
 
-            // 2. Initialize the Windows COM interface to grab actual multi-monitor wallpapers
             IDesktopWallpaper? wallpaperManager = null;
             try { wallpaperManager = (IDesktopWallpaper)new DesktopWallpaperClass(); } catch { }
 
-            // 3. Clear existing list and build out the monitor UI controls dynamically
             Monitors.Clear();
             for (int i = 0; i < displays.Count; i++)
             {
@@ -118,7 +116,6 @@ namespace EvolveOS_Optimizer.Pages
                 string deviceId = display.DisplayId.Value.ToString();
                 string name = display.IsPrimary ? "Primary Monitor" : $"Monitor {i + 1}";
 
-                // Fallback gracefully if it's an old save string like "Bottom" or a new monitor is plugged in
                 string pos = posDict.ContainsKey(deviceId) ? posDict[deviceId] : (savedPos.Contains(":") ? "Bottom" : savedPos);
 
                 string wpPath = CurrentWallpaper;
@@ -141,7 +138,6 @@ namespace EvolveOS_Optimizer.Pages
                 });
             }
 
-            // 4. Update dynamic container visibility based on monitor count
             if (displays.Count > 1)
             {
                 MonitorAwareContainer.Visibility = Visibility.Visible;
@@ -176,6 +172,7 @@ namespace EvolveOS_Optimizer.Pages
         {
             StartMenuToggle.IsEnabled = isMasterEnabled;
             TaskbarToggle.IsEnabled = isMasterEnabled;
+            AppFontCombo.IsEnabled = isMasterEnabled;
 
             StartMenuStyleCombo.IsEnabled = isMasterEnabled && StartMenuToggle.IsOn;
 
@@ -206,6 +203,7 @@ namespace EvolveOS_Optimizer.Pages
             {
                 await ShellEnhancerController.StartEnhancerAsync();
 
+                _ = ShellEnhancerController.SendCommandAsync($"Shell_Font:{SettingsEngine.Shell_AppFont}");
                 _ = ShellEnhancerController.SendCommandAsync($"StartMenu_Enable:{StartMenuToggle.IsOn}");
                 _ = ShellEnhancerController.SendCommandAsync($"StartMenu_Style:{SettingsEngine.Shell_StartMenuStyle}");
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_Enable:{TaskbarToggle.IsOn}");
@@ -295,6 +293,8 @@ namespace EvolveOS_Optimizer.Pages
                 SettingsEngine.Shell_TaskbarAnimation = style;
             else if (commandTag == "Taskbar_HoverAnimation")
                 SettingsEngine.Shell_TaskbarHoverAnimation = style;
+            else if (commandTag == "Shell_Font")
+                SettingsEngine.Shell_AppFont = style;
 
             if (MasterToggle.IsOn)
             {

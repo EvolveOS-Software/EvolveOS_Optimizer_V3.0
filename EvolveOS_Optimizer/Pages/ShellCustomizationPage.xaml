@@ -88,6 +88,65 @@
                     </Grid>
                 </Border>
 
+                <!-- Global Typography Expander -->
+                <Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" MinHeight="90" IsExpanded="True">
+                    <Expander.Header>
+                        <Grid Margin="4,8,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <fluentIcons:SymbolIcon Grid.Column="0" Symbol="TextFont" FontSize="20" Foreground="{ThemeResource TextFillColorPrimaryBrush}" VerticalAlignment="Center" Margin="0,0,16,0" />
+
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
+                                <TextBlock Text="Global Typography" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                <TextBlock Text="Override the font used throughout the shell enhancer application."
+                                           FontFamily="{ThemeResource AppCustomFont}"
+                                           Style="{StaticResource CaptionTextBlockStyle}"
+                                           Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                                           TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Grid>
+                    </Expander.Header>
+
+                    <Expander.Content>
+                        <StackPanel Orientation="Vertical" Spacing="24" Margin="0,8,0,8">
+                            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8">
+                                <Grid Padding="16,12">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel VerticalAlignment="Center" Spacing="2">
+                                        <TextBlock Text="App Font" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                        <TextBlock Text="Select a custom font for the Shell interface." 
+                                                   FontFamily="{ThemeResource AppCustomFont}"
+                                                   Style="{StaticResource CaptionTextBlockStyle}"
+                                                   Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" 
+                                                   TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                    <ComboBox Grid.Column="1" x:Name="AppFontCombo" IsEnabled="False" Width="150" VerticalAlignment="Center" SelectionChanged="SettingCombo_SelectionChanged" Tag="Shell_Font" FontFamily="{ThemeResource AppCustomFont}">
+                                        <ComboBoxItem Content="Barlow" Tag="Barlow" FontFamily="Barlow"/>
+                                        <ComboBoxItem Content="DMSans" Tag="DMSans" FontFamily="DMSans"/>
+                                        <ComboBoxItem Content="Figtree" Tag="Figtree" FontFamily="Figtree"/>
+                                        <ComboBoxItem Content="IBMPlexSans" Tag="IBMPlexSans" FontFamily="IBMPlexSans"/>
+                                        <ComboBoxItem Content="Inter" Tag="Inter" FontFamily="Inter"/>
+                                        <ComboBoxItem Content="Jura" Tag="Jura" FontFamily="Jura"/>
+                                        <ComboBoxItem Content="Manrope" Tag="Manrope" FontFamily="Manrope"/>
+                                        <ComboBoxItem Content="Play" Tag="Play" FontFamily="Play"/>
+                                        <ComboBoxItem Content="Segoe UI" Tag="Segoe UI" FontFamily="Segoe UI"/>
+                                        <ComboBoxItem Content="SourceSans3" Tag="SourceSans3" FontFamily="SourceSans3"/>
+                                        <ComboBoxItem Content="SpaceGrotesk" Tag="SpaceGrotesk" FontFamily="SpaceGrotesk"/>
+                                        <ComboBoxItem Content="Triakis" Tag="Triakis" FontFamily="Triakis"/>
+                                        <ComboBoxItem Content="WorkSans" Tag="WorkSans" FontFamily="WorkSans"/>
+                                    </ComboBox>
+                                </Grid>
+                            </Border>
+                        </StackPanel>
+                    </Expander.Content>
+                </Expander>
+
                 <!-- Start Menu Expander -->
                 <Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" MinHeight="90" IsExpanded="True">
                     <Expander.Header>
