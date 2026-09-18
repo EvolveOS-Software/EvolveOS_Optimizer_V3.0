@@ -740,6 +740,27 @@
                                             </Button>
                                         </Grid>
 
+                                        <!-- Live Preview Delay Slider -->
+                                        <Border Height="1" Background="{ThemeResource CardStrokeColorDefaultBrush}" Margin="16,0" Opacity="0.5"/>
+                                        <Grid Padding="16,12">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="50"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel VerticalAlignment="Center" Spacing="2">
+                                                <TextBlock Text="Preview Hover Delay" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                                <TextBlock Text="Adjust the delay before the live preview appears." 
+                                                   FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                                            </StackPanel>
+                                            <Slider Grid.Column="1" x:Name="PreviewDelaySlider" Minimum="0" Maximum="2.0" StepFrequency="0.1" Value="0.3" Width="120" VerticalAlignment="Center" ValueChanged="PreviewDelaySlider_ValueChanged" IsEnabled="False" Margin="0,0,8,0"/>
+                                            <TextBlock Grid.Column="2" x:Name="PreviewDelayValueText" Text="0.3s" VerticalAlignment="Center" HorizontalAlignment="Right" FontFamily="{ThemeResource AppCustomFont}" FontSize="12" Opacity="0.8" Margin="0,0,4,0"/>
+                                            <Button Grid.Column="3" x:Name="ResetPreviewDelayBtn" Width="32" Height="32" Padding="0" Background="Transparent" BorderThickness="0" CornerRadius="4" Click="ResetPreviewDelay_Click" ToolTipService.ToolTip="Reset to default (0.3s)" VerticalAlignment="Center">
+                                                <FontIcon Glyph="&#xE777;" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Button>
+                                        </Grid>
+
                                     </StackPanel>
                                 </Border>
                             </StackPanel>

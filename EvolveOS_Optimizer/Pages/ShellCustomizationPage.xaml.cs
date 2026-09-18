@@ -102,6 +102,7 @@ namespace EvolveOS_Optimizer.Pages
             TaskbarIconSizeSlider.Value = SettingsEngine.Shell_TaskbarIconSize;
             PreviewSpeedSlider.Value = SettingsEngine.Shell_TaskbarPreviewAnimSpeed;
             StartMenuSpeedSlider.Value = SettingsEngine.Shell_StartMenuAnimSpeed;
+            PreviewDelaySlider.Value = SettingsEngine.Shell_TaskbarPreviewDelay;
 
             string savedPos = SettingsEngine.Shell_TaskbarPosition ?? "Bottom";
             var posDict = new System.Collections.Generic.Dictionary<string, string>();
@@ -194,6 +195,7 @@ namespace EvolveOS_Optimizer.Pages
             TaskbarSizeSlider.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
             TaskbarIconSizeSlider.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
             StartMenuSpeedSlider.IsEnabled = isMasterEnabled && StartMenuToggle.IsOn && StartMenuAnimationsToggle.IsOn;
+            PreviewDelaySlider.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
 
             TaskbarStyleCombo.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
             TaskbarAlignmentCombo.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
@@ -233,7 +235,10 @@ namespace EvolveOS_Optimizer.Pages
                 _ = ShellEnhancerController.SendCommandAsync($"StartMenu_Animation:{SettingsEngine.Shell_StartMenuAnimation}");
                 _ = ShellEnhancerController.SendCommandAsync($"StartMenu_AnimStyle:{SettingsEngine.Shell_StartMenuAnimStyle ?? "Standard"}");
                 _ = ShellEnhancerController.SendCommandAsync($"StartMenu_AnimSpeed:{SettingsEngine.Shell_StartMenuAnimSpeed.ToString(System.Globalization.CultureInfo.InvariantCulture)}");
+
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_Enable:{TaskbarToggle.IsOn}");
+                _ = ShellEnhancerController.SendCommandAsync($"Taskbar_Size:{SettingsEngine.Shell_TaskbarSize}");
+                _ = ShellEnhancerController.SendCommandAsync($"Taskbar_IconSize:{SettingsEngine.Shell_TaskbarIconSize}");
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_Style:{SettingsEngine.Shell_TaskbarStyle}");
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_Alignment:{SettingsEngine.Shell_TaskbarAlignment}");
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_Position:{SettingsEngine.Shell_TaskbarPosition ?? "Bottom"}");
@@ -241,6 +246,7 @@ namespace EvolveOS_Optimizer.Pages
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_PreviewAnimation:{SettingsEngine.Shell_TaskbarPreviewAnimation}");
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_PreviewAnimStyle:{SettingsEngine.Shell_TaskbarPreviewAnimStyle ?? "Standard"}");
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_PreviewAnimSpeed:{SettingsEngine.Shell_TaskbarPreviewAnimSpeed.ToString(System.Globalization.CultureInfo.InvariantCulture)}");
+                _ = ShellEnhancerController.SendCommandAsync($"Taskbar_PreviewDelay:{SettingsEngine.Shell_TaskbarPreviewDelay.ToString(System.Globalization.CultureInfo.InvariantCulture)}");
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_ClockSeconds:{SettingsEngine.Shell_TaskbarClockSeconds}");
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_ShowUnpinned:{SettingsEngine.Shell_TaskbarShowUnpinned}");
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_UnpinnedMode:{SettingsEngine.Shell_TaskbarUnpinnedMode}");
@@ -391,6 +397,19 @@ namespace EvolveOS_Optimizer.Pages
             }
         }
 
+        private void PreviewDelaySlider_ValueChanged(object sender, Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
+        {
+            if (!_isInitialized) return;
+            double delay = e.NewValue;
+            if (PreviewDelayValueText != null) PreviewDelayValueText.Text = $"{delay:0.0}s";
+            SettingsEngine.Shell_TaskbarPreviewDelay = delay;
+
+            if (MasterToggle.IsOn && TaskbarToggle.IsOn)
+            {
+                _ = ShellEnhancerController.SendCommandAsync($"Taskbar_PreviewDelay:{delay.ToString(System.Globalization.CultureInfo.InvariantCulture)}");
+            }
+        }
+
         private void StartMenuSpeedSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
             if (!_isInitialized) return;
@@ -417,6 +436,11 @@ namespace EvolveOS_Optimizer.Pages
         private void ResetPreviewSpeed_Click(object sender, RoutedEventArgs e)
         {
             if (PreviewSpeedSlider != null) PreviewSpeedSlider.Value = 1.0;
+        }
+
+        private void ResetPreviewDelay_Click(object sender, RoutedEventArgs e)
+        {
+            if (PreviewDelaySlider != null) PreviewDelaySlider.Value = 0.3;
         }
 
         private void ResetStartMenuSpeed_Click(object sender, RoutedEventArgs e)
