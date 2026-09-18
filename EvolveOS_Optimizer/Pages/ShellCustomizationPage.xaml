@@ -562,6 +562,25 @@
                                             <ToggleSwitch Grid.Column="1" x:Name="PreviewButtonsToggle" IsEnabled="False" VerticalAlignment="Center" Toggled="SettingToggle_Toggled" Tag="Taskbar_PreviewButtons" Margin="0" MinWidth="0"/>
                                         </Grid>
 
+                                        <Border Height="1" Background="{ThemeResource CardStrokeColorDefaultBrush}" Margin="16,0" Opacity="0.5"/>
+
+                                        <!-- Live Preview Animations Toggle -->
+                                        <Grid Padding="16,12">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel VerticalAlignment="Center" Spacing="2">
+                                                <TextBlock Text="Live Preview Animations" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                                <TextBlock Text="Enable smooth sliding and fading animations for taskbar app previews." 
+                                                           FontFamily="{ThemeResource AppCustomFont}"
+                                                           Style="{StaticResource CaptionTextBlockStyle}"
+                                                           Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" 
+                                                           TextWrapping="Wrap"/>
+                                            </StackPanel>
+                                            <ToggleSwitch Grid.Column="1" x:Name="PreviewAnimationsToggle" IsEnabled="False" VerticalAlignment="Center" Toggled="SettingToggle_Toggled" Tag="Taskbar_PreviewAnimation" Margin="0" MinWidth="0"/>
+                                        </Grid>
+
                                     </StackPanel>
                                 </Border>
                             </StackPanel>

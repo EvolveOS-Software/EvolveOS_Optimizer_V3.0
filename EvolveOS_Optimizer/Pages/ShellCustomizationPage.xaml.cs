@@ -79,6 +79,7 @@ namespace EvolveOS_Optimizer.Pages
             StartMenuToggle.IsOn = SettingsEngine.Shell_StartMenuEnabled;
             TaskbarToggle.IsOn = SettingsEngine.Shell_TaskbarEnabled;
             PreviewButtonsToggle.IsOn = SettingsEngine.Shell_TaskbarPreviewButtons;
+            PreviewAnimationsToggle.IsOn = SettingsEngine.Shell_TaskbarPreviewAnimation;
             ClockSecondsToggle.IsOn = SettingsEngine.Shell_TaskbarClockSeconds;
             ShowUnpinnedToggle.IsOn = SettingsEngine.Shell_TaskbarShowUnpinned;
             HoverBackgroundToggle.IsOn = SettingsEngine.Shell_TaskbarHoverBackground;
@@ -183,6 +184,7 @@ namespace EvolveOS_Optimizer.Pages
             TaskbarAlignmentCombo.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
             TaskbarPositionPanel.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
             PreviewButtonsToggle.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
+            PreviewAnimationsToggle.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
             ClockSecondsToggle.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
             ShowUnpinnedToggle.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
             UnpinnedModeCombo.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn && ShowUnpinnedToggle.IsOn;
@@ -216,6 +218,7 @@ namespace EvolveOS_Optimizer.Pages
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_Alignment:{SettingsEngine.Shell_TaskbarAlignment}");
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_Position:{SettingsEngine.Shell_TaskbarPosition ?? "Bottom"}");
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_PreviewButtons:{SettingsEngine.Shell_TaskbarPreviewButtons}");
+                _ = ShellEnhancerController.SendCommandAsync($"Taskbar_PreviewAnimation:{SettingsEngine.Shell_TaskbarPreviewAnimation}");
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_ClockSeconds:{SettingsEngine.Shell_TaskbarClockSeconds}");
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_ShowUnpinned:{SettingsEngine.Shell_TaskbarShowUnpinned}");
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_UnpinnedMode:{SettingsEngine.Shell_TaskbarUnpinnedMode}");
@@ -247,6 +250,8 @@ namespace EvolveOS_Optimizer.Pages
                 SettingsEngine.Shell_TaskbarEnabled = toggle.IsOn;
             else if (commandTag == "Taskbar_PreviewButtons")
                 SettingsEngine.Shell_TaskbarPreviewButtons = toggle.IsOn;
+            else if (commandTag == "Taskbar_PreviewAnimation")
+                SettingsEngine.Shell_TaskbarPreviewAnimation = toggle.IsOn;
             else if (commandTag == "Taskbar_ClockSeconds")
                 SettingsEngine.Shell_TaskbarClockSeconds = toggle.IsOn;
             else if (commandTag == "Taskbar_HoverBackground")
