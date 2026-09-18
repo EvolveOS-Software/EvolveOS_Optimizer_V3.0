@@ -404,6 +404,26 @@ namespace EvolveOS_Optimizer.Pages
             }
         }
 
+        private void ResetTaskbarSize_Click(object sender, RoutedEventArgs e)
+        {
+            if (TaskbarSizeSlider != null) TaskbarSizeSlider.Value = 48;
+        }
+
+        private void ResetTaskbarIconSize_Click(object sender, RoutedEventArgs e)
+        {
+            if (TaskbarIconSizeSlider != null) TaskbarIconSizeSlider.Value = 24;
+        }
+
+        private void ResetPreviewSpeed_Click(object sender, RoutedEventArgs e)
+        {
+            if (PreviewSpeedSlider != null) PreviewSpeedSlider.Value = 1.0;
+        }
+
+        private void ResetStartMenuSpeed_Click(object sender, RoutedEventArgs e)
+        {
+            if (StartMenuSpeedSlider != null) StartMenuSpeedSlider.Value = 1.0;
+        }
+
         private void TaskbarPos_Click(object sender, RoutedEventArgs e)
         {
             if (!_isInitialized || sender is not RadioButton rb) return;
