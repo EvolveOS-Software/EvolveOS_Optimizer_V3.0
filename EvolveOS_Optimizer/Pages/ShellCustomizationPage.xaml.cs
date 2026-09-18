@@ -79,7 +79,6 @@ namespace EvolveOS_Optimizer.Pages
             MasterToggle.IsOn = SettingsEngine.Shell_MasterEnabled;
             StartMenuToggle.IsOn = SettingsEngine.Shell_StartMenuEnabled;
             StartMenuAnimationsToggle.IsOn = SettingsEngine.Shell_StartMenuAnimation;
-            StartMenuSpeedSlider.Value = SettingsEngine.Shell_StartMenuAnimSpeed;
             TaskbarToggle.IsOn = SettingsEngine.Shell_TaskbarEnabled;
             PreviewButtonsToggle.IsOn = SettingsEngine.Shell_TaskbarPreviewButtons;
             PreviewAnimationsToggle.IsOn = SettingsEngine.Shell_TaskbarPreviewAnimation;
@@ -98,7 +97,11 @@ namespace EvolveOS_Optimizer.Pages
             SelectComboBoxItemByTag(AppFontCombo, SettingsEngine.Shell_AppFont ?? "Segoe UI");
             SelectComboBoxItemByTag(AppFontSizeCombo, SettingsEngine.Shell_AppFontSize.ToString());
             SelectComboBoxItemByTag(PreviewAnimStyleCombo, SettingsEngine.Shell_TaskbarPreviewAnimStyle ?? "Standard");
+
+            TaskbarSizeSlider.Value = SettingsEngine.Shell_TaskbarSize;
+            TaskbarIconSizeSlider.Value = SettingsEngine.Shell_TaskbarIconSize;
             PreviewSpeedSlider.Value = SettingsEngine.Shell_TaskbarPreviewAnimSpeed;
+            StartMenuSpeedSlider.Value = SettingsEngine.Shell_StartMenuAnimSpeed;
 
             string savedPos = SettingsEngine.Shell_TaskbarPosition ?? "Bottom";
             var posDict = new System.Collections.Generic.Dictionary<string, string>();
@@ -187,6 +190,9 @@ namespace EvolveOS_Optimizer.Pages
             StartMenuStyleCombo.IsEnabled = isMasterEnabled && StartMenuToggle.IsOn;
             StartMenuAnimationsToggle.IsEnabled = isMasterEnabled && StartMenuToggle.IsOn;
             StartMenuAnimStyleCombo.IsEnabled = isMasterEnabled && StartMenuToggle.IsOn && StartMenuAnimationsToggle.IsOn;
+
+            TaskbarSizeSlider.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
+            TaskbarIconSizeSlider.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
             StartMenuSpeedSlider.IsEnabled = isMasterEnabled && StartMenuToggle.IsOn && StartMenuAnimationsToggle.IsOn;
 
             TaskbarStyleCombo.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
@@ -343,6 +349,30 @@ namespace EvolveOS_Optimizer.Pages
             if (MasterToggle.IsOn)
             {
                 _ = ShellEnhancerController.SendCommandAsync($"{commandTag}:{style}");
+            }
+        }
+
+        private void TaskbarSizeSlider_ValueChanged(object sender, Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
+        {
+            if (!_isInitialized) return;
+            int size = (int)e.NewValue;
+            SettingsEngine.Shell_TaskbarSize = size;
+
+            if (MasterToggle.IsOn && TaskbarToggle.IsOn)
+            {
+                _ = ShellEnhancerController.SendCommandAsync($"Taskbar_Size:{size}");
+            }
+        }
+
+        private void TaskbarIconSizeSlider_ValueChanged(object sender, Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
+        {
+            if (!_isInitialized) return;
+            int size = (int)e.NewValue;
+            SettingsEngine.Shell_TaskbarIconSize = size;
+
+            if (MasterToggle.IsOn && TaskbarToggle.IsOn)
+            {
+                _ = ShellEnhancerController.SendCommandAsync($"Taskbar_IconSize:{size}");
             }
         }
 

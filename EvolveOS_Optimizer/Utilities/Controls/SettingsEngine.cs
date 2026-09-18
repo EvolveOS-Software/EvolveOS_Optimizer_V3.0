@@ -165,6 +165,8 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["Shell_TaskbarStyle"] = "Standard",
             ["Shell_TaskbarAlignment"] = "Center",
             ["Shell_TaskbarPosition"] = "Bottom",
+            ["Shell_TaskbarSize"] = 48,
+            ["Shell_TaskbarIconSize"] = 24,
             ["Shell_TaskbarPreviewButtons"] = true,
             ["Shell_TaskbarPreviewAnimation"] = true,
             ["Shell_TaskbarPreviewAnimStyle"] = "Standard",
@@ -335,6 +337,8 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static string Shell_TaskbarStyle { get => (string)_cachedSettings["Shell_TaskbarStyle"]; set => ChangingParameters("Shell_TaskbarStyle", value); }
         internal static string Shell_TaskbarAlignment { get => (string)_cachedSettings["Shell_TaskbarAlignment"]; set => ChangingParameters("Shell_TaskbarAlignment", value); }
         internal static string Shell_TaskbarPosition { get => (string)_cachedSettings["Shell_TaskbarPosition"]; set => ChangingParameters("Shell_TaskbarPosition", value); }
+        internal static int Shell_TaskbarSize { get => (int)_cachedSettings["Shell_TaskbarSize"]; set => ChangingParameters("Shell_TaskbarSize", value); }
+        internal static int Shell_TaskbarIconSize { get => (int)_cachedSettings["Shell_TaskbarIconSize"]; set => ChangingParameters("Shell_TaskbarIconSize", value); }
         internal static bool Shell_TaskbarPreviewButtons { get => (bool)_cachedSettings["Shell_TaskbarPreviewButtons"]; set => ChangingParameters("Shell_TaskbarPreviewButtons", value); }
         internal static bool Shell_TaskbarPreviewAnimation { get => (bool)_cachedSettings["Shell_TaskbarPreviewAnimation"]; set => ChangingParameters("Shell_TaskbarPreviewAnimation", value); }
         internal static string Shell_TaskbarPreviewAnimStyle { get => (string)_cachedSettings["Shell_TaskbarPreviewAnimStyle"]; set => ChangingParameters("Shell_TaskbarPreviewAnimStyle", value); }

@@ -378,6 +378,38 @@
 
                                         <Border Height="1" Background="{ThemeResource CardStrokeColorDefaultBrush}" Margin="16,0" Opacity="0.5"/>
 
+                                        <!-- Taskbar Size Slider -->
+                                        <Grid Padding="16,12">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel VerticalAlignment="Center" Spacing="2">
+                                                <TextBlock Text="Taskbar Size" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                                <TextBlock Text="Adjust the height or width of the taskbar dock." 
+                                                   FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                                            </StackPanel>
+                                            <Slider Grid.Column="1" x:Name="TaskbarSizeSlider" Minimum="36" Maximum="80" StepFrequency="1" Value="48" Width="150" VerticalAlignment="Center" ValueChanged="TaskbarSizeSlider_ValueChanged" IsEnabled="False"/>
+                                        </Grid>
+
+                                        <Border Height="1" Background="{ThemeResource CardStrokeColorDefaultBrush}" Margin="16,0" Opacity="0.5"/>
+
+                                        <!-- Taskbar Icons Size Slider -->
+                                        <Grid Padding="16,12">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel VerticalAlignment="Center" Spacing="2">
+                                                <TextBlock Text="Taskbar Icon Size" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                                <TextBlock Text="Adjust the scale of app icons on the taskbar." 
+                                                   FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                                            </StackPanel>
+                                            <Slider Grid.Column="1" x:Name="TaskbarIconSizeSlider" Minimum="16" Maximum="48" StepFrequency="1" Value="24" Width="150" VerticalAlignment="Center" ValueChanged="TaskbarIconSizeSlider_ValueChanged" IsEnabled="False"/>
+                                        </Grid>
+
+                                        <Border Height="1" Background="{ThemeResource CardStrokeColorDefaultBrush}" Margin="16,0" Opacity="0.5"/>
+
                                         <!-- Taskbar Position Selector (Untouched Visual Code) -->
                                         <StackPanel Padding="16,16">
                                             <ContentControl x:Name="TaskbarPositionPanel" HorizontalContentAlignment="Stretch" IsTabStop="False">
