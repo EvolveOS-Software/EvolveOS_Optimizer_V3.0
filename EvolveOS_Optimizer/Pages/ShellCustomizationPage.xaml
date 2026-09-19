@@ -114,6 +114,31 @@
                         <StackPanel Orientation="Vertical" Spacing="24" Margin="0,8,0,8">
                             <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8">
                                 <StackPanel>
+
+                                    <!-- Shell Overlay Language Dropdown -->
+                                    <Grid Padding="16,12">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel VerticalAlignment="Center" Spacing="2">
+                                            <TextBlock Text="Shell Overlay Language" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                            <TextBlock Text="Change the language used specifically by the custom Taskbar and Start Menu." 
+                                                       FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                                        </StackPanel>
+                                        <ComboBox Grid.Column="1" x:Name="ShellLanguageCombo" IsEnabled="False" Width="150" VerticalAlignment="Center" SelectionChanged="ShellLanguageCombo_SelectionChanged" Tag="Shell_Language" FontFamily="{ThemeResource AppCustomFont}">
+                                            <ComboBoxItem Content="English" Tag="en-us"/>
+                                            <ComboBoxItem Content="Dutch" Tag="nl-nl"/>
+                                            <ComboBoxItem Content="French" Tag="fr-fr"/>
+                                            <ComboBoxItem Content="German" Tag="de-de"/>
+                                            <ComboBoxItem Content="Italian" Tag="it-it"/>
+                                            <ComboBoxItem Content="Portuguese (Brazil)" Tag="pt-br"/>
+                                            <ComboBoxItem Content="Spanish" Tag="es-es"/>
+                                        </ComboBox>
+                                    </Grid>
+
+                                    <Border Height="1" Background="{ThemeResource CardStrokeColorDefaultBrush}" Margin="16,0" Opacity="0.5"/>
+
                                     <Grid Padding="16,12">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>

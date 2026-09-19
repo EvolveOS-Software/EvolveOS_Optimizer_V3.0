@@ -158,6 +158,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["Shell_MasterEnabled"] = false,
             ["Shell_RunOnStartup"] = false,
             ["Shell_HighPriority"] = false,
+            ["Shell_Language"] = "en-us",
             ["Shell_StartMenuEnabled"] = false,
             ["Shell_StartMenuStyle"] = "Standard",
             ["Shell_StartMenuAnimation"] = true,
@@ -333,6 +334,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static bool Shell_MasterEnabled { get => (bool)_cachedSettings["Shell_MasterEnabled"]; set => ChangingParameters("Shell_MasterEnabled", value); }
         internal static bool Shell_RunOnStartup { get => (bool)_cachedSettings["Shell_RunOnStartup"]; set { ChangingParameters("Shell_RunOnStartup", value); ToggleShellStartup(value); }}
         internal static bool Shell_HighPriority { get => (bool)_cachedSettings["Shell_HighPriority"]; set => ChangingParameters("Shell_HighPriority", value); }
+        internal static string Shell_Language { get => _cachedSettings["Shell_Language"]?.ToString() ?? "en-us"; set => ChangingParameters("Shell_Language", value); }
         internal static bool Shell_StartMenuEnabled { get => (bool)_cachedSettings["Shell_StartMenuEnabled"]; set => ChangingParameters("Shell_StartMenuEnabled", value); }
         internal static string Shell_StartMenuStyle { get => (string)_cachedSettings["Shell_StartMenuStyle"]; set => ChangingParameters("Shell_StartMenuStyle", value); }
         internal static bool Shell_StartMenuAnimation { get => (bool)_cachedSettings["Shell_StartMenuAnimation"]; set => ChangingParameters("Shell_StartMenuAnimation", value); }

@@ -89,6 +89,7 @@ namespace EvolveOS_Optimizer.Pages
             HoverBackgroundToggle.IsOn = SettingsEngine.Shell_TaskbarHoverBackground;
             MonitorAwareToggle.IsOn = SettingsEngine.Shell_TaskbarMonitorAware;
 
+            SelectComboBoxItemByTag(ShellLanguageCombo, SettingsEngine.Shell_Language);
             SelectComboBoxItemByTag(StartMenuStyleCombo, SettingsEngine.Shell_StartMenuStyle);
             SelectComboBoxItemByTag(StartMenuAnimStyleCombo, SettingsEngine.Shell_StartMenuAnimStyle ?? "Standard");
             SelectComboBoxItemByTag(TaskbarStyleCombo, SettingsEngine.Shell_TaskbarStyle);
@@ -186,6 +187,7 @@ namespace EvolveOS_Optimizer.Pages
         {
             ShellStartupToggle.IsEnabled = isMasterEnabled;
             ShellHighPriorityToggle.IsEnabled = isMasterEnabled;
+            ShellLanguageCombo.IsEnabled = isMasterEnabled;
             StartMenuToggle.IsEnabled = isMasterEnabled;
             TaskbarToggle.IsEnabled = isMasterEnabled;
 
@@ -260,6 +262,7 @@ namespace EvolveOS_Optimizer.Pages
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_MonitorAware:{SettingsEngine.Shell_TaskbarMonitorAware}");
 
                 _ = ShellEnhancerController.SendCommandAsync($"Shell_HighPriority:{SettingsEngine.Shell_HighPriority}");
+                _ = ShellEnhancerController.SendCommandAsync($"Shell_Language:{SettingsEngine.Shell_Language}");
             }
             else
             {
@@ -365,6 +368,20 @@ namespace EvolveOS_Optimizer.Pages
             if (MasterToggle.IsOn)
             {
                 _ = ShellEnhancerController.SendCommandAsync($"{commandTag}:{style}");
+            }
+        }
+
+        private void ShellLanguageCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!_isInitialized || sender is not ComboBox cb || cb.SelectedItem is not ComboBoxItem item) return;
+
+            string langCode = item.Tag?.ToString() ?? "en-us";
+
+            SettingsEngine.Shell_Language = langCode;
+
+            if (MasterToggle.IsOn)
+            {
+                _ = ShellEnhancerController.SendCommandAsync($"Shell_Language:{langCode}");
             }
         }
 
