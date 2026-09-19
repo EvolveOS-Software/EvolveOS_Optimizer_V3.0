@@ -796,6 +796,64 @@
                     </Expander.Content>
                 </Expander>
 
+                <!-- GROUP 5: SYSTEM INTEGRATION & PERFORMANCE -->
+                <Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" MinHeight="90" IsExpanded="True">
+                    <Expander.Header>
+                        <Grid Margin="4,8,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <fluentIcons:SymbolIcon Grid.Column="0" Symbol="Gauge" FontSize="20" Foreground="{ThemeResource TextFillColorPrimaryBrush}" VerticalAlignment="Center" Margin="0,0,16,0" />
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
+                                <TextBlock Text="Integration &amp; Performance" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                <TextBlock Text="Manage Windows startup behavior and background process priority."
+                                           FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Grid>
+                    </Expander.Header>
+
+                    <Expander.Content>
+                        <StackPanel Orientation="Vertical" Spacing="24" Margin="0,8,0,8">
+                            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8">
+                                <StackPanel>
+
+                                    <!-- Run on Startup Toggle -->
+                                    <Grid Padding="16,12">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel VerticalAlignment="Center" Spacing="2">
+                                            <TextBlock Text="Run on Windows Startup" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                            <TextBlock Text="Automatically launch the custom Shell Enhancer in the background when you log in."
+                                                       FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                                        </StackPanel>
+                                        <ToggleSwitch Grid.Column="1" x:Name="ShellStartupToggle" IsEnabled="False" VerticalAlignment="Center" Toggled="SettingToggle_Toggled" Tag="Shell_RunOnStartup" Margin="0" MinWidth="0"/>
+                                    </Grid>
+
+                                    <Border Height="1" Background="{ThemeResource CardStrokeColorDefaultBrush}" Margin="16,0" Opacity="0.5"/>
+
+                                    <!-- High Performance Mode Toggle -->
+                                    <Grid Padding="16,12">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel VerticalAlignment="Center" Spacing="2">
+                                            <TextBlock Text="High Performance Mode" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                            <TextBlock Text="Elevates the background process priority to ensure the taskbar and start menu never lag during heavy CPU load (e.g., Gaming)."
+                                                       FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                                        </StackPanel>
+                                        <ToggleSwitch Grid.Column="1" x:Name="ShellHighPriorityToggle" IsEnabled="False" VerticalAlignment="Center" Toggled="SettingToggle_Toggled" Tag="Shell_HighPriority" Margin="0" MinWidth="0"/>
+                                    </Grid>
+
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </Expander.Content>
+                </Expander>
+
             </StackPanel>
         </ScrollViewer>
     </Grid>

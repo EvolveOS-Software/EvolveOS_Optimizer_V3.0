@@ -156,6 +156,8 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["HideFanControlWarningDialog"] = false,
 
             ["Shell_MasterEnabled"] = false,
+            ["Shell_RunOnStartup"] = false,
+            ["Shell_HighPriority"] = false,
             ["Shell_StartMenuEnabled"] = false,
             ["Shell_StartMenuStyle"] = "Standard",
             ["Shell_StartMenuAnimation"] = true,
@@ -329,6 +331,8 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         }
 
         internal static bool Shell_MasterEnabled { get => (bool)_cachedSettings["Shell_MasterEnabled"]; set => ChangingParameters("Shell_MasterEnabled", value); }
+        internal static bool Shell_RunOnStartup { get => (bool)_cachedSettings["Shell_RunOnStartup"]; set { ChangingParameters("Shell_RunOnStartup", value); ToggleShellStartup(value); }}
+        internal static bool Shell_HighPriority { get => (bool)_cachedSettings["Shell_HighPriority"]; set => ChangingParameters("Shell_HighPriority", value); }
         internal static bool Shell_StartMenuEnabled { get => (bool)_cachedSettings["Shell_StartMenuEnabled"]; set => ChangingParameters("Shell_StartMenuEnabled", value); }
         internal static string Shell_StartMenuStyle { get => (string)_cachedSettings["Shell_StartMenuStyle"]; set => ChangingParameters("Shell_StartMenuStyle", value); }
         internal static bool Shell_StartMenuAnimation { get => (bool)_cachedSettings["Shell_StartMenuAnimation"]; set => ChangingParameters("Shell_StartMenuAnimation", value); }
@@ -513,6 +517,30 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             }
         }
 
+        private static void ToggleShellStartup(bool enable)
+        {
+            try
+            {
+                using var key = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run", true);
+                if (enable)
+                {
+                    string currentExePath = Environment.ProcessPath ?? AppContext.BaseDirectory;
+                    string basePath = Path.GetDirectoryName(currentExePath) ?? string.Empty;
+
+                    string enhancerPath = Path.Combine(basePath, "EvolveOS_ShellEnhancer.exe");
+
+                    key?.SetValue("EvolveOS_ShellEnhancer", $"\"{enhancerPath}\"");
+                }
+                else
+                {
+                    key?.DeleteValue("EvolveOS_ShellEnhancer", false);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Failed to toggle shell enhancer startup: {ex.Message}");
+            }
+        }
 
         public static void ToggleStartup(bool enable, bool startHidden)
         {

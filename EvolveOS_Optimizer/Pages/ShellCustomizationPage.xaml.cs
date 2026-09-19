@@ -77,6 +77,8 @@ namespace EvolveOS_Optimizer.Pages
         private async void LoadSavedSettings()
         {
             MasterToggle.IsOn = SettingsEngine.Shell_MasterEnabled;
+            ShellStartupToggle.IsOn = SettingsEngine.Shell_RunOnStartup;
+            ShellHighPriorityToggle.IsOn = SettingsEngine.Shell_HighPriority;
             StartMenuToggle.IsOn = SettingsEngine.Shell_StartMenuEnabled;
             StartMenuAnimationsToggle.IsOn = SettingsEngine.Shell_StartMenuAnimation;
             TaskbarToggle.IsOn = SettingsEngine.Shell_TaskbarEnabled;
@@ -182,6 +184,8 @@ namespace EvolveOS_Optimizer.Pages
 
         private void UpdateChildControlStates(bool isMasterEnabled)
         {
+            ShellStartupToggle.IsEnabled = isMasterEnabled;
+            ShellHighPriorityToggle.IsEnabled = isMasterEnabled;
             StartMenuToggle.IsEnabled = isMasterEnabled;
             TaskbarToggle.IsEnabled = isMasterEnabled;
 
@@ -254,6 +258,8 @@ namespace EvolveOS_Optimizer.Pages
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_HoverAnimation:{SettingsEngine.Shell_TaskbarHoverAnimation ?? "Standard"}");
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_HoverBackground:{SettingsEngine.Shell_TaskbarHoverBackground}");
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_MonitorAware:{SettingsEngine.Shell_TaskbarMonitorAware}");
+
+                _ = ShellEnhancerController.SendCommandAsync($"Shell_HighPriority:{SettingsEngine.Shell_HighPriority}");
             }
             else
             {
@@ -280,6 +286,10 @@ namespace EvolveOS_Optimizer.Pages
                 StartMenuAnimStyleCombo.IsEnabled = MasterToggle.IsOn && StartMenuToggle.IsOn && toggle.IsOn;
                 StartMenuSpeedSlider.IsEnabled = MasterToggle.IsOn && StartMenuToggle.IsOn && toggle.IsOn;
             }
+            else if (commandTag == "Shell_RunOnStartup")
+                SettingsEngine.Shell_RunOnStartup = toggle.IsOn;
+            else if (commandTag == "Shell_HighPriority")
+                SettingsEngine.Shell_HighPriority = toggle.IsOn;
             else if (commandTag == "Taskbar_Enable")
                 SettingsEngine.Shell_TaskbarEnabled = toggle.IsOn;
             else if (commandTag == "Taskbar_PreviewButtons")
