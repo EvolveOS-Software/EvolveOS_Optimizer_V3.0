@@ -544,6 +544,16 @@
                 </Viewbox>
             </RadioButton>
 
+            <RadioButton x:Name="BtnNavShellEnhancer"
+                         Style="{StaticResource BtnNavigation}"
+                         Command="{Binding ExecuteNavigateCommand}"
+                         CommandParameter="ShellEnhancer"
+                         IsTabStop="False"
+                         Tag="{x:Bind GetText('Nav_ShellEnhancer'), Mode=OneTime}"
+                         Checked="OnNavButtonChecked" RightTapped="OnNavButtonRightTapped">
+                <FontIcon Glyph="&#xE7F4;" FontSize="20"/>
+            </RadioButton>
+
             <RadioButton x:Name="BtnNavUtilities" Style="{StaticResource BtnNavigation}"
                          Command="{Binding ExecuteNavigateCommand}"
                          CommandParameter="Utilities"

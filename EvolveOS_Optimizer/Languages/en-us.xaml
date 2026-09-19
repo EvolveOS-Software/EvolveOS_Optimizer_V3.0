@@ -141,6 +141,7 @@
     <sys:String x:Key="Nav_System">System</sys:String>
     <sys:String x:Key="Nav_Optimize">Optimizations</sys:String>
     <sys:String x:Key="Nav_Customize">Customizations</sys:String>
+    <sys:String x:Key="Nav_ShellEnhancer">Shell Customizations</sys:String>
     <sys:String x:Key="Nav_CommandCenter">Command Center</sys:String>
     <sys:String x:Key="Nav_Scripts">Scripts</sys:String>
     <sys:String x:Key="Nav_Settings">Settings</sys:String>

@@ -182,6 +182,8 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["Shell_TaskbarHoverAnimation"] = "Standard",
             ["Shell_TaskbarHoverBackground"] = true,
             ["Shell_TaskbarMonitorAware"] = false,
+            ["Taskbar_ShowFoldersAsSubmenus"] = true,
+            ["Taskbar_FilteredFolders"] = string.Empty,
             ["Shell_AppFont"] = "Segoe UI",
             ["Shell_AppFontSize"] = 14.0
         };
@@ -358,6 +360,8 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static string Shell_TaskbarHoverAnimation { get => (string)_cachedSettings["Shell_TaskbarHoverAnimation"]; set => ChangingParameters("Shell_TaskbarHoverAnimation", value); }
         internal static bool Shell_TaskbarHoverBackground { get => (bool)_cachedSettings["Shell_TaskbarHoverBackground"]; set => ChangingParameters("Shell_TaskbarHoverBackground", value); }
         internal static bool Shell_TaskbarMonitorAware { get => (bool)_cachedSettings["Shell_TaskbarMonitorAware"]; set => ChangingParameters("Shell_TaskbarMonitorAware", value); }
+        internal static bool Taskbar_ShowFoldersAsSubmenus { get => (bool)_cachedSettings["Taskbar_ShowFoldersAsSubmenus"]; set => ChangingParameters("Taskbar_ShowFoldersAsSubmenus", value); }
+        internal static string Taskbar_FilteredFolders { get => (string)_cachedSettings["Taskbar_FilteredFolders"]; set => ChangingParameters("Taskbar_FilteredFolders", value); }
         internal static string Shell_AppFont { get => (string)_cachedSettings["Shell_AppFont"]; set => ChangingParameters("Shell_AppFont", value); }
         internal static double Shell_AppFontSize { get => Convert.ToDouble(_cachedSettings["Shell_AppFontSize"]); set => ChangingParameters("Shell_AppFontSize", value); }
 

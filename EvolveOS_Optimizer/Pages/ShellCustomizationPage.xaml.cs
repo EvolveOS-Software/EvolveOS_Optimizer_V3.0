@@ -206,6 +206,7 @@ namespace EvolveOS_Optimizer.Pages
             TaskbarStyleCombo.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
             TaskbarAlignmentCombo.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
             TaskbarPositionPanel.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
+            BtnTaskbarPins.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
             PreviewButtonsToggle.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
             PreviewAnimationsToggle.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
             PreviewAnimStyleCombo.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn && PreviewAnimationsToggle.IsOn;
@@ -382,6 +383,34 @@ namespace EvolveOS_Optimizer.Pages
             if (MasterToggle.IsOn)
             {
                 _ = ShellEnhancerController.SendCommandAsync($"Shell_Language:{langCode}");
+            }
+        }
+
+        private void BtnTaskbarPins_Click(object sender, RoutedEventArgs e)
+        {
+            if (!_isInitialized) return;
+
+            try
+            {
+                System.Diagnostics.Debug.WriteLine("[Navigation] Attempting to open TaskbarPinsPage...");
+
+                if (this.Frame != null)
+                {
+                    // Note: If you moved TaskbarPinsPage to your Pages folder, 
+                    // change "Views.TaskbarPinsPage" to "Pages.TaskbarPinsPage"
+                    this.Frame.Navigate(typeof(Pages.TaskbarPinsPage));
+
+                    System.Diagnostics.Debug.WriteLine("[Navigation] Navigate command sent successfully!");
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine("[Navigation] ERROR: this.Frame is null!");
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Navigation] CRASH PREVENTED: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[Navigation] STACK TRACE: {ex.StackTrace}");
             }
         }
 

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="EvolveOS_Optimizer.Pages.ManageFilteredFoldersPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="using:EvolveOS_Optimizer.Pages"
+    xmlns:fluentIcons="using:FluentIcons.WinUI"
+    mc:Ignorable="d"
+    Background="Transparent">
+
+    <Grid>
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <StackPanel Spacing="24" Padding="5,10,24,24">
+
+                <!-- Header & Back Button -->
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <Button Click="BtnBack_Click" Background="Transparent" BorderThickness="0" Width="40" Height="40" VerticalAlignment="Top" Margin="0,4,0,0">
+                        <fluentIcons:SymbolIcon Symbol="ArrowLeft" FontSize="16"/>
+                    </Button>
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="Manage Filtered Folders" FontSize="26" FontWeight="SemiBold" FontFamily="{ThemeResource AppCustomFont}"/>
+                        <TextBlock Text="Create customized folder shortcuts that display their contents directly inside the Start Menu or as a Taskbar popup." 
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}" 
+                                   Style="{ThemeResource BodyTextBlockStyle}" 
+                                   FontFamily="{ThemeResource AppCustomFont}" 
+                                   TextWrapping="Wrap"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Action Bar -->
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <Button x:Name="BtnAddFolder" Style="{ThemeResource AccentButtonStyle}" Click="BtnAddFolder_Click">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <FontIcon Glyph="&#xE710;" FontSize="14" />
+                            <TextBlock Text="Add Folder" FontFamily="{ThemeResource AppCustomFont}"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+
+                <!-- Folders List -->
+                <ListView x:Name="FoldersListView" 
+                          ItemsSource="{x:Bind FoldersList}"
+                          SelectionMode="None"
+                          IsItemClickEnabled="False">
+
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            <Setter Property="Padding" Value="0,0,0,12"/>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="local:FilteredFolderItem">
+                            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" 
+                                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" 
+                                    BorderThickness="1" 
+                                    CornerRadius="8" 
+                                    Padding="16,12">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- Folder Icon -->
+                                    <fluentIcons:SymbolIcon Grid.Column="0" Symbol="Folder" FontSize="24" Foreground="{ThemeResource SystemFillColorCautionBrush}" VerticalAlignment="Center" Margin="0,0,16,0" />
+
+                                    <!-- Details -->
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                        <TextBlock Text="{x:Bind Name}" Style="{ThemeResource BodyStrongTextBlockStyle}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                        <TextBlock Text="{x:Bind Path}" Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                    </StackPanel>
+
+                                    <!-- Remove Button -->
+                                    <Button Grid.Column="2" 
+                                            Click="BtnRemoveFolder_Click" 
+                                            Tag="{x:Bind Path}" 
+                                            Background="Transparent" 
+                                            BorderThickness="0" 
+                                            ToolTipService.ToolTip="Remove folder">
+                                        <FontIcon Glyph="&#xE74D;" FontSize="14" Foreground="{ThemeResource SystemFillColorCriticalBrush}"/>
+                                    </Button>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+                <!-- Empty State -->
+                <StackPanel x:Name="EmptyStatePanel" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,48,0,0" Spacing="16" Visibility="Collapsed">
+                    <fluentIcons:SymbolIcon Symbol="FolderOpen" FontSize="48" Foreground="{ThemeResource TextFillColorDisabledBrush}" HorizontalAlignment="Center"/>
+                    <TextBlock Text="No filtered folders added yet." Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="{ThemeResource AppCustomFont}" HorizontalAlignment="Center"/>
+                </StackPanel>
+
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>

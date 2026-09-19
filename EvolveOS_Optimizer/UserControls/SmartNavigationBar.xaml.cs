@@ -819,6 +819,7 @@ namespace EvolveOS_Optimizer.UserControls
             else if (tag == "RegistryEditor" && BtnNavRegEditor != null) BtnNavRegEditor.IsChecked = true;
             else if (tag == "Optimize" && BtnNavOptimize != null) BtnNavOptimize.IsChecked = true;
             else if (tag == "Customize" && BtnNavCustomize != null) BtnNavCustomize.IsChecked = true;
+            else if (tag == "ShellEnhancer" && BtnNavShellEnhancer != null) BtnNavShellEnhancer.IsChecked = true;
             else if (tag == "Utilities" && BtnNavUtilities != null) BtnNavUtilities.IsChecked = true;
             else if (tag == "Scripts" && BtnNavScripts != null) BtnNavScripts.IsChecked = true;
             else if (tag == "Settings" && BtnNavSettings != null) BtnNavSettings.IsChecked = true;

@@ -921,8 +921,7 @@ namespace EvolveOS_Optimizer
             Type pageType = tag switch
             {
                 "Home" => typeof(Pages.HomePage),
-                //"Diagnostics" => typeof(Pages.DiagnosticsPage),
-                "Diagnostics" => typeof(Pages.ShellCustomizationPage),
+                "Diagnostics" => typeof(Pages.DiagnosticsPage),
                 "SystemManager" => typeof(Pages.SystemManagerPage),
                 "SystemCleaner" => typeof(Pages.DiskCleanupPage),
                 "Software" => typeof(Pages.SoftwareCenterPage),
@@ -930,6 +929,7 @@ namespace EvolveOS_Optimizer
                 "RegistryEditor" => typeof(Pages.RegistryEditorPage),
                 "Optimize" => typeof(WinOptimizePage),
                 "Customize" => typeof(Pages.WinCustomizePage),
+                "ShellEnhancer" => typeof(Pages.ShellCustomizationPage),
                 "Utilities" => typeof(Pages.AdvancedUtilsPage),
                 "Scripts" => typeof(Pages.ScriptsPage),
                 "Settings" => typeof(Pages.SettingsPage),
