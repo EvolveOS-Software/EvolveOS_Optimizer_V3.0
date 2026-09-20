@@ -290,6 +290,77 @@
                                 </Grid>
                             </Border>
 
+                            <!-- NEW: Power Menu Options Card -->
+                            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Margin="0,8,0,0">
+                                <StackPanel>
+
+                                    <!-- Sleep Toggle -->
+                                    <Grid Padding="16,12">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel VerticalAlignment="Center" Spacing="2">
+                                            <TextBlock Text="{helpers:ResourceString Key=Shell_PowerSleepTitle}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                            <TextBlock Text="{helpers:ResourceString Key=Shell_PowerSleepDesc}" 
+                                                       FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                                            <Grid VerticalAlignment="Center">
+                                                <TextBlock Text="{helpers:ResourceString Key=Settings_Toggle_On}" Opacity="{x:Bind GetOnOpacity(PowerSleepToggle.IsOn), Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <TextBlock Text="{helpers:ResourceString Key=Settings_Toggle_Off}" Opacity="{x:Bind GetOffOpacity(PowerSleepToggle.IsOn), Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                            </Grid>
+                                            <ToggleSwitch x:Name="PowerSleepToggle" IsEnabled="False" VerticalAlignment="Center" Toggled="SettingToggle_Toggled" Tag="StartMenu_PowerSleep" Margin="0" MinWidth="0" OnContent="{x:Null}" OffContent="{x:Null}"/>
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <Border Height="1" Background="{ThemeResource CardStrokeColorDefaultBrush}" Margin="16,0" Opacity="0.5"/>
+
+                                    <!-- Log Off Toggle -->
+                                    <Grid Padding="16,12">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel VerticalAlignment="Center" Spacing="2">
+                                            <TextBlock Text="{helpers:ResourceString Key=Shell_PowerLogOffTitle}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                            <TextBlock Text="{helpers:ResourceString Key=Shell_PowerLogOffDesc}" 
+                                                       FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                                            <Grid VerticalAlignment="Center">
+                                                <TextBlock Text="{helpers:ResourceString Key=Settings_Toggle_On}" Opacity="{x:Bind GetOnOpacity(PowerLogOffToggle.IsOn), Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <TextBlock Text="{helpers:ResourceString Key=Settings_Toggle_Off}" Opacity="{x:Bind GetOffOpacity(PowerLogOffToggle.IsOn), Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                            </Grid>
+                                            <ToggleSwitch x:Name="PowerLogOffToggle" IsEnabled="False" VerticalAlignment="Center" Toggled="SettingToggle_Toggled" Tag="StartMenu_PowerLogOff" Margin="0" MinWidth="0" OnContent="{x:Null}" OffContent="{x:Null}"/>
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <Border Height="1" Background="{ThemeResource CardStrokeColorDefaultBrush}" Margin="16,0" Opacity="0.5"/>
+
+                                    <!-- Restart BIOS Toggle -->
+                                    <Grid Padding="16,12">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel VerticalAlignment="Center" Spacing="2">
+                                            <TextBlock Text="{helpers:ResourceString Key=Shell_PowerRestartBiosTitle}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                            <TextBlock Text="{helpers:ResourceString Key=Shell_PowerRestartBiosDesc}" 
+                                                       FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                                            <Grid VerticalAlignment="Center">
+                                                <TextBlock Text="{helpers:ResourceString Key=Settings_Toggle_On}" Opacity="{x:Bind GetOnOpacity(PowerRestartBiosToggle.IsOn), Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <TextBlock Text="{helpers:ResourceString Key=Settings_Toggle_Off}" Opacity="{x:Bind GetOffOpacity(PowerRestartBiosToggle.IsOn), Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                            </Grid>
+                                            <ToggleSwitch x:Name="PowerRestartBiosToggle" IsEnabled="False" VerticalAlignment="Center" Toggled="SettingToggle_Toggled" Tag="StartMenu_PowerRestartBios" Margin="0" MinWidth="0" OnContent="{x:Null}" OffContent="{x:Null}"/>
+                                        </StackPanel>
+                                    </Grid>
+
+                                </StackPanel>
+                            </Border>
+
                             <!-- Start Menu Animations Section -->
                             <StackPanel Spacing="8">
                                 <TextBlock Text="{helpers:ResourceString Key=Shell_Animations}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" Margin="4,0,0,0"/>

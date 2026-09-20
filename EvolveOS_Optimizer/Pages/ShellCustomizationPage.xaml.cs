@@ -91,6 +91,11 @@ namespace EvolveOS_Optimizer.Pages
             StartMenuToggle.IsOn = SettingsEngine.Shell_StartMenuEnabled;
             StartMenuAnimationsToggle.IsOn = SettingsEngine.Shell_StartMenuAnimation;
             ProfileClickToggle.IsOn = SettingsEngine.Shell_StartMenuProfileClick;
+
+            PowerSleepToggle.IsOn = SettingsEngine.Shell_StartMenuPowerSleep;
+            PowerLogOffToggle.IsOn = SettingsEngine.Shell_StartMenuPowerLogOff;
+            PowerRestartBiosToggle.IsOn = SettingsEngine.Shell_StartMenuPowerRestartBios;
+
             TaskbarToggle.IsOn = SettingsEngine.Shell_TaskbarEnabled;
             PreviewButtonsToggle.IsOn = SettingsEngine.Shell_TaskbarPreviewButtons;
             PreviewAnimationsToggle.IsOn = SettingsEngine.Shell_TaskbarPreviewAnimation;
@@ -211,6 +216,10 @@ namespace EvolveOS_Optimizer.Pages
             StartMenuAnimStyleCombo.IsEnabled = isMasterEnabled && StartMenuToggle.IsOn && StartMenuAnimationsToggle.IsOn;
             ProfileClickToggle.IsEnabled = isMasterEnabled && StartMenuToggle.IsOn;
 
+            PowerSleepToggle.IsEnabled = isMasterEnabled && StartMenuToggle.IsOn;
+            PowerLogOffToggle.IsEnabled = isMasterEnabled && StartMenuToggle.IsOn;
+            PowerRestartBiosToggle.IsEnabled = isMasterEnabled && StartMenuToggle.IsOn;
+
             TaskbarSizeSlider.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
             TaskbarIconSizeSlider.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
             TaskbarLengthSlider.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
@@ -258,6 +267,10 @@ namespace EvolveOS_Optimizer.Pages
                 _ = ShellEnhancerController.SendCommandAsync($"StartMenu_AnimStyle:{SettingsEngine.Shell_StartMenuAnimStyle ?? "Standard"}");
                 _ = ShellEnhancerController.SendCommandAsync($"StartMenu_AnimSpeed:{SettingsEngine.Shell_StartMenuAnimSpeed.ToString(CultureInfo.InvariantCulture)}");
                 _ = ShellEnhancerController.SendCommandAsync($"StartMenu_ProfileClick:{SettingsEngine.Shell_StartMenuProfileClick}");
+
+                _ = ShellEnhancerController.SendCommandAsync($"StartMenu_PowerSleep:{SettingsEngine.Shell_StartMenuPowerSleep}");
+                _ = ShellEnhancerController.SendCommandAsync($"StartMenu_PowerLogOff:{SettingsEngine.Shell_StartMenuPowerLogOff}");
+                _ = ShellEnhancerController.SendCommandAsync($"StartMenu_PowerRestartBios:{SettingsEngine.Shell_StartMenuPowerRestartBios}");
 
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_Enable:{TaskbarToggle.IsOn}");
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_Size:{SettingsEngine.Shell_TaskbarSize}");
@@ -310,6 +323,12 @@ namespace EvolveOS_Optimizer.Pages
             }
             else if (commandTag == "StartMenu_ProfileClick")
                 SettingsEngine.Shell_StartMenuProfileClick = toggle.IsOn;
+            else if (commandTag == "StartMenu_PowerSleep")
+                SettingsEngine.Shell_StartMenuPowerSleep = toggle.IsOn;
+            else if (commandTag == "StartMenu_PowerLogOff")
+                SettingsEngine.Shell_StartMenuPowerLogOff = toggle.IsOn;
+            else if (commandTag == "StartMenu_PowerRestartBios")
+                SettingsEngine.Shell_StartMenuPowerRestartBios = toggle.IsOn;
             else if (commandTag == "Shell_RunOnStartup")
                 SettingsEngine.Shell_RunOnStartup = toggle.IsOn;
             else if (commandTag == "Shell_HighPriority")
@@ -523,7 +542,7 @@ namespace EvolveOS_Optimizer.Pages
             }
         }
 
-        private void PreviewDelaySlider_ValueChanged(object sender, Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
+        private void PreviewDelaySlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
             if (!_isInitialized) return;
             double delay = e.NewValue;
@@ -532,7 +551,7 @@ namespace EvolveOS_Optimizer.Pages
 
             if (MasterToggle.IsOn && TaskbarToggle.IsOn)
             {
-                _ = ShellEnhancerController.SendCommandAsync($"Taskbar_PreviewDelay:{delay.ToString(System.Globalization.CultureInfo.InvariantCulture)}");
+                _ = ShellEnhancerController.SendCommandAsync($"Taskbar_PreviewDelay:{delay.ToString(CultureInfo.InvariantCulture)}");
             }
         }
 

@@ -6321,6 +6321,12 @@
     <sys:String x:Key="Shell_StartMenuAnimSpeedTitle">Animation Speed</sys:String>
     <sys:String x:Key="Shell_StartMenuAnimSpeedDesc">Adjust how fast the Start Menu animates in and out.</sys:String>
     <sys:String x:Key="Shell_ResetToDefault_1x">Reset to default (1.0x)</sys:String>
+    <sys:String x:Key="Shell_PowerSleepTitle">Show Sleep Option</sys:String>
+    <sys:String x:Key="Shell_PowerSleepDesc">Display the Sleep option in the Start Menu power menu.</sys:String>
+    <sys:String x:Key="Shell_PowerLogOffTitle">Show Log off Option</sys:String>
+    <sys:String x:Key="Shell_PowerLogOffDesc">Display the Log off option in the Start Menu power menu.</sys:String>
+    <sys:String x:Key="Shell_PowerRestartBiosTitle">Show Restart to BIOS Option</sys:String>
+    <sys:String x:Key="Shell_PowerRestartBiosDesc">Display the advanced Restart to BIOS option in the Start Menu power menu.</sys:String>
 
     <!-- Taskbar Settings -->
     <sys:String x:Key="Shell_TaskbarHeaderTitle">Custom Taskbar Rendering</sys:String>
