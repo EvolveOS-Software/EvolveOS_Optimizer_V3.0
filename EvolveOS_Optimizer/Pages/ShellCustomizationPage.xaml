@@ -440,6 +440,25 @@
                                 </Border>
                             </StackPanel>
 
+                            <Grid Padding="16,12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel VerticalAlignment="Center" Spacing="2">
+                                    <TextBlock Text="Show Recent Documents" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                    <TextBlock Text="Display recently opened files and documents at the bottom of the Start Menu." FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                                    <Grid VerticalAlignment="Center">
+                                        <TextBlock Text="{helpers:ResourceString Key=Settings_Toggle_On}" Opacity="{x:Bind GetOnOpacity(RecentDocsToggle.IsOn), Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=Settings_Toggle_Off}" Opacity="{x:Bind GetOffOpacity(RecentDocsToggle.IsOn), Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                    </Grid>
+                                    <ToggleSwitch x:Name="RecentDocsToggle" IsEnabled="False" VerticalAlignment="Center" Toggled="SettingToggle_Toggled" Tag="StartMenu_RecentDocs" Margin="0" MinWidth="0" OnContent="{x:Null}" OffContent="{x:Null}"/>
+                                </StackPanel>
+                            </Grid>
+                            <Border Height="1" Background="{ThemeResource CardStrokeColorDefaultBrush}" Margin="16,0" Opacity="0.5"/>
+
                         </StackPanel>
                     </Expander.Content>
                 </Expander>

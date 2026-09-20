@@ -91,6 +91,7 @@ namespace EvolveOS_Optimizer.Pages
             StartMenuToggle.IsOn = SettingsEngine.Shell_StartMenuEnabled;
             StartMenuAnimationsToggle.IsOn = SettingsEngine.Shell_StartMenuAnimation;
             ProfileClickToggle.IsOn = SettingsEngine.Shell_StartMenuProfileClick;
+            RecentDocsToggle.IsOn = SettingsEngine.Shell_StartMenuRecentDocs;
 
             PowerSleepToggle.IsOn = SettingsEngine.Shell_StartMenuPowerSleep;
             PowerLogOffToggle.IsOn = SettingsEngine.Shell_StartMenuPowerLogOff;
@@ -215,6 +216,7 @@ namespace EvolveOS_Optimizer.Pages
             StartMenuAnimationsToggle.IsEnabled = isMasterEnabled && StartMenuToggle.IsOn;
             StartMenuAnimStyleCombo.IsEnabled = isMasterEnabled && StartMenuToggle.IsOn && StartMenuAnimationsToggle.IsOn;
             ProfileClickToggle.IsEnabled = isMasterEnabled && StartMenuToggle.IsOn;
+            RecentDocsToggle.IsEnabled = isMasterEnabled && StartMenuToggle.IsOn;
 
             PowerSleepToggle.IsEnabled = isMasterEnabled && StartMenuToggle.IsOn;
             PowerLogOffToggle.IsEnabled = isMasterEnabled && StartMenuToggle.IsOn;
@@ -267,6 +269,7 @@ namespace EvolveOS_Optimizer.Pages
                 _ = ShellEnhancerController.SendCommandAsync($"StartMenu_AnimStyle:{SettingsEngine.Shell_StartMenuAnimStyle ?? "Standard"}");
                 _ = ShellEnhancerController.SendCommandAsync($"StartMenu_AnimSpeed:{SettingsEngine.Shell_StartMenuAnimSpeed.ToString(CultureInfo.InvariantCulture)}");
                 _ = ShellEnhancerController.SendCommandAsync($"StartMenu_ProfileClick:{SettingsEngine.Shell_StartMenuProfileClick}");
+                _ = ShellEnhancerController.SendCommandAsync($"StartMenu_RecentDocs:{SettingsEngine.Shell_StartMenuRecentDocs}");
 
                 _ = ShellEnhancerController.SendCommandAsync($"StartMenu_PowerSleep:{SettingsEngine.Shell_StartMenuPowerSleep}");
                 _ = ShellEnhancerController.SendCommandAsync($"StartMenu_PowerLogOff:{SettingsEngine.Shell_StartMenuPowerLogOff}");
@@ -329,6 +332,8 @@ namespace EvolveOS_Optimizer.Pages
                 SettingsEngine.Shell_StartMenuPowerLogOff = toggle.IsOn;
             else if (commandTag == "StartMenu_PowerRestartBios")
                 SettingsEngine.Shell_StartMenuPowerRestartBios = toggle.IsOn;
+            else if (commandTag == "StartMenu_RecentDocs")
+                SettingsEngine.Shell_StartMenuRecentDocs = toggle.IsOn;
             else if (commandTag == "Shell_RunOnStartup")
                 SettingsEngine.Shell_RunOnStartup = toggle.IsOn;
             else if (commandTag == "Shell_HighPriority")
