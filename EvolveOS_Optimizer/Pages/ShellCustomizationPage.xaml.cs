@@ -90,6 +90,7 @@ namespace EvolveOS_Optimizer.Pages
             ShellHighPriorityToggle.IsOn = SettingsEngine.Shell_HighPriority;
             StartMenuToggle.IsOn = SettingsEngine.Shell_StartMenuEnabled;
             StartMenuAnimationsToggle.IsOn = SettingsEngine.Shell_StartMenuAnimation;
+            ProfileClickToggle.IsOn = SettingsEngine.Shell_StartMenuProfileClick;
             TaskbarToggle.IsOn = SettingsEngine.Shell_TaskbarEnabled;
             PreviewButtonsToggle.IsOn = SettingsEngine.Shell_TaskbarPreviewButtons;
             PreviewAnimationsToggle.IsOn = SettingsEngine.Shell_TaskbarPreviewAnimation;
@@ -208,6 +209,7 @@ namespace EvolveOS_Optimizer.Pages
             StartMenuStyleCombo.IsEnabled = isMasterEnabled && StartMenuToggle.IsOn;
             StartMenuAnimationsToggle.IsEnabled = isMasterEnabled && StartMenuToggle.IsOn;
             StartMenuAnimStyleCombo.IsEnabled = isMasterEnabled && StartMenuToggle.IsOn && StartMenuAnimationsToggle.IsOn;
+            ProfileClickToggle.IsEnabled = isMasterEnabled && StartMenuToggle.IsOn;
 
             TaskbarSizeSlider.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
             TaskbarIconSizeSlider.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
@@ -255,6 +257,7 @@ namespace EvolveOS_Optimizer.Pages
                 _ = ShellEnhancerController.SendCommandAsync($"StartMenu_Animation:{SettingsEngine.Shell_StartMenuAnimation}");
                 _ = ShellEnhancerController.SendCommandAsync($"StartMenu_AnimStyle:{SettingsEngine.Shell_StartMenuAnimStyle ?? "Standard"}");
                 _ = ShellEnhancerController.SendCommandAsync($"StartMenu_AnimSpeed:{SettingsEngine.Shell_StartMenuAnimSpeed.ToString(CultureInfo.InvariantCulture)}");
+                _ = ShellEnhancerController.SendCommandAsync($"StartMenu_ProfileClick:{SettingsEngine.Shell_StartMenuProfileClick}");
 
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_Enable:{TaskbarToggle.IsOn}");
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_Size:{SettingsEngine.Shell_TaskbarSize}");
@@ -305,6 +308,8 @@ namespace EvolveOS_Optimizer.Pages
                 StartMenuAnimStyleCombo.IsEnabled = MasterToggle.IsOn && StartMenuToggle.IsOn && toggle.IsOn;
                 StartMenuSpeedSlider.IsEnabled = MasterToggle.IsOn && StartMenuToggle.IsOn && toggle.IsOn;
             }
+            else if (commandTag == "StartMenu_ProfileClick")
+                SettingsEngine.Shell_StartMenuProfileClick = toggle.IsOn;
             else if (commandTag == "Shell_RunOnStartup")
                 SettingsEngine.Shell_RunOnStartup = toggle.IsOn;
             else if (commandTag == "Shell_HighPriority")

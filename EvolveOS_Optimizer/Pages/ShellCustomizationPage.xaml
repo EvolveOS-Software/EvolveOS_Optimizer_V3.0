@@ -268,6 +268,28 @@
                                 </Border>
                             </StackPanel>
 
+                            <!-- Profile Menu & Privacy Toggle Card -->
+                            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Margin="0,8,0,0">
+                                <Grid Padding="16,12">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel VerticalAlignment="Center" Spacing="2">
+                                        <TextBlock Text="{helpers:ResourceString Key=Shell_ProfileClickTitle}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=Shell_ProfileClickDesc}" 
+                                                       FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                                        <Grid VerticalAlignment="Center">
+                                            <TextBlock Text="{helpers:ResourceString Key=Settings_Toggle_On}" Opacity="{x:Bind GetOnOpacity(ProfileClickToggle.IsOn), Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                            <TextBlock Text="{helpers:ResourceString Key=Settings_Toggle_Off}" Opacity="{x:Bind GetOffOpacity(ProfileClickToggle.IsOn), Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                        </Grid>
+                                        <ToggleSwitch x:Name="ProfileClickToggle" IsEnabled="False" VerticalAlignment="Center" Toggled="SettingToggle_Toggled" Tag="StartMenu_ProfileClick" Margin="0" MinWidth="0" OnContent="{x:Null}" OffContent="{x:Null}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+
                             <!-- Start Menu Animations Section -->
                             <StackPanel Spacing="8">
                                 <TextBlock Text="{helpers:ResourceString Key=Shell_Animations}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" Margin="4,0,0,0"/>

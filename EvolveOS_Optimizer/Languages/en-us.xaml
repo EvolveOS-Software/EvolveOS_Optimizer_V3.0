@@ -6302,6 +6302,8 @@
     <sys:String x:Key="Shell_StartMenuStyleDesc">Choose between standard or compact rendering.</sys:String>
     <sys:String x:Key="Shell_Style_Standard">Standard</sys:String>
     <sys:String x:Key="Shell_Style_Compact">Compact</sys:String>
+    <sys:String x:Key="Shell_ProfileClickTitle">Interactive Profile Card</sys:String>
+    <sys:String x:Key="Shell_ProfileClickDesc">Show an acrylic account information card when clicking the profile picture.</sys:String>
     <sys:String x:Key="Shell_Animations">Animations</sys:String>
     <sys:String x:Key="Shell_StartMenuAnimTitle">Start Menu Animations</sys:String>
     <sys:String x:Key="Shell_StartMenuAnimDesc">Enable smooth sliding animations when opening and closing the Start Menu.</sys:String>
