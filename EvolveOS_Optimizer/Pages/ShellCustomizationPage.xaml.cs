@@ -254,7 +254,7 @@ namespace EvolveOS_Optimizer.Pages
                 _ = ShellEnhancerController.SendCommandAsync($"StartMenu_Style:{SettingsEngine.Shell_StartMenuStyle}");
                 _ = ShellEnhancerController.SendCommandAsync($"StartMenu_Animation:{SettingsEngine.Shell_StartMenuAnimation}");
                 _ = ShellEnhancerController.SendCommandAsync($"StartMenu_AnimStyle:{SettingsEngine.Shell_StartMenuAnimStyle ?? "Standard"}");
-                _ = ShellEnhancerController.SendCommandAsync($"StartMenu_AnimSpeed:{SettingsEngine.Shell_StartMenuAnimSpeed.ToString(System.Globalization.CultureInfo.InvariantCulture)}");
+                _ = ShellEnhancerController.SendCommandAsync($"StartMenu_AnimSpeed:{SettingsEngine.Shell_StartMenuAnimSpeed.ToString(CultureInfo.InvariantCulture)}");
 
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_Enable:{TaskbarToggle.IsOn}");
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_Size:{SettingsEngine.Shell_TaskbarSize}");
@@ -267,8 +267,8 @@ namespace EvolveOS_Optimizer.Pages
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_PreviewButtons:{SettingsEngine.Shell_TaskbarPreviewButtons}");
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_PreviewAnimation:{SettingsEngine.Shell_TaskbarPreviewAnimation}");
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_PreviewAnimStyle:{SettingsEngine.Shell_TaskbarPreviewAnimStyle ?? "Standard"}");
-                _ = ShellEnhancerController.SendCommandAsync($"Taskbar_PreviewAnimSpeed:{SettingsEngine.Shell_TaskbarPreviewAnimSpeed.ToString(System.Globalization.CultureInfo.InvariantCulture)}");
-                _ = ShellEnhancerController.SendCommandAsync($"Taskbar_PreviewDelay:{SettingsEngine.Shell_TaskbarPreviewDelay.ToString(System.Globalization.CultureInfo.InvariantCulture)}");
+                _ = ShellEnhancerController.SendCommandAsync($"Taskbar_PreviewAnimSpeed:{SettingsEngine.Shell_TaskbarPreviewAnimSpeed.ToString(CultureInfo.InvariantCulture)}");
+                _ = ShellEnhancerController.SendCommandAsync($"Taskbar_PreviewDelay:{SettingsEngine.Shell_TaskbarPreviewDelay.ToString(CultureInfo.InvariantCulture)}");
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_ClockSeconds:{SettingsEngine.Shell_TaskbarClockSeconds}");
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_ShowUnpinned:{SettingsEngine.Shell_TaskbarShowUnpinned}");
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_UnpinnedMode:{SettingsEngine.Shell_TaskbarUnpinnedMode}");
@@ -407,23 +407,23 @@ namespace EvolveOS_Optimizer.Pages
 
             try
             {
-                System.Diagnostics.Debug.WriteLine("[Navigation] Attempting to open TaskbarPinsPage...");
+                Debug.WriteLine("[Navigation] Attempting to open TaskbarPinsPage...");
 
                 if (this.Frame != null)
                 {
                     this.Frame.Navigate(typeof(Pages.TaskbarPinsPage));
 
-                    System.Diagnostics.Debug.WriteLine("[Navigation] Navigate command sent successfully!");
+                    Debug.WriteLine("[Navigation] Navigate command sent successfully!");
                 }
                 else
                 {
-                    System.Diagnostics.Debug.WriteLine("[Navigation] ERROR: this.Frame is null!");
+                    Debug.WriteLine("[Navigation] ERROR: this.Frame is null!");
                 }
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[Navigation] CRASH PREVENTED: {ex.Message}");
-                System.Diagnostics.Debug.WriteLine($"[Navigation] STACK TRACE: {ex.StackTrace}");
+                Debug.WriteLine($"[Navigation] CRASH PREVENTED: {ex.Message}");
+                Debug.WriteLine($"[Navigation] STACK TRACE: {ex.StackTrace}");
             }
         }
 

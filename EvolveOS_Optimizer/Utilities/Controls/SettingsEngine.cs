@@ -1,6 +1,7 @@
 // Copyright (c) 2026 EvolveOS Software
 // Licensed under the MIT License.
 
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Text.Json;
@@ -383,6 +384,8 @@ namespace EvolveOS_Optimizer.Utilities.Controls
                             regKey.SetValue(key, b ? 1 : 0, RegistryValueKind.DWord);
                         else if (value is int i)
                             regKey.SetValue(key, i, RegistryValueKind.DWord);
+                        else if (value is double d)
+                            regKey.SetValue(key, d.ToString(CultureInfo.InvariantCulture), RegistryValueKind.String);
                         else
                             regKey.SetValue(key, value.ToString() ?? "", RegistryValueKind.String);
 
@@ -435,17 +438,47 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             {
                 using (RegistryKey? rootKey = Registry.CurrentUser.OpenSubKey(PathLocator.Registry.SubKey, false))
                 {
-                    foreach (var kv in _defaultSettings)
+                    if (rootKey != null)
                     {
-                        if (rootKey != null && rootKey.GetValue(kv.Key) != null)
+                        foreach (var kv in _defaultSettings)
                         {
-                            object rawVal = rootKey.GetValue(kv.Key)!;
-                            _cachedSettings[kv.Key] = kv.Value switch
+                            try
                             {
-                                bool => Convert.ToInt32(rawVal) != 0,
-                                int => Convert.ToInt32(rawVal),
-                                _ => rawVal.ToString() ?? kv.Value.ToString()!
-                            };
+                                object? rawVal = rootKey.GetValue(kv.Key);
+                                if (rawVal != null)
+                                {
+                                    string strVal = rawVal.ToString() ?? "";
+
+                                    if (kv.Value is bool)
+                                    {
+                                        if (int.TryParse(strVal, out int intBool))
+                                            _cachedSettings[kv.Key] = intBool != 0;
+                                        else if (bool.TryParse(strVal, out bool bVal))
+                                            _cachedSettings[kv.Key] = bVal;
+                                        else
+                                            _cachedSettings[kv.Key] = (strVal == "1");
+                                    }
+                                    else if (kv.Value is int)
+                                    {
+                                        if (int.TryParse(strVal, out int iVal))
+                                            _cachedSettings[kv.Key] = iVal;
+                                    }
+                                    else if (kv.Value is double)
+                                    {
+                                        string safeDouble = strVal.Replace(',', '.');
+                                        if (double.TryParse(safeDouble, NumberStyles.Any, CultureInfo.InvariantCulture, out double dVal))
+                                            _cachedSettings[kv.Key] = dVal;
+                                    }
+                                    else
+                                    {
+                                        _cachedSettings[kv.Key] = strVal;
+                                    }
+                                }
+                            }
+                            catch (Exception itemEx)
+                            {
+                                Debug.WriteLine($"[Settings] Failed to load {kv.Key}: {itemEx.Message}");
+                            }
                         }
                     }
                 }
