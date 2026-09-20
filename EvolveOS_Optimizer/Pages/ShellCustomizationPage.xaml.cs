@@ -34,6 +34,9 @@ namespace EvolveOS_Optimizer.Pages
 
         public ObservableCollection<MonitorPositionViewModel> Monitors { get; } = new();
 
+        public double GetOnOpacity(bool isOn) => isOn ? 1.0 : 0.0;
+        public double GetOffOpacity(bool isOn) => isOn ? 0.0 : 1.0;
+
         private bool _isTaskbarLeft;
         public bool IsTaskbarLeft { get => _isTaskbarLeft; set => SetProperty(ref _isTaskbarLeft, value); }
 
@@ -45,6 +48,12 @@ namespace EvolveOS_Optimizer.Pages
 
         private bool _isTaskbarBottom;
         public bool IsTaskbarBottom { get => _isTaskbarBottom; set => SetProperty(ref _isTaskbarBottom, value); }
+
+        private DateTime _lastLengthUpdate = DateTime.MinValue;
+        private int _lengthDebounceToken = 0;
+
+        private DateTime _lastRadiusUpdate = DateTime.MinValue;
+        private int _radiusDebounceToken = 0;
         #endregion
 
         public ShellCustomizationPage()
@@ -103,6 +112,8 @@ namespace EvolveOS_Optimizer.Pages
 
             TaskbarSizeSlider.Value = SettingsEngine.Shell_TaskbarSize;
             TaskbarIconSizeSlider.Value = SettingsEngine.Shell_TaskbarIconSize;
+            TaskbarLengthSlider.Value = SettingsEngine.Shell_TaskbarLength;
+            TaskbarCornerRadiusSlider.Value = SettingsEngine.Shell_TaskbarCornerRadius;
             PreviewSpeedSlider.Value = SettingsEngine.Shell_TaskbarPreviewAnimSpeed;
             StartMenuSpeedSlider.Value = SettingsEngine.Shell_StartMenuAnimSpeed;
             PreviewDelaySlider.Value = SettingsEngine.Shell_TaskbarPreviewDelay;
@@ -200,6 +211,8 @@ namespace EvolveOS_Optimizer.Pages
 
             TaskbarSizeSlider.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
             TaskbarIconSizeSlider.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
+            TaskbarLengthSlider.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
+            TaskbarCornerRadiusSlider.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
             StartMenuSpeedSlider.IsEnabled = isMasterEnabled && StartMenuToggle.IsOn && StartMenuAnimationsToggle.IsOn;
             PreviewDelaySlider.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
 
@@ -246,6 +259,8 @@ namespace EvolveOS_Optimizer.Pages
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_Enable:{TaskbarToggle.IsOn}");
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_Size:{SettingsEngine.Shell_TaskbarSize}");
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_IconSize:{SettingsEngine.Shell_TaskbarIconSize}");
+                _ = ShellEnhancerController.SendCommandAsync($"Taskbar_Length:{SettingsEngine.Shell_TaskbarLength}");
+                _ = ShellEnhancerController.SendCommandAsync($"Taskbar_CornerRadius:{SettingsEngine.Shell_TaskbarCornerRadius}");
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_Style:{SettingsEngine.Shell_TaskbarStyle}");
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_Alignment:{SettingsEngine.Shell_TaskbarAlignment}");
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_Position:{SettingsEngine.Shell_TaskbarPosition ?? "Bottom"}");
@@ -396,8 +411,6 @@ namespace EvolveOS_Optimizer.Pages
 
                 if (this.Frame != null)
                 {
-                    // Note: If you moved TaskbarPinsPage to your Pages folder, 
-                    // change "Views.TaskbarPinsPage" to "Pages.TaskbarPinsPage"
                     this.Frame.Navigate(typeof(Pages.TaskbarPinsPage));
 
                     System.Diagnostics.Debug.WriteLine("[Navigation] Navigate command sent successfully!");
@@ -437,6 +450,58 @@ namespace EvolveOS_Optimizer.Pages
             if (MasterToggle.IsOn && TaskbarToggle.IsOn)
             {
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_IconSize:{size}");
+            }
+        }
+
+        private async void TaskbarLengthSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
+        {
+            if (!_isInitialized) return;
+            int length = (int)e.NewValue;
+            if (TaskbarLengthValueText != null) TaskbarLengthValueText.Text = $"{length}%";
+            SettingsEngine.Shell_TaskbarLength = length;
+
+            if (MasterToggle.IsOn && TaskbarToggle.IsOn)
+            {
+                int currentToken = ++_lengthDebounceToken;
+
+                if ((DateTime.Now - _lastLengthUpdate).TotalMilliseconds > 40)
+                {
+                    _lastLengthUpdate = DateTime.Now;
+                    _ = ShellEnhancerController.SendCommandAsync($"Taskbar_Length:{length}");
+                }
+
+                await Task.Delay(50);
+                if (currentToken == _lengthDebounceToken)
+                {
+                    _lastLengthUpdate = DateTime.Now;
+                    _ = ShellEnhancerController.SendCommandAsync($"Taskbar_Length:{length}");
+                }
+            }
+        }
+
+        private async void TaskbarCornerRadiusSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
+        {
+            if (!_isInitialized) return;
+            int radius = (int)e.NewValue;
+            if (TaskbarCornerRadiusValueText != null) TaskbarCornerRadiusValueText.Text = $"{radius}px";
+            SettingsEngine.Shell_TaskbarCornerRadius = radius;
+
+            if (MasterToggle.IsOn && TaskbarToggle.IsOn)
+            {
+                int currentToken = ++_radiusDebounceToken;
+
+                if ((DateTime.Now - _lastRadiusUpdate).TotalMilliseconds > 40)
+                {
+                    _lastRadiusUpdate = DateTime.Now;
+                    _ = ShellEnhancerController.SendCommandAsync($"Taskbar_CornerRadius:{radius}");
+                }
+
+                await Task.Delay(50);
+                if (currentToken == _radiusDebounceToken)
+                {
+                    _lastRadiusUpdate = DateTime.Now;
+                    _ = ShellEnhancerController.SendCommandAsync($"Taskbar_CornerRadius:{radius}");
+                }
             }
         }
 
@@ -487,6 +552,16 @@ namespace EvolveOS_Optimizer.Pages
         private void ResetTaskbarIconSize_Click(object sender, RoutedEventArgs e)
         {
             if (TaskbarIconSizeSlider != null) TaskbarIconSizeSlider.Value = 24;
+        }
+
+        private void ResetTaskbarLength_Click(object sender, RoutedEventArgs e)
+        {
+            if (TaskbarLengthSlider != null) TaskbarLengthSlider.Value = 100;
+        }
+
+        private void ResetTaskbarCornerRadius_Click(object sender, RoutedEventArgs e)
+        {
+            if (TaskbarCornerRadiusSlider != null) TaskbarCornerRadiusSlider.Value = 8;
         }
 
         private void ResetPreviewSpeed_Click(object sender, RoutedEventArgs e)

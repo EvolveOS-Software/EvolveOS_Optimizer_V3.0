@@ -55,8 +55,8 @@
                 <StackPanel Orientation="Horizontal" Spacing="12" Margin="0,0,0,10">
                     <FontIcon Glyph="&#xE7F4;" FontSize="48" Foreground="{ThemeResource MyDynamicAccentBrush}" VerticalAlignment="Center"/>
                     <StackPanel VerticalAlignment="Center">
-                        <TextBlock Text="Shell Customization" FontFamily="{ThemeResource AppCustomFont}" FontSize="24" />
-                        <TextBlock Text="Manage custom Taskbar and Start Menu overlays." FontFamily="{ThemeResource AppCustomFont}" FontSize="13" Opacity="0.6"/>
+                        <TextBlock Text="{helpers:ResourceString Key=Shell_PageTitle}" FontFamily="{ThemeResource AppCustomFont}" FontSize="24" />
+                        <TextBlock Text="{helpers:ResourceString Key=Shell_PageDesc}" FontFamily="{ThemeResource AppCustomFont}" FontSize="13" Opacity="0.6"/>
                     </StackPanel>
                 </StackPanel>
 
@@ -76,15 +76,21 @@
                         <fluentIcons:SymbolIcon Grid.Column="0" Symbol="Desktop" FontSize="20" Foreground="{ThemeResource TextFillColorPrimaryBrush}" VerticalAlignment="Center" Margin="0,0,16,0" />
 
                         <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
-                            <TextBlock Text="Enable EvolveOS Shell Enhancer" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
-                            <TextBlock Text="Master switch to activate the background process for custom Start Menu and Taskbar features." 
+                            <TextBlock Text="{helpers:ResourceString Key=Shell_MasterToggleTitle}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                            <TextBlock Text="{helpers:ResourceString Key=Shell_MasterToggleDesc}" 
                                        FontFamily="{ThemeResource AppCustomFont}"
                                        Style="{StaticResource CaptionTextBlockStyle}"
                                        Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" 
                                        TextWrapping="Wrap"/>
                         </StackPanel>
 
-                        <ToggleSwitch Grid.Column="2" x:Name="MasterToggle" VerticalAlignment="Center" Toggled="MasterToggle_Toggled" Margin="0" MinWidth="0"/>
+                        <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                            <Grid VerticalAlignment="Center">
+                                <TextBlock Text="{helpers:ResourceString Key=Settings_Toggle_On}" Opacity="{x:Bind GetOnOpacity(MasterToggle.IsOn), Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                <TextBlock Text="{helpers:ResourceString Key=Settings_Toggle_Off}" Opacity="{x:Bind GetOffOpacity(MasterToggle.IsOn), Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}"/>
+                            </Grid>
+                            <ToggleSwitch x:Name="MasterToggle" VerticalAlignment="Center" Toggled="MasterToggle_Toggled" Margin="0" MinWidth="0" OnContent="{x:Null}" OffContent="{x:Null}"/>
+                        </StackPanel>
                     </Grid>
                 </Border>
 
@@ -100,8 +106,8 @@
                             <fluentIcons:SymbolIcon Grid.Column="0" Symbol="TextFont" FontSize="20" Foreground="{ThemeResource TextFillColorPrimaryBrush}" VerticalAlignment="Center" Margin="0,0,16,0" />
 
                             <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
-                                <TextBlock Text="Global Typography" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
-                                <TextBlock Text="Override the font used throughout the shell enhancer application."
+                                <TextBlock Text="{helpers:ResourceString Key=Shell_TypographyTitle}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                <TextBlock Text="{helpers:ResourceString Key=Shell_TypographyDesc}"
                                            FontFamily="{ThemeResource AppCustomFont}"
                                            Style="{StaticResource CaptionTextBlockStyle}"
                                            Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
@@ -122,18 +128,18 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <StackPanel VerticalAlignment="Center" Spacing="2">
-                                            <TextBlock Text="Shell Overlay Language" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
-                                            <TextBlock Text="Change the language used specifically by the custom Taskbar and Start Menu." 
+                                            <TextBlock Text="{helpers:ResourceString Key=Shell_LanguageTitle}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                            <TextBlock Text="{helpers:ResourceString Key=Shell_LanguageDesc}" 
                                                        FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                                         </StackPanel>
                                         <ComboBox Grid.Column="1" x:Name="ShellLanguageCombo" IsEnabled="False" Width="150" VerticalAlignment="Center" SelectionChanged="ShellLanguageCombo_SelectionChanged" Tag="Shell_Language" FontFamily="{ThemeResource AppCustomFont}">
-                                            <ComboBoxItem Content="English" Tag="en-us"/>
-                                            <ComboBoxItem Content="Dutch" Tag="nl-nl"/>
-                                            <ComboBoxItem Content="French" Tag="fr-fr"/>
-                                            <ComboBoxItem Content="German" Tag="de-de"/>
-                                            <ComboBoxItem Content="Italian" Tag="it-it"/>
-                                            <ComboBoxItem Content="Portuguese (Brazil)" Tag="pt-br"/>
-                                            <ComboBoxItem Content="Spanish" Tag="es-es"/>
+                                            <ComboBoxItem Content="{helpers:ResourceString Key=Shell_Lang_English}" Tag="en-us"/>
+                                            <ComboBoxItem Content="{helpers:ResourceString Key=Shell_Lang_Dutch}" Tag="nl-nl"/>
+                                            <ComboBoxItem Content="{helpers:ResourceString Key=Shell_Lang_French}" Tag="fr-fr"/>
+                                            <ComboBoxItem Content="{helpers:ResourceString Key=Shell_Lang_German}" Tag="de-de"/>
+                                            <ComboBoxItem Content="{helpers:ResourceString Key=Shell_Lang_Italian}" Tag="it-it"/>
+                                            <ComboBoxItem Content="{helpers:ResourceString Key=Shell_Lang_Portuguese}" Tag="pt-br"/>
+                                            <ComboBoxItem Content="{helpers:ResourceString Key=Shell_Lang_Spanish}" Tag="es-es"/>
                                         </ComboBox>
                                     </Grid>
 
@@ -145,14 +151,15 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <StackPanel VerticalAlignment="Center" Spacing="2">
-                                            <TextBlock Text="App Font" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
-                                            <TextBlock Text="Select a custom font for the Shell interface." 
+                                            <TextBlock Text="{helpers:ResourceString Key=Shell_FontTitle}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                            <TextBlock Text="{helpers:ResourceString Key=Shell_FontDesc}" 
                                                        FontFamily="{ThemeResource AppCustomFont}"
                                                        Style="{StaticResource CaptionTextBlockStyle}"
                                                        Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" 
                                                        TextWrapping="Wrap"/>
                                         </StackPanel>
                                         <ComboBox Grid.Column="1" x:Name="AppFontCombo" IsEnabled="False" Width="150" VerticalAlignment="Center" SelectionChanged="SettingCombo_SelectionChanged" Tag="Shell_Font" FontFamily="{ThemeResource AppCustomFont}">
+                                            <!-- Leaving Font Proper Names literal -->
                                             <ComboBoxItem Content="Barlow" Tag="Barlow" FontFamily="Barlow"/>
                                             <ComboBoxItem Content="DMSans" Tag="DMSans" FontFamily="DMSans"/>
                                             <ComboBoxItem Content="Figtree" Tag="Figtree" FontFamily="Figtree"/>
@@ -177,14 +184,15 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <StackPanel VerticalAlignment="Center" Spacing="2">
-                                            <TextBlock Text="App Font Size" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
-                                            <TextBlock Text="Adjust the text scale across the Shell interface." 
+                                            <TextBlock Text="{helpers:ResourceString Key=Shell_FontSizeTitle}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                            <TextBlock Text="{helpers:ResourceString Key=Shell_FontSizeDesc}" 
                                                        FontFamily="{ThemeResource AppCustomFont}"
                                                        Style="{StaticResource CaptionTextBlockStyle}"
                                                        Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" 
                                                        TextWrapping="Wrap"/>
                                         </StackPanel>
                                         <ComboBox Grid.Column="1" x:Name="AppFontSizeCombo" IsEnabled="False" Width="150" VerticalAlignment="Center" SelectionChanged="SettingCombo_SelectionChanged" Tag="Shell_FontSize" FontFamily="{ThemeResource AppCustomFont}">
+                                            <!-- Numeric values left literal -->
                                             <ComboBoxItem Content="10" Tag="10"/>
                                             <ComboBoxItem Content="12" Tag="12"/>
                                             <ComboBoxItem Content="14" Tag="14"/>
@@ -214,15 +222,21 @@
                             <fluentIcons:SymbolIcon Grid.Column="0" Symbol="Apps" FontSize="20" Foreground="{ThemeResource TextFillColorPrimaryBrush}" VerticalAlignment="Center" Margin="0,0,16,0" />
 
                             <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
-                                <TextBlock Text="Custom Start Menu" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
-                                <TextBlock Text="Replace the native Windows 11 Start Menu with the EvolveOS optimized menu."
+                                <TextBlock Text="{helpers:ResourceString Key=Shell_StartMenuHeaderTitle}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                <TextBlock Text="{helpers:ResourceString Key=Shell_StartMenuHeaderDesc}"
                                            FontFamily="{ThemeResource AppCustomFont}"
                                            Style="{StaticResource CaptionTextBlockStyle}"
                                            Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
                                            TextWrapping="Wrap"/>
                             </StackPanel>
 
-                            <ToggleSwitch Grid.Column="2" x:Name="StartMenuToggle" IsEnabled="False" VerticalAlignment="Center" Toggled="SettingToggle_Toggled" Tag="StartMenu_Enable" Margin="0" MinWidth="0"/>
+                            <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                                <Grid VerticalAlignment="Center">
+                                    <TextBlock Text="{helpers:ResourceString Key=Settings_Toggle_On}" Opacity="{x:Bind GetOnOpacity(StartMenuToggle.IsOn), Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                    <TextBlock Text="{helpers:ResourceString Key=Settings_Toggle_Off}" Opacity="{x:Bind GetOffOpacity(StartMenuToggle.IsOn), Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                </Grid>
+                                <ToggleSwitch x:Name="StartMenuToggle" IsEnabled="False" VerticalAlignment="Center" Toggled="SettingToggle_Toggled" Tag="StartMenu_Enable" Margin="0" MinWidth="0" OnContent="{x:Null}" OffContent="{x:Null}"/>
+                            </StackPanel>
                         </Grid>
                     </Expander.Header>
 
@@ -231,7 +245,7 @@
 
                             <!-- Start Menu Section -->
                             <StackPanel Spacing="8">
-                                <TextBlock Text="Appearance" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" Margin="4,0,0,0"/>
+                                <TextBlock Text="{helpers:ResourceString Key=Shell_Appearance}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" Margin="4,0,0,0"/>
                                 <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8">
                                     <Grid Padding="16,12">
                                         <Grid.ColumnDefinitions>
@@ -239,16 +253,16 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <StackPanel VerticalAlignment="Center" Spacing="2">
-                                            <TextBlock Text="Start Menu Style" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
-                                            <TextBlock Text="Choose between standard or compact rendering."
+                                            <TextBlock Text="{helpers:ResourceString Key=Shell_StartMenuStyleTitle}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                            <TextBlock Text="{helpers:ResourceString Key=Shell_StartMenuStyleDesc}"
                                                        FontFamily="{ThemeResource AppCustomFont}"
                                                        Style="{StaticResource CaptionTextBlockStyle}"
                                                        Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
                                                        TextWrapping="Wrap"/>
                                         </StackPanel>
                                         <ComboBox Grid.Column="1" x:Name="StartMenuStyleCombo" IsEnabled="False" Width="150" VerticalAlignment="Center" SelectionChanged="StartMenuStyleCombo_SelectionChanged" FontFamily="{ThemeResource AppCustomFont}">
-                                            <ComboBoxItem Content="Standard" Tag="Standard" FontFamily="{ThemeResource AppCustomFont}"/>
-                                            <ComboBoxItem Content="Compact" Tag="Compact" FontFamily="{ThemeResource AppCustomFont}"/>
+                                            <ComboBoxItem Content="{helpers:ResourceString Key=Shell_Style_Standard}" Tag="Standard" FontFamily="{ThemeResource AppCustomFont}"/>
+                                            <ComboBoxItem Content="{helpers:ResourceString Key=Shell_Style_Compact}" Tag="Compact" FontFamily="{ThemeResource AppCustomFont}"/>
                                         </ComboBox>
                                     </Grid>
                                 </Border>
@@ -256,7 +270,7 @@
 
                             <!-- Start Menu Animations Section -->
                             <StackPanel Spacing="8">
-                                <TextBlock Text="Animations" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" Margin="4,0,0,0"/>
+                                <TextBlock Text="{helpers:ResourceString Key=Shell_Animations}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" Margin="4,0,0,0"/>
                                 <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8">
                                     <StackPanel>
 
@@ -267,11 +281,18 @@
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
                                             <StackPanel VerticalAlignment="Center" Spacing="2">
-                                                <TextBlock Text="Start Menu Animations" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
-                                                <TextBlock Text="Enable smooth sliding animations when opening and closing the Start Menu."
+                                                <TextBlock Text="{helpers:ResourceString Key=Shell_StartMenuAnimTitle}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                                <TextBlock Text="{helpers:ResourceString Key=Shell_StartMenuAnimDesc}"
                                                            FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                                             </StackPanel>
-                                            <ToggleSwitch Grid.Column="1" x:Name="StartMenuAnimationsToggle" IsEnabled="False" VerticalAlignment="Center" Toggled="SettingToggle_Toggled" Tag="StartMenu_Animation" Margin="0" MinWidth="0"/>
+
+                                            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                                                <Grid VerticalAlignment="Center">
+                                                    <TextBlock Text="{helpers:ResourceString Key=Settings_Toggle_On}" Opacity="{x:Bind GetOnOpacity(StartMenuAnimationsToggle.IsOn), Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                    <TextBlock Text="{helpers:ResourceString Key=Settings_Toggle_Off}" Opacity="{x:Bind GetOffOpacity(StartMenuAnimationsToggle.IsOn), Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                </Grid>
+                                                <ToggleSwitch x:Name="StartMenuAnimationsToggle" IsEnabled="False" VerticalAlignment="Center" Toggled="SettingToggle_Toggled" Tag="StartMenu_Animation" Margin="0" MinWidth="0" OnContent="{x:Null}" OffContent="{x:Null}"/>
+                                            </StackPanel>
                                         </Grid>
 
                                         <Border Height="1" Background="{ThemeResource CardStrokeColorDefaultBrush}" Margin="16,0" Opacity="0.5"/>
@@ -283,20 +304,20 @@
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
                                             <StackPanel VerticalAlignment="Center" Spacing="2">
-                                                <TextBlock Text="Animation Style" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
-                                                <TextBlock Text="Choose the motion style for the Start Menu."
+                                                <TextBlock Text="{helpers:ResourceString Key=Shell_AnimStyleTitle}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                                <TextBlock Text="{helpers:ResourceString Key=Shell_AnimStyleDesc}"
                                                            FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                                             </StackPanel>
                                             <ComboBox Grid.Column="1" x:Name="StartMenuAnimStyleCombo" IsEnabled="False" Width="150" VerticalAlignment="Center" SelectionChanged="SettingCombo_SelectionChanged" Tag="StartMenu_AnimStyle" FontFamily="{ThemeResource AppCustomFont}">
-                                                <ComboBoxItem Content="Standard" Tag="Standard" FontFamily="{ThemeResource AppCustomFont}"/>
-                                                <ComboBoxItem Content="Glide" Tag="Glide" FontFamily="{ThemeResource AppCustomFont}"/>
-                                                <ComboBoxItem Content="Spring" Tag="Spring" FontFamily="{ThemeResource AppCustomFont}"/>
-                                                <ComboBoxItem Content="Bounce" Tag="Bounce" FontFamily="{ThemeResource AppCustomFont}"/>
-                                                <ComboBoxItem Content="Elastic" Tag="Elastic" FontFamily="{ThemeResource AppCustomFont}"/>
-                                                <ComboBoxItem Content="Exponential" Tag="Exponential" FontFamily="{ThemeResource AppCustomFont}"/>
-                                                <ComboBoxItem Content="Overshoot" Tag="Overshoot" FontFamily="{ThemeResource AppCustomFont}"/>
-                                                <ComboBoxItem Content="Circle" Tag="Circle" FontFamily="{ThemeResource AppCustomFont}"/>
-                                                <ComboBoxItem Content="Sine" Tag="Sine" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="{helpers:ResourceString Key=Shell_Anim_Standard}" Tag="Standard" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="{helpers:ResourceString Key=Shell_Anim_Glide}" Tag="Glide" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="{helpers:ResourceString Key=Shell_Anim_Spring}" Tag="Spring" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="{helpers:ResourceString Key=Shell_Anim_Bounce}" Tag="Bounce" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="{helpers:ResourceString Key=Shell_Anim_Elastic}" Tag="Elastic" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="{helpers:ResourceString Key=Shell_Anim_Exponential}" Tag="Exponential" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="{helpers:ResourceString Key=Shell_Anim_Overshoot}" Tag="Overshoot" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="{helpers:ResourceString Key=Shell_Anim_Circle}" Tag="Circle" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="{helpers:ResourceString Key=Shell_Anim_Sine}" Tag="Sine" FontFamily="{ThemeResource AppCustomFont}"/>
                                             </ComboBox>
                                         </Grid>
 
@@ -311,13 +332,13 @@
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
                                             <StackPanel VerticalAlignment="Center" Spacing="2">
-                                                <TextBlock Text="Animation Speed" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
-                                                <TextBlock Text="Adjust how fast the Start Menu animates in and out."
+                                                <TextBlock Text="{helpers:ResourceString Key=Shell_StartMenuAnimSpeedTitle}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                                <TextBlock Text="{helpers:ResourceString Key=Shell_StartMenuAnimSpeedDesc}"
                                                            FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                                             </StackPanel>
                                             <Slider Grid.Column="1" x:Name="StartMenuSpeedSlider" Minimum="0.1" Maximum="3.0" StepFrequency="0.1" Value="1.0" Width="120" VerticalAlignment="Center" ValueChanged="StartMenuSpeedSlider_ValueChanged" IsEnabled="False" Margin="0,0,8,0"/>
                                             <TextBlock Grid.Column="2" x:Name="StartMenuSpeedValueText" Text="1.0x" VerticalAlignment="Center" HorizontalAlignment="Right" FontFamily="{ThemeResource AppCustomFont}" FontSize="12" Opacity="0.8" Margin="0,0,4,0"/>
-                                            <Button Grid.Column="3" x:Name="ResetStartMenuSpeedBtn" Width="32" Height="32" Padding="0" Background="Transparent" BorderThickness="0" CornerRadius="4" Click="ResetStartMenuSpeed_Click" ToolTipService.ToolTip="Reset to default (1.0x)" VerticalAlignment="Center">
+                                            <Button Grid.Column="3" x:Name="ResetStartMenuSpeedBtn" Width="32" Height="32" Padding="0" Background="Transparent" BorderThickness="0" CornerRadius="4" Click="ResetStartMenuSpeed_Click" ToolTipService.ToolTip="{helpers:ResourceString Key=Shell_ResetToDefault_1x}" VerticalAlignment="Center">
                                                 <FontIcon Glyph="&#xE777;" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                             </Button>
                                         </Grid>
@@ -343,15 +364,21 @@
                             <fluentIcons:SymbolIcon Grid.Column="0" Symbol="DockRow" FontSize="20" Foreground="{ThemeResource TextFillColorPrimaryBrush}" VerticalAlignment="Center" Margin="0,0,16,0" />
 
                             <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
-                                <TextBlock Text="Custom Taskbar Rendering" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
-                                <TextBlock Text="Enable custom taskbar styles, dynamic transparency, and centered floating mode."
+                                <TextBlock Text="{helpers:ResourceString Key=Shell_TaskbarHeaderTitle}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                <TextBlock Text="{helpers:ResourceString Key=Shell_TaskbarHeaderDesc}"
                                            FontFamily="{ThemeResource AppCustomFont}"
                                            Style="{StaticResource CaptionTextBlockStyle}"
                                            Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
                                            TextWrapping="Wrap"/>
                             </StackPanel>
 
-                            <ToggleSwitch Grid.Column="2" x:Name="TaskbarToggle" IsEnabled="False" VerticalAlignment="Center" Toggled="SettingToggle_Toggled" Tag="Taskbar_Enable" Margin="0" MinWidth="0"/>
+                            <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                                <Grid VerticalAlignment="Center">
+                                    <TextBlock Text="{helpers:ResourceString Key=Settings_Toggle_On}" Opacity="{x:Bind GetOnOpacity(TaskbarToggle.IsOn), Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                    <TextBlock Text="{helpers:ResourceString Key=Settings_Toggle_Off}" Opacity="{x:Bind GetOffOpacity(TaskbarToggle.IsOn), Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                </Grid>
+                                <ToggleSwitch x:Name="TaskbarToggle" IsEnabled="False" VerticalAlignment="Center" Toggled="SettingToggle_Toggled" Tag="Taskbar_Enable" Margin="0" MinWidth="0" OnContent="{x:Null}" OffContent="{x:Null}"/>
+                            </StackPanel>
                         </Grid>
                     </Expander.Header>
 
@@ -360,7 +387,7 @@
 
                             <!-- GROUP 1: APPEARANCE & LAYOUT -->
                             <StackPanel Spacing="8">
-                                <TextBlock Text="Appearance &amp; Layout" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" Margin="4,0,0,0"/>
+                                <TextBlock Text="{helpers:ResourceString Key=Shell_AppearanceLayout}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" Margin="4,0,0,0"/>
                                 <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8">
                                     <StackPanel>
 
@@ -371,16 +398,16 @@
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
                                             <StackPanel VerticalAlignment="Center" Spacing="2">
-                                                <TextBlock Text="Taskbar Style" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
-                                                <TextBlock Text="Choose between a traditional full-width bar or a modern floating dock." 
+                                                <TextBlock Text="{helpers:ResourceString Key=Shell_TaskbarStyleTitle}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                                <TextBlock Text="{helpers:ResourceString Key=Shell_TaskbarStyleDesc}" 
                                                            FontFamily="{ThemeResource AppCustomFont}"
                                                            Style="{StaticResource CaptionTextBlockStyle}"
                                                            Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" 
                                                            TextWrapping="Wrap"/>
                                             </StackPanel>
                                             <ComboBox Grid.Column="1" x:Name="TaskbarStyleCombo" IsEnabled="False" Width="150" VerticalAlignment="Center" SelectionChanged="SettingCombo_SelectionChanged" Tag="Taskbar_Style" FontFamily="{ThemeResource AppCustomFont}">
-                                                <ComboBoxItem Content="Floating Dock" Tag="Floating" FontFamily="{ThemeResource AppCustomFont}"/>
-                                                <ComboBoxItem Content="Standard" Tag="Standard" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="{helpers:ResourceString Key=Shell_Style_FloatingDock}" Tag="Floating" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="{helpers:ResourceString Key=Shell_Style_Standard}" Tag="Standard" FontFamily="{ThemeResource AppCustomFont}"/>
                                             </ComboBox>
                                         </Grid>
 
@@ -393,17 +420,17 @@
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
                                             <StackPanel VerticalAlignment="Center" Spacing="2">
-                                                <TextBlock Text="Taskbar Alignment" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
-                                                <TextBlock Text="Choose how the Start button and pinned apps are arranged." 
+                                                <TextBlock Text="{helpers:ResourceString Key=Shell_TaskbarAlignTitle}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                                <TextBlock Text="{helpers:ResourceString Key=Shell_TaskbarAlignDesc}" 
                                                            FontFamily="{ThemeResource AppCustomFont}"
                                                            Style="{StaticResource CaptionTextBlockStyle}"
                                                            Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" 
                                                            TextWrapping="Wrap"/>
                                             </StackPanel>
                                             <ComboBox Grid.Column="1" x:Name="TaskbarAlignmentCombo" IsEnabled="False" Width="150" VerticalAlignment="Center" SelectionChanged="SettingCombo_SelectionChanged" Tag="Taskbar_Alignment" FontFamily="{ThemeResource AppCustomFont}">
-                                                <ComboBoxItem Content="Split" Tag="Split" FontFamily="{ThemeResource AppCustomFont}"/>
-                                                <ComboBoxItem Content="Center" Tag="Center" FontFamily="{ThemeResource AppCustomFont}"/>
-                                                <ComboBoxItem Content="Left" Tag="Left" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="{helpers:ResourceString Key=Shell_Align_Split}" Tag="Split" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="{helpers:ResourceString Key=Shell_Align_Center}" Tag="Center" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="{helpers:ResourceString Key=Shell_Align_Left}" Tag="Left" FontFamily="{ThemeResource AppCustomFont}"/>
                                             </ComboBox>
                                         </Grid>
 
@@ -418,13 +445,55 @@
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
                                             <StackPanel VerticalAlignment="Center" Spacing="2">
-                                                <TextBlock Text="Taskbar Size" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
-                                                <TextBlock Text="Adjust the height or width of the taskbar dock." 
-                                                   FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                                                <TextBlock Text="{helpers:ResourceString Key=Shell_TaskbarSizeTitle}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                                <TextBlock Text="{helpers:ResourceString Key=Shell_TaskbarSizeDesc}" 
+                                                           FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                                             </StackPanel>
                                             <Slider Grid.Column="1" x:Name="TaskbarSizeSlider" Minimum="36" Maximum="80" StepFrequency="1" Value="48" Width="120" VerticalAlignment="Center" ValueChanged="TaskbarSizeSlider_ValueChanged" IsEnabled="False" Margin="0,0,8,0"/>
                                             <TextBlock Grid.Column="2" x:Name="TaskbarSizeValueText" Text="{Binding Value, ElementName=TaskbarSizeSlider}" VerticalAlignment="Center" HorizontalAlignment="Right" FontFamily="{ThemeResource AppCustomFont}" FontSize="12" Opacity="0.8" Margin="0,0,4,0"/>
-                                            <Button Grid.Column="3" x:Name="ResetTaskbarSizeBtn" Width="32" Height="32" Padding="0" Background="Transparent" BorderThickness="0" CornerRadius="4" Click="ResetTaskbarSize_Click" ToolTipService.ToolTip="Reset to default (48px)" VerticalAlignment="Center">
+                                            <Button Grid.Column="3" x:Name="ResetTaskbarSizeBtn" Width="32" Height="32" Padding="0" Background="Transparent" BorderThickness="0" CornerRadius="4" Click="ResetTaskbarSize_Click" ToolTipService.ToolTip="{helpers:ResourceString Key=Shell_ResetToDefault_48px}" VerticalAlignment="Center">
+                                                <FontIcon Glyph="&#xE777;" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Button>
+                                        </Grid>
+
+                                        <Border Height="1" Background="{ThemeResource CardStrokeColorDefaultBrush}" Margin="16,0" Opacity="0.5"/>
+
+                                        <!-- Taskbar Length Slider -->
+                                        <Grid Padding="16,12">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="50"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel VerticalAlignment="Center" Spacing="2">
+                                                <TextBlock Text="{helpers:ResourceString Key=Setting_TaskbarLength_Title}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                                <TextBlock Text="{helpers:ResourceString Key=Setting_TaskbarLength_Desc}" FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                                            </StackPanel>
+                                            <Slider Grid.Column="1" x:Name="TaskbarLengthSlider" Minimum="50" Maximum="100" StepFrequency="1" Value="100" Width="120" VerticalAlignment="Center" ValueChanged="TaskbarLengthSlider_ValueChanged" IsEnabled="False" Margin="0,0,8,0"/>
+                                            <TextBlock Grid.Column="2" x:Name="TaskbarLengthValueText" Text="100%" VerticalAlignment="Center" HorizontalAlignment="Right" FontFamily="{ThemeResource AppCustomFont}" FontSize="12" Opacity="0.8" Margin="0,0,4,0"/>
+                                            <Button Grid.Column="3" x:Name="ResetTaskbarLengthBtn" Width="32" Height="32" Padding="0" Background="Transparent" BorderThickness="0" CornerRadius="4" Click="ResetTaskbarLength_Click" ToolTipService.ToolTip="{helpers:ResourceString Key=Setting_TaskbarLength_ResetTooltip}" VerticalAlignment="Center">
+                                                <FontIcon Glyph="&#xE777;" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Button>
+                                        </Grid>
+
+                                        <Border Height="1" Background="{ThemeResource CardStrokeColorDefaultBrush}" Margin="16,0" Opacity="0.5"/>
+
+                                        <!-- Taskbar Corner Radius Slider -->
+                                        <Grid Padding="16,12">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="50"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel VerticalAlignment="Center" Spacing="2">
+                                                <TextBlock Text="{helpers:ResourceString Key=Setting_TaskbarCornerRadius_Title}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                                <TextBlock Text="{helpers:ResourceString Key=Setting_TaskbarCornerRadius_Desc}" FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                                            </StackPanel>
+                                            <Slider Grid.Column="1" x:Name="TaskbarCornerRadiusSlider" Minimum="0" Maximum="8" StepFrequency="4" Value="8" Width="120" VerticalAlignment="Center" ValueChanged="TaskbarCornerRadiusSlider_ValueChanged" IsEnabled="False" Margin="0,0,8,0"/>
+                                            <TextBlock Grid.Column="2" x:Name="TaskbarCornerRadiusValueText" Text="8px" VerticalAlignment="Center" HorizontalAlignment="Right" FontFamily="{ThemeResource AppCustomFont}" FontSize="12" Opacity="0.8" Margin="0,0,4,0"/>
+                                            <Button Grid.Column="3" x:Name="ResetTaskbarCornerRadiusBtn" Width="32" Height="32" Padding="0" Background="Transparent" BorderThickness="0" CornerRadius="4" Click="ResetTaskbarCornerRadius_Click" ToolTipService.ToolTip="{helpers:ResourceString Key=Setting_TaskbarCornerRadius_ResetTooltip}" VerticalAlignment="Center">
                                                 <FontIcon Glyph="&#xE777;" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                             </Button>
                                         </Grid>
@@ -440,33 +509,32 @@
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
                                             <StackPanel VerticalAlignment="Center" Spacing="2">
-                                                <TextBlock Text="Taskbar Icon Size" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
-                                                <TextBlock Text="Adjust the scale of app icons on the taskbar."
+                                                <TextBlock Text="{helpers:ResourceString Key=Shell_TaskbarIconSizeTitle}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                                <TextBlock Text="{helpers:ResourceString Key=Shell_TaskbarIconSizeDesc}"
                                                            FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                                             </StackPanel>
                                             <Slider Grid.Column="1" x:Name="TaskbarIconSizeSlider" Minimum="16" Maximum="48" StepFrequency="1" Value="24" Width="120" VerticalAlignment="Center" ValueChanged="TaskbarIconSizeSlider_ValueChanged" IsEnabled="False" Margin="0,0,8,0"/>
                                             <TextBlock Grid.Column="2" x:Name="TaskbarIconSizeValueText" Text="24px" VerticalAlignment="Center" HorizontalAlignment="Right" FontFamily="{ThemeResource AppCustomFont}" FontSize="12" Opacity="0.8" Margin="0,0,4,0"/>
-                                            <Button Grid.Column="3" x:Name="ResetTaskbarIconSizeBtn" Width="32" Height="32" Padding="0" Background="Transparent" BorderThickness="0" CornerRadius="4" Click="ResetTaskbarIconSize_Click" ToolTipService.ToolTip="Reset to default (24px)" VerticalAlignment="Center">
+                                            <Button Grid.Column="3" x:Name="ResetTaskbarIconSizeBtn" Width="32" Height="32" Padding="0" Background="Transparent" BorderThickness="0" CornerRadius="4" Click="ResetTaskbarIconSize_Click" ToolTipService.ToolTip="{helpers:ResourceString Key=Shell_ResetToDefault_24px}" VerticalAlignment="Center">
                                                 <FontIcon Glyph="&#xE777;" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                             </Button>
                                         </Grid>
 
                                         <Border Height="1" Background="{ThemeResource CardStrokeColorDefaultBrush}" Margin="16,0" Opacity="0.5"/>
 
-                                        <!-- Taskbar Position Selector (Untouched Visual Code) -->
+                                        <!-- Taskbar Position Selector -->
                                         <StackPanel Padding="16,16">
                                             <ContentControl x:Name="TaskbarPositionPanel" HorizontalContentAlignment="Stretch" IsTabStop="False">
                                                 <StackPanel Spacing="12">
                                                     <StackPanel Spacing="2">
-                                                        <TextBlock Text="Taskbar Position" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
-                                                        <TextBlock Text="Choose the screen edge where the taskbar is displayed for each monitor."
-                                                               FontFamily="{ThemeResource AppCustomFont}"
-                                                               Style="{StaticResource CaptionTextBlockStyle}"
-                                                               Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
-                                                               TextWrapping="Wrap"/>
+                                                        <TextBlock Text="{helpers:ResourceString Key=Shell_TaskbarPositionTitle}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                                        <TextBlock Text="{helpers:ResourceString Key=Shell_TaskbarPositionDesc}"
+                                                                   FontFamily="{ThemeResource AppCustomFont}"
+                                                                   Style="{StaticResource CaptionTextBlockStyle}"
+                                                                   Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                                                                   TextWrapping="Wrap"/>
                                                     </StackPanel>
 
-                                                    <!-- Dynamically generate a selector for every connected monitor -->
                                                     <ItemsControl ItemsSource="{x:Bind Monitors}">
                                                         <ItemsControl.ItemTemplate>
                                                             <DataTemplate x:DataType="viewmodel:MonitorPositionViewModel">
@@ -545,7 +613,7 @@
 
                             <!-- GROUP 2: MOTION & ANIMATIONS -->
                             <StackPanel Spacing="8">
-                                <TextBlock Text="Motion &amp; Animations" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" Margin="4,0,0,0"/>
+                                <TextBlock Text="{helpers:ResourceString Key=Shell_MotionAnimations}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" Margin="4,0,0,0"/>
                                 <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8">
                                     <StackPanel>
 
@@ -556,19 +624,19 @@
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
                                             <StackPanel VerticalAlignment="Center" Spacing="2">
-                                                <TextBlock Text="Position Transition Animation" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
-                                                <TextBlock Text="Choose the fluid animation style when moving the taskbar."
+                                                <TextBlock Text="{helpers:ResourceString Key=Shell_TaskbarAnimTitle}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                                <TextBlock Text="{helpers:ResourceString Key=Shell_TaskbarAnimDesc}"
                                                            FontFamily="{ThemeResource AppCustomFont}"
                                                            Style="{StaticResource CaptionTextBlockStyle}"
                                                            Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
                                                            TextWrapping="Wrap"/>
                                             </StackPanel>
                                             <ComboBox Grid.Column="1" x:Name="TaskbarAnimationCombo" IsEnabled="False" Width="150" VerticalAlignment="Center" SelectionChanged="SettingCombo_SelectionChanged" Tag="Taskbar_Animation" FontFamily="{ThemeResource AppCustomFont}">
-                                                <ComboBoxItem Content="Spring" Tag="Spring" FontFamily="{ThemeResource AppCustomFont}"/>
-                                                <ComboBoxItem Content="BackEase" Tag="BackEase" FontFamily="{ThemeResource AppCustomFont}"/>
-                                                <ComboBoxItem Content="Exponential" Tag="Exponential" FontFamily="{ThemeResource AppCustomFont}"/>
-                                                <ComboBoxItem Content="Elastic" Tag="Elastic" FontFamily="{ThemeResource AppCustomFont}"/>
-                                                <ComboBoxItem Content="Scale Morph" Tag="ScaleMorph" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="{helpers:ResourceString Key=Shell_Anim_Spring}" Tag="Spring" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="{helpers:ResourceString Key=Shell_Anim_BackEase}" Tag="BackEase" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="{helpers:ResourceString Key=Shell_Anim_Exponential}" Tag="Exponential" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="{helpers:ResourceString Key=Shell_Anim_Elastic}" Tag="Elastic" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="{helpers:ResourceString Key=Shell_Anim_ScaleMorph}" Tag="ScaleMorph" FontFamily="{ThemeResource AppCustomFont}"/>
                                             </ComboBox>
                                         </Grid>
 
@@ -581,22 +649,24 @@
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
                                             <StackPanel VerticalAlignment="Center" Spacing="2">
-                                                <TextBlock Text="App Icon Hover Animation" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
-                                                <TextBlock Text="Choose the animation style when hovering over taskbar apps." 
+                                                <TextBlock Text="{helpers:ResourceString Key=Shell_TaskbarHoverAnimTitle}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                                <TextBlock Text="{helpers:ResourceString Key=Shell_TaskbarHoverAnimDesc}" 
                                                            FontFamily="{ThemeResource AppCustomFont}"
                                                            Style="{StaticResource CaptionTextBlockStyle}"
                                                            Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" 
                                                            TextWrapping="Wrap"/>
                                             </StackPanel>
                                             <ComboBox Grid.Column="1" x:Name="TaskbarHoverAnimationCombo" IsEnabled="False" Width="150" VerticalAlignment="Center" SelectionChanged="SettingCombo_SelectionChanged" Tag="Taskbar_HoverAnimation" FontFamily="{ThemeResource AppCustomFont}">
-                                                <ComboBoxItem Content="Standard" Tag="Standard" FontFamily="{ThemeResource AppCustomFont}"/>
-                                                <ComboBoxItem Content="Rise" Tag="Rise" FontFamily="{ThemeResource AppCustomFont}"/>
-                                                <ComboBoxItem Content="Grow" Tag="Grow" FontFamily="{ThemeResource AppCustomFont}"/>
-                                                <ComboBoxItem Content="Tilt" Tag="Tilt" FontFamily="{ThemeResource AppCustomFont}"/>
-                                                <ComboBoxItem Content="Breathing" Tag="Breathing" FontFamily="{ThemeResource AppCustomFont}"/>
-                                                <ComboBoxItem Content="Wobble" Tag="Wobble" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="{helpers:ResourceString Key=Shell_Anim_Standard}" Tag="Standard" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="{helpers:ResourceString Key=Shell_Anim_Rise}" Tag="Rise" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="{helpers:ResourceString Key=Shell_Anim_Grow}" Tag="Grow" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="{helpers:ResourceString Key=Shell_Anim_Tilt}" Tag="Tilt" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="{helpers:ResourceString Key=Shell_Anim_Breathing}" Tag="Breathing" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="{helpers:ResourceString Key=Shell_Anim_Wobble}" Tag="Wobble" FontFamily="{ThemeResource AppCustomFont}"/>
                                             </ComboBox>
                                         </Grid>
+
+                                        <Border Height="1" Background="{ThemeResource CardStrokeColorDefaultBrush}" Margin="16,0" Opacity="0.5"/>
 
                                         <Grid Padding="16,12">
                                             <Grid.ColumnDefinitions>
@@ -604,14 +674,21 @@
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
                                             <StackPanel VerticalAlignment="Center" Spacing="2">
-                                                <TextBlock Text="Show Hover Background" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
-                                                <TextBlock Text="Display a subtle background highlight when hovering over an app card." 
+                                                <TextBlock Text="{helpers:ResourceString Key=Shell_TaskbarHoverBgTitle}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                                <TextBlock Text="{helpers:ResourceString Key=Shell_TaskbarHoverBgDesc}" 
                                                            FontFamily="{ThemeResource AppCustomFont}"
                                                            Style="{StaticResource CaptionTextBlockStyle}"
                                                            Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" 
                                                            TextWrapping="Wrap"/>
                                             </StackPanel>
-                                            <ToggleSwitch Grid.Column="1" x:Name="HoverBackgroundToggle" IsEnabled="False" VerticalAlignment="Center" Toggled="SettingToggle_Toggled" Tag="Taskbar_HoverBackground" Margin="0" MinWidth="0"/>
+
+                                            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                                                <Grid VerticalAlignment="Center">
+                                                    <TextBlock Text="{helpers:ResourceString Key=Settings_Toggle_On}" Opacity="{x:Bind GetOnOpacity(HoverBackgroundToggle.IsOn), Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                    <TextBlock Text="{helpers:ResourceString Key=Settings_Toggle_Off}" Opacity="{x:Bind GetOffOpacity(HoverBackgroundToggle.IsOn), Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                </Grid>
+                                                <ToggleSwitch x:Name="HoverBackgroundToggle" IsEnabled="False" VerticalAlignment="Center" Toggled="SettingToggle_Toggled" Tag="Taskbar_HoverBackground" Margin="0" MinWidth="0" OnContent="{x:Null}" OffContent="{x:Null}"/>
+                                            </StackPanel>
                                         </Grid>
 
                                     </StackPanel>
@@ -620,7 +697,7 @@
 
                             <!-- GROUP 3: APPS & PREVIEWS -->
                             <StackPanel Spacing="8">
-                                <TextBlock Text="Apps &amp; Previews" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" Margin="4,0,0,0"/>
+                                <TextBlock Text="{helpers:ResourceString Key=Shell_AppsPreviews}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" Margin="4,0,0,0"/>
                                 <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8">
                                     <StackPanel>
 
@@ -632,14 +709,21 @@
                                                     <ColumnDefinition Width="Auto"/>
                                                 </Grid.ColumnDefinitions>
                                                 <StackPanel VerticalAlignment="Center" Spacing="2">
-                                                    <TextBlock Text="Monitor-Aware App Filtering" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
-                                                    <TextBlock Text="Only show running applications on the taskbar of the monitor where the window is currently open."
+                                                    <TextBlock Text="{helpers:ResourceString Key=Shell_MonitorAwareTitle}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                                    <TextBlock Text="{helpers:ResourceString Key=Shell_MonitorAwareDesc}"
                                                                FontFamily="{ThemeResource AppCustomFont}"
                                                                Style="{StaticResource CaptionTextBlockStyle}"
                                                                Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
                                                                TextWrapping="Wrap"/>
                                                 </StackPanel>
-                                                <ToggleSwitch Grid.Column="1" x:Name="MonitorAwareToggle" IsEnabled="False" VerticalAlignment="Center" Toggled="SettingToggle_Toggled" Tag="Taskbar_MonitorAware" Margin="0" MinWidth="0"/>
+
+                                                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                                                    <Grid VerticalAlignment="Center">
+                                                        <TextBlock Text="{helpers:ResourceString Key=Settings_Toggle_On}" Opacity="{x:Bind GetOnOpacity(MonitorAwareToggle.IsOn), Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                        <TextBlock Text="{helpers:ResourceString Key=Settings_Toggle_Off}" Opacity="{x:Bind GetOffOpacity(MonitorAwareToggle.IsOn), Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                    </Grid>
+                                                    <ToggleSwitch x:Name="MonitorAwareToggle" IsEnabled="False" VerticalAlignment="Center" Toggled="SettingToggle_Toggled" Tag="Taskbar_MonitorAware" Margin="0" MinWidth="0" OnContent="{x:Null}" OffContent="{x:Null}"/>
+                                                </StackPanel>
                                             </Grid>
 
                                             <Border Height="1" Background="{ThemeResource CardStrokeColorDefaultBrush}" Margin="16,0" Opacity="0.5"/>
@@ -652,14 +736,21 @@
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
                                             <StackPanel VerticalAlignment="Center" Spacing="2">
-                                                <TextBlock Text="Show Unpinned Apps" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
-                                                <TextBlock Text="Display running applications that are not pinned to the taskbar." 
+                                                <TextBlock Text="{helpers:ResourceString Key=Shell_ShowUnpinnedTitle}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                                <TextBlock Text="{helpers:ResourceString Key=Shell_ShowUnpinnedDesc}" 
                                                            FontFamily="{ThemeResource AppCustomFont}"
                                                            Style="{StaticResource CaptionTextBlockStyle}"
                                                            Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" 
                                                            TextWrapping="Wrap"/>
                                             </StackPanel>
-                                            <ToggleSwitch Grid.Column="1" x:Name="ShowUnpinnedToggle" IsEnabled="False" VerticalAlignment="Center" Toggled="SettingToggle_Toggled" Tag="Taskbar_ShowUnpinned" Margin="0" MinWidth="0"/>
+
+                                            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                                                <Grid VerticalAlignment="Center">
+                                                    <TextBlock Text="{helpers:ResourceString Key=Settings_Toggle_On}" Opacity="{x:Bind GetOnOpacity(ShowUnpinnedToggle.IsOn), Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                    <TextBlock Text="{helpers:ResourceString Key=Settings_Toggle_Off}" Opacity="{x:Bind GetOffOpacity(ShowUnpinnedToggle.IsOn), Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                </Grid>
+                                                <ToggleSwitch x:Name="ShowUnpinnedToggle" IsEnabled="False" VerticalAlignment="Center" Toggled="SettingToggle_Toggled" Tag="Taskbar_ShowUnpinned" Margin="0" MinWidth="0" OnContent="{x:Null}" OffContent="{x:Null}"/>
+                                            </StackPanel>
                                         </Grid>
 
                                         <Border Height="1" Background="{ThemeResource CardStrokeColorDefaultBrush}" Margin="16,0" Opacity="0.5"/>
@@ -671,16 +762,16 @@
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
                                             <StackPanel VerticalAlignment="Center" Spacing="2">
-                                                <TextBlock Text="Unpinned Display Mode" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
-                                                <TextBlock Text="Choose whether unpinned apps appear inline or switch views via mouse scroll." 
+                                                <TextBlock Text="{helpers:ResourceString Key=Shell_UnpinnedModeTitle}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                                <TextBlock Text="{helpers:ResourceString Key=Shell_UnpinnedModeDesc}" 
                                                            FontFamily="{ThemeResource AppCustomFont}"
                                                            Style="{StaticResource CaptionTextBlockStyle}"
                                                            Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" 
                                                            TextWrapping="Wrap"/>
                                             </StackPanel>
                                             <ComboBox Grid.Column="1" x:Name="UnpinnedModeCombo" IsEnabled="False" Width="150" VerticalAlignment="Center" SelectionChanged="SettingCombo_SelectionChanged" Tag="Taskbar_UnpinnedMode" FontFamily="{ThemeResource AppCustomFont}">
-                                                <ComboBoxItem Content="Inline" Tag="Inline" FontFamily="{ThemeResource AppCustomFont}"/>
-                                                <ComboBoxItem Content="Scroll View" Tag="Scroll" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="{helpers:ResourceString Key=Shell_Mode_Inline}" Tag="Inline" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="{helpers:ResourceString Key=Shell_Mode_ScrollView}" Tag="Scroll" FontFamily="{ThemeResource AppCustomFont}"/>
                                             </ComboBox>
                                         </Grid>
 
@@ -693,14 +784,21 @@
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
                                             <StackPanel VerticalAlignment="Center" Spacing="2">
-                                                <TextBlock Text="Live Preview Actions" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
-                                                <TextBlock Text="Show quick actions (Kill) when hovering over live previews." 
+                                                <TextBlock Text="{helpers:ResourceString Key=Shell_PreviewActionsTitle}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                                <TextBlock Text="{helpers:ResourceString Key=Shell_PreviewActionsDesc}" 
                                                            FontFamily="{ThemeResource AppCustomFont}"
                                                            Style="{StaticResource CaptionTextBlockStyle}"
                                                            Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" 
                                                            TextWrapping="Wrap"/>
                                             </StackPanel>
-                                            <ToggleSwitch Grid.Column="1" x:Name="PreviewButtonsToggle" IsEnabled="False" VerticalAlignment="Center" Toggled="SettingToggle_Toggled" Tag="Taskbar_PreviewButtons" Margin="0" MinWidth="0"/>
+
+                                            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                                                <Grid VerticalAlignment="Center">
+                                                    <TextBlock Text="{helpers:ResourceString Key=Settings_Toggle_On}" Opacity="{x:Bind GetOnOpacity(PreviewButtonsToggle.IsOn), Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                    <TextBlock Text="{helpers:ResourceString Key=Settings_Toggle_Off}" Opacity="{x:Bind GetOffOpacity(PreviewButtonsToggle.IsOn), Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                </Grid>
+                                                <ToggleSwitch x:Name="PreviewButtonsToggle" IsEnabled="False" VerticalAlignment="Center" Toggled="SettingToggle_Toggled" Tag="Taskbar_PreviewButtons" Margin="0" MinWidth="0" OnContent="{x:Null}" OffContent="{x:Null}"/>
+                                            </StackPanel>
                                         </Grid>
 
                                         <Border Height="1" Background="{ThemeResource CardStrokeColorDefaultBrush}" Margin="16,0" Opacity="0.5"/>
@@ -712,40 +810,49 @@
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
                                             <StackPanel VerticalAlignment="Center" Spacing="2">
-                                                <TextBlock Text="Live Preview Animations" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
-                                                <TextBlock Text="Enable smooth sliding and fading animations for taskbar app previews." 
+                                                <TextBlock Text="{helpers:ResourceString Key=Shell_PreviewAnimTitle}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                                <TextBlock Text="{helpers:ResourceString Key=Shell_PreviewAnimDesc}" 
                                                            FontFamily="{ThemeResource AppCustomFont}"
                                                            Style="{StaticResource CaptionTextBlockStyle}"
                                                            Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" 
                                                            TextWrapping="Wrap"/>
                                             </StackPanel>
-                                            <ToggleSwitch Grid.Column="1" x:Name="PreviewAnimationsToggle" IsEnabled="False" VerticalAlignment="Center" Toggled="SettingToggle_Toggled" Tag="Taskbar_PreviewAnimation" Margin="0" MinWidth="0"/>
+
+                                            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                                                <Grid VerticalAlignment="Center">
+                                                    <TextBlock Text="{helpers:ResourceString Key=Settings_Toggle_On}" Opacity="{x:Bind GetOnOpacity(PreviewAnimationsToggle.IsOn), Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                    <TextBlock Text="{helpers:ResourceString Key=Settings_Toggle_Off}" Opacity="{x:Bind GetOffOpacity(PreviewAnimationsToggle.IsOn), Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                </Grid>
+                                                <ToggleSwitch x:Name="PreviewAnimationsToggle" IsEnabled="False" VerticalAlignment="Center" Toggled="SettingToggle_Toggled" Tag="Taskbar_PreviewAnimation" Margin="0" MinWidth="0" OnContent="{x:Null}" OffContent="{x:Null}"/>
+                                            </StackPanel>
                                         </Grid>
 
-                                        <!-- Live Preview Animation Style -->
                                         <Border Height="1" Background="{ThemeResource CardStrokeColorDefaultBrush}" Margin="16,0" Opacity="0.5"/>
+
+                                        <!-- Live Preview Animation Style -->
                                         <Grid Padding="16,12">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
                                             <StackPanel VerticalAlignment="Center" Spacing="2">
-                                                <TextBlock Text="Preview Animation Style" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
-                                                <TextBlock Text="Choose the motion style for the live preview window." 
+                                                <TextBlock Text="{helpers:ResourceString Key=Shell_PreviewAnimStyleTitle}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                                <TextBlock Text="{helpers:ResourceString Key=Shell_PreviewAnimStyleDesc}" 
                                                            FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                                             </StackPanel>
                                             <ComboBox Grid.Column="1" x:Name="PreviewAnimStyleCombo" IsEnabled="False" Width="150" VerticalAlignment="Center" SelectionChanged="SettingCombo_SelectionChanged" Tag="Taskbar_PreviewAnimStyle" FontFamily="{ThemeResource AppCustomFont}">
-                                                <ComboBoxItem Content="Standard" Tag="Standard" FontFamily="{ThemeResource AppCustomFont}"/>
-                                                <ComboBoxItem Content="Glide" Tag="Glide" FontFamily="{ThemeResource AppCustomFont}"/>
-                                                <ComboBoxItem Content="Spring" Tag="Spring" FontFamily="{ThemeResource AppCustomFont}"/>
-                                                <ComboBoxItem Content="Bounce" Tag="Bounce" FontFamily="{ThemeResource AppCustomFont}"/>
-                                                <ComboBoxItem Content="Elastic" Tag="Elastic" FontFamily="{ThemeResource AppCustomFont}"/>
-                                                <ComboBoxItem Content="Fade Only" Tag="Fade" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="{helpers:ResourceString Key=Shell_Anim_Standard}" Tag="Standard" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="{helpers:ResourceString Key=Shell_Anim_Glide}" Tag="Glide" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="{helpers:ResourceString Key=Shell_Anim_Spring}" Tag="Spring" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="{helpers:ResourceString Key=Shell_Anim_Bounce}" Tag="Bounce" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="{helpers:ResourceString Key=Shell_Anim_Elastic}" Tag="Elastic" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <ComboBoxItem Content="{helpers:ResourceString Key=Shell_Anim_FadeOnly}" Tag="Fade" FontFamily="{ThemeResource AppCustomFont}"/>
                                             </ComboBox>
                                         </Grid>
 
-                                        <!-- Live Preview Animation Speed -->
                                         <Border Height="1" Background="{ThemeResource CardStrokeColorDefaultBrush}" Margin="16,0" Opacity="0.5"/>
+
+                                        <!-- Live Preview Animation Speed -->
                                         <Grid Padding="16,12">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*"/>
@@ -754,19 +861,20 @@
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
                                             <StackPanel VerticalAlignment="Center" Spacing="2">
-                                                <TextBlock Text="Preview Animation Speed" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
-                                                <TextBlock Text="Adjust how fast the live previews animate in and out."
+                                                <TextBlock Text="{helpers:ResourceString Key=Shell_PreviewAnimSpeedTitle}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                                <TextBlock Text="{helpers:ResourceString Key=Shell_PreviewAnimSpeedDesc}"
                                                            FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                                             </StackPanel>
                                             <Slider Grid.Column="1" x:Name="PreviewSpeedSlider" Minimum="0.1" Maximum="3.0" StepFrequency="0.1" Value="1.0" Width="120" VerticalAlignment="Center" ValueChanged="PreviewSpeedSlider_ValueChanged" IsEnabled="False" Margin="0,0,8,0"/>
                                             <TextBlock Grid.Column="2" x:Name="PreviewSpeedValueText" Text="1.0x" VerticalAlignment="Center" HorizontalAlignment="Right" FontFamily="{ThemeResource AppCustomFont}" FontSize="12" Opacity="0.8" Margin="0,0,4,0"/>
-                                            <Button Grid.Column="3" x:Name="ResetPreviewSpeedBtn" Width="32" Height="32" Padding="0" Background="Transparent" BorderThickness="0" CornerRadius="4" Click="ResetPreviewSpeed_Click" ToolTipService.ToolTip="Reset to default (1.0x)" VerticalAlignment="Center">
+                                            <Button Grid.Column="3" x:Name="ResetPreviewSpeedBtn" Width="32" Height="32" Padding="0" Background="Transparent" BorderThickness="0" CornerRadius="4" Click="ResetPreviewSpeed_Click" ToolTipService.ToolTip="{helpers:ResourceString Key=Shell_ResetToDefault_1x}" VerticalAlignment="Center">
                                                 <FontIcon Glyph="&#xE777;" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                             </Button>
                                         </Grid>
 
-                                        <!-- Live Preview Delay Slider -->
                                         <Border Height="1" Background="{ThemeResource CardStrokeColorDefaultBrush}" Margin="16,0" Opacity="0.5"/>
+
+                                        <!-- Live Preview Delay Slider -->
                                         <Grid Padding="16,12">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*"/>
@@ -775,13 +883,13 @@
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
                                             <StackPanel VerticalAlignment="Center" Spacing="2">
-                                                <TextBlock Text="Preview Hover Delay" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
-                                                <TextBlock Text="Adjust the delay before the live preview appears." 
-                                                   FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                                                <TextBlock Text="{helpers:ResourceString Key=Shell_PreviewDelayTitle}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                                <TextBlock Text="{helpers:ResourceString Key=Shell_PreviewDelayDesc}" 
+                                                           FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                                             </StackPanel>
                                             <Slider Grid.Column="1" x:Name="PreviewDelaySlider" Minimum="0" Maximum="2.0" StepFrequency="0.1" Value="0.3" Width="120" VerticalAlignment="Center" ValueChanged="PreviewDelaySlider_ValueChanged" IsEnabled="False" Margin="0,0,8,0"/>
                                             <TextBlock Grid.Column="2" x:Name="PreviewDelayValueText" Text="0.3s" VerticalAlignment="Center" HorizontalAlignment="Right" FontFamily="{ThemeResource AppCustomFont}" FontSize="12" Opacity="0.8" Margin="0,0,4,0"/>
-                                            <Button Grid.Column="3" x:Name="ResetPreviewDelayBtn" Width="32" Height="32" Padding="0" Background="Transparent" BorderThickness="0" CornerRadius="4" Click="ResetPreviewDelay_Click" ToolTipService.ToolTip="Reset to default (0.3s)" VerticalAlignment="Center">
+                                            <Button Grid.Column="3" x:Name="ResetPreviewDelayBtn" Width="32" Height="32" Padding="0" Background="Transparent" BorderThickness="0" CornerRadius="4" Click="ResetPreviewDelay_Click" ToolTipService.ToolTip="{helpers:ResourceString Key=Shell_ResetToDefault_03s}" VerticalAlignment="Center">
                                                 <FontIcon Glyph="&#xE777;" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                             </Button>
                                         </Grid>
@@ -791,7 +899,7 @@
 
                                 <!-- GROUP 3.5: PINNED ITEMS & CONTENT -->
                                 <StackPanel Spacing="8">
-                                    <TextBlock Text="Pinned Content" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" Margin="4,0,0,0"/>
+                                    <TextBlock Text="{helpers:ResourceString Key=Shell_PinnedContent}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" Margin="4,0,0,0"/>
                                     <Button x:Name="BtnTaskbarPins" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Padding="16,12" Click="BtnTaskbarPins_Click" IsEnabled="False">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
@@ -803,10 +911,10 @@
                                             <fluentIcons:SymbolIcon Grid.Column="0" Symbol="Pin" FontSize="20" Foreground="{ThemeResource TextFillColorPrimaryBrush}" VerticalAlignment="Center" Margin="0,0,16,0" />
 
                                             <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
-                                                <TextBlock Text="Taskbar Pins &amp; Folders" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
-                                                <TextBlock Text="Manage pinned files, folders, and submenu options on the custom taskbar." 
-                                                       FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource CaptionTextBlockStyle}" 
-                                                       Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                                                <TextBlock Text="{helpers:ResourceString Key=Shell_TaskbarPinsTitle}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                                <TextBlock Text="{helpers:ResourceString Key=Shell_TaskbarPinsDesc}" 
+                                                           FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource CaptionTextBlockStyle}" 
+                                                           Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                                             </StackPanel>
 
                                             <FontIcon Grid.Column="2" Glyph="&#xE76C;" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" VerticalAlignment="Center" />
@@ -818,7 +926,7 @@
 
                             <!-- GROUP 4: SYSTEM ELEMENTS -->
                             <StackPanel Spacing="8">
-                                <TextBlock Text="System Elements" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" Margin="4,0,0,0"/>
+                                <TextBlock Text="{helpers:ResourceString Key=Shell_SystemElements}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" Margin="4,0,0,0"/>
                                 <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8">
                                     <StackPanel>
 
@@ -829,14 +937,21 @@
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
                                             <StackPanel VerticalAlignment="Center" Spacing="2">
-                                                <TextBlock Text="Show Seconds in Clock" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
-                                                <TextBlock Text="Display seconds on the taskbar system clock." 
+                                                <TextBlock Text="{helpers:ResourceString Key=Shell_ClockSecondsTitle}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                                <TextBlock Text="{helpers:ResourceString Key=Shell_ClockSecondsDesc}" 
                                                            FontFamily="{ThemeResource AppCustomFont}"
                                                            Style="{StaticResource CaptionTextBlockStyle}"
                                                            Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" 
                                                            TextWrapping="Wrap"/>
                                             </StackPanel>
-                                            <ToggleSwitch Grid.Column="1" x:Name="ClockSecondsToggle" IsEnabled="False" VerticalAlignment="Center" Toggled="SettingToggle_Toggled" Tag="Taskbar_ClockSeconds" Margin="0" MinWidth="0"/>
+
+                                            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                                                <Grid VerticalAlignment="Center">
+                                                    <TextBlock Text="{helpers:ResourceString Key=Settings_Toggle_On}" Opacity="{x:Bind GetOnOpacity(ClockSecondsToggle.IsOn), Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                    <TextBlock Text="{helpers:ResourceString Key=Settings_Toggle_Off}" Opacity="{x:Bind GetOffOpacity(ClockSecondsToggle.IsOn), Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                </Grid>
+                                                <ToggleSwitch x:Name="ClockSecondsToggle" IsEnabled="False" VerticalAlignment="Center" Toggled="SettingToggle_Toggled" Tag="Taskbar_ClockSeconds" Margin="0" MinWidth="0" OnContent="{x:Null}" OffContent="{x:Null}"/>
+                                            </StackPanel>
                                         </Grid>
 
                                     </StackPanel>
@@ -857,8 +972,8 @@
                             </Grid.ColumnDefinitions>
                             <fluentIcons:SymbolIcon Grid.Column="0" Symbol="Gauge" FontSize="20" Foreground="{ThemeResource TextFillColorPrimaryBrush}" VerticalAlignment="Center" Margin="0,0,16,0" />
                             <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
-                                <TextBlock Text="Integration &amp; Performance" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
-                                <TextBlock Text="Manage Windows startup behavior and background process priority."
+                                <TextBlock Text="{helpers:ResourceString Key=Shell_IntegrationPerf}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                <TextBlock Text="{helpers:ResourceString Key=Shell_IntegrationPerfDesc}"
                                            FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                             </StackPanel>
                         </Grid>
@@ -876,11 +991,18 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <StackPanel VerticalAlignment="Center" Spacing="2">
-                                            <TextBlock Text="Run on Windows Startup" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
-                                            <TextBlock Text="Automatically launch the custom Shell Enhancer in the background when you log in."
+                                            <TextBlock Text="{helpers:ResourceString Key=Shell_RunOnStartupTitle}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                            <TextBlock Text="{helpers:ResourceString Key=Shell_RunOnStartupDesc}"
                                                        FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                                         </StackPanel>
-                                        <ToggleSwitch Grid.Column="1" x:Name="ShellStartupToggle" IsEnabled="False" VerticalAlignment="Center" Toggled="SettingToggle_Toggled" Tag="Shell_RunOnStartup" Margin="0" MinWidth="0"/>
+
+                                        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                                            <Grid VerticalAlignment="Center">
+                                                <TextBlock Text="{helpers:ResourceString Key=Settings_Toggle_On}" Opacity="{x:Bind GetOnOpacity(ShellStartupToggle.IsOn), Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <TextBlock Text="{helpers:ResourceString Key=Settings_Toggle_Off}" Opacity="{x:Bind GetOffOpacity(ShellStartupToggle.IsOn), Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                            </Grid>
+                                            <ToggleSwitch x:Name="ShellStartupToggle" IsEnabled="False" VerticalAlignment="Center" Toggled="SettingToggle_Toggled" Tag="Shell_RunOnStartup" Margin="0" MinWidth="0" OnContent="{x:Null}" OffContent="{x:Null}"/>
+                                        </StackPanel>
                                     </Grid>
 
                                     <Border Height="1" Background="{ThemeResource CardStrokeColorDefaultBrush}" Margin="16,0" Opacity="0.5"/>
@@ -892,11 +1014,18 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <StackPanel VerticalAlignment="Center" Spacing="2">
-                                            <TextBlock Text="High Performance Mode" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
-                                            <TextBlock Text="Elevates the background process priority to ensure the taskbar and start menu never lag during heavy CPU load (e.g., Gaming)."
+                                            <TextBlock Text="{helpers:ResourceString Key=Shell_HighPerfTitle}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                            <TextBlock Text="{helpers:ResourceString Key=Shell_HighPerfDesc}"
                                                        FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                                         </StackPanel>
-                                        <ToggleSwitch Grid.Column="1" x:Name="ShellHighPriorityToggle" IsEnabled="False" VerticalAlignment="Center" Toggled="SettingToggle_Toggled" Tag="Shell_HighPriority" Margin="0" MinWidth="0"/>
+
+                                        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                                            <Grid VerticalAlignment="Center">
+                                                <TextBlock Text="{helpers:ResourceString Key=Settings_Toggle_On}" Opacity="{x:Bind GetOnOpacity(ShellHighPriorityToggle.IsOn), Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <TextBlock Text="{helpers:ResourceString Key=Settings_Toggle_Off}" Opacity="{x:Bind GetOffOpacity(ShellHighPriorityToggle.IsOn), Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                            </Grid>
+                                            <ToggleSwitch x:Name="ShellHighPriorityToggle" IsEnabled="False" VerticalAlignment="Center" Toggled="SettingToggle_Toggled" Tag="Shell_HighPriority" Margin="0" MinWidth="0" OnContent="{x:Null}" OffContent="{x:Null}"/>
+                                        </StackPanel>
                                     </Grid>
 
                                 </StackPanel>

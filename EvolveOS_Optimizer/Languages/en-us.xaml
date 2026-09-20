@@ -6271,4 +6271,136 @@
 
     <!-- endregion Data Recovery Suite -->
 
+    <!-- // Shell Customization Base \\ -->
+    <sys:String x:Key="Shell_PageTitle">Shell Customization</sys:String>
+    <sys:String x:Key="Shell_PageDesc">Manage custom Taskbar and Start Menu overlays.</sys:String>
+    <sys:String x:Key="Shell_MasterToggleTitle">Enable EvolveOS Shell Enhancer</sys:String>
+    <sys:String x:Key="Shell_MasterToggleDesc">Master switch to activate the background process for custom Start Menu and Taskbar features.</sys:String>
+
+    <!-- Typography & Language -->
+    <sys:String x:Key="Shell_TypographyTitle">Global Typography</sys:String>
+    <sys:String x:Key="Shell_TypographyDesc">Override the font used throughout the shell enhancer application.</sys:String>
+    <sys:String x:Key="Shell_LanguageTitle">Shell Overlay Language</sys:String>
+    <sys:String x:Key="Shell_LanguageDesc">Change the language used specifically by the custom Taskbar and Start Menu.</sys:String>
+    <sys:String x:Key="Shell_Lang_English">English</sys:String>
+    <sys:String x:Key="Shell_Lang_Dutch">Dutch</sys:String>
+    <sys:String x:Key="Shell_Lang_French">French</sys:String>
+    <sys:String x:Key="Shell_Lang_German">German</sys:String>
+    <sys:String x:Key="Shell_Lang_Italian">Italian</sys:String>
+    <sys:String x:Key="Shell_Lang_Portuguese">Portuguese (Brazil)</sys:String>
+    <sys:String x:Key="Shell_Lang_Spanish">Spanish</sys:String>
+    <sys:String x:Key="Shell_FontTitle">App Font</sys:String>
+    <sys:String x:Key="Shell_FontDesc">Select a custom font for the Shell interface.</sys:String>
+    <sys:String x:Key="Shell_FontSizeTitle">App Font Size</sys:String>
+    <sys:String x:Key="Shell_FontSizeDesc">Adjust the text scale across the Shell interface.</sys:String>
+
+    <!-- Start Menu Settings -->
+    <sys:String x:Key="Shell_StartMenuHeaderTitle">Custom Start Menu</sys:String>
+    <sys:String x:Key="Shell_StartMenuHeaderDesc">Replace the native Windows 11 Start Menu with the EvolveOS optimized menu.</sys:String>
+    <sys:String x:Key="Shell_Appearance">Appearance</sys:String>
+    <sys:String x:Key="Shell_StartMenuStyleTitle">Start Menu Style</sys:String>
+    <sys:String x:Key="Shell_StartMenuStyleDesc">Choose between standard or compact rendering.</sys:String>
+    <sys:String x:Key="Shell_Style_Standard">Standard</sys:String>
+    <sys:String x:Key="Shell_Style_Compact">Compact</sys:String>
+    <sys:String x:Key="Shell_Animations">Animations</sys:String>
+    <sys:String x:Key="Shell_StartMenuAnimTitle">Start Menu Animations</sys:String>
+    <sys:String x:Key="Shell_StartMenuAnimDesc">Enable smooth sliding animations when opening and closing the Start Menu.</sys:String>
+    <sys:String x:Key="Shell_AnimStyleTitle">Animation Style</sys:String>
+    <sys:String x:Key="Shell_AnimStyleDesc">Choose the motion style for the Start Menu.</sys:String>
+    <sys:String x:Key="Shell_Anim_Standard">Standard</sys:String>
+    <sys:String x:Key="Shell_Anim_Glide">Glide</sys:String>
+    <sys:String x:Key="Shell_Anim_Spring">Spring</sys:String>
+    <sys:String x:Key="Shell_Anim_Bounce">Bounce</sys:String>
+    <sys:String x:Key="Shell_Anim_Elastic">Elastic</sys:String>
+    <sys:String x:Key="Shell_Anim_Exponential">Exponential</sys:String>
+    <sys:String x:Key="Shell_Anim_Overshoot">Overshoot</sys:String>
+    <sys:String x:Key="Shell_Anim_Circle">Circle</sys:String>
+    <sys:String x:Key="Shell_Anim_Sine">Sine</sys:String>
+    <sys:String x:Key="Shell_StartMenuAnimSpeedTitle">Animation Speed</sys:String>
+    <sys:String x:Key="Shell_StartMenuAnimSpeedDesc">Adjust how fast the Start Menu animates in and out.</sys:String>
+    <sys:String x:Key="Shell_ResetToDefault_1x">Reset to default (1.0x)</sys:String>
+
+    <!-- Taskbar Settings -->
+    <sys:String x:Key="Shell_TaskbarHeaderTitle">Custom Taskbar Rendering</sys:String>
+    <sys:String x:Key="Shell_TaskbarHeaderDesc">Enable custom taskbar styles, dynamic transparency, and centered floating mode.</sys:String>
+    <sys:String x:Key="Shell_AppearanceLayout">Appearance &amp; Layout</sys:String>
+    <sys:String x:Key="Shell_TaskbarStyleTitle">Taskbar Style</sys:String>
+    <sys:String x:Key="Shell_TaskbarStyleDesc">Choose between a traditional full-width bar or a modern floating dock.</sys:String>
+    <sys:String x:Key="Shell_Style_FloatingDock">Floating Dock</sys:String>
+    <sys:String x:Key="Shell_TaskbarAlignTitle">Taskbar Alignment</sys:String>
+    <sys:String x:Key="Shell_TaskbarAlignDesc">Choose how the Start button and pinned apps are arranged.</sys:String>
+    <sys:String x:Key="Shell_Align_Split">Split</sys:String>
+    <sys:String x:Key="Shell_Align_Center">Center</sys:String>
+    <sys:String x:Key="Shell_Align_Left">Left</sys:String>
+    <sys:String x:Key="Shell_TaskbarSizeTitle">Taskbar Size</sys:String>
+    <sys:String x:Key="Shell_TaskbarSizeDesc">Adjust the height or width of the taskbar dock.</sys:String>
+    <sys:String x:Key="Shell_ResetToDefault_48px">Reset to default (48px)</sys:String>
+
+    <sys:String x:Key="Setting_TaskbarLength_Title">Taskbar Length</sys:String>
+    <sys:String x:Key="Setting_TaskbarLength_Desc">Adjust the horizontal or vertical length of the taskbar (0 = Full width).</sys:String>
+    <sys:String x:Key="Setting_TaskbarLength_ResetTooltip">Reset to full width (0)</sys:String>
+    <sys:String x:Key="Setting_TaskbarCornerRadius_Title">Taskbar Corner Radius</sys:String>
+    <sys:String x:Key="Setting_TaskbarCornerRadius_Desc">Adjust the roundness of the taskbar corners (Floating mode only).</sys:String>
+    <sys:String x:Key="Setting_TaskbarCornerRadius_ResetTooltip">Reset to default (4px)</sys:String>
+
+    <sys:String x:Key="Shell_TaskbarIconSizeTitle">Taskbar Icon Size</sys:String>
+    <sys:String x:Key="Shell_TaskbarIconSizeDesc">Adjust the scale of app icons on the taskbar.</sys:String>
+    <sys:String x:Key="Shell_ResetToDefault_24px">Reset to default (24px)</sys:String>
+    <sys:String x:Key="Shell_TaskbarPositionTitle">Taskbar Position</sys:String>
+    <sys:String x:Key="Shell_TaskbarPositionDesc">Choose the screen edge where the taskbar is displayed for each monitor.</sys:String>
+    <sys:String x:Key="Shell_MotionAnimations">Motion &amp; Animations</sys:String>
+    <sys:String x:Key="Shell_TaskbarAnimTitle">Position Transition Animation</sys:String>
+    <sys:String x:Key="Shell_TaskbarAnimDesc">Choose the fluid animation style when moving the taskbar.</sys:String>
+    <sys:String x:Key="Shell_Anim_BackEase">BackEase</sys:String>
+    <sys:String x:Key="Shell_Anim_ScaleMorph">Scale Morph</sys:String>
+    <sys:String x:Key="Shell_TaskbarHoverAnimTitle">App Icon Hover Animation</sys:String>
+    <sys:String x:Key="Shell_TaskbarHoverAnimDesc">Choose the animation style when hovering over taskbar apps.</sys:String>
+    <sys:String x:Key="Shell_Anim_Rise">Rise</sys:String>
+    <sys:String x:Key="Shell_Anim_Grow">Grow</sys:String>
+    <sys:String x:Key="Shell_Anim_Tilt">Tilt</sys:String>
+    <sys:String x:Key="Shell_Anim_Breathing">Breathing</sys:String>
+    <sys:String x:Key="Shell_Anim_Wobble">Wobble</sys:String>
+    <sys:String x:Key="Shell_TaskbarHoverBgTitle">Show Hover Background</sys:String>
+    <sys:String x:Key="Shell_TaskbarHoverBgDesc">Display a subtle background highlight when hovering over an app card.</sys:String>
+
+    <!-- Apps, Previews & Unpinned -->
+    <sys:String x:Key="Shell_AppsPreviews">Apps &amp; Previews</sys:String>
+    <sys:String x:Key="Shell_MonitorAwareTitle">Monitor-Aware App Filtering</sys:String>
+    <sys:String x:Key="Shell_MonitorAwareDesc">Only show running applications on the taskbar of the monitor where the window is currently open.</sys:String>
+    <sys:String x:Key="Shell_ShowUnpinnedTitle">Show Unpinned Apps</sys:String>
+    <sys:String x:Key="Shell_ShowUnpinnedDesc">Display running applications that are not pinned to the taskbar.</sys:String>
+    <sys:String x:Key="Shell_UnpinnedModeTitle">Unpinned Display Mode</sys:String>
+    <sys:String x:Key="Shell_UnpinnedModeDesc">Choose whether unpinned apps appear inline or switch views via mouse scroll.</sys:String>
+    <sys:String x:Key="Shell_Mode_Inline">Inline</sys:String>
+    <sys:String x:Key="Shell_Mode_ScrollView">Scroll View</sys:String>
+    <sys:String x:Key="Shell_PreviewActionsTitle">Live Preview Actions</sys:String>
+    <sys:String x:Key="Shell_PreviewActionsDesc">Show quick actions (Kill) when hovering over live previews.</sys:String>
+    <sys:String x:Key="Shell_PreviewAnimTitle">Live Preview Animations</sys:String>
+    <sys:String x:Key="Shell_PreviewAnimDesc">Enable smooth sliding and fading animations for taskbar app previews.</sys:String>
+    <sys:String x:Key="Shell_PreviewAnimStyleTitle">Preview Animation Style</sys:String>
+    <sys:String x:Key="Shell_PreviewAnimStyleDesc">Choose the motion style for the live preview window.</sys:String>
+    <sys:String x:Key="Shell_Anim_FadeOnly">Fade Only</sys:String>
+    <sys:String x:Key="Shell_PreviewAnimSpeedTitle">Preview Animation Speed</sys:String>
+    <sys:String x:Key="Shell_PreviewAnimSpeedDesc">Adjust how fast the live previews animate in and out.</sys:String>
+    <sys:String x:Key="Shell_PreviewDelayTitle">Preview Hover Delay</sys:String>
+    <sys:String x:Key="Shell_PreviewDelayDesc">Adjust the delay before the live preview appears.</sys:String>
+    <sys:String x:Key="Shell_ResetToDefault_03s">Reset to default (0.3s)</sys:String>
+
+    <sys:String x:Key="Shell_PinnedContent">Pinned Content</sys:String>
+    <sys:String x:Key="Shell_TaskbarPinsTitle">Taskbar Pins &amp; Folders</sys:String>
+    <sys:String x:Key="Shell_TaskbarPinsDesc">Manage pinned files, folders, and submenu options on the custom taskbar.</sys:String>
+
+    <!-- System Elements & Integration -->
+    <sys:String x:Key="Shell_SystemElements">System Elements</sys:String>
+    <sys:String x:Key="Shell_ClockSecondsTitle">Show Seconds in Clock</sys:String>
+    <sys:String x:Key="Shell_ClockSecondsDesc">Display seconds on the taskbar system clock.</sys:String>
+    <sys:String x:Key="Shell_IntegrationPerf">Integration &amp; Performance</sys:String>
+    <sys:String x:Key="Shell_IntegrationPerfDesc">Manage Windows startup behavior and background process priority.</sys:String>
+    <sys:String x:Key="Shell_RunOnStartupTitle">Run on Windows Startup</sys:String>
+    <sys:String x:Key="Shell_RunOnStartupDesc">Automatically launch the custom Shell Enhancer in the background when you log in.</sys:String>
+    <sys:String x:Key="Shell_HighPerfTitle">High Performance Mode</sys:String>
+    <sys:String x:Key="Shell_HighPerfDesc">Elevates the background process priority to ensure the taskbar and start menu never lag during heavy CPU load (e.g., Gaming).</sys:String>
+
+    <!-- \\ Shell Customization Base // -->
+
 </ResourceDictionary>
