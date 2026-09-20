@@ -260,44 +260,10 @@ namespace EvolveOS_Optimizer.Pages
             {
                 await ShellEnhancerController.StartEnhancerAsync();
 
-                _ = ShellEnhancerController.SendCommandAsync($"Shell_Font:{SettingsEngine.Shell_AppFont}");
-                _ = ShellEnhancerController.SendCommandAsync($"Shell_FontSize:{SettingsEngine.Shell_AppFontSize}");
+                await Task.Delay(1500);
 
                 _ = ShellEnhancerController.SendCommandAsync($"StartMenu_Enable:{StartMenuToggle.IsOn}");
-                _ = ShellEnhancerController.SendCommandAsync($"StartMenu_Style:{SettingsEngine.Shell_StartMenuStyle}");
-                _ = ShellEnhancerController.SendCommandAsync($"StartMenu_Animation:{SettingsEngine.Shell_StartMenuAnimation}");
-                _ = ShellEnhancerController.SendCommandAsync($"StartMenu_AnimStyle:{SettingsEngine.Shell_StartMenuAnimStyle ?? "Standard"}");
-                _ = ShellEnhancerController.SendCommandAsync($"StartMenu_AnimSpeed:{SettingsEngine.Shell_StartMenuAnimSpeed.ToString(CultureInfo.InvariantCulture)}");
-                _ = ShellEnhancerController.SendCommandAsync($"StartMenu_ProfileClick:{SettingsEngine.Shell_StartMenuProfileClick}");
-                _ = ShellEnhancerController.SendCommandAsync($"StartMenu_RecentDocs:{SettingsEngine.Shell_StartMenuRecentDocs}");
-
-                _ = ShellEnhancerController.SendCommandAsync($"StartMenu_PowerSleep:{SettingsEngine.Shell_StartMenuPowerSleep}");
-                _ = ShellEnhancerController.SendCommandAsync($"StartMenu_PowerLogOff:{SettingsEngine.Shell_StartMenuPowerLogOff}");
-                _ = ShellEnhancerController.SendCommandAsync($"StartMenu_PowerRestartBios:{SettingsEngine.Shell_StartMenuPowerRestartBios}");
-
                 _ = ShellEnhancerController.SendCommandAsync($"Taskbar_Enable:{TaskbarToggle.IsOn}");
-                _ = ShellEnhancerController.SendCommandAsync($"Taskbar_Size:{SettingsEngine.Shell_TaskbarSize}");
-                _ = ShellEnhancerController.SendCommandAsync($"Taskbar_IconSize:{SettingsEngine.Shell_TaskbarIconSize}");
-                _ = ShellEnhancerController.SendCommandAsync($"Taskbar_Length:{SettingsEngine.Shell_TaskbarLength}");
-                _ = ShellEnhancerController.SendCommandAsync($"Taskbar_CornerRadius:{SettingsEngine.Shell_TaskbarCornerRadius}");
-                _ = ShellEnhancerController.SendCommandAsync($"Taskbar_Style:{SettingsEngine.Shell_TaskbarStyle}");
-                _ = ShellEnhancerController.SendCommandAsync($"Taskbar_Alignment:{SettingsEngine.Shell_TaskbarAlignment}");
-                _ = ShellEnhancerController.SendCommandAsync($"Taskbar_Position:{SettingsEngine.Shell_TaskbarPosition ?? "Bottom"}");
-                _ = ShellEnhancerController.SendCommandAsync($"Taskbar_PreviewButtons:{SettingsEngine.Shell_TaskbarPreviewButtons}");
-                _ = ShellEnhancerController.SendCommandAsync($"Taskbar_PreviewAnimation:{SettingsEngine.Shell_TaskbarPreviewAnimation}");
-                _ = ShellEnhancerController.SendCommandAsync($"Taskbar_PreviewAnimStyle:{SettingsEngine.Shell_TaskbarPreviewAnimStyle ?? "Standard"}");
-                _ = ShellEnhancerController.SendCommandAsync($"Taskbar_PreviewAnimSpeed:{SettingsEngine.Shell_TaskbarPreviewAnimSpeed.ToString(CultureInfo.InvariantCulture)}");
-                _ = ShellEnhancerController.SendCommandAsync($"Taskbar_PreviewDelay:{SettingsEngine.Shell_TaskbarPreviewDelay.ToString(CultureInfo.InvariantCulture)}");
-                _ = ShellEnhancerController.SendCommandAsync($"Taskbar_ClockSeconds:{SettingsEngine.Shell_TaskbarClockSeconds}");
-                _ = ShellEnhancerController.SendCommandAsync($"Taskbar_ShowUnpinned:{SettingsEngine.Shell_TaskbarShowUnpinned}");
-                _ = ShellEnhancerController.SendCommandAsync($"Taskbar_UnpinnedMode:{SettingsEngine.Shell_TaskbarUnpinnedMode}");
-                _ = ShellEnhancerController.SendCommandAsync($"Taskbar_Animation:{SettingsEngine.Shell_TaskbarAnimation ?? "Spring"}");
-                _ = ShellEnhancerController.SendCommandAsync($"Taskbar_HoverAnimation:{SettingsEngine.Shell_TaskbarHoverAnimation ?? "Standard"}");
-                _ = ShellEnhancerController.SendCommandAsync($"Taskbar_HoverBackground:{SettingsEngine.Shell_TaskbarHoverBackground}");
-                _ = ShellEnhancerController.SendCommandAsync($"Taskbar_MonitorAware:{SettingsEngine.Shell_TaskbarMonitorAware}");
-
-                _ = ShellEnhancerController.SendCommandAsync($"Shell_HighPriority:{SettingsEngine.Shell_HighPriority}");
-                _ = ShellEnhancerController.SendCommandAsync($"Shell_Language:{SettingsEngine.Shell_Language}");
             }
             else
             {
