@@ -47,6 +47,10 @@ namespace EvolveOS_Optimizer.Utilities.Controls
 
         private const string AppName = "EvolveOS Optimizer";
         private const string ScheduledTaskName = "[EvolveOS Optimizer]";
+
+        private const string ShellAppName = "EvolveOS_ShellEnhancer";
+        private const string ShellScheduledTaskName = "EvolveOS_ShellEnhancer_Startup";
+
         private const string RunKeyPath = @"Software\Microsoft\Windows\CurrentVersion\Run";
 
         private static readonly Dictionary<string, object> _defaultSettings = new Dictionary<string, object>
@@ -570,62 +574,125 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             }
         }
 
-        private static void ToggleShellStartup(bool enable)
+        public static void ToggleShellStartup(bool enable)
         {
-            try
+            string currentExePath = Environment.ProcessPath ?? AppContext.BaseDirectory;
+            string basePath = Path.GetDirectoryName(currentExePath) ?? string.Empty;
+            string enhancerPath = Path.Combine(basePath, "EvolveOS_ShellEnhancer.exe");
+
+            if (enable)
             {
-                using var key = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run", true);
-                if (enable)
+                bool taskSuccess = EnableShellTask(enhancerPath, basePath);
+
+                if (taskSuccess)
                 {
-                    string currentExePath = Environment.ProcessPath ?? AppContext.BaseDirectory;
-                    string basePath = Path.GetDirectoryName(currentExePath) ?? string.Empty;
-
-                    string enhancerPath = Path.Combine(basePath, "EvolveOS_ShellEnhancer.exe");
-
-                    key?.SetValue("EvolveOS_ShellEnhancer", $"\"{enhancerPath}\"");
+                    RemoveShellRegistryKey();
                 }
                 else
                 {
-                    key?.DeleteValue("EvolveOS_ShellEnhancer", false);
+                    WriteShellRegistryKey(enhancerPath);
                 }
             }
-            catch (Exception ex)
+            else
             {
-                Debug.WriteLine($"Failed to toggle shell enhancer startup: {ex.Message}");
+                RemoveShellRegistryKey();
+                DisableShellTask();
+            }
+        }
+
+        private static void WriteShellRegistryKey(string enhancerPath)
+        {
+            try
+            {
+                using (RegistryKey? key = Registry.CurrentUser.OpenSubKey(RunKeyPath, true))
+                {
+                    key?.SetValue(ShellAppName, $"\"{enhancerPath}\"");
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("Shell Enhancer Registry Write Failed: " + e.Message);
+            }
+        }
+
+        private static void RemoveShellRegistryKey()
+        {
+            try
+            {
+                using (RegistryKey? key = Registry.CurrentUser.OpenSubKey(RunKeyPath, true))
+                {
+                    key?.DeleteValue(ShellAppName, false);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("Shell Enhancer Registry Delete Failed: " + e.Message);
+            }
+        }
+
+        private static bool EnableShellTask(string exePath, string basePath)
+        {
+            try
+            {
+                using (TaskService taskService = new TaskService())
+                {
+                    TaskDefinition td = taskService.NewTask();
+                    td.RegistrationInfo.Description = "Runs EvolveOS Shell Enhancer on startup.";
+
+                    td.Principal.RunLevel = TaskRunLevel.Highest;
+                    td.Triggers.Add(new LogonTrigger());
+
+                    td.Actions.Add(new ExecAction(exePath, "", basePath));
+
+                    td.Settings.DisallowStartIfOnBatteries = false;
+                    td.Settings.StopIfGoingOnBatteries = false;
+                    td.Settings.ExecutionTimeLimit = TimeSpan.Zero;
+
+                    taskService.RootFolder.RegisterTaskDefinition(ShellScheduledTaskName, td);
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("Shell Enhancer Task Scheduler Enable Failed: " + e.Message);
+                return false;
+            }
+        }
+
+        private static void DisableShellTask()
+        {
+            try
+            {
+                using (TaskService taskService = new TaskService())
+                {
+                    if (taskService.FindTask(ShellScheduledTaskName) != null)
+                    {
+                        taskService.RootFolder.DeleteTask(ShellScheduledTaskName);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("Shell Enhancer Task Scheduler Disable Failed: " + e.Message);
             }
         }
 
         public static void ToggleStartup(bool enable, bool startHidden)
         {
             string exePath = Environment.ProcessPath ?? AppContext.BaseDirectory;
+            string basePath = Path.GetDirectoryName(exePath) ?? string.Empty;
 
             if (enable)
             {
-                bool registrySuccess = false;
-                try
-                {
-                    using (RegistryKey? key = Registry.CurrentUser.OpenSubKey(RunKeyPath, true))
-                    {
-                        if (key != null)
-                        {
-                            string command = $"\"{exePath}\"{(startHidden ? " -hidden" : "")}";
-                            key.SetValue(AppName, command);
-                            registrySuccess = true;
+                bool taskSuccess = EnableTask(exePath, basePath, startHidden);
 
-                            DisableTask();
-                        }
-                    }
-                }
-                catch (Exception e)
-                {
-                    Debug.WriteLine("Registry Write Failed: " + e.Message);
-                    registrySuccess = false;
-                }
-
-                if (!registrySuccess)
+                if (taskSuccess)
                 {
                     RemoveRegistryKey();
-                    EnableTask(exePath, startHidden);
+                }
+                else
+                {
+                    WriteRegistryKey(exePath, startHidden);
                 }
             }
             else
@@ -635,7 +702,35 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             }
         }
 
-        private static void EnableTask(string exePath, bool startHidden)
+        private static void WriteRegistryKey(string exePath, bool startHidden)
+        {
+            try
+            {
+                using (RegistryKey? key = Registry.CurrentUser.OpenSubKey(RunKeyPath, true))
+                {
+                    string command = $"\"{exePath}\"{(startHidden ? " -hidden" : "")}";
+                    key?.SetValue(AppName, command);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("Registry Write Failed: " + e.Message);
+            }
+        }
+
+        private static void RemoveRegistryKey()
+        {
+            try
+            {
+                using (RegistryKey? key = Registry.CurrentUser.OpenSubKey(RunKeyPath, true))
+                {
+                    key?.DeleteValue(AppName, false);
+                }
+            }
+            catch { }
+        }
+
+        private static bool EnableTask(string exePath, string basePath, bool startHidden)
         {
             try
             {
@@ -643,22 +738,26 @@ namespace EvolveOS_Optimizer.Utilities.Controls
                 {
                     TaskDefinition td = taskService.NewTask();
                     td.RegistrationInfo.Description = "Runs EvolveOS Optimizer on startup.";
+
                     td.Principal.RunLevel = TaskRunLevel.Highest;
                     td.Triggers.Add(new LogonTrigger());
 
                     string arguments = startHidden ? "-hidden" : "";
-                    td.Actions.Add(new ExecAction(exePath, arguments));
+
+                    td.Actions.Add(new ExecAction(exePath, arguments, basePath));
 
                     td.Settings.DisallowStartIfOnBatteries = false;
                     td.Settings.StopIfGoingOnBatteries = false;
                     td.Settings.ExecutionTimeLimit = TimeSpan.Zero;
 
                     taskService.RootFolder.RegisterTaskDefinition(ScheduledTaskName, td);
+                    return true;
                 }
             }
             catch (Exception e)
             {
                 Debug.WriteLine("Task Scheduler Enable Failed: " + e.Message);
+                return false;
             }
         }
 
@@ -678,18 +777,6 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             {
                 Debug.WriteLine("Task Scheduler Disable Failed: " + e.Message);
             }
-        }
-
-        private static void RemoveRegistryKey()
-        {
-            try
-            {
-                using (RegistryKey? key = Registry.CurrentUser.OpenSubKey(RunKeyPath, true))
-                {
-                    key?.DeleteValue(AppName, false);
-                }
-            }
-            catch { }
         }
 
         internal static void SelfReboot(string injectedCommand = "")
