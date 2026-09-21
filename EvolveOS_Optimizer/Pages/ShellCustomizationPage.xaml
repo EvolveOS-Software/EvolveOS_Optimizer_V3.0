@@ -6,6 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:helpers="using:EvolveOS_Optimizer.Utilities.Helpers"
+    xmlns:models="using:EvolveOS_Optimizer.Core.Model"
     xmlns:viewmodel="using:EvolveOS_Optimizer.Core.ViewModel"
     xmlns:fluentIcons="using:FluentIcons.WinUI"
     mc:Ignorable="d"
@@ -438,6 +439,193 @@
 
                                     </StackPanel>
                                 </Border>
+                            </StackPanel>
+
+                            <!-- Start Menu Shortcuts Section -->
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Start Menu Folders" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" Margin="4,0,0,0"/>
+
+                                <Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" CornerRadius="8">
+                                    <Expander.Header>
+                                        <Grid Padding="0,8">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                                <fluentIcons:SymbolIcon Symbol="List" FontSize="16"/>
+                                                <TextBlock Text="Shortcuts list" FontWeight="SemiBold" FontSize="14" FontFamily="{ThemeResource AppCustomFont}"/>
+                                            </StackPanel>
+                                            <TextBlock Grid.Row="1" Text="You can reorder these by dragging them in the list." 
+                                                       FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" 
+                                                       Margin="28,4,0,0" FontFamily="{ThemeResource AppCustomFont}"/>
+                                        </Grid>
+                                    </Expander.Header>
+
+                                    <Grid ColumnSpacing="16" Padding="4">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="160"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- Custom Pointer Drag & Drop List -->
+                                        <ListView x:Name="ShortcutsListView"
+                                                  ItemsSource="{x:Bind ShortcutsList, Mode=OneWay}"
+                                                  SelectionMode="Single"
+                                                  BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                                  BorderThickness="1"
+                                                  CornerRadius="4"
+                                                  MinHeight="200">
+
+                                            <ListView.ItemContainerStyle>
+                                                <Style TargetType="ListViewItem">
+                                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                                    <Setter Property="Margin" Value="0,0,0,2"/>
+                                                    <Setter Property="Padding" Value="0"/>
+                                                    <Setter Property="Background" Value="Transparent"/>
+                                                    <Setter Property="Template">
+                                                        <Setter.Value>
+                                                            <ControlTemplate TargetType="ListViewItem">
+                                                                <Grid x:Name="RootVisual" Background="Transparent">
+                                                                    <VisualStateManager.VisualStateGroups>
+                                                                        <VisualStateGroup x:Name="SelectionStates">
+                                                                            <VisualState x:Name="Unselected"/>
+                                                                            <VisualState x:Name="Selected">
+                                                                                <VisualState.Setters>
+                                                                                    <Setter Target="InnerBorder.Background" Value="{ThemeResource SubtleFillColorSecondaryBrush}"/>
+                                                                                </VisualState.Setters>
+                                                                            </VisualState>
+                                                                            <VisualState x:Name="SelectedPointerOver">
+                                                                                <VisualState.Setters>
+                                                                                    <Setter Target="InnerBorder.Background" Value="{ThemeResource SubtleFillColorTertiaryBrush}"/>
+                                                                                </VisualState.Setters>
+                                                                            </VisualState>
+                                                                            <VisualState x:Name="SelectedPressed">
+                                                                                <VisualState.Setters>
+                                                                                    <Setter Target="InnerBorder.Background" Value="{ThemeResource SubtleFillColorTertiaryBrush}"/>
+                                                                                </VisualState.Setters>
+                                                                            </VisualState>
+                                                                        </VisualStateGroup>
+                                                                        <VisualStateGroup x:Name="CommonStates">
+                                                                            <VisualState x:Name="Normal"/>
+                                                                            <VisualState x:Name="PointerOver">
+                                                                                <VisualState.Setters>
+                                                                                    <Setter Target="InnerBorder.Background" Value="{ThemeResource SubtleFillColorSecondaryBrush}"/>
+                                                                                </VisualState.Setters>
+                                                                            </VisualState>
+                                                                            <VisualState x:Name="Pressed">
+                                                                                <VisualState.Setters>
+                                                                                    <Setter Target="InnerBorder.Background" Value="{ThemeResource SubtleFillColorTertiaryBrush}"/>
+                                                                                </VisualState.Setters>
+                                                                            </VisualState>
+                                                                        </VisualStateGroup>
+                                                                    </VisualStateManager.VisualStateGroups>
+
+
+                                                                    <Border x:Name="InnerBorder"
+                                                                            CornerRadius="6"
+                                                                            Background="Transparent"
+                                                                            HorizontalAlignment="Stretch"
+                                                                            VerticalAlignment="Stretch">
+                                                                        <ContentPresenter x:Name="ContentPresenter"
+                                                                                          Content="{TemplateBinding Content}"
+                                                                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                                                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                                                    </Border>
+                                                                </Grid>
+                                                            </ControlTemplate>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </Style>
+                                            </ListView.ItemContainerStyle>
+
+                                            <ListView.ItemTemplate>
+                                                <DataTemplate x:DataType="models:ShortcutItem">
+                                                    <Grid Height="40" HorizontalAlignment="Stretch" Background="Transparent" Tag="{x:Bind}"
+                                                          PointerPressed="ShortcutCard_PointerPressed"
+                                                          PointerMoved="ShortcutCard_PointerMoved"
+                                                          PointerReleased="ShortcutCard_PointerReleased"
+                                                          PointerCanceled="ShortcutCard_PointerCanceled">
+
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                            <ColumnDefinition Width="*"/>
+                                                        </Grid.ColumnDefinitions>
+
+                                                        <fluentIcons:SymbolIcon Grid.Column="0"
+                                                                                Symbol="ReOrderDotsVertical"
+                                                                                FontSize="16"
+                                                                                Foreground="{ThemeResource TextFillColorDisabledBrush}"
+                                                                                Margin="12,0,12,0"
+                                                                                VerticalAlignment="Center" />
+
+                                                        <Grid Grid.Column="1" Visibility="{x:Bind StandardItemVisibility, Mode=OneWay}" HorizontalAlignment="Stretch">
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="Auto"/>
+                                                            </Grid.ColumnDefinitions>
+
+                                                            <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                                                                <FontIcon Glyph="{x:Bind IconGlyph, Mode=OneWay}" FontSize="16" Visibility="{x:Bind FontIconVisibility, Mode=OneWay}"/>
+                                                                <Image Source="{x:Bind IconImage, Mode=OneWay}" Width="16" Height="16" Stretch="Uniform" Visibility="{x:Bind CustomImageVisibility, Mode=OneWay}"/>
+                                                                <TextBlock Text="{x:Bind Name, Mode=OneWay}" VerticalAlignment="Center" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                            </StackPanel>
+
+                                                            <ComboBox Grid.Column="1" SelectedIndex="{x:Bind DisplayModeIndex, Mode=TwoWay}"
+                                                                      VerticalAlignment="Center" Width="150" Margin="0,0,12,0" FontFamily="{ThemeResource AppCustomFont}">
+                                                                <ComboBoxItem Content="Display as a link"/>
+                                                                <ComboBoxItem Content="Display as a menu"/>
+                                                                <ComboBoxItem Content="Don't display this item"/>
+                                                            </ComboBox>
+                                                        </Grid>
+
+                                                        <Border Grid.Column="1" Height="1" Background="{ThemeResource SurfaceStrokeColorDefaultBrush}"
+                                                                VerticalAlignment="Center" Margin="0,0,12,0"
+                                                                Visibility="{x:Bind SeparatorVisibility, Mode=OneWay}"/>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ListView.ItemTemplate>
+                                        </ListView>
+
+                                        <!-- Action Panel -->
+                                        <StackPanel Grid.Column="1" Spacing="8">
+                                            <DropDownButton Content="Add..." HorizontalAlignment="Stretch" FontFamily="{ThemeResource AppCustomFont}">
+                                                <DropDownButton.Flyout>
+                                                    <MenuFlyout>
+                                                        <MenuFlyoutSubItem Text="Standard locations" FontFamily="{ThemeResource AppCustomFont}">
+                                                            <MenuFlyoutItem Text="Documents" Click="AddStandardLocation_Click" Tag="Documents"/>
+                                                            <MenuFlyoutItem Text="Downloads" Click="AddStandardLocation_Click" Tag="Downloads"/>
+                                                            <MenuFlyoutItem Text="Music" Click="AddStandardLocation_Click" Tag="Music"/>
+                                                            <MenuFlyoutItem Text="Pictures" Click="AddStandardLocation_Click" Tag="Pictures"/>
+                                                            <MenuFlyoutItem Text="Settings" Click="AddStandardLocation_Click" Tag="Settings"/>
+                                                            <MenuFlyoutItem Text="Run" Click="AddStandardLocation_Click" Tag="Run"/>
+                                                            <MenuFlyoutItem Text="Control Panel" Click="AddStandardLocation_Click" Tag="Control Panel"/>
+                                                        </MenuFlyoutSubItem>
+                                                        <MenuFlyoutSeparator/>
+                                                        <MenuFlyoutItem Text="Separator" Click="AddSeparator_Click" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                        <MenuFlyoutSeparator/>
+                                                        <MenuFlyoutItem Text="Add custom location..." Click="AddCustomLocation_Click" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                        <MenuFlyoutItem Text="Add link to shortcut..." Click="AddLinkToShortcut_Click" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                    </MenuFlyout>
+                                                </DropDownButton.Flyout>
+                                            </DropDownButton>
+
+                                            <MenuFlyoutSeparator Margin="0,4"/>
+
+                                            <Button Content="Remove" HorizontalAlignment="Stretch" Click="RemoveItem_Click"
+                                                    IsEnabled="{Binding ElementName=ShortcutsListView, Path=SelectedItems.Count}" FontFamily="{ThemeResource AppCustomFont}"/>
+
+                                            <MenuFlyoutSeparator Margin="0,4"/>
+
+                                            <Button Content="Set icon..." HorizontalAlignment="Stretch" Click="SetIcon_Click"
+                                                    IsEnabled="{Binding ElementName=ShortcutsListView, Path=SelectedItems.Count}" FontFamily="{ThemeResource AppCustomFont}"/>
+
+                                            <Button Content="Reset icon" HorizontalAlignment="Stretch" Click="ResetIcon_Click"
+                                                    IsEnabled="{Binding ElementName=ShortcutsListView, Path=SelectedItems.Count}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </Expander>
                             </StackPanel>
 
                             <Grid Padding="16,12">

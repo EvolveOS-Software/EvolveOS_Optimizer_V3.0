@@ -174,6 +174,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["Shell_StartMenuPowerRestartBios"] = false,
             ["Shell_StartMenuPowerLogOff"] = false,
             ["Shell_StartMenuRecentDocs"] = false,
+            ["Shell_StartMenuShortcuts"] = "Documents|Standard::Documents|0|0|;Downloads|Standard::Downloads|0|0|;Music|Standard::Music|0|0|;Pictures|Standard::Pictures|0|0|;Settings|ms-settings:|0|0|;Run|Standard::Run|0|0|;Control Panel|control.exe|0|0|",
             ["Shell_TaskbarEnabled"] = false,
             ["Shell_TaskbarStyle"] = "Standard",
             ["Shell_TaskbarAlignment"] = "Center",
@@ -359,6 +360,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static bool Shell_StartMenuPowerRestartBios { get => (bool)_cachedSettings["Shell_StartMenuPowerRestartBios"]; set => ChangingParameters("Shell_StartMenuPowerRestartBios", value); }
         internal static bool Shell_StartMenuPowerLogOff { get => (bool)_cachedSettings["Shell_StartMenuPowerLogOff"]; set => ChangingParameters("Shell_StartMenuPowerLogOff", value); }
         internal static bool Shell_StartMenuRecentDocs { get => (bool)_cachedSettings["Shell_StartMenuRecentDocs"]; set => ChangingParameters("Shell_StartMenuRecentDocs", value); }
+        internal static string Shell_StartMenuShortcuts { get => (string)_cachedSettings["Shell_StartMenuShortcuts"]; set => ChangingParameters("Shell_StartMenuShortcuts", value); }
         internal static bool Shell_TaskbarEnabled { get => (bool)_cachedSettings["Shell_TaskbarEnabled"]; set => ChangingParameters("Shell_TaskbarEnabled", value); }
         internal static string Shell_TaskbarStyle { get => (string)_cachedSettings["Shell_TaskbarStyle"]; set => ChangingParameters("Shell_TaskbarStyle", value); }
         internal static string Shell_TaskbarAlignment { get => (string)_cachedSettings["Shell_TaskbarAlignment"]; set => ChangingParameters("Shell_TaskbarAlignment", value); }

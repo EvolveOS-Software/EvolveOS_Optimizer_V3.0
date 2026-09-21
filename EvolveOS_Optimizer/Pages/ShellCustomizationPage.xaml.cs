@@ -2,11 +2,14 @@
 // Licensed under the MIT License.
 
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media.Animation;
 
 namespace EvolveOS_Optimizer.Pages
 {
@@ -33,6 +36,7 @@ namespace EvolveOS_Optimizer.Pages
         }
 
         public ObservableCollection<MonitorPositionViewModel> Monitors { get; } = new();
+        public ObservableCollection<ShortcutItem> ShortcutsList { get; } = new();
 
         public double GetOnOpacity(bool isOn) => isOn ? 1.0 : 0.0;
         public double GetOffOpacity(bool isOn) => isOn ? 0.0 : 1.0;
@@ -92,6 +96,31 @@ namespace EvolveOS_Optimizer.Pages
             StartMenuAnimationsToggle.IsOn = SettingsEngine.Shell_StartMenuAnimation;
             ProfileClickToggle.IsOn = SettingsEngine.Shell_StartMenuProfileClick;
             RecentDocsToggle.IsOn = SettingsEngine.Shell_StartMenuRecentDocs;
+
+            ShortcutsList.CollectionChanged -= ShortcutsList_CollectionChanged;
+            ShortcutsList.Clear();
+
+            string savedShortcuts = SettingsEngine.Shell_StartMenuShortcuts ?? string.Empty;
+            foreach (var itemStr in savedShortcuts.Split(';', StringSplitOptions.RemoveEmptyEntries))
+            {
+                var parts = itemStr.Split('|');
+                if (parts.Length >= 4)
+                {
+                    var item = new ShortcutItem
+                    {
+                        Name = parts[0],
+                        TargetPath = parts[1],
+                        DisplayModeIndex = int.TryParse(parts[2], out int mode) ? mode : 0,
+                        IsSeparator = parts[3] == "1",
+                        IconGlyph = parts.Length > 4 ? parts[4] : string.Empty,
+                        IconImagePath = parts.Length > 5 ? parts[5] : string.Empty
+                    };
+                    item.PropertyChanged += ShortcutItem_PropertyChanged;
+                    ShortcutsList.Add(item);
+                }
+            }
+
+            ShortcutsList.CollectionChanged += ShortcutsList_CollectionChanged;
 
             PowerSleepToggle.IsOn = SettingsEngine.Shell_StartMenuPowerSleep;
             PowerLogOffToggle.IsOn = SettingsEngine.Shell_StartMenuPowerLogOff;
@@ -273,6 +302,144 @@ namespace EvolveOS_Optimizer.Pages
                 await Task.Delay(300);
 
                 ShellEnhancerController.StopEnhancer();
+            }
+        }
+
+        private void ShortcutsList_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.NewItems != null)
+            {
+                foreach (ShortcutItem item in e.NewItems)
+                    item.PropertyChanged += ShortcutItem_PropertyChanged;
+            }
+            if (e.OldItems != null)
+            {
+                foreach (ShortcutItem item in e.OldItems)
+                    item.PropertyChanged -= ShortcutItem_PropertyChanged;
+            }
+            SaveShortcutsList();
+        }
+
+        private void ShortcutItem_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            SaveShortcutsList();
+        }
+
+        private void SaveShortcutsList()
+        {
+            if (!_isInitialized) return;
+
+            string serialized = string.Join(";", ShortcutsList.Select(s =>
+    $"{s.Name}|{s.TargetPath}|{s.DisplayModeIndex}|{(s.IsSeparator ? "1" : "0")}|{s.IconGlyph}|{s.IconImagePath}"));
+
+            SettingsEngine.Shell_StartMenuShortcuts = serialized;
+
+            if (MasterToggle.IsOn && StartMenuToggle.IsOn)
+            {
+                _ = ShellEnhancerController.SendCommandAsync($"StartMenu_Shortcuts:{serialized}");
+            }
+        }
+
+        private void AddSeparator_Click(object sender, RoutedEventArgs e)
+        {
+            ShortcutsList.Add(new ShortcutItem { IsSeparator = true });
+        }
+
+        private void RemoveItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (ShortcutsListView.SelectedItem is ShortcutItem selectedItem)
+            {
+                ShortcutsList.Remove(selectedItem);
+            }
+        }
+
+        private void SetIcon_Click(object sender, RoutedEventArgs e)
+        {
+            if (ShortcutsListView.SelectedItem is ShortcutItem selectedItem)
+            {
+                if (App.MainWindow == null) return;
+
+                string? imagePath = Win32FileDialogHelper.ShowOpenFilePicker(
+                    App.MainWindow,
+                    "Select Custom Icon",
+                    "Image Files",
+                    "*.png;*.ico;*.jpg;*.jpeg");
+
+                if (!string.IsNullOrEmpty(imagePath))
+                {
+                    selectedItem.IconImagePath = imagePath;
+                    // The PropertyChanged event handles calling SaveShortcutsList() automatically
+                }
+            }
+        }
+
+        private void ResetIcon_Click(object sender, RoutedEventArgs e)
+        {
+            if (ShortcutsListView.SelectedItem is ShortcutItem selectedItem)
+            {
+                selectedItem.IconImagePath = string.Empty;
+                selectedItem.IconGlyph = string.Empty;
+            }
+        }
+
+        private void AddStandardLocation_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is MenuFlyoutItem item && item.Tag is string location)
+            {
+                string targetPath = location switch
+                {
+                    "Settings" => "ms-settings:",
+                    "Control Panel" => "control.exe",
+                    "Run" => "Standard::Run",
+                    _ => $"Standard::{location}"
+                };
+
+                ShortcutsList.Add(new ShortcutItem { Name = location, TargetPath = targetPath, DisplayModeIndex = 0 });
+            }
+        }
+
+        private void AddCustomLocation_Click(object sender, RoutedEventArgs e)
+        {
+            if (App.MainWindow == null) return;
+
+            string? folderPath = Win32FileDialogHelper.ShowFolderPicker(App.MainWindow, "Select Custom Location");
+
+            if (!string.IsNullOrEmpty(folderPath))
+            {
+                string folderName = System.IO.Path.GetFileName(folderPath);
+
+                if (string.IsNullOrEmpty(folderName))
+                {
+                    folderName = folderPath;
+                }
+
+                ShortcutsList.Add(new ShortcutItem
+                {
+                    Name = folderName,
+                    TargetPath = folderPath,
+                    DisplayModeIndex = 0
+                });
+            }
+        }
+
+        private void AddLinkToShortcut_Click(object sender, RoutedEventArgs e)
+        {
+            if (App.MainWindow == null) return;
+
+            string? filePath = Win32FileDialogHelper.ShowOpenFilePicker(
+                App.MainWindow,
+                "Select Shortcut or Executable",
+                "Supported Files",
+                "*.lnk;*.exe;*.url");
+
+            if (!string.IsNullOrEmpty(filePath))
+            {
+                ShortcutsList.Add(new ShortcutItem
+                {
+                    Name = System.IO.Path.GetFileNameWithoutExtension(filePath),
+                    TargetPath = filePath,
+                    DisplayModeIndex = 0
+                });
             }
         }
 
@@ -593,6 +760,172 @@ namespace EvolveOS_Optimizer.Pages
                 }
             }
         }
+        #endregion
+
+        #region Custom Drag & Drop Logic
+
+        private UIElement? _activeDraggedCard = null;
+        private ListViewItem? _activeDraggedItem = null;
+        private ListViewItem? _hoveredTargetItem = null;
+        private bool _isTrackingDrag = false;
+        private Windows.Foundation.Point _dragStartPoint;
+        private Windows.Foundation.Point _draggedItemBasePos;
+        private Dictionary<ListViewItem, Windows.Foundation.Rect> _logicalBounds = new();
+
+        private void ShortcutCard_PointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+            if (sender is Grid card)
+            {
+                var dataItem = card.Tag as ShortcutItem;
+                if (dataItem == null) return;
+
+                ShortcutsListView.SelectedItem = dataItem;
+
+                var container = ShortcutsListView.ContainerFromItem(dataItem) as ListViewItem;
+                if (container != null)
+                {
+                    _activeDraggedCard = card;
+                    _activeDraggedItem = container;
+                    _hoveredTargetItem = null;
+                    _isTrackingDrag = false;
+                    _dragStartPoint = e.GetCurrentPoint(ShortcutsListView).Position;
+
+                    _logicalBounds.Clear();
+                    foreach (var item in ShortcutsListView.Items)
+                    {
+                        if (ShortcutsListView.ContainerFromItem(item) is ListViewItem lvi)
+                        {
+                            var transform = lvi.TransformToVisual(ShortcutsListView);
+                            var bounds = transform.TransformBounds(new Windows.Foundation.Rect(0, 0, lvi.ActualWidth, lvi.ActualHeight));
+                            _logicalBounds[lvi] = bounds;
+
+                            lvi.TranslationTransition = new Microsoft.UI.Xaml.Vector3Transition { Duration = TimeSpan.FromMilliseconds(250) };
+                        }
+                    }
+
+                    if (_logicalBounds.TryGetValue(container, out var draggedBounds))
+                    {
+                        _draggedItemBasePos = new Windows.Foundation.Point(draggedBounds.X, draggedBounds.Y);
+                    }
+
+                    Canvas.SetZIndex(container, 1000);
+                    card.CapturePointer(e.Pointer);
+                }
+            }
+        }
+
+        private void ShortcutCard_PointerMoved(object sender, PointerRoutedEventArgs e)
+        {
+            if (_activeDraggedCard == null || _activeDraggedItem == null) return;
+
+            var currentPoint = e.GetCurrentPoint(ShortcutsListView).Position;
+            double deltaX = currentPoint.X - _dragStartPoint.X;
+            double deltaY = currentPoint.Y - _dragStartPoint.Y;
+
+            if (!_isTrackingDrag && (Math.Abs(deltaX) > 4 || Math.Abs(deltaY) > 4))
+            {
+                _isTrackingDrag = true;
+                _activeDraggedItem.TranslationTransition = null;
+            }
+
+            if (_isTrackingDrag)
+            {
+                _activeDraggedItem.Translation = new System.Numerics.Vector3(0, (float)deltaY, 10f);
+                _activeDraggedItem.Opacity = 0.85f;
+
+                ListViewItem? newHoveredItem = null;
+
+                foreach (var kvp in _logicalBounds)
+                {
+                    if (kvp.Key == _activeDraggedItem) continue;
+
+                    if (kvp.Value.Contains(currentPoint))
+                    {
+                        newHoveredItem = kvp.Key;
+                        break;
+                    }
+                }
+
+                if (newHoveredItem != _hoveredTargetItem)
+                {
+                    if (_hoveredTargetItem != null)
+                    {
+                        _hoveredTargetItem.Translation = System.Numerics.Vector3.Zero;
+                    }
+
+                    _hoveredTargetItem = newHoveredItem;
+
+                    if (_hoveredTargetItem != null)
+                    {
+                        var targetRect = _logicalBounds[_hoveredTargetItem];
+                        float offsetY = (float)(_draggedItemBasePos.Y - targetRect.Y);
+                        _hoveredTargetItem.Translation = new System.Numerics.Vector3(0, offsetY, 0);
+                    }
+                }
+            }
+        }
+
+        private void ShortcutCard_PointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+            if (sender is Grid card)
+            {
+                card.ReleasePointerCapture(e.Pointer);
+            }
+
+            if (_isTrackingDrag && _activeDraggedItem != null)
+            {
+                foreach (var item in ShortcutsListView.Items)
+                {
+                    if (ShortcutsListView.ContainerFromItem(item) is ListViewItem lvi)
+                    {
+                        lvi.TranslationTransition = null;
+                        lvi.Translation = System.Numerics.Vector3.Zero;
+                        lvi.Opacity = 1.0f;
+                        Canvas.SetZIndex(lvi, 0);
+                    }
+                }
+
+                if (_hoveredTargetItem != null && _hoveredTargetItem != _activeDraggedItem)
+                {
+                    var originalTransitions = ShortcutsListView.ItemContainerTransitions;
+                    ShortcutsListView.ItemContainerTransitions = new TransitionCollection();
+
+                    var draggedData = ShortcutsListView.ItemFromContainer(_activeDraggedItem);
+                    var targetData = ShortcutsListView.ItemFromContainer(_hoveredTargetItem);
+
+                    int oldIndex = ShortcutsListView.Items.IndexOf(draggedData);
+                    int newIndex = ShortcutsListView.Items.IndexOf(targetData);
+
+                    if (oldIndex != -1 && newIndex != -1)
+                    {
+                        ShortcutsList.Move(oldIndex, newIndex);
+                        SaveShortcutsList();
+                    }
+
+                    ShortcutsListView.UpdateLayout();
+                    if (originalTransitions != null)
+                        ShortcutsListView.ItemContainerTransitions = originalTransitions;
+                }
+            }
+            else if (_activeDraggedItem != null)
+            {
+                _activeDraggedItem.TranslationTransition = null;
+                _activeDraggedItem.Translation = System.Numerics.Vector3.Zero;
+                _activeDraggedItem.Opacity = 1.0f;
+                Canvas.SetZIndex(_activeDraggedItem, 0);
+            }
+
+            _activeDraggedCard = null;
+            _activeDraggedItem = null;
+            _hoveredTargetItem = null;
+            _isTrackingDrag = false;
+        }
+
+        private void ShortcutCard_PointerCanceled(object sender, PointerRoutedEventArgs e)
+        {
+            ShortcutCard_PointerReleased(sender, e);
+        }
+
         #endregion
     }
 }
