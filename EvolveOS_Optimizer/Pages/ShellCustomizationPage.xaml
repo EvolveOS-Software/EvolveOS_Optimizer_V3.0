@@ -165,6 +165,64 @@
 
                                     <Border Height="1" Background="{ThemeResource CardStrokeColorDefaultBrush}" Margin="16,0" Opacity="0.5"/>
 
+                                    <!-- Shell Acrylic Style Dropdown -->
+                                    <Grid Padding="16,12">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel VerticalAlignment="Center" Spacing="2">
+                                            <TextBlock Text="{helpers:ResourceString Key=Shell_AcrylicStyle_Title}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                            <TextBlock Text="{helpers:ResourceString Key=Shell_AcrylicStyle_Desc}" FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                                        </StackPanel>
+                                        <ComboBox Grid.Column="1" x:Name="AcrylicStyleCombo" IsEnabled="False" Width="150" VerticalAlignment="Center" SelectionChanged="SettingCombo_SelectionChanged" Tag="Shell_AcrylicStyle" FontFamily="{ThemeResource AppCustomFont}">
+                                            <ComboBoxItem Content="{helpers:ResourceString Key=Shell_AcrylicStyle_Acrylic}" Tag="Acrylic"/>
+                                            <ComboBoxItem Content="{helpers:ResourceString Key=Shell_AcrylicStyle_AcrylicThin}" Tag="AcrylicThin"/>
+                                        </ComboBox>
+                                    </Grid>
+
+                                    <!-- Acrylic Opacity Slider -->
+                                    <Grid Padding="16,12">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="50"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel VerticalAlignment="Center" Spacing="2">
+                                            <TextBlock Text="Acrylic Opacity" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                            <TextBlock Text="Adjust the opacity tint level of the acrylic backdrop blur." FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                                        </StackPanel>
+                                        <Slider Grid.Column="1" x:Name="AcrylicOpacitySlider" Minimum="0.0" Maximum="1.0" StepFrequency="0.05" Value="0.65" Width="120" VerticalAlignment="Center" ValueChanged="AcrylicOpacitySlider_ValueChanged" IsEnabled="False" Margin="0,0,8,0"/>
+                                        <TextBlock Grid.Column="2" x:Name="AcrylicOpacityValueText" Text="0.65" VerticalAlignment="Center" HorizontalAlignment="Right" FontFamily="{ThemeResource AppCustomFont}" FontSize="12" Opacity="0.8" Margin="0,0,4,0"/>
+                                        <Button Grid.Column="3" Width="32" Height="32" Padding="0" Background="Transparent" BorderThickness="0" CornerRadius="4" Click="ResetAcrylicOpacity_Click" VerticalAlignment="Center">
+                                            <FontIcon Glyph="&#xE777;" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Button>
+                                    </Grid>
+
+                                    <Border Height="1" Background="{ThemeResource CardStrokeColorDefaultBrush}" Margin="16,0" Opacity="0.5"/>
+
+                                    <!-- Acrylic Luminosity Slider -->
+                                    <Grid Padding="16,12">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="50"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel VerticalAlignment="Center" Spacing="2">
+                                            <TextBlock Text="Acrylic Luminosity" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                            <TextBlock Text="Adjust luminosity to control brightness blending in the backdrop." FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                                        </StackPanel>
+                                        <Slider Grid.Column="1" x:Name="AcrylicLuminositySlider" Minimum="0.0" Maximum="1.0" StepFrequency="0.05" Value="0.5" Width="120" VerticalAlignment="Center" ValueChanged="AcrylicLuminositySlider_ValueChanged" IsEnabled="False" Margin="0,0,8,0"/>
+                                        <TextBlock Grid.Column="2" x:Name="AcrylicLuminosityValueText" Text="0.50" VerticalAlignment="Center" HorizontalAlignment="Right" FontFamily="{ThemeResource AppCustomFont}" FontSize="12" Opacity="0.8" Margin="0,0,4,0"/>
+                                        <Button Grid.Column="3" Width="32" Height="32" Padding="0" Background="Transparent" BorderThickness="0" CornerRadius="4" Click="ResetAcrylicLuminosity_Click" VerticalAlignment="Center">
+                                            <FontIcon Glyph="&#xE777;" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Button>
+                                    </Grid>
+
+                                    <Border Height="1" Background="{ThemeResource CardStrokeColorDefaultBrush}" Margin="16,0" Opacity="0.5"/>
+
                                     <Grid Padding="16,12">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>

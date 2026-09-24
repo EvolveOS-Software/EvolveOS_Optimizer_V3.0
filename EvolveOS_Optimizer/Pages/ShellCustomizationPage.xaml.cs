@@ -136,6 +136,7 @@ namespace EvolveOS_Optimizer.Pages
 
             SelectComboBoxItemByTag(ShellLanguageCombo, SettingsEngine.Shell_Language);
             SelectComboBoxItemByTag(ShellAppThemeCombo, SettingsEngine.Shell_AppTheme ?? "Default");
+            SelectComboBoxItemByTag(AcrylicStyleCombo, SettingsEngine.Shell_AcrylicStyle ?? "Acrylic");
             SelectComboBoxItemByTag(StartMenuStyleCombo, SettingsEngine.Shell_StartMenuStyle);
             SelectComboBoxItemByTag(StartMenuAnimStyleCombo, SettingsEngine.Shell_StartMenuAnimStyle ?? "Standard");
             SelectComboBoxItemByTag(TaskbarStyleCombo, SettingsEngine.Shell_TaskbarStyle);
@@ -154,6 +155,12 @@ namespace EvolveOS_Optimizer.Pages
             PreviewSpeedSlider.Value = SettingsEngine.Shell_TaskbarPreviewAnimSpeed;
             StartMenuSpeedSlider.Value = SettingsEngine.Shell_StartMenuAnimSpeed;
             PreviewDelaySlider.Value = SettingsEngine.Shell_TaskbarPreviewDelay;
+            AcrylicOpacitySlider.Value = SettingsEngine.Shell_AcrylicOpacity;
+            AcrylicLuminositySlider.Value = SettingsEngine.Shell_AcrylicLuminosity;
+
+            string savedTheme = SettingsEngine.Shell_AppTheme ?? "Default";
+            SelectComboBoxItemByTag(ShellAppThemeCombo, savedTheme);
+            UpdateAcrylicSlidersState(savedTheme);
 
             string savedPos = SettingsEngine.Shell_TaskbarPosition ?? "Bottom";
             var posDict = new System.Collections.Generic.Dictionary<string, string>();
@@ -235,7 +242,16 @@ namespace EvolveOS_Optimizer.Pages
         {
             ShellStartupToggle.IsEnabled = isMasterEnabled;
             ShellHighPriorityToggle.IsEnabled = isMasterEnabled;
+
             ShellAppThemeCombo.IsEnabled = isMasterEnabled;
+            AcrylicStyleCombo.IsEnabled = isMasterEnabled;
+
+            string currentTheme = SettingsEngine.Shell_AppTheme ?? "Default";
+            bool isCustomTheme = !currentTheme.Equals("Default", StringComparison.OrdinalIgnoreCase);
+
+            AcrylicOpacitySlider.IsEnabled = isMasterEnabled && isCustomTheme;
+            AcrylicLuminositySlider.IsEnabled = isMasterEnabled && isCustomTheme;
+
             ShellLanguageCombo.IsEnabled = isMasterEnabled;
             StartMenuToggle.IsEnabled = isMasterEnabled;
             TaskbarToggle.IsEnabled = isMasterEnabled;
@@ -334,7 +350,7 @@ namespace EvolveOS_Optimizer.Pages
             if (!_isInitialized) return;
 
             string serialized = string.Join(";", ShortcutsList.Select(s =>
-    $"{s.Name}|{s.TargetPath}|{s.DisplayModeIndex}|{(s.IsSeparator ? "1" : "0")}|{s.IconGlyph}|{s.IconImagePath}"));
+            $"{s.Name}|{s.TargetPath}|{s.DisplayModeIndex}|{(s.IsSeparator ? "1" : "0")}|{s.IconGlyph}|{s.IconImagePath}"));
 
             SettingsEngine.Shell_StartMenuShortcuts = serialized;
 
@@ -372,7 +388,6 @@ namespace EvolveOS_Optimizer.Pages
                 if (!string.IsNullOrEmpty(imagePath))
                 {
                     selectedItem.IconImagePath = imagePath;
-                    // The PropertyChanged event handles calling SaveShortcutsList() automatically
                 }
             }
         }
@@ -505,6 +520,53 @@ namespace EvolveOS_Optimizer.Pages
             }
         }
 
+        private void AcrylicOpacitySlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
+        {
+            if (!_isInitialized) return;
+            double val = e.NewValue;
+            if (AcrylicOpacityValueText != null) AcrylicOpacityValueText.Text = $"{val:0.00}";
+            SettingsEngine.Shell_AcrylicOpacity = val;
+
+            if (MasterToggle.IsOn)
+            {
+                _ = ShellEnhancerController.SendCommandAsync($"Shell_AcrylicOpacity:{val.ToString(CultureInfo.InvariantCulture)}");
+            }
+        }
+
+        private void AcrylicLuminositySlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
+        {
+            if (!_isInitialized) return;
+            double val = e.NewValue;
+            if (AcrylicLuminosityValueText != null) AcrylicLuminosityValueText.Text = $"{val:0.00}";
+            SettingsEngine.Shell_AcrylicLuminosity = val;
+
+            if (MasterToggle.IsOn)
+            {
+                _ = ShellEnhancerController.SendCommandAsync($"Shell_AcrylicLuminosity:{val.ToString(CultureInfo.InvariantCulture)}");
+            }
+        }
+
+        private void ResetAcrylicOpacity_Click(object sender, RoutedEventArgs e)
+        {
+            if (AcrylicOpacitySlider != null) AcrylicOpacitySlider.Value = 0.65;
+        }
+
+        private void ResetAcrylicLuminosity_Click(object sender, RoutedEventArgs e)
+        {
+            if (AcrylicLuminositySlider != null) AcrylicLuminositySlider.Value = 0.5;
+        }
+
+        private void UpdateAcrylicSlidersState(string theme)
+        {
+            bool isCustomTheme = !theme.Equals("Default", StringComparison.OrdinalIgnoreCase);
+            bool isMasterOn = MasterToggle.IsOn;
+
+            bool canEnable = isMasterOn && isCustomTheme;
+
+            if (AcrylicOpacitySlider != null) AcrylicOpacitySlider.IsEnabled = canEnable;
+            if (AcrylicLuminositySlider != null) AcrylicLuminositySlider.IsEnabled = canEnable;
+        }
+
         private void StartMenuStyleCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (!_isInitialized || StartMenuStyleCombo.SelectedItem is not ComboBoxItem selectedItem) return;
@@ -538,7 +600,12 @@ namespace EvolveOS_Optimizer.Pages
             else if (commandTag == "Shell_Font")
                 SettingsEngine.Shell_AppFont = style;
             else if (commandTag == "Shell_AppTheme")
+            {
                 SettingsEngine.Shell_AppTheme = style;
+                UpdateAcrylicSlidersState(style);
+            }
+            else if (commandTag == "Shell_AcrylicStyle")
+                SettingsEngine.Shell_AcrylicStyle = style;
             else if (commandTag == "Taskbar_PreviewAnimStyle")
                 SettingsEngine.Shell_TaskbarPreviewAnimStyle = style;
             else if (commandTag == "StartMenu_AnimStyle")

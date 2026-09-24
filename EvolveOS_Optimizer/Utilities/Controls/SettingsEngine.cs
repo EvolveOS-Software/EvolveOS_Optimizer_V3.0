@@ -165,6 +165,9 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["Shell_HighPriority"] = false,
             ["Shell_Language"] = "en-us",
             ["Shell_AppTheme"] = "Default",
+            ["Shell_AcrylicStyle"] = "Acrylic",
+            ["Shell_AcrylicOpacity"] = 0.65,
+            ["Shell_AcrylicLuminosity"] = 0.5,
             ["Shell_StartMenuEnabled"] = false,
             ["Shell_StartMenuStyle"] = "Standard",
             ["Shell_StartMenuAnimation"] = true,
@@ -352,6 +355,9 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static bool Shell_HighPriority { get => (bool)_cachedSettings["Shell_HighPriority"]; set => ChangingParameters("Shell_HighPriority", value); }
         internal static string Shell_Language { get => _cachedSettings["Shell_Language"]?.ToString() ?? "en-us"; set => ChangingParameters("Shell_Language", value); }
         internal static string Shell_AppTheme { get => _cachedSettings["Shell_AppTheme"]?.ToString() ?? "Default"; set => ChangingParameters("Shell_AppTheme", value); }
+        internal static string Shell_AcrylicStyle { get => (string)_cachedSettings["Shell_AcrylicStyle"]; set => ChangingParameters("Shell_AcrylicStyle", value); }
+        internal static double Shell_AcrylicOpacity { get => Convert.ToDouble(_cachedSettings["Shell_AcrylicOpacity"]); set => ChangingParameters("Shell_AcrylicOpacity", value); }
+        internal static double Shell_AcrylicLuminosity { get => Convert.ToDouble(_cachedSettings["Shell_AcrylicLuminosity"]); set => ChangingParameters("Shell_AcrylicLuminosity", value); }
         internal static bool Shell_StartMenuEnabled { get => (bool)_cachedSettings["Shell_StartMenuEnabled"]; set => ChangingParameters("Shell_StartMenuEnabled", value); }
         internal static string Shell_StartMenuStyle { get => (string)_cachedSettings["Shell_StartMenuStyle"]; set => ChangingParameters("Shell_StartMenuStyle", value); }
         internal static bool Shell_StartMenuAnimation { get => (bool)_cachedSettings["Shell_StartMenuAnimation"]; set => ChangingParameters("Shell_StartMenuAnimation", value); }
