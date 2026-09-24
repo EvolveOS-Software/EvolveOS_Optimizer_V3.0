@@ -135,6 +135,7 @@ namespace EvolveOS_Optimizer.Pages
             MonitorAwareToggle.IsOn = SettingsEngine.Shell_TaskbarMonitorAware;
 
             SelectComboBoxItemByTag(ShellLanguageCombo, SettingsEngine.Shell_Language);
+            SelectComboBoxItemByTag(ShellAppThemeCombo, SettingsEngine.Shell_AppTheme ?? "Default");
             SelectComboBoxItemByTag(StartMenuStyleCombo, SettingsEngine.Shell_StartMenuStyle);
             SelectComboBoxItemByTag(StartMenuAnimStyleCombo, SettingsEngine.Shell_StartMenuAnimStyle ?? "Standard");
             SelectComboBoxItemByTag(TaskbarStyleCombo, SettingsEngine.Shell_TaskbarStyle);
@@ -234,6 +235,7 @@ namespace EvolveOS_Optimizer.Pages
         {
             ShellStartupToggle.IsEnabled = isMasterEnabled;
             ShellHighPriorityToggle.IsEnabled = isMasterEnabled;
+            ShellAppThemeCombo.IsEnabled = isMasterEnabled;
             ShellLanguageCombo.IsEnabled = isMasterEnabled;
             StartMenuToggle.IsEnabled = isMasterEnabled;
             TaskbarToggle.IsEnabled = isMasterEnabled;
@@ -535,6 +537,8 @@ namespace EvolveOS_Optimizer.Pages
                 SettingsEngine.Shell_TaskbarHoverAnimation = style;
             else if (commandTag == "Shell_Font")
                 SettingsEngine.Shell_AppFont = style;
+            else if (commandTag == "Shell_AppTheme")
+                SettingsEngine.Shell_AppTheme = style;
             else if (commandTag == "Taskbar_PreviewAnimStyle")
                 SettingsEngine.Shell_TaskbarPreviewAnimStyle = style;
             else if (commandTag == "StartMenu_AnimStyle")

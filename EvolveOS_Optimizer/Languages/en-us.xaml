@@ -6277,6 +6277,12 @@
     <sys:String x:Key="Shell_MasterToggleTitle">Enable EvolveOS Shell Enhancer</sys:String>
     <sys:String x:Key="Shell_MasterToggleDesc">Master switch to activate the background process for custom Start Menu and Taskbar features.</sys:String>
 
+    <sys:String x:Key="Shell_AppThemeTitle">App Theme</sys:String>
+    <sys:String x:Key="Shell_AppThemeDesc">Choose whether the custom shell and its elements use a light, dark, or default theme.</sys:String>
+    <sys:String x:Key="Shell_Theme_Default">Default</sys:String>
+    <sys:String x:Key="Shell_Theme_Light">Light</sys:String>
+    <sys:String x:Key="Shell_Theme_Dark">Dark</sys:String>
+
     <!-- Typography & Language -->
     <sys:String x:Key="Shell_TypographyTitle">Global Typography</sys:String>
     <sys:String x:Key="Shell_TypographyDesc">Override the font used throughout the shell enhancer application.</sys:String>
