@@ -174,6 +174,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["Shell_StartMenuAnimStyle"] = "Standard",
             ["Shell_StartMenuAnimSpeed"] = 1.0,
             ["Shell_StartMenuProfileClick"] = true,
+            ["Shell_StartMenuFolderSize"] = 1,
             ["Shell_StartMenuPowerSleep"] = true,
             ["Shell_StartMenuPowerRestartBios"] = false,
             ["Shell_StartMenuPowerLogOff"] = false,
@@ -202,7 +203,8 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["Taskbar_ShowFoldersAsSubmenus"] = true,
             ["Taskbar_FilteredFolders"] = string.Empty,
             ["Shell_AppFont"] = "Segoe UI",
-            ["Shell_AppFontSize"] = 14.0
+            ["Shell_AppFontSize"] = 14.0,
+            ["Shell_TaskbarPowerPlanMenu"] = false
         };
 
         private static readonly Dictionary<string, object> _cachedSettings = new Dictionary<string, object>(_defaultSettings);
@@ -364,6 +366,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static string Shell_StartMenuAnimStyle { get => (string)_cachedSettings["Shell_StartMenuAnimStyle"]; set => ChangingParameters("Shell_StartMenuAnimStyle", value); }
         internal static double Shell_StartMenuAnimSpeed { get => Convert.ToDouble(_cachedSettings["Shell_StartMenuAnimSpeed"]); set => ChangingParameters("Shell_StartMenuAnimSpeed", value); }
         internal static bool Shell_StartMenuProfileClick { get => (bool)_cachedSettings["Shell_StartMenuProfileClick"]; set => ChangingParameters("Shell_StartMenuProfileClick", value); }
+        internal static int Shell_StartMenuFolderSize { get => (int)_cachedSettings["Shell_StartMenuFolderSize"]; set => ChangingParameters("Shell_StartMenuFolderSize", value); }
         internal static bool Shell_StartMenuPowerSleep { get => (bool)_cachedSettings["Shell_StartMenuPowerSleep"]; set => ChangingParameters("Shell_StartMenuPowerSleep", value); }
         internal static bool Shell_StartMenuPowerRestartBios { get => (bool)_cachedSettings["Shell_StartMenuPowerRestartBios"]; set => ChangingParameters("Shell_StartMenuPowerRestartBios", value); }
         internal static bool Shell_StartMenuPowerLogOff { get => (bool)_cachedSettings["Shell_StartMenuPowerLogOff"]; set => ChangingParameters("Shell_StartMenuPowerLogOff", value); }
@@ -393,6 +396,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static string Taskbar_FilteredFolders { get => (string)_cachedSettings["Taskbar_FilteredFolders"]; set => ChangingParameters("Taskbar_FilteredFolders", value); }
         internal static string Shell_AppFont { get => (string)_cachedSettings["Shell_AppFont"]; set => ChangingParameters("Shell_AppFont", value); }
         internal static double Shell_AppFontSize { get => Convert.ToDouble(_cachedSettings["Shell_AppFontSize"]); set => ChangingParameters("Shell_AppFontSize", value); }
+        internal static bool Shell_TaskbarPowerPlanMenu { get => (bool)_cachedSettings["Shell_TaskbarPowerPlanMenu"]; set => ChangingParameters("Shell_TaskbarPowerPlanMenu", value); }
 
         private static void ChangingParameters(string key, object value)
         {

@@ -517,6 +517,26 @@
                                 </Border>
                             </StackPanel>
 
+                            <Border Height="1" Background="{ThemeResource CardStrokeColorDefaultBrush}" Margin="16,0" Opacity="0.5"/>
+
+                            <!-- Start Menu Folder Size Dropdown -->
+                            <Grid Padding="16,12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel VerticalAlignment="Center" Spacing="2">
+                                    <TextBlock Text="Folder Size" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                    <TextBlock Text="Set the default size for pinned Start Menu folders."
+                                                       FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                                </StackPanel>
+                                <ComboBox Grid.Column="1" x:Name="StartMenuFolderSizeCombo" Width="150" VerticalAlignment="Center" SelectionChanged="SettingCombo_SelectionChanged" Tag="StartMenu_FolderSize" FontFamily="{ThemeResource AppCustomFont}">
+                                    <!-- The Tags represent the numerical size multiplier -->
+                                    <ComboBoxItem Content="1x1 (Standard)" Tag="1" FontFamily="{ThemeResource AppCustomFont}"/>
+                                    <ComboBoxItem Content="2x2 (Large)" Tag="2" FontFamily="{ThemeResource AppCustomFont}"/>
+                                </ComboBox>
+                            </Grid>
+
                             <!-- Start Menu Shortcuts Section -->
                             <StackPanel Spacing="8">
                                 <TextBlock Text="Start Menu Folders" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" Margin="4,0,0,0"/>
@@ -1329,6 +1349,32 @@
                                                 <ToggleSwitch x:Name="ClockSecondsToggle" IsEnabled="False" VerticalAlignment="Center" Toggled="SettingToggle_Toggled" Tag="Taskbar_ClockSeconds" Margin="0" MinWidth="0" OnContent="{x:Null}" OffContent="{x:Null}"/>
                                             </StackPanel>
                                         </Grid>
+
+                                        <!-- Power Plan Menu Toggle -->
+                                        <Grid Padding="16,12">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel VerticalAlignment="Center" Spacing="2">
+                                                <TextBlock Text="{helpers:ResourceString Key=Shell_PowerPlanMenuTitle}" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                                <TextBlock Text="{helpers:ResourceString Key=Shell_PowerPlanMenuDesc}" 
+                                                   FontFamily="{ThemeResource AppCustomFont}"
+                                                   Style="{StaticResource CaptionTextBlockStyle}"
+                                                   Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" 
+                                                   TextWrapping="Wrap"/>
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                                                <Grid VerticalAlignment="Center">
+                                                    <TextBlock Text="{helpers:ResourceString Key=Settings_Toggle_On}" Opacity="{x:Bind GetOnOpacity(PowerPlanMenuToggle.IsOn), Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                    <TextBlock Text="{helpers:ResourceString Key=Settings_Toggle_Off}" Opacity="{x:Bind GetOffOpacity(PowerPlanMenuToggle.IsOn), Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                </Grid>
+                                                <ToggleSwitch x:Name="PowerPlanMenuToggle" IsEnabled="False" VerticalAlignment="Center" Toggled="SettingToggle_Toggled" Tag="Taskbar_PowerPlanMenu" Margin="0" MinWidth="0" OnContent="{x:Null}" OffContent="{x:Null}"/>
+                                            </StackPanel>
+                                        </Grid>
+
+                                        <Border Height="1" Background="{ThemeResource CardStrokeColorDefaultBrush}" Margin="16,0" Opacity="0.5"/>
 
                                     </StackPanel>
                                 </Border>

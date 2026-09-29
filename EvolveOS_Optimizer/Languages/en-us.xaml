@@ -6286,6 +6286,8 @@
     <sys:String x:Key="Shell_AcrylicStyle_Desc">Choose between standard acrylic or a thinner, more transparent blur style.</sys:String>
     <sys:String x:Key="Shell_AcrylicStyle_Acrylic">Acrylic</sys:String>
     <sys:String x:Key="Shell_AcrylicStyle_AcrylicThin">Acrylic Thin</sys:String>
+    <sys:String x:Key="Shell_PowerPlanMenuTitle">Power Plan Menu</sys:String>
+    <sys:String x:Key="Shell_PowerPlanMenuDesc">Show a quick power plan switcher button in the taskbar system tray.</sys:String>
 
     <!-- Typography & Language -->
     <sys:String x:Key="Shell_TypographyTitle">Global Typography</sys:String>

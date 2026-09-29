@@ -58,6 +58,9 @@ namespace EvolveOS_Optimizer.Pages
 
         private DateTime _lastRadiusUpdate = DateTime.MinValue;
         private int _radiusDebounceToken = 0;
+
+        private int _folderSize = 1;
+        public int FolderSize { get => _folderSize; set => SetProperty(ref _folderSize, value); }
         #endregion
 
         public ShellCustomizationPage()
@@ -96,6 +99,7 @@ namespace EvolveOS_Optimizer.Pages
             StartMenuAnimationsToggle.IsOn = SettingsEngine.Shell_StartMenuAnimation;
             ProfileClickToggle.IsOn = SettingsEngine.Shell_StartMenuProfileClick;
             RecentDocsToggle.IsOn = SettingsEngine.Shell_StartMenuRecentDocs;
+            PowerPlanMenuToggle.IsOn = SettingsEngine.Shell_TaskbarPowerPlanMenu;
 
             ShortcutsList.CollectionChanged -= ShortcutsList_CollectionChanged;
             ShortcutsList.Clear();
@@ -139,6 +143,8 @@ namespace EvolveOS_Optimizer.Pages
             SelectComboBoxItemByTag(AcrylicStyleCombo, SettingsEngine.Shell_AcrylicStyle ?? "Acrylic");
             SelectComboBoxItemByTag(StartMenuStyleCombo, SettingsEngine.Shell_StartMenuStyle);
             SelectComboBoxItemByTag(StartMenuAnimStyleCombo, SettingsEngine.Shell_StartMenuAnimStyle ?? "Standard");
+            int savedFolderSize = SettingsEngine.Shell_StartMenuFolderSize;
+            SelectComboBoxItemByTag(StartMenuFolderSizeCombo, savedFolderSize.ToString());
             SelectComboBoxItemByTag(TaskbarStyleCombo, SettingsEngine.Shell_TaskbarStyle);
             SelectComboBoxItemByTag(TaskbarAlignmentCombo, SettingsEngine.Shell_TaskbarAlignment ?? "Center");
             SelectComboBoxItemByTag(UnpinnedModeCombo, SettingsEngine.Shell_TaskbarUnpinnedMode);
@@ -260,6 +266,7 @@ namespace EvolveOS_Optimizer.Pages
             AppFontSizeCombo.IsEnabled = isMasterEnabled;
 
             StartMenuStyleCombo.IsEnabled = isMasterEnabled && StartMenuToggle.IsOn;
+            StartMenuFolderSizeCombo.IsEnabled = isMasterEnabled && StartMenuToggle.IsOn;
             StartMenuAnimationsToggle.IsEnabled = isMasterEnabled && StartMenuToggle.IsOn;
             StartMenuAnimStyleCombo.IsEnabled = isMasterEnabled && StartMenuToggle.IsOn && StartMenuAnimationsToggle.IsOn;
             ProfileClickToggle.IsEnabled = isMasterEnabled && StartMenuToggle.IsOn;
@@ -291,6 +298,7 @@ namespace EvolveOS_Optimizer.Pages
             TaskbarHoverAnimationCombo.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
             HoverBackgroundToggle.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
             MonitorAwareToggle.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
+            PowerPlanMenuToggle.IsEnabled = isMasterEnabled && TaskbarToggle.IsOn;
         }
 
         #region Event Handlers
@@ -511,6 +519,8 @@ namespace EvolveOS_Optimizer.Pages
                 SettingsEngine.Shell_TaskbarShowUnpinned = toggle.IsOn;
                 UnpinnedModeCombo.IsEnabled = MasterToggle.IsOn && TaskbarToggle.IsOn && toggle.IsOn;
             }
+            else if (commandTag == "Taskbar_PowerPlanMenu")
+                SettingsEngine.Shell_TaskbarPowerPlanMenu = toggle.IsOn;
 
             UpdateChildControlStates(MasterToggle.IsOn);
 
@@ -610,6 +620,13 @@ namespace EvolveOS_Optimizer.Pages
                 SettingsEngine.Shell_TaskbarPreviewAnimStyle = style;
             else if (commandTag == "StartMenu_AnimStyle")
                 SettingsEngine.Shell_StartMenuAnimStyle = style;
+            else if (commandTag == "StartMenu_FolderSize")
+            {
+                if (int.TryParse(style, out int size))
+                {
+                    SettingsEngine.Shell_StartMenuFolderSize = size;
+                }
+            }
             else if (commandTag == "Shell_FontSize")
             {
                 if (double.TryParse(style, out double size))
