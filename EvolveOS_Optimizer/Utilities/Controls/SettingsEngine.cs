@@ -175,6 +175,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["Shell_StartMenuAnimSpeed"] = 1.0,
             ["Shell_StartMenuProfileClick"] = true,
             ["Shell_StartMenuFolderSize"] = 1,
+            ["Shell_StartMenuShowAppLabels"] = true,
             ["Shell_StartMenuPowerSleep"] = true,
             ["Shell_StartMenuPowerRestartBios"] = false,
             ["Shell_StartMenuPowerLogOff"] = false,
@@ -367,6 +368,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static double Shell_StartMenuAnimSpeed { get => Convert.ToDouble(_cachedSettings["Shell_StartMenuAnimSpeed"]); set => ChangingParameters("Shell_StartMenuAnimSpeed", value); }
         internal static bool Shell_StartMenuProfileClick { get => (bool)_cachedSettings["Shell_StartMenuProfileClick"]; set => ChangingParameters("Shell_StartMenuProfileClick", value); }
         internal static int Shell_StartMenuFolderSize { get => (int)_cachedSettings["Shell_StartMenuFolderSize"]; set => ChangingParameters("Shell_StartMenuFolderSize", value); }
+        internal static bool Shell_StartMenuShowAppLabels { get => (bool)_cachedSettings["Shell_StartMenuShowAppLabels"]; set => ChangingParameters("Shell_StartMenuShowAppLabels", value); }
         internal static bool Shell_StartMenuPowerSleep { get => (bool)_cachedSettings["Shell_StartMenuPowerSleep"]; set => ChangingParameters("Shell_StartMenuPowerSleep", value); }
         internal static bool Shell_StartMenuPowerRestartBios { get => (bool)_cachedSettings["Shell_StartMenuPowerRestartBios"]; set => ChangingParameters("Shell_StartMenuPowerRestartBios", value); }
         internal static bool Shell_StartMenuPowerLogOff { get => (bool)_cachedSettings["Shell_StartMenuPowerLogOff"]; set => ChangingParameters("Shell_StartMenuPowerLogOff", value); }

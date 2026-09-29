@@ -96,6 +96,7 @@ namespace EvolveOS_Optimizer.Pages
             ShellStartupToggle.IsOn = SettingsEngine.Shell_RunOnStartup;
             ShellHighPriorityToggle.IsOn = SettingsEngine.Shell_HighPriority;
             StartMenuToggle.IsOn = SettingsEngine.Shell_StartMenuEnabled;
+            ShowAppLabelsToggle.IsOn = SettingsEngine.Shell_StartMenuShowAppLabels;
             StartMenuAnimationsToggle.IsOn = SettingsEngine.Shell_StartMenuAnimation;
             ProfileClickToggle.IsOn = SettingsEngine.Shell_StartMenuProfileClick;
             RecentDocsToggle.IsOn = SettingsEngine.Shell_StartMenuRecentDocs;
@@ -266,6 +267,7 @@ namespace EvolveOS_Optimizer.Pages
             AppFontSizeCombo.IsEnabled = isMasterEnabled;
 
             StartMenuStyleCombo.IsEnabled = isMasterEnabled && StartMenuToggle.IsOn;
+            ShowAppLabelsToggle.IsEnabled = isMasterEnabled && StartMenuToggle.IsOn;
             StartMenuFolderSizeCombo.IsEnabled = isMasterEnabled && StartMenuToggle.IsOn;
             StartMenuAnimationsToggle.IsEnabled = isMasterEnabled && StartMenuToggle.IsOn;
             StartMenuAnimStyleCombo.IsEnabled = isMasterEnabled && StartMenuToggle.IsOn && StartMenuAnimationsToggle.IsOn;
@@ -478,6 +480,8 @@ namespace EvolveOS_Optimizer.Pages
 
             if (commandTag == "StartMenu_Enable")
                 SettingsEngine.Shell_StartMenuEnabled = toggle.IsOn;
+            else if (commandTag == "StartMenu_ShowAppLabels")
+                SettingsEngine.Shell_StartMenuShowAppLabels = toggle.IsOn;
             else if (commandTag == "StartMenu_Animation")
             {
                 SettingsEngine.Shell_StartMenuAnimation = toggle.IsOn;
