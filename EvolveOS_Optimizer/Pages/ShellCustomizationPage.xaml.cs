@@ -101,6 +101,7 @@ namespace EvolveOS_Optimizer.Pages
             ProfileClickToggle.IsOn = SettingsEngine.Shell_StartMenuProfileClick;
             RecentDocsToggle.IsOn = SettingsEngine.Shell_StartMenuRecentDocs;
             PowerPlanMenuToggle.IsOn = SettingsEngine.Shell_TaskbarPowerPlanMenu;
+            EfficiencyModeToggle.IsOn = SettingsEngine.Shell_EnableEfficiencyMode;
 
             ShortcutsList.CollectionChanged -= ShortcutsList_CollectionChanged;
             ShortcutsList.Clear();
@@ -249,6 +250,7 @@ namespace EvolveOS_Optimizer.Pages
         {
             ShellStartupToggle.IsEnabled = isMasterEnabled;
             ShellHighPriorityToggle.IsEnabled = isMasterEnabled;
+            EfficiencyModeToggle.IsEnabled = isMasterEnabled;
 
             ShellAppThemeCombo.IsEnabled = isMasterEnabled;
             AcrylicStyleCombo.IsEnabled = isMasterEnabled;
@@ -525,6 +527,8 @@ namespace EvolveOS_Optimizer.Pages
             }
             else if (commandTag == "Taskbar_PowerPlanMenu")
                 SettingsEngine.Shell_TaskbarPowerPlanMenu = toggle.IsOn;
+            else if (commandTag == "Shell_EnableEfficiencyMode")
+                SettingsEngine.Shell_EnableEfficiencyMode = toggle.IsOn;
 
             UpdateChildControlStates(MasterToggle.IsOn);
 

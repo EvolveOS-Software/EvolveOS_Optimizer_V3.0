@@ -1478,6 +1478,29 @@
                                         </StackPanel>
                                     </Grid>
 
+                                    <Border Height="1" Background="{ThemeResource CardStrokeColorDefaultBrush}" Margin="16,0" Opacity="0.5"/>
+
+                                    <!-- Efficiency Mode Toggle -->
+                                    <Grid Padding="16,12">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel VerticalAlignment="Center" Spacing="2">
+                                            <TextBlock Text="Aggressive Memory Trimming" FontFamily="{ThemeResource AppCustomFont}" FontWeight="SemiBold"/>
+                                            <TextBlock Text="Reduces RAM usage by paging out memory when the Start Menu is closed. May cause a slight delay when reopening on older systems." 
+                                                           FontFamily="{ThemeResource AppCustomFont}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                                            <Grid VerticalAlignment="Center">
+                                                <TextBlock Text="{helpers:ResourceString Key=Settings_Toggle_On}" Opacity="{x:Bind GetOnOpacity(EfficiencyModeToggle.IsOn), Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                                <TextBlock Text="{helpers:ResourceString Key=Settings_Toggle_Off}" Opacity="{x:Bind GetOffOpacity(EfficiencyModeToggle.IsOn), Mode=OneWay}" FontFamily="{ThemeResource AppCustomFont}"/>
+                                            </Grid>
+                                            <ToggleSwitch x:Name="EfficiencyModeToggle" IsEnabled="False" VerticalAlignment="Center" Toggled="SettingToggle_Toggled" Tag="Shell_EnableEfficiencyMode" Margin="0" MinWidth="0" OnContent="{x:Null}" OffContent="{x:Null}"/>
+                                        </StackPanel>
+                                    </Grid>
+
                                 </StackPanel>
                             </Border>
                         </StackPanel>

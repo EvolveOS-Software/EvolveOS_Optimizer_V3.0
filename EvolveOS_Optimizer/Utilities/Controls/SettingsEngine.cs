@@ -162,6 +162,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
 
             ["Shell_MasterEnabled"] = false,
             ["Shell_RunOnStartup"] = false,
+            ["Shell_EnableEfficiencyMode"] = false,
             ["Shell_HighPriority"] = false,
             ["Shell_Language"] = "en-us",
             ["Shell_AppTheme"] = "Default",
@@ -355,6 +356,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
 
         internal static bool Shell_MasterEnabled { get => (bool)_cachedSettings["Shell_MasterEnabled"]; set => ChangingParameters("Shell_MasterEnabled", value); }
         internal static bool Shell_RunOnStartup { get => (bool)_cachedSettings["Shell_RunOnStartup"]; set { ChangingParameters("Shell_RunOnStartup", value); ToggleShellStartup(value); }}
+        internal static bool Shell_EnableEfficiencyMode { get => (bool)_cachedSettings["Shell_EnableEfficiencyMode"]; set => ChangingParameters("Shell_EnableEfficiencyMode", value); }
         internal static bool Shell_HighPriority { get => (bool)_cachedSettings["Shell_HighPriority"]; set => ChangingParameters("Shell_HighPriority", value); }
         internal static string Shell_Language { get => _cachedSettings["Shell_Language"]?.ToString() ?? "en-us"; set => ChangingParameters("Shell_Language", value); }
         internal static string Shell_AppTheme { get => _cachedSettings["Shell_AppTheme"]?.ToString() ?? "Default"; set => ChangingParameters("Shell_AppTheme", value); }
